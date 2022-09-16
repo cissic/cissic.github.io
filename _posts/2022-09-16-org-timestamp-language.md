@@ -3,7 +3,7 @@ How to set the language of org-mode timestamps {#how-to-set-the-language-of-org-
 
 <https://stackoverflow.com/questions/28913294/emacs-org-mode-language-of-time-stamps>
 
-``` {.commonlisp org-language="lisp"}
+``` {.example}
 ;; System locale to use for formatting time values.
 (setq system-time-locale "C")         ; Make sure that the weekdays in the
                                       ; time stamps of your Org mode files and
