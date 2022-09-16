@@ -19,9 +19,11 @@ See the \[UNIX Specification - Environment
 Variables\](<http://pubs.opengroup.org/onlinepubs/7908799/xbd/envvar.html>)
 for further explanation.
 
-::: {.CODE}
-\#alias git=\'LC~ALL~=en~US~ git\' alias git=\'LC~ALL~=en~GB~ git\'
-:::
+``` {.example}
+# Set Git language to English
+#alias git='LC_ALL=en_US git'
+alias git='LC_ALL=en_GB git'
+```
 
 In case you added these lines to `~/.bashrc` the alias will be defined
 when a new interactive shell gets started. In case you added it to
