@@ -9,5 +9,3 @@ How to set the language of org-mode timestamps {#how-to-set-the-language-of-org-
                                       ; time stamps of your Org mode files and
                                       ; in the agenda appear in English.
 ```
-
-lisp
