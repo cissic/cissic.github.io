@@ -19,6 +19,6 @@ bash
 Workaround/Fix found
 [here](https://bugs.kde.org/show_bug.cgi?id=279614#c41).
 
-\> KDE 5.23.1 Dolphin 21.08.2 If in dolphin enabled conf Startup-\>Show
-on startup: Folder, tabs, and window state from last time, then dolphin
-shell panel don\'t read .bashrc.
+> \> KDE 5.23.1 Dolphin 21.08.2 If in dolphin enabled conf
+> Startup-\>Show on startup: Folder, tabs, and window state from last
+> time, then dolphin shell panel don\'t read .bashrc.
