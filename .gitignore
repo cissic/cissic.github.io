@@ -1,0 +1,19 @@
+# Site gen
+_site
+.sass-cache
+.jekyll-metadata
+
+# Python
+*.pyc
+__pycache__
+# IDE
+.idea/*
+# Notebooks
+*.ipynb_checkpoints*
+# Mypy
+.mypy_cache/
+
+mysource/public-notes-org/.#*.org
+mysource/public-notes-org/#*#
+mysource/draft-notes-org(Local)
+*.mdORIG
