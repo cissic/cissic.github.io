@@ -2,7 +2,7 @@ How to make Anaconda Jupyter Notebook work with nbextensions {#how-to-make-anaco
 ------------------------------------------------------------
 
 -   Download anaconda installer (.sh file)
--   Run it from sudo user context BUT [NOT]{.underline} using sudo!!!
+-   Run it from sudo user context BUT **NOT** using sudo!!!
 
 ``` {.bash}
 bash Anaconda.... .sh
