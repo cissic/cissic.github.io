@@ -2,7 +2,7 @@
 author:
 - cissic
 date: '\<2022-09-08 Thu\>'
-description: Description of the upgrading process.
+description: Description of the successful upgrading process.
 tags: linux git bash
 title: Debian migration from Buster to Bullseye
 ---
@@ -10,7 +10,7 @@ title: Debian migration from Buster to Bullseye
 Debian migration from Buster to Bullseye {#debian-migration-from-buster-to-bullseye-1}
 ----------------------------------------
 
-### My (first successful :-) !!!) debian upgrade. From Buster (10.12) to Bullseye. {#2022-09-06-debian-upgrade}
+### My (first successful :-) !!!) debian upgrade. From Buster (10.12) to Bullseye.
 
 Upgrading Debian from one version to the new one was possible since I
 started using it (around jessie), however it was always a problem for
@@ -48,8 +48,6 @@ There are two methods of doing it (two commands). Neither of them is
 100% reliable. And this was my case.
 
 1.  Command 1: aptitude search
-
-    ; \#+begin~src~ bash :results replace list
 
     ``` {.bash results="org replace"}
     aptitude search '?narrow(?installed, ?not(?origin(Debian)))'
