@@ -1,3 +1,11 @@
+---
+author:
+- cissic
+date: '\<2022-09-08 thu\>'
+tags: linux kde plasma
+title: How make Dolphin execute .desktop files again
+---
+
 Dolphin opens .desktop files in kate instead of executing them {#2022-09-06-dolphin-opens-.desktop-files-in-kate}
 --------------------------------------------------------------
 

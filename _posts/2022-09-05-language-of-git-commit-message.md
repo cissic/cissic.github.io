@@ -1,3 +1,12 @@
+---
+author:
+- cissic
+date: '\<2022-09-08 Thu\>'
+description: Not presented description included in the final document
+tags: linux git bash
+title: English as the default language of git commit comments
+---
+
 How to set English as the default language of git commit comments
 -----------------------------------------------------------------
 

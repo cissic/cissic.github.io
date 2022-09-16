@@ -1,3 +1,12 @@
+---
+author:
+- cissic
+date: '\<2022-09-08 Thu\>'
+description: Not presented description included in the final document
+tags: linux git bash
+title: 'How to make Dolphin read settings in `~/.bashrc`'
+---
+
 How to make Dolphin read settings in `~/.bashrc` {#how-to-make-dolphin-read-settings-in-.bashrc-1}
 ------------------------------------------------
 

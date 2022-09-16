@@ -1,3 +1,11 @@
+---
+author:
+- cissic
+date: '\<2022-09-08 thu\>'
+tags: 'emacs org-mode '
+title: 'How to set the language of org-mode timestamps'
+---
+
 How to set the language of org-mode timestamps {#how-to-set-the-language-of-org-mode-timestamps-1}
 ----------------------------------------------
 
