@@ -1,3 +1,12 @@
+---
+author:
+- cissic
+date: '\<2022-09-08 Thu\>'
+description: Description of the upgrading process.
+tags: linux git bash
+title: Debian migration from Buster to Bullseye
+---
+
 Debian migration from Buster to Bullseye {#debian-migration-from-buster-to-bullseye-1}
 ----------------------------------------
 

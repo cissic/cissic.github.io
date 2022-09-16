@@ -1,3 +1,11 @@
+---
+author:
+- cissic
+date: '\<2022-09-08 thu\>'
+tags: python jupyter nbextensions anaconda
+title: How to make Anaconda Jupyter Notebook work with nbextensions
+---
+
 How to make Anaconda Jupyter Notebook work with nbextensions {#how-to-make-anaconda-jupyter-notebook-work-with-nbextensions-1}
 ------------------------------------------------------------
 
