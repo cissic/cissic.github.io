@@ -5,14 +5,12 @@ A bug found in Debian Bullseye/Plasma 5.20.5/Dolphin 20.12.2
 
 ### TL;DR tip:
 
-``` {.bash}
+``` {.example}
 Dolphin Settings -> Configure Dolphin -> Startup 
 
 untick 'Folders, tabs, and ...'
 tick   'Show on startup /home/username'
 ```
-
-bash
 
 ### Description
 
