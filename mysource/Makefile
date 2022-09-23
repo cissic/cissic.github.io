@@ -70,7 +70,7 @@ initialize-project-after-cloning:
 .PHONY: push-all 
 ## Invoke git from a different folder (-C flag) to add new posts, commit and push the repository
 push-all:
-	git -C add -u
+	git add -u
 	git -C $(source) add *.org
 	git -C $(output) add *.md
 	git -C $(output) commit -m"Yet Another Post(s)"
