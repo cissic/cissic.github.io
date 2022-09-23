@@ -13,7 +13,13 @@ __pycache__
 # Mypy
 .mypy_cache/
 
+# Emacs
+*.org~
+
+
 mysource/public-notes-org/.#*.org
 mysource/public-notes-org/#*#
 mysource/draft-notes-org(Local)
+mysource/gists
+mysource/todo
 *.mdORIG

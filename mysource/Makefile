@@ -33,7 +33,7 @@ all: $(objects)
 
 # Recipe for converting an org file into md file using Pandoc
 $(output)/%.md: $(source)/%.org
-	pandoc -t markdown \
+	pandoc -s -t markdown \
 		$< \
 		-o $@
 # pandoc -t markdown -s $< -o $@
@@ -69,7 +69,7 @@ initialize-project-after-cloning:
 	
 	
 .PHONY: push-all 
-## Invoke git from a different folder to add new posts, commit and push the repository
+## Invoke git from a different folder (-C flag) to add new posts, commit and push the repository
 push-all:
 	git -C $(output) add *.md
 	git -C $(output) commit -m"Yet Another Post(s)"
