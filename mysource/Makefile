@@ -60,25 +60,24 @@ clean-auxiliary:
 ## Clean output files generated from source
 clean-project:
 	rm -f $(output)/*.pdf
-	
+
 .PHONY: initialize-project-after-cloning
 ## Clean output files generated from source
 initialize-project-after-cloning:
 	git config user.name "cissic"
 	git config user.email "cis00sic@gmail.com"
-	
-	
+
 .PHONY: push-all 
 ## Invoke git from a different folder (-C flag) to add new posts, commit and push the repository
 push-all:
-        git -C $(source) add *.org
+	git -C add -u
+	git -C $(source) add *.org
 	git -C $(output) add *.md
 	git -C $(output) commit -m"Yet Another Post(s)"
 	git -C $(output) push
 #	+$(MAKE) -C cissicblog git --git-dir=/home/mb/projects/mynotes/cissicblog/.git status
 
-	
-	
+
 # Plonk the following at the end of your Makefile
 .DEFAULT_GOAL := help
 
