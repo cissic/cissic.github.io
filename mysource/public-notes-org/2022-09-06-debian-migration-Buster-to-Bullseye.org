@@ -1,0 +1,188 @@
+#+TITLE: Debian migration from Buster to Bullseye 
+#+DESCRIPTION: Description of the successful upgrading process.
+#+AUTHOR: cissic
+#+DATE: <2022-09-08 Thu>
+#+TAGS: linux git bash 
+
+** Debian migration from Buster to Bullseye 
+
+*** My (first successful :-) !!!) debian upgrade. From Buster (10.12) to Bullseye.
+   
+Upgrading Debian from one version to the new one was possible since I started using it (around jessie), however it was always a problem for me. My attempts always ended up in reinstalling system. I suppose I wasn't experienced enough to do it properly in those times. 
+When Bullseye appeared I decided to give one more try. 
+In the end, it mainly all came down to following strictly debian [[https://www.debian.org/releases/stable/amd64/release-notes/ch-upgrading.html][manual]] (but I guess this time I did right). I also made some use of [[https://linuxize.com/post/how-to-upgrade-debian-10-to-debian-11/][this link]].
+
+The following text is a collection of bash commands ran in my upgrading process with some comments of mine.
+
+*** Initial preparations...
+
+#+begin_src bash
+ # preparation 
+ sudo apt-mark showhold   # Packages marked as held back cannot be automatically installed
+                          # , upgraded or removed. This may cause issues during the upgrade process. 
+ sudo apt update
+ sudo apt upgrade
+ sudo apt full-upgrade 
+ sudo apt autoremove 
+
+ cat /etc/apt/sources.list
+ cat /etc/debian_version  # make sure your Debian version is really the one you think it is
+#+end_src
+
+*** Uninstalling troublesome packages
+We need to find packages, that was installed from non-Debian repositories, since they can be a cause of problems during the upgrade. There are two methods of doing it (two commands). Neither of them is 100% reliable. And this was my case.
+
+**** Command 1: aptitude search
+
+#  ;  #+begin_src bash :results replace list
+#+begin_src bash :results org replace
+ aptitude search '?narrow(?installed, ?not(?origin(Debian)))'
+#+end_src
+
+resulted in
+
+#+RESULTS:
+#+begin_src org
+i  adobereader-enu:i386 - Adobe Reader allows you to view navigate and print PDF files. This version adds advanced forms support (save), better integration with Adobe Acrobat workflows, customizable toolbars and better overall performance.
+i  brscan3 - Brother Scanner Driver
+i  cnijfilter2 - IJ Printer Driver for Linux.
+i  digimend-dkms - Collection of graphics tablet drivers by DIGImend project
+i  guitar - Git GUI Client
+i  nomachine - Fast and secure remote access system
+i  scratux - A free programming language where you can create your own interactive stories, games, and animations
+i  virtualbox-6.1 - Oracle VM VirtualBox
+i  vivaldi-stable - Experience the web in a whole new way with Vivaldi.
+#+end_src
+
+So I removed the packages:
+#+begin_src bash 
+apt remove adobereader-enu brscan3 cnijfilter2 digimend-dkms guitar nomachine scratux virtualbox-6.1 vivaldi-stable
+#+end_src
+
+**** Command 2: apt-forktracer
+
+#+begin_src bash :results org replace
+apt-forktracer | sort
+#+end_src
+
+resulted in
+
+#+RESULTS:
+#+begin_src org
+musescore3 (3.2.3+dfsg2-11~bpo10+1) [Debian Backports: 3.2.3+dfsg2-11~bpo10+1]
+musescore3-common (3.2.3+dfsg2-11~bpo10+1) [Debian Backports: 3.2.3+dfsg2-11~bpo10+1 3.2.3+dfsg2-11~bpo10+1]
+tor (0.4.5.10-1~bpo10+1) [Debian Backports: 0.4.5.10-1~bpo10+1] [Debian: 0.3.5.16-1 0.3.5.16-1]
+torbrowser-launcher (0.3.3-6~bpo10+1) [Debian Backports: 0.3.3-6~bpo10+1]
+tor-geoipdb (0.4.5.10-1~bpo10+1) [Debian Backports: 0.4.5.10-1~bpo10+1 0.4.5.10-1~bpo10+1] [Debian: 0.3.5.16-1 0.3.5.16-1 0.3.5.16-1 0.3.5.16-1]
+#+end_src
+
+So I also removed them
+
+#+begin_src bash :results org replace
+sudo apt remove musescore3 musescore3-common tor torbrowser-launcher tor-geoipdb
+#+end_src
+
+
+*** One more check
+
+#+begin_src bash
+ sudo apt autoremove 
+#+end_src
+
+Removal of deprecated packages -- those which are not available in new version of the system:
+
+#+begin_src bash
+aptitude search '~o'
+# aptitude purge '~o'
+#+end_src
+
+This command printed no answer so I moved forward.
+
+(4.2.6) Removal of leftover configuration files. 
+
+#+begin_src bash  :results org replace
+find /etc -name '*.dpkg-*' -o -name '*.ucf-*' -o -name '*.merge-error'
+#+end_src
+
+#+RESULTS:
+#+begin_src org
+/etc/cupsBKP2021_03_26/cups-pdf.conf.dpkg-old
+/etc/proftpd/proftpd.conf.ucf-dist
+/etc/cups/cups-pdf.conf.dpkg-old
+/etc/ca-certificates.conf.dpkg-old
+#+end_src
+
+
+#+begin_src bash  :results org replace
+rm -rf /etc/cupsBKP2021_03_26/cups-pdf.conf.dpkg-old /etc/proftpd/proftpd.conf.ucf-dist /etc/cups/cups-pdf.conf.dpkg-old /etc/ca-certificates.conf.dpkg-old
+#+end_src
+
+*** (4.2.7 4.2.8)  /etc/apt/sources.list - links to security and updates repositories
+Not done.
+
+*** (4.2.9) Unofficial sources 
+Links in files from directory
+=/etc/apt/sources/list.d= were commented out -> (uncomment after upgrade)
+
+**** ad. (4.2.11) Check package status
+#+BEGIN_QUOTE
+Regardless of the method used for upgrading, it is recommended that you check the status of all packages first, and verify that all packages are in an upgradable state. The following command will show any packages which have a status of Half-Installed or Failed-Config, and those with any error status.
+#+END_QUOTE
+
+Command
+#+begin_src bash
+dpkg --audit
+#+end_src
+printed out long table that I was unable to comprehend, so I decided to do just:
+#+begin_src bash
+aptitude search "~ahold"
+#+end_src
+and
+#+begin_src bash
+dpkg --get-selections | grep 'hold$'
+#+end_src
+
+which printed out nothing... so I did nothing.
+
+*** Update of sources.list -> bullseye
+*** (4.4.1) Recording the session
+
+( After you have completed the upgrade, you can stop script by typing exit at the prompt. )
+
+*** Minimal system update
+
+#+begin_src bash
+apt upgrade --without-new-pkgs
+#+end_src
+For safety precautions it's better to do minimal system upgrade as a first step, before doing...
+
+*** Full upgrade
+
+#+begin_src bash
+apt full-upgrade
+#+end_src
+
+
+*** Problems
+ - There are some icons missing in Dolphin. 
+   (Solution: go to =System Settings -> Icons -> = and select on of the Icon Themes. 
+    It seems like update process deselected it.)
+ - There was a problem with proftpd package. (proftpd in Bullseye'u is transitional dummy package).
+   Every attempt of upgrading resulted in showing info that
+   =proftpd package is not fully configured= 
+   and this stopped ~apt upgrade~ from working. The solution was found [[https://forums.debian.net/viewtopic.php?p=741264][here]] (dylofpoke comment 
+   from  2022-07-25 10:55).
+
+   I changed the name of configuration file ~proftpd.conf~:
+#+begin_src 
+mv /etc/proftpd/proftpd.conf proftpd.confBULLSEYE
+#+end_src
+and then I installed ~proftpd-core~ (*without* deinstallation):
+#+begin_src 
+apt install proftpd-core
+#+end_src
+
+ - Emacs have problems with diacritics (solution is to explicitly force emacs font style in ~init.el~)
+
+ - LAN through DisplayLink stopped working, but this problem deserves seperate note. 
+
