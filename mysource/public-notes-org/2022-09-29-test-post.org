@@ -1,0 +1,23 @@
+#+TITLE: This is test post
+#+DESCRIPTION: 
+#+AUTHOR: cissic
+#+DATE: <2022-09-29 Thu>
+#+TAGS: test linux
+
+** Test post
+   
+Find ~doconce/globals.py~ 
+(in my case it was in ~/usr/local/lib/python3.9/dist-packages/doconce/~)
+and add the element to 
+variable ~locale_dict~ (line 95 at the time of writing).
+
+$\alpha^{2} + 1 = z_{2}$
+
+#+BEGIN_EXAMPLE
+main(){
+
+int i = 1 ;
+
+}
+#+END_EXAMPLE
+
