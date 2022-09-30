@@ -1,0 +1,11 @@
+#+TITLE: How to setup different SSH identities for different github/gitlab accounts
+#+DESCRIPTION: 
+#+AUTHOR: cissic
+#+DATE: <2022-09-30 Fri>
+#+TAGS: git ssh-agent ssh-add
+
+** How to setup different SSH identities for different github/gitlab accounts
+
+*** Solution
+
+Solution can be found [[https://gist.github.com/cissic/fc81bece710dded457d230837b2139e1][here]].
