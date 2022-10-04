@@ -10,7 +10,7 @@
 
 Solution can be found [[https://gist.github.com/cissic/fc81bece710dded457d230837b2139e1][here]].
 
-After following the instructions from the link *remember* to clone the repository with the appropriate host name from =~/.git/config=!
+After following the instructions from the link *remember* to clone the repository with the appropriate host name from =~/.ssh/config=!
 
 
 **** Example
@@ -31,11 +31,13 @@ Host userB.github.com
 
 if you want to clone repository as =userB= *do not* simply =git clone= the link copied with the use of GitHub interface i.e.:
 #+begin_example
-git clone git@github.com:userB/repository-name.git
+# (DON'T DO THAT unless you want to clone with your default identity): 
+# git clone git@github.com:userB/repository-name.git 
 #+end_example
-you need to edit host name which for this example means you need to add *userB.* to the hostname:
+You need to edit host name which for this example means you need to add *userB.* to the hostname:
 #+begin_example
 git clone git@userB.github.com:userB/repository-name.git
 #+end_example
 
+Now when pushing to =repository-name= you will be identified with the proper credentials of userB.
 
