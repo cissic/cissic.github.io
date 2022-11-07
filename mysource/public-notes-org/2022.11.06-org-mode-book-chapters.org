@@ -1,3 +1,9 @@
+#+TITLE: Book stencil in org-mode
+#+DESCRIPTION: 
+#+AUTHOR: cissic
+#+DATE: <2022-11-07 Mon>
+#+TAGS: org-mode literate-programming tangling 
+
 * General org-mode-book stencil
 :PROPERTIES:
 :PRJ-DIR: ./2022.11.06-org-mode-book/
@@ -118,6 +124,7 @@ book project directory structure described in this document.
 Basing on the code placed in ~#+begin_src #+end_src~ blocks the directory structure is placed
 inside src_emacs-lisp{(prin1 (org-entry-get nil "PRJ-DIR" t))}.
 The procedure is called *tangling* and can be easily invoked by keyboard shortcut ~C-c C-v t~.
+
 
 
 
