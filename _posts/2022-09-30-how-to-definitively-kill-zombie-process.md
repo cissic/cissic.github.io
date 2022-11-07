@@ -3,10 +3,10 @@ author:
 - cissic
 date: '\<2022-09-30 Fri\>'
 tags: 'linux command-line'
-title: How to definitvely kill zombie process
+title: How to definitively kill zombie process
 ---
 
-How to definitvely kill zombie process {#how-to-definitvely-kill-zombie-process-1}
+How to definitvely kill zombie process
 --------------------------------------
 
 Sometimes it may happen that process invoked by the parent process

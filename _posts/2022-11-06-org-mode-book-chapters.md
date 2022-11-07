@@ -6,7 +6,7 @@ tags: 'org-mode literate-programming tangling '
 title: 'Book stencil in org-mode'
 ---
 
-General org-mode-book stencil {#general-org-mode-book-stencil prj-dir="./2022.11.06-org-mode-book/"}
+General org-mode-book stencil {#general-org-mode-book-stencil prj-dir="./2022-11-06-org-mode-book/"}
 =============================
 
 General book stencil consisting of indepenedent chapters/articles. {#Sec-general-book-stencil}
