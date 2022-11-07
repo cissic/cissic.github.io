@@ -58,7 +58,7 @@
  # ######################
 
 
- Analogously, we can define 
+ Analogously, we can define the second chapter and its preamble.
  # ######################
  #+begin_src org :tangle (concat (org-entry-get nil "PRJ-DIR" t) "/chapters/ch2_main.org") :mkdirp yes
    #+LaTeX_CLASS: article
