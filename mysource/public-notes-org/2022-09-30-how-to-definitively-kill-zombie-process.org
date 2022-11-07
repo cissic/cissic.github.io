@@ -1,4 +1,4 @@
-#+TITLE: How to definitvely kill zombie process
+#+TITLE: How to definitively kill zombie process
 #+DESCRIPTION: 
 #+AUTHOR: cissic
 #+DATE: <2022-09-30 Fri>

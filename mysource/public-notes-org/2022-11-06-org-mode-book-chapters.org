@@ -6,7 +6,7 @@
 
 * General org-mode-book stencil
 :PROPERTIES:
-:PRJ-DIR: ./2022.11.06-org-mode-book/
+:PRJ-DIR: ./2022-11-06-org-mode-book/
 :END:
 
 ** General book stencil consisting of indepenedent chapters/articles.
