@@ -18,24 +18,25 @@ I'd like to prepare an org-mode book stencil. Book should consist of several cha
 The main file with book content looks like this:
 
 #+begin_src org :tangle (concat (org-entry-get nil "PRJ-DIR" t) "main-book.org") :mkdirp yes
-      #+LaTeX_CLASS: report
-      
+
+      #+LaTeX_CLASS: report      
       #+SETUPFILE: ./bookPreamble.org           
       * Chapter 1
       #+INCLUDE: "./chapters/ch1_main.org" :minlevel 2
       * Chapter 2
       #+INCLUDE: "./chapters/ch2_main.org" :minlevel 2  
+
 #+end_src
 
 where ~bookPreamble.org~ contains preamble for LaTeX (or any other format I might need), for example:
-# ######################
+
 #+begin_src org :tangle (concat (org-entry-get nil "PRJ-DIR" t) "bookPreamble.org") :mkdirp yes
 #+TITLE: Book title
 #+AUTHOR: Book Authors
 #+LATEX_HEADER:\usepackage{hyperref} 
 #+LATEX_HEADER:\hypersetup{colorlinks=true,linkcolor=green,filecolor=magenta,urlcolor=green}
 #+end_src
-# ######################
+
 
 However, during the work I'd like to be able to compile each chapter as a seperate document (article) with its own title, authors etc. , so the content of ~ch1.org~ should look like this:
 

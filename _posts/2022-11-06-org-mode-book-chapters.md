@@ -17,13 +17,13 @@ several chapters/sections. The main file with book content looks like
 this:
 
 ``` {.org tangle="(concat (org-entry-get nil \"PRJ-DIR\" t) \"main-book.org\")" mkdirp="yes"}
-#+LaTeX_CLASS: report
-
+#+LaTeX_CLASS: report      
 #+SETUPFILE: ./bookPreamble.org           
 * Chapter 1
 #+INCLUDE: "./chapters/ch1_main.org" :minlevel 2
 * Chapter 2
 #+INCLUDE: "./chapters/ch2_main.org" :minlevel 2  
+
 ```
 
 where `bookPreamble.org` contains preamble for LaTeX (or any other
