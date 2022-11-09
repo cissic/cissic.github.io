@@ -6,8 +6,8 @@ tags: 'linux command-line'
 title: How to definitively kill zombie process
 ---
 
-How to definitvely kill zombie process
---------------------------------------
+How to definitively kill zombie process {#how-to-definitively-kill-zombie-process-1}
+---------------------------------------
 
 Sometimes it may happen that process invoked by the parent process
 becomes zombie and stays in the memory. It should be removed from the
@@ -28,7 +28,7 @@ ps l | grep pdflatex
 # or (for a better view)
 pstree -p
 # or 
-pstree -[ | grep pdflatex
+pstree -p | grep pdflatex
 ```
 
 to find id of the parent of all pdflatex zombie processes. In my case

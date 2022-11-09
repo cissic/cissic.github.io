@@ -4,7 +4,7 @@
 #+DATE: <2022-09-30 Fri>
 #+TAGS: linux command-line
 
-** How to definitvely kill zombie process
+** How to definitively kill zombie process
 
 Sometimes it may happen that process invoked by the parent process becomes zombie and stays in the memory.
 It should be removed from the task list when the parent process stops working, but what if the parent process is to be running?
@@ -21,7 +21,7 @@ ps l | grep pdflatex
 # or (for a better view)
 pstree -p
 # or 
-pstree -[ | grep pdflatex
+pstree -p | grep pdflatex
 #+END_EXAMPLE
 to find id of the parent of all pdflatex zombie processes.
 In my case the structure looked like
