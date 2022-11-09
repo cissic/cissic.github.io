@@ -20,7 +20,7 @@ this:
 #+LaTeX_CLASS: report
 
 #+SETUPFILE: ./bookPreamble.org           
-* Chapter 1 ---
+* Chapter 1
 #+INCLUDE: "./chapters/ch1_main.org" :minlevel 2
 * Chapter 2
 #+INCLUDE: "./chapters/ch2_main.org" :minlevel 2  
