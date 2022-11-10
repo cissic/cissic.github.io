@@ -31,12 +31,17 @@ objects := $(patsubst %.org,%.md,$(subst $(source),$(output),$(sources)))
 ## Convert all source files to output files
 all: $(objects)
 
-# Recipe for converting an org file into md file using Pandoc
-$(output)/%.md: $(source)/%.org
-	pandoc -s -t markdown \
-		$< \
-		-o $@
-# pandoc -t markdown -s $< -o $@
+## Recipe for converting an org file into md file using Pandoc
+#$(output)/%.md: $(source)/%.org
+#	pandoc -s -t markdown \
+#		$< \
+#		-o $@
+## pandoc -t markdown -s $< -o $@
+
+## The above is deprecated. Now .org to .md conversion
+## is made from emacs so  we just need to move
+## all the markdown files from $(source) to $(output).
+## This is made in push-all action.
 
 .PHONY: clean-auxiliary
 ## Clean auxiliary and temporary files
@@ -67,9 +72,14 @@ initialize-project-after-cloning:
 	git config user.name "cissic"
 	git config user.email "cis00sic@gmail.com"
 
+# .PHONY: test
+# test:
+# 	mv $(source)/*.md $(output)
+	
 .PHONY: push-all 
 ## Invoke git from a different folder (-C flag) to add new posts, commit and push the repository
 push-all:
+	mv $(source)/*.md $(output)
 	git add -u
 	git -C $(source) add *.org
 	git -C $(output) add *.md
