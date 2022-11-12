@@ -51,14 +51,22 @@ to the keywords at the start of the org-file in order to disable special treatme
 Additionally we need to add the following to ~init.el~:
 #+begin_src 
 (defun org-export-md-format-front-matter ()
-  (let ((lines (org-element-map (org-element-parse-buffer 'greater-element) 'keyword
-                 (lambda (keyword)
-                   (let* ((kw (org-element-property :key keyword)))
-                     (when (member kw '("AUTHOR" "DATE" "TAGS" "TITLE"))
-                       (format "%s: %s" kw (let ((val (org-element-property :value keyword)))
-                                             (pcase kw
-                                               ("DATE" (mapconcat #'number-to-string (org-date-to-gregorian val) "-"))
-                                               (_ val))))))))))
+  (let* ((kv-alist (org-element-map (org-element-parse-buffer 'greater-element)
+                       'keyword
+                     (lambda (keyword)
+                       (cons (intern (downcase (org-element-property :key keyword)))
+                             (org-element-property :value keyword)))))
+         (lines (mapcar (lambda (kw)
+                          (let ((val (alist-get kw kv-alist)))
+                            (format (pcase kw
+                                      ('author "%s: %s")
+                                      ((or 'tags 'title) "%s: '%s'")
+                                      (_ "%s: %s"))
+                                    (downcase (symbol-name kw))
+                                    (pcase kw
+                                      ('date (substring val 1 -1))
+                                      (_ val)))))
+                        '(author date tags title))))
     (concat "---\n" (concat (mapconcat #'identity lines "\n")) "\n---")))
 
 (defun my/org-export-markdown-hook-function (backend)
