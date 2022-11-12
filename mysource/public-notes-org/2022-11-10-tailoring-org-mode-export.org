@@ -7,7 +7,6 @@
 
 #+OPTIONS: -:nil
 
-
 ** Problem
 The problem appeared in a recent document. I used to use ~pandoc~ in order to 
 transform an .org file into github flavoured .md, i.e when doing
