@@ -3,6 +3,7 @@
 #+AUTHOR: cissic
 #+DATE: <2022-11-07 Mon>
 #+TAGS: org-mode literate-programming tangling 
+#+OPTIONS: -:nil
 
 * General org-mode-book stencil
 :PROPERTIES:
@@ -129,12 +130,6 @@ inside src_emacs-lisp{(prin1 (org-entry-get nil "PRJ-DIR" t))}.
 The procedure is called *tangling* and can be easily invoked by keyboard shortcut ~C-c C-v t~.
 
 
-
-
-
-
-
-
-
-
-
+# Local Variables:
+# eval: (add-hook 'org-export-before-processing-hook #'my/org-export-markdown-hook-function nil t)
+# End:
