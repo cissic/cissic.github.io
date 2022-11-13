@@ -7,6 +7,7 @@
 
 #+OPTIONS: -:nil
 
+
 ** Problem
 The problem appeared in a recent document. I used to use ~pandoc~ in order to 
 transform an .org file into github flavoured .md, i.e when doing
@@ -39,15 +40,15 @@ This is too much for ~pandoc~ converter. An org file with such lines was all mes
 I decided to use standard emacs exporter (~C-c C-e m m~), however when using it we need 
 to instruct it to add special markdown header mentioned above. How can we do this?
 
-** Solution
+** Solution - first try
 The solution can be found [[https://emacs.stackexchange.com/questions/74505/how-can-i-add-specific-text-to-the-content-generated-by-org-mode-export-to-mark#74513][here]].
 We need to add 
 #+begin_src 
 #+OPTIONS: -:nil
 #+end_src
-to the keywords at the start of the org-file in order to disable special treatment of minus sign during the export (This is described [[https://orgmode.org/org.html#FOOT109][here]].
+to the keywords at the start of the org-file in order to disable special treatment of minus sign during the export (This is described [[https://orgmode.org/org.html#FOOT109][here]]).
 
-Additionally we need to add the following to ~init.el~:
+And then we could just add the following to ~init.el~:
 #+begin_src 
 (defun org-export-md-format-front-matter ()
   (let* ((kv-alist (org-element-map (org-element-parse-buffer 'greater-element)
@@ -78,6 +79,64 @@ Additionally we need to add the following to ~init.el~:
 Now, the file generated when exporting from .org to .md contains desired data.
 
 
+** Solution - a better try
+However the above mentioned approach has a drawback that it changes the way how the default Emacs to markdown
+exporter works.
+
+So the desired behaviour would be to have this edited way of exporting org files working only
+for specific files. In particular, it would be convenient to change the exporter behaviour 
+from within the file. In order to do this we need to make use of Emacs' 
+[[https://www.emacswiki.org/emacs/FileLocalVariables][local variables]].
+
+So what we need to do is to comment out the last line of the code above from the ~init.el~ to 
+avoid loading hook globally. So ~init.el~ should be supplemented only with:
+#+begin_src 
+(defun org-export-md-format-front-matter ()
+  (let* ((kv-alist (org-element-map (org-element-parse-buffer 'greater-element)
+                       'keyword
+                     (lambda (keyword)
+                       (cons (intern (downcase (org-element-property :key keyword)))
+                             (org-element-property :value keyword)))))
+         (lines (mapcar (lambda (kw)
+                          (let ((val (alist-get kw kv-alist)))
+                            (format (pcase kw
+                                      ('author "%s: %s")
+                                      ((or 'tags 'title) "%s: '%s'")
+                                      (_ "%s: %s"))
+                                    (downcase (symbol-name kw))
+                                    (pcase kw
+                                      ('date (substring val 1 -1))
+                                      (_ val)))))
+                        '(author date tags title))))
+    (concat "---\n" (concat (mapconcat #'identity lines "\n")) "\n---")))
+
+(defun my/org-export-markdown-hook-function (backend)
+    (if (eq backend 'md)
+        (insert (org-export-md-format-front-matter) "\n")))
+#+end_src
+
+The specific .org file should contain the following line at the beginning:
+#+begin_src 
+#+OPTIONS: -:nil
+#+end_src
+and the following code at the bottom of the file:
+#+begin_src 
+# Local Variables:
+# eval: (add-hook 'org-export-before-processing-hook #'my/org-export-markdown-hook-function nil t)
+# End:
+#+end_src
+
+Now have it working one needs to 
+
+*save, close and open the file again*
+
+ after adding the above content (or just reload the file with commands ~M-x revert buffer~ or ~C-x C-v RET~).
+
 
 ** Helpful Links:
 - How to force newline inside macro: https://stackoverflow.com/questions/22132603/define-org-mode-macro-with-line-breaks
+
+# Local Variables:
+# eval: (add-hook 'org-export-before-processing-hook #'my/org-export-markdown-hook-function nil t)
+# End:
+
