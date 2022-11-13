@@ -36,16 +36,16 @@ I decided to use standard emacs exporter (`C-c C-e m m`), however when using it 
 to instruct it to add special markdown header mentioned above. How can we do this?
 
 
-# Solution
+# Solution - first try
 
 The solution can be found [here](https://emacs.stackexchange.com/questions/74505/how-can-i-add-specific-text-to-the-content-generated-by-org-mode-export-to-mark#74513).
 We need to add 
 
     #+OPTIONS: -:nil
 
-to the keywords at the start of the org-file in order to disable special treatment of minus sign during the export (This is described [here](https://orgmode.org/org.html#FOOT109).
+to the keywords at the start of the org-file in order to disable special treatment of minus sign during the export (This is described [here](https://orgmode.org/org.html#FOOT109)).
 
-Additionally we need to add the following to `init.el`:
+And then we could just add the following to `init.el`:
 
     (defun org-export-md-format-front-matter ()
       (let* ((kv-alist (org-element-map (org-element-parse-buffer 'greater-element)
@@ -73,6 +73,59 @@ Additionally we need to add the following to `init.el`:
     (add-hook 'org-export-before-processing-hook #'my/org-export-markdown-hook-function)
 
 Now, the file generated when exporting from .org to .md contains desired data.
+
+
+# Solution - a better try
+
+However the above mentioned approach has a drawback that it changes the way how the default Emacs to markdown
+exporter works.
+
+So the desired behaviour would be to have this edited way of exporting org files working only
+for specific files. In particular, it would be convenient to change the exporter behaviour 
+from within the file. In order to do this we need to make use of Emacs' 
+[local variables](https://www.emacswiki.org/emacs/FileLocalVariables).
+
+So what we need to do is to comment out the last line of the code above from the `init.el` to 
+avoid loading hook globally. So `init.el` should be supplemented only with:
+
+    (defun org-export-md-format-front-matter ()
+      (let* ((kv-alist (org-element-map (org-element-parse-buffer 'greater-element)
+    		       'keyword
+    		     (lambda (keyword)
+    		       (cons (intern (downcase (org-element-property :key keyword)))
+    			     (org-element-property :value keyword)))))
+    	 (lines (mapcar (lambda (kw)
+    			  (let ((val (alist-get kw kv-alist)))
+    			    (format (pcase kw
+    				      ('author "%s: %s")
+    				      ((or 'tags 'title) "%s: '%s'")
+    				      (_ "%s: %s"))
+    				    (downcase (symbol-name kw))
+    				    (pcase kw
+    				      ('date (substring val 1 -1))
+    				      (_ val)))))
+    			'(author date tags title))))
+        (concat "---\n" (concat (mapconcat #'identity lines "\n")) "\n---")))
+    
+    (defun my/org-export-markdown-hook-function (backend)
+        (if (eq backend 'md)
+    	(insert (org-export-md-format-front-matter) "\n")))
+
+The specific .org file should contain the following line at the beginning:
+
+    #+OPTIONS: -:nil
+
+and the following code at the bottom of the file:
+
+    # Local Variables:
+    # eval: (add-hook 'org-export-before-processing-hook #'my/org-export-markdown-hook-function nil t)
+    # End:
+
+Now have it working one needs to 
+
+**save, close and open the file again**
+
+after adding the above content (or just reload the file with commands `M-x revert buffer` or `C-x C-v RET`).
 
 
 # Helpful Links:
