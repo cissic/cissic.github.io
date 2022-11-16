@@ -131,4 +131,6 @@ after adding the above content (or just reload the file with commands `M-x rever
 # Helpful Links:
 
 -   How to force newline inside macro: <https://stackoverflow.com/questions/22132603/define-org-mode-macro-with-line-breaks>
+-   variables in emacs: <https://with-emacs.com/posts/tutorials/almost-all-you-need-to-know-about-variables/>
+-   hooks in emacs: <https://with-emacs.com/posts/tutorials/what-you-need-to-know-about-hooks/>
 
