@@ -1,0 +1,29 @@
+# ____________________________________________________________________________78
+
+#+TITLE: Handful of helpful links
+#+DESCRIPTION: 
+#+AUTHOR: cissic
+#+DATE: 3000-00-00
+#+TAGS: org-mode latex linux 
+#+OPTIONS: toc:nil
+
+#+OPTIONS: -:nil
+
+* Found on the internet with no time to go through it
+# :PROPERTIES:
+# :PRJ-DIR: ./3000-00-00-Handful-of-helpful-links/
+# :END:
+
+
+** How to word wrap within code blocks
+https://emacs.stackexchange.com/questions/33010/how-to-word-wrap-within-code-blocks
+
+** How to force newline inside macro: https://stackoverflow.com/questions/22132603/define-org-mode-macro-with-line-breaks
+
+
+
+# Local Variables:
+# eval: (add-hook 'org-export-before-processing-hook 
+# 'my/org-export-markdown-hook-function nil t)
+# End:
+
