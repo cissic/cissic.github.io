@@ -1,6 +1,8 @@
 
 
-# Workaround \label{Sec:workaround}
+<a id="Sec:workaround"></a>
+
+# Workaround
 
 After unsuccessful attempts to make hyphenation rules working in MikTeX
 I decided to use a workaround, which comes down to adding command
@@ -44,5 +46,5 @@ Finally I rebuilt the format by opening MikTeX Console and choosing
 
 and managed to compile with `\usepackage{polski}` without an error, however
 I still kept obtaining words that exceeded the text column.
-In the end I decided to use a workaround presented in section \ref{Sec:workaround}.
+In the end I decided to use a workaround presented in section [1](#Sec:workaround).
 
