@@ -21,11 +21,11 @@ appear an idea to have your own style for some parts of the text.
 These special parts are commonly called /admonitions/.
 There are two ways of handling the problem.
 
-** Solution 1: Definitios of your own enviroments \label{Sec:own-environments}
+** Solution 1: Definitios of your own enviroments 
+   :PROPERTIES:
+   :CUSTOM_ID: Sec:own-environments
+   :END:
 
-
-
-\ref{Sec:own-environments}
 Let us assume that we would like to have the box for warnings. After writing the 
 following code in an org file:
 
@@ -76,12 +76,15 @@ Of course, the downside of this approach is that the users need to define all th
 admonitions, for all the needed backends (LaTeX, HTML, Markdown, Jupyter, etc.)
 by themselves which is rather a daunting task. 
 On the other hand by defining your own styles for the needed admonitions 
-your code is independent from the external packages (see \ref{Sec:external-packages})
+your code is independent from the external packages (see [[#Sec:external-packages]])
 
 ** Solution 2: Using environments defined in external packages
-\label{Sec:external-packages}
+   :PROPERTIES:
+   :CUSTOM_ID: Sec-external-packages
+   :END:
 
-The counterapproach to the solution presented in Section \ref{Sec:own-environments} is using external packages. 
+
+The counterapproach to the solution presented in Section [[#Sec:own-environments]] is using external packages. 
 One of them is ~org-special-block-extras~ ([[http://alhassy.com/org-special-block-extras/][Homepage]], [[https://melpa.org/#/org-special-block-extras][MELPA]], [[https://github.com/alhassy/org-special-block-extras][github]]).
 
 You can install it with the use of ~M-x list-packages~.
