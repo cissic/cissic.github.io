@@ -50,8 +50,6 @@ $(output)/%.md: $(source)/%.org
 	--visit=$< \
 	-f org-md-export-to-markdown
 
-	
-	
 .PHONY: clean-auxiliary
 ## Clean auxiliary and temporary files
 clean-auxiliary:
