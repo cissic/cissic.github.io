@@ -9,12 +9,12 @@
 
 
 * Workaround \label{Sec:workaround}
-After unsuccessful attempts to make hyphenation rules working good in MikTeX
+After unsuccessful attempts to make hyphenation rules working in MikTeX
 I decided to use a workaround, which comes down to adding command
 #+begin_example
 \sloppy
 #+end_example
-in the preamble of the LaTeX document.
+in the preamble of the LaTeX document (~#+LATEX_HEADER:\sloppy~ in an .org file).
 
 
 * Problem description
