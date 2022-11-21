@@ -43,6 +43,15 @@ all: $(objects)
 ## all the markdown files from $(source) to $(output).
 ## This is made in push-all action.
 
+## Recipe for converting an org file into md file using Pandoc
+$(output)/%.md: $(source)/%.org
+	emacs -batch -load ~/.emacs.d/init.el \
+	--eval '(setq enable-local-variables :all)' \
+	--visit=$< \
+	-f org-md-export-to-markdown
+
+	
+	
 .PHONY: clean-auxiliary
 ## Clean auxiliary and temporary files
 clean-auxiliary:
