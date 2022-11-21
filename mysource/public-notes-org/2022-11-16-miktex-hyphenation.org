@@ -8,7 +8,11 @@
 #+OPTIONS: -:nil
 
 
-* Workaround \label{Sec:workaround}
+* Workaround 
+   :PROPERTIES:
+   :CUSTOM_ID: Sec:workaround
+   :END:
+
 After unsuccessful attempts to make hyphenation rules working in MikTeX
 I decided to use a workaround, which comes down to adding command
 #+begin_example
@@ -60,7 +64,7 @@ Settings -> Formats -> (choose from a list) pdflatex
 
 and managed to compile with ~\usepackage{polski}~ without an error, however
 I still kept obtaining words that exceeded the text column.
-In the end I decided to use a workaround presented in section \ref{Sec:workaround}.
+In the end I decided to use a workaround presented in section [[#Sec:workaround]].
 
 
 
