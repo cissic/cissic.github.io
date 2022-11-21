@@ -80,7 +80,7 @@ your code is independent from the external packages (see [[#Sec:external-package
 
 ** Solution 2: Using environments defined in external packages
    :PROPERTIES:
-   :CUSTOM_ID: Sec-external-packages
+   :CUSTOM_ID: Sec:external-packages
    :END:
 
 
