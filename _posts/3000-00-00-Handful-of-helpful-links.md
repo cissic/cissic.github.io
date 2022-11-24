@@ -1,6 +1,6 @@
 ---
 author: cissic
-date: 000-00-0
+date: 2100-01-01 Thu
 tags: 'org-mode latex linux'
 title: 'Handful of helpful links'
 ---
