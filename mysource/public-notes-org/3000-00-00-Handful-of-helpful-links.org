@@ -3,7 +3,7 @@
 #+TITLE: Handful of helpful links
 #+DESCRIPTION: 
 #+AUTHOR: cissic
-#+DATE: 3000-00-00
+#+DATE: <2100-01-01 Thu>
 #+TAGS: org-mode latex linux 
 #+OPTIONS: toc:nil
 
