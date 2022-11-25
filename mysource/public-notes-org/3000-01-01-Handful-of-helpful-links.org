@@ -3,7 +3,7 @@
 #+TITLE: Handful of helpful links
 #+DESCRIPTION: 
 #+AUTHOR: cissic
-#+DATE: <2100-01-01 Thu>
+#+DATE: <3000-01-01 Wed>
 #+TAGS: org-mode latex linux 
 #+OPTIONS: toc:nil
 
@@ -11,7 +11,7 @@
 
 * Found on the internet with no time to go through it
 # :PROPERTIES:
-# :PRJ-DIR: ./3000-00-00-Handful-of-helpful-links/
+# :PRJ-DIR: ./3000-01-01-Handful-of-helpful-links/
 # :END:
 
 
