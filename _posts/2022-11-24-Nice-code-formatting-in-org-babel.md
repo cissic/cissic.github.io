@@ -1,6 +1,6 @@
 ---
 author: cissic
-date: 022-11-2
+date: 2022-11-24 Thu
 tags: 'org-babel latex org-mode emacs'
 title: 'Nice code formatting in org-babel'
 ---
