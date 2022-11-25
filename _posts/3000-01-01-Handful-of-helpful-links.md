@@ -16,3 +16,5 @@ title: 'Handful of helpful links'
 
 ## How to force newline inside macro: <https://stackoverflow.com/questions/22132603/define-org-mode-macro-with-line-breaks>
 
+\*\*
+
