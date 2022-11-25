@@ -3,7 +3,7 @@
 #+TITLE: Nice code formatting in org-babel
 #+DESCRIPTION: 
 #+AUTHOR: cissic
-#+DATE: 2022-11-24
+#+DATE: <2022-11-24 Thu>
 #+TAGS: org-babel latex org-mode emacs
 #+OPTIONS: toc:nil
 
