@@ -59,4 +59,5 @@ The full, working example is given here:
     ,
     #+name: setup-listings
     #+BEGIN_SRC emacs-lisp :exports both :results silent
+    ,(setq org-latex-listings 'listings)
 
