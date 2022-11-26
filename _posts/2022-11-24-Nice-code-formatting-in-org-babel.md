@@ -46,7 +46,7 @@ The full, working example is given here:
 
     
     , #+LATEX_CLASS: article
-    , #+LaTeX_HEADER: \usepackage{listings}
+    a, #+LaTeX_HEADER: \usepackage{listings}
     , #+LaTeX_HEADER: \lstnewenvironment{common-lispcode}
     , #+LaTeX_HEADER: {\lstset{language={Lisp},basicstyle={\ttfamily\footnotesize},frame=single,breaklines=true}}
     , #+LaTeX_HEADER: {}
