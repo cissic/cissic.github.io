@@ -56,4 +56,27 @@ The full, working example is given here:
     #+LaTeX_HEADER: \usepackage{xcolor}
     #+LaTeX_HEADER: \definecolor{shadecolor}{gray}{.95}
     #+LaTeX_HEADER: \newenvironment{results}{\begin{shaded}}{\end{shaded}}
+    ,
+    #+name: setup-listings
+    #+BEGIN_SRC emacs-lisp :exports both :results silent
+    ,(setq org-latex-listings 'listings)
+    ,(setq org-latex-custom-lang-environments
+    ,      '((emacs-lisp "common-lispcode")))
+    ,(setq org-latex-listings-options
+    ,      '(("frame" "lines")
+    ,        ("basicstyle" "\\footnotesize")
+    ,        ("numbers" "left")
+    ,        ("numberstyle" "\\tiny")))
+    ,(setq org-latex-to-pdf-process
+    ,      '("pdflatex -interaction nonstopmode -output-directory %o %f"
+    ,      "pdflatex -interaction nonstopmode -output-directory %o %f"
+    ,      "pdflatex -interaction nonstopmode -output-directory %o %f"))
+    ,(org-add-link-type
+    , "latex" nil
+    , (lambda (path desc format)
+    ,   (cond
+    ,    ((eq format 'html)
+    ,     (format "<span class=\"%s\">%s</span>" path desc))
+    ,    ((eq format 'latex)
+    ,     (format "\\%s{%s}" path desc)))))
 
