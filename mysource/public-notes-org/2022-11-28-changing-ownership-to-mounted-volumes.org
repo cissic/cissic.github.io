@@ -1,0 +1,48 @@
+# ____________________________________________________________________________78
+
+#+TITLE: Ownership to mounted volumes (ntfs)
+#+DESCRIPTION: 
+#+AUTHOR: cissic
+#+DATE: <2022-11-27 Sun>
+#+TAGS: org-babel session 
+#+OPTIONS: toc:nil
+
+
+* {{{title}}}
+:PROPERTIES:
+:PRJ-DIR: ./2022-11-28-mount-vols-crash/
+:END:
+
+** Problem and solution
+After some Windows crashdown on dual-boot system all of the volumes mounted 
+in Debian Bullseye in ~/media/user/~ changed ownership from ~user~ to ~root~. 
+In order to solve the problem I followed [[https://serverfault.com/a/39308][Saurabh Barjatiya's post]].
+His approach didn't succeed at first -- while trying to run proposed commands
+system responded with:
+
+#+begin_example
+Metadata kept in Windows cache, refused to mount.
+Falling back to read-only mount because the NTFS partition is in an
+unsafe state. Please resume and shutdown Windows fully (no hibernation
+or fast restarting.)
+Could not mount read-write, trying read-only
+The disk contains an unclean file system (0, 0).
+Metadata kept in Windows cache, refused to mount.
+Falling back to read-only mount because the NTFS partition is in an
+unsafe state. Please resume and shutdown Windows fully (no hibernation
+or fast restarting.)
+#+end_example
+
+I bypassed this error with 
+[[https://askubuntu.com/a/566381][Muddassir Nazir's solution]], which was said to be risky for Windows system,
+but at the time of writing this I didn't care about it -- I hadn't booted 
+Windows for a very long time anyway.
+
+
+
+
+# Local Variables:
+# eval: (add-hook 'org-export-before-processing-hook 
+# 'my/org-export-markdown-hook-function nil t)
+# End:
+
