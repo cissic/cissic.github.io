@@ -1,29 +1,27 @@
+&#x2014;
+author: cissic
+date: 2022-11-29 Tue
+tags: 'org-mode beamer export'
+title: 'Beamer exporter not working'
+&#x2014;
 
 
-# Ownership to mounted volumes (ntfs)
+# Beamer exporter not working
 
 
 ## Problem and solution
 
-After some Windows crashdown on dual-boot system all of the volumes mounted 
-in Debian Bullseye in `/media/user/` changed ownership from `user` to `root`. 
-In order to solve the problem I followed [Saurabh Barjatiya's post](https://serverfault.com/a/39308).
-His approach didn't succeed at first &#x2013; while trying to run proposed commands
-system responded with:
+While working in Emacs 27.1 I encountered on a problem that comes down 
+unavailability of exporting to beamer. So:
+ :C-c C-e l b
+didn't work.
+Besides when exporting a file I got  `unknown "nil" back-end` error.
 
-    Metadata kept in Windows cache, refused to mount.
-    Falling back to read-only mount because the NTFS partition is in an
-    unsafe state. Please resume and shutdown Windows fully (no hibernation
-    or fast restarting.)
-    Could not mount read-write, trying read-only
-    The disk contains an unclean file system (0, 0).
-    Metadata kept in Windows cache, refused to mount.
-    Falling back to read-only mount because the NTFS partition is in an
-    unsafe state. Please resume and shutdown Windows fully (no hibernation
-    or fast restarting.)
+After many hours of searching and trying for example to exlicitely import `ox-beamer` which seems
+to be embedded into emacs I finally found solution in the 
+[internet](https://github.com/larstvei/ox-gfm/issues/28). 
 
-I bypassed this error with 
-[Muddassir Nazir's solution](https://askubuntu.com/a/566381), which was said to be risky for Windows system,
-but at the time of writing this I didn't care about it &#x2013; I hadn't booted 
-Windows for a very long time anyway.
+To solve the problem I needed to do:
+
+    C-u M-x org-reload
 
