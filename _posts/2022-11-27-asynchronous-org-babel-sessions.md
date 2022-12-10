@@ -1,9 +1,9 @@
-&#x2014;
+---
 author: cissic
 date: 2022-11-27 Sun
 tags: 'org-babel session'
 title: 'Asynchronous org-babel sessions'
-&#x2014;
+---
 
 
 # Asynchronous org-babel sessions
