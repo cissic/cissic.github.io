@@ -1,9 +1,9 @@
-&#x2014;
+---
 author: cissic
 date: 2022-12-01 Thu
 tags: 'org-mode'
 title: 'How to insert a newline in a title of org-mode document'
-&#x2014;
+---
 
 
 # How to insert a newline in a title of org-mode document

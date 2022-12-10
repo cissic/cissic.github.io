@@ -6,7 +6,7 @@
 #+DATE: <2022-11-30 Wed>
 #+TAGS: org-mode latex-class options 
 #+OPTIONS: toc:nil
-
+#+OPTIONS: -:nil
 
 * {{{title}}}
 :PROPERTIES:
@@ -38,4 +38,3 @@ This solution can be found [[https://tex.stackexchange.com/a/259062][here]].
 # eval: (add-hook 'org-export-before-processing-hook 
 # 'my/org-export-markdown-hook-function nil t)
 # End:
-

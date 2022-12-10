@@ -1,9 +1,9 @@
-&#x2014;
+---
 author: cissic
 date: 2022-11-30 Wed
 tags: 'org-mode latex-class options'
 title: 'Adding options when loading LaTeX class in org-mode'
-&#x2014;
+---
 
 
 # Adding options when loading LaTeX class in org-mode

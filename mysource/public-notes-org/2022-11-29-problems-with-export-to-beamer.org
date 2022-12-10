@@ -6,7 +6,7 @@
 #+DATE: <2022-11-29 Tue>
 #+TAGS: org-mode beamer export 
 #+OPTIONS: toc:nil
-
+#+OPTIONS: -:nil
 
 * {{{title}}}
 :PROPERTIES:
