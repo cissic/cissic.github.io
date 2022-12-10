@@ -1,9 +1,9 @@
-&#x2014;
+---
 author: cissic
 date: 2022-11-29 Tue
 tags: 'org-mode beamer export'
 title: 'Beamer exporter not working'
-&#x2014;
+---
 
 
 # Beamer exporter not working

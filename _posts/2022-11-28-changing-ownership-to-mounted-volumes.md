@@ -1,9 +1,9 @@
-&#x2014;
+---
 author: cissic
 date: 2022-11-27 Sun
 tags: 'org-babel session'
 title: 'Ownership to mounted volumes (ntfs)'
-&#x2014;
+---
 
 
 # Ownership to mounted volumes (ntfs)
@@ -14,7 +14,7 @@ title: 'Ownership to mounted volumes (ntfs)'
 After some Windows crashdown on dual-boot system all of the volumes mounted 
 in Debian Bullseye in `/media/user/` changed ownership from `user` to `root`. 
 In order to solve the problem I followed [Saurabh Barjatiya's post](https://serverfault.com/a/39308).
-His approach didn't succeed at first &#x2013; while trying to run proposed commands
+His approach didn't succeed at first -- while trying to run proposed commands
 system responded with:
 
     Metadata kept in Windows cache, refused to mount.
@@ -30,6 +30,6 @@ system responded with:
 
 I bypassed this error with 
 [Muddassir Nazir's solution](https://askubuntu.com/a/566381), which was said to be risky for Windows system,
-but at the time of writing this I didn't care about it &#x2013; I hadn't booted 
+but at the time of writing this I didn't care about it -- I hadn't booted 
 Windows for a very long time anyway.
 

@@ -6,7 +6,7 @@
 #+DATE: <2022-12-01 Thu>
 #+TAGS: org-mode 
 #+OPTIONS: toc:nil
-
+#+OPTIONS: -:nil
 
 * {{{title}}}
 :PROPERTIES:
