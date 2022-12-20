@@ -4,7 +4,7 @@
 #+DESCRIPTION: 
 #+AUTHOR: cissic
 #+DATE: <2022-12-17 Sat>
-#+TAGS: org-mode 
+#+TAGS: kde x-window-system 
 #+OPTIONS: toc:nil
 #+OPTIONS: -:nil
 
