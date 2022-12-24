@@ -4,6 +4,7 @@ date: 3000-01-01 Wed
 tags: 'org-mode latex linux'
 title: 'Handful of helpful links'
 ---
+ \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_<sub>78</sub>
 
 
 # Found on the internet with no time to go through it
@@ -29,4 +30,10 @@ title: 'Handful of helpful links'
 -   <https://caiorss.github.io/Emacs-Elisp-Programming/Org-mode-recipes.html>
 -   <https://www.offerzen.com/blog/literate-programming-empower-your-writing-with-emacs-org-mode>
 -   <https://chamook.lol/literate-programming-with-org/>
+
+
+## Blogs worth more careful reading
+
+-   [protesilaos](https://protesilaos.com)
+-   <https://randomseed.pl/pub/poczytaj-mi-clojure/>
 

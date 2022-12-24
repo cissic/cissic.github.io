@@ -1,4 +1,4 @@
-# ____________________________________________________________________________78
+ ____________________________________________________________________________78
 
 #+TITLE: Handful of helpful links
 #+DESCRIPTION: 
@@ -29,6 +29,9 @@ http://cachestocaches.com/2018/6/org-literate-programming/
 - https://www.offerzen.com/blog/literate-programming-empower-your-writing-with-emacs-org-mode
 - https://chamook.lol/literate-programming-with-org/
 
+** Blogs worth more careful reading
+- [[https://protesilaos.com][protesilaos]]
+- https://randomseed.pl/pub/poczytaj-mi-clojure/
 
 
 # Local Variables:
