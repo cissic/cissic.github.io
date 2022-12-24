@@ -4,7 +4,7 @@
 #+DESCRIPTION: 
 #+AUTHOR: cissic
 #+DATE: <2022-12-20 Tue>
-#+TAGS: org-babel latex org-mode emacs
+#+TAGS: pdf cups debian printer
 #+OPTIONS: toc:nil
 
 * {{{title}}}
