@@ -313,9 +313,22 @@ for now. An interesting discussion about this can be found [[https://www.reddit.
   "Flag signifying this is the first time that .emacs has been evaled")
 #+end_src
 
+In theory, in new Emacs two following lines shouldn't be required to have 
+everything working fine.
+However, it seems that some packages (~modus-themes~, ~workgroups2~?) cannot 
+run without it when emacs commands are to be executed from command line 
+without invoking Emacs 
+window (Post with demonstration makefile should be published soon).
+
+ 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
+(require 'package)
+(package-initialize)
+#+end_src
+
 *** Global emacs customization
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") :exports none
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; *** Global emacs customization
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -585,7 +598,7 @@ https://github.com/nonsequitur/smex/
 #+end_src
 
 *** Org customization
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") :exports none
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; *** Org customization
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -678,7 +691,7 @@ Besides, in order to have markdown exporter options in menu appearing after
 #+end_src
 
 *** Load Emacs theme of your preference
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") :exports none
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; *** Emacs theme
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -686,7 +699,7 @@ Besides, in order to have markdown exporter options in menu appearing after
 
 
 **** Modus themes by Protesilaos Stavrou
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") :exports none
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; **** Modus theme by Protesilaos Stavrou
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -694,6 +707,12 @@ Besides, in order to have markdown exporter options in menu appearing after
 - [[https://protesilaos.com/codelog/2021-01-11-modus-themes-review-select-faint-colours/][Author's page]]
 - [[https://www.youtube.com/watch?v=JJPokfFxyFo][Youtube's tutorial]]
 
+~noconfirm~ flag needs to be added for two reasons.
+First, without it we cannot run Emacs in batch mode from command line
+(~emacs -batch -load ~/.emacs.d/init.el ...~). Second,... (I forgot the 
+second reason).
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 # ;; (setq modus-themes-headings ; this is an alist: read the manual or its doc string
 # ;;       '((1 . (overline background variable-pitch 1.3))
 # ;;         (2 . (rainbow overline 1.1))
@@ -707,7 +726,7 @@ Besides, in order to have markdown exporter options in menu appearing after
       modus-themes-region '(bg-only no-extend))
 
 ;; Load the theme of your choice:
-(load-theme 'modus-vivendi) ;; OR (load-theme 'modus-operandi)
+(load-theme 'modus-vivendi :noconfirm) ;; OR (load-theme 'modus-operandi)
 
 (setq modus-themes-headings ; this is an alist: read the manual or its doc string
       '((1 . (rainbow overline background 1.4))
@@ -720,7 +739,7 @@ Besides, in order to have markdown exporter options in menu appearing after
 #+end_src
 
 *** Manually downloaded packages
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") :exports none
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; *** Manually downloaded packages
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -779,7 +798,7 @@ https://tuhdo.github.io/emacs-tutor3.html
 
 
 **** Last lines
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") :exports none
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; *** Finishing touches
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
