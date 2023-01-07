@@ -33,6 +33,19 @@ http://cachestocaches.com/2018/6/org-literate-programming/
 - [[https://protesilaos.com][protesilaos]]
 - https://randomseed.pl/pub/poczytaj-mi-clojure/
 
+** Initialization files in Emacs
+- [[https://ruzkuku.com/emacs.d.html#org804158b]], with a lot of useful links, for example:
+- https://tuhdo.github.io/emacs-tutor3.html
+- http://gewhere.github.io/orgmode-emacs-init-file
+
+- https://github.com/jeffpollock9/.emacs.d/blob/master/init.el
+- https://karthinks.com/software/more-batteries-included-with-emacs/
+- https://karthinks.com/software/batteries-included-with-emacs/
+- https://karthinks.com
+- https://docs.freebsd.org/en/books/developers-handbook/tools/#emacs (defun add-hook)
+
+
+** 
 
 # Local Variables:
 # eval: (add-hook 'org-export-before-processing-hook 

@@ -1,12 +1,10 @@
+---
+author: cissic
+date: 2022-09-30 Fri
+tags: 'linux command-line'
+title: 'How to definitively kill zombie process'
+---
 
-# Table of Contents
-
-1.  [How to definitively kill zombie process](#org72cf617)
-    1.  [Solution](#org0f892e9)
-
-
-
-<a id="org72cf617"></a>
 
 # How to definitively kill zombie process
 
@@ -15,8 +13,6 @@ It should be removed from the task list when the parent process stops working, b
 In my case I run in Dolphin I invoked terminal window (bash) to run pdflatex. Many unsuccesful pdf compilations lead to the moment when I had many pdflatex zombie processes which resulted in huge RAM usage. 
 Running `killall pdflatex` didn't work.
 
-
-<a id="org0f892e9"></a>
 
 ## Solution
 

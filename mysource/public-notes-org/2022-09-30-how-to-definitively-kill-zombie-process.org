@@ -3,6 +3,8 @@
 #+AUTHOR: cissic
 #+DATE: <2022-09-30 Fri>
 #+TAGS: linux command-line
+#+OPTIONS: toc:nil
+#+OPTIONS: -:nil
 
 ** How to definitively kill zombie process
 
@@ -10,7 +12,7 @@ Sometimes it may happen that process invoked by the parent process becomes zombi
 It should be removed from the task list when the parent process stops working, but what if the parent process is to be running?
 In my case I run in Dolphin I invoked terminal window (bash) to run pdflatex. Many unsuccesful pdf compilations lead to the moment when I had many pdflatex zombie processes which resulted in huge RAM usage. 
 Running =killall pdflatex= didn't work.
- 
+
 *** Solution
 
 Run

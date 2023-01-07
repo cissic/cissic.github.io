@@ -6,6 +6,7 @@
 #+DATE: <2022-12-22 Thu>
 #+TAGS: flatpak snap emacs
 #+OPTIONS: toc:nil
+#+OPTIONS: -:nil
 
 * {{{title}}}
 :PROPERTIES:
