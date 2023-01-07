@@ -31,19 +31,19 @@ objects := $(patsubst %.org,%.md,$(subst $(source),$(output),$(sources)))
 ## Convert all source files to output files
 all: $(objects)
 
-## Recipe for converting an org file into md file using Pandoc
+### Recipe for converting an org file into md file using Pandoc
 #$(output)/%.md: $(source)/%.org
 #	pandoc -s -t markdown \
 #		$< \
 #		-o $@
-## pandoc -t markdown -s $< -o $@
+### pandoc -t markdown -s $< -o $@
 
-## The above is deprecated. Now .org to .md conversion
-## is made from emacs so  we just need to move
-## all the markdown files from $(source) to $(output).
-## This is made in push-all action.
+### The above is deprecated. Now .org to .md conversion
+### is made from emacs so we just need to move
+### all the markdown files from $(source) to $(output).
+### This is made in push-all action.
 
-## Recipe for converting an org file into md file using Pandoc
+## Recipe for converting an org file into md file using Emacs
 $(output)/%.md: $(source)/%.org
 	emacs -batch -load ~/.emacs.d/init.el \
 	--eval '(setq enable-local-variables :all)' \

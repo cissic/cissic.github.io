@@ -103,7 +103,7 @@ it's better to keep whole .emacs.d directory as a git repository and
 make a commit before executing this script. Then, in case any problems
 you can go back to restore properly working emacs installation.
 Before running this script you should have a git repository initialized in emacs
-directory and git itself installed in the system (see Sec. [1.4](#org55fe293)).
+directory and git itself installed in the system (see Sec. [1.4](#org786fcff)).
 Synchronization of the local repository with the remote one is not
 performed in this script. It should be performed explicitely by the user
 in a convenient time.
@@ -273,7 +273,7 @@ for now. An interesting discussion about this can be found [here](https://www.re
 Here are global Emacs customization. 
 If necessary some useful infomation or link is added to the customization.
 
-1.  Self-descriptive oneliners <a id="org4840f57"></a>
+1.  Self-descriptive oneliners <a id="org42d414a"></a>
 
         (auto-revert-mode 1)       ; Automatically reload file from a disk after change
         
@@ -604,6 +604,13 @@ If necessary some useful infomation or link is added to the customization.
         ;; This hook should be added per file in my org posts. Unfortunately, so far I don't know
         ;; how to do this.
         (add-hook 'org-export-before-processing-hook #'my/org-export-markdown-hook-function)
+    
+    Besides, in order to have markdown exporter options in menu appearing after
+    `C-c C-e` you need to add 
+    ([Link 1](https://stackoverflow.com/questions/22988092/emacs-org-mode-export-markdown/22990257#22990257), [Link 2](https://emacs.stackexchange.com/questions/4279/exporting-from-org-mode-to-markdown)):
+    
+        
+        (require 'ox-md nil t)
         
         ;; <- **** org-to-markdown exporter customization
 
@@ -722,7 +729,7 @@ If necessary some useful infomation or link is added to the customization.
     
     This way of restoring session throws some warnings and needs additional
     confirmations so I give it up. Simple `(desktop-save-mode 1)` which is 
-    included [in the beginning of `init.el`](#org4840f57) works ok.
+    included [in the beginning of `init.el`](#org42d414a) works ok.
     
         ;; Restore the "desktop" - do this as late as possible
         (if first-time
@@ -744,7 +751,7 @@ If necessary some useful infomation or link is added to the customization.
         (message "All done in init.el.")
 
 
-## Dependencies of the presented Emacs configuration <a id="org55fe293"></a>:
+## Dependencies of the presented Emacs configuration <a id="org786fcff"></a>:
 
 The list of external applications that this script is dependent on:
 
