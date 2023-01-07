@@ -3,6 +3,9 @@
 #+AUTHOR: cissic
 #+DATE: <2022-09-22 Thu>
 #+TAGS: doconce
+#+OPTIONS: toc:nil
+#+OPTIONS: -:nil
+
 
 ** How to add the support for a new language in DocOnce
    

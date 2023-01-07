@@ -6,6 +6,7 @@
 #+DATE: <2022-12-20 Tue>
 #+TAGS: pdf cups debian printer
 #+OPTIONS: toc:nil
+#+OPTIONS: -:nil
 
 * {{{title}}}
 :PROPERTIES:
