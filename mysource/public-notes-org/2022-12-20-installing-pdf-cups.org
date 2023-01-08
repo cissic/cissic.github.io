@@ -17,7 +17,7 @@
 How to install pdf printer in cups in Debian Bullseye.
 
 Based on: https://gist.github.com/aweijnitz/c9ac7a18880225f12bf0
-
+ 
 #+begin_example
   
   sudo apt install cups -y
