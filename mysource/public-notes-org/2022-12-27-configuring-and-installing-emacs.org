@@ -8,11 +8,14 @@
 #+OPTIONS: toc:nil
 #+OPTIONS: -:nil
 
+
 * {{{title}}}
 :PROPERTIES:
-:PRJ-DIR: ./2022-12-27-init-and-setup-Emacs/
+:PRJ-DIR: ~/.emacs.d/     
 :END:
- 
+
+# PRJ-DIR: ./2022-12-27-init-and-setup-Emacs/
+
 ** Problem description
 The aim of this post is to finally have clean and tidy Emacs initialization file.
 After some time of battling with Emacs with the use of 
@@ -216,12 +219,15 @@ The main point of the file. Set the list of packages to be installed
 #+end_src
 
 #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "install-packages.el")
-
+    ; counsel ; for ivy
+    company
     ;dockerfile-mode    
     ;flycheck
     ;flycheck-pos-tip
+    flyspell
     ;; google-this
     ido
+    ; ivy
     ; jedi
     magit
     markdown-mode
@@ -241,6 +247,7 @@ The main point of the file. Set the list of packages to be installed
     ; ox-ipynb -> manual-download
     ;pandoc-mode
     ;pdf-tools
+    popup   ; for yasnippet
     ;projectile
     ;pyenv-mode
     ;Pylint  ; zeby dzialal interpreter python'a po:  C-c C-c 
@@ -253,8 +260,9 @@ The main point of the file. Set the list of packages to be installed
     ;tao-theme ; https://github.com/11111000000/tao-theme-emacs
     ;treemacs
     ;use-package
-    ;workgroups
+    workgroups2
     ;w3m
+    yasnippet
     )
   ;; "A list of packages to be installed at Emacs launch."
   )
@@ -305,14 +313,22 @@ for now. An interesting discussion about this can be found [[https://www.reddit.
 ;; ____________________________________________________________________________78
 ;; init.el
 ;; The full description of what is done in this file is included in 
-;; accompanying .org file (configuring-and-installing-emacs.org).
+;; accompanying .org file (configuring-and-installing-emacs.org). 
+#+end_src
 
+
+**** [DEPRECATED] Setting an auxiliary variable
+This section is deprecated in favour of [[workgroups2-and-sessions][~workgroups2 package~]].
+
+#+begin_src emacs-lisp
 ;; This file is designed to be re-evaled; use the variable first-time
 ;; to avoid any problems with this.
 (defvar first-time t
   "Flag signifying this is the first time that .emacs has been evaled")
 #+end_src
 
+
+**** Package ~package~  initialization
 In theory, in new Emacs two following lines shouldn't be required to have 
 everything working fine.
 However, it seems that some packages (~modus-themes~, ~workgroups2~?) cannot 
@@ -325,6 +341,29 @@ window (Post with demonstration makefile should be published soon).
 (require 'package)
 (package-initialize)
 #+end_src
+
+*** Setting separate file for emacs custom entries
+If you don't set the separate for custom entries, Emacs appends its code
+directly into ~init.el~. To prevent this we need to define other file. 
+Remember to create ~custom-file.el~ file by hand! Emacs won't create it 
+for you.
+
+# ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+# ;;;; Do not use `init.el` for `custom-*` code - use `custom-file.el`.
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
+(setq custom-file "~/.emacs.d/custom-file.el")
+#+end_src
+
+Assuming that the code in custom-file is execute before the code
+ahead of this line is not a safe assumption. So load this file
+proactively.
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
+(load-file custom-file)
+#+end_src
+
+
 
 *** Global emacs customization
 
@@ -341,6 +380,7 @@ If necessary some useful infomation or link is added to the customization.
 
 #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 (auto-revert-mode 1)       ; Automatically reload file from a disk after change
+(global-auto-revert-mode) 
 
 (delete-selection-mode 1)  ; Replace selected text
 
@@ -355,6 +395,12 @@ If necessary some useful infomation or link is added to the customization.
 (define-key global-map (kbd "RET") 'newline-and-indent) ; Auto-indent new lines
 
 (desktop-save-mode 1)      ; Save windows layout on closing
+(setq desktop-load-locked-desktop t) ; and don't ask for confirmation when 
+                           ; opening locked desktop
+(setq desktop-save t)
+
+(save-place-mode t)        ; When re-entering a file, return to the place, 
+                           ; where I was when I left it the last time.
 
 #+end_src
 
@@ -366,7 +412,7 @@ If necessary some useful infomation or link is added to the customization.
 #+end_src
 
 **** Easily restore previous/next window layout 
-a
+
 - undo = previous window view
  : C-c left  
 - redo (undo undo)
@@ -491,6 +537,7 @@ if ~calendar-mode-map~ it's not loaded at the moment of executing the command ([
 
 
 Moving in calendar buffer is like follows:
+
 | Move by  | Backward | Forward   |
 |----------+----------+-----------|
 | a day    | S-<left> | S-<right> |
@@ -509,6 +556,23 @@ packages that conflict with org are [[https://orgmode.org/manual/Conflicts.html]
 That is why it's better to remap those keybindings to other 
 combination (~Super-Key-<arrow>~ in the code below). 
 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+;; windmove ->
+;; Easy moving between windows
+  
+  ;; setting windmove-default-keybindings to super-<arrow> in order
+  ;; to avoid org-mode conflicts
+  (global-set-key (kbd "s-<left>")  'windmove-left)
+  (global-set-key (kbd "s-<right>") 'windmove-right)
+  (global-set-key (kbd "s-<up>")    'windmove-up)
+  (global-set-key (kbd "s-<down>")  'windmove-down)
+;; <- windmove
+#+end_src
+
+***** [DEPRECATED] Useful For Emacs < 27.1
+(This section is deprecated. In Emacs 27.1 the package works ok without
+the need of application of ~ignore-error-wrapper~ function.)
+
 According to [[https://www.emacswiki.org/emacs/WindMove][package's wikipage]] there exist some problem with the package,
 namely:
 "When you run for instance windmove-left and there is no window on the left,
@@ -522,7 +586,7 @@ With the use of
 [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Using-Lexical-Binding.html][this part of emacs manual]] I sort of solved the problem and with the 
 following code Emacs does not throw warnings or errors.
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+#+begin_src emacs-lisp 
 ;; windmove ->
 ;; Easy moving between windows
   (when (fboundp 'windmove-default-keybindings)
@@ -549,6 +613,9 @@ following code Emacs does not throw warnings or errors.
 ;; <- windmove
 #+end_src
 
+
+
+
 **** Easy windows resize
 #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 ;; Easy windows resize ->
@@ -559,32 +626,71 @@ following code Emacs does not throw warnings or errors.
 ;; <- Easy windows resize 
 #+end_src
 
+
+*** Completing 
+ido/smex vs ivy/counsel/swiper vs helm 
 **** ido-mode
+# Temporarily deselected in order to test [[ivy-package]].
+
 They say that ~ido~ is a [[https://www.masteringemacs.org/article/introduction-to-ido-mode][powerful package]] and you should have it enabled...
 I'm not going to argue with that, yet I haven't studied much its capabilities.
 
 #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
-;; ido-mode ->
-  (ido-mode 1)          
-  (setq ido-enable-flex-matching t)
-  (setq ido-everywhere t)  ; ido-mode for file searching
-;; <- ido-mode
+  ;; ido-mode ->
+    (ido-mode 1)          
+    (setq ido-enable-flex-matching t)
+    (setq ido-everywhere t)  ; ido-mode for file searching
+  ;; <- ido-mode
 #+end_src
 
 **** smex
+# Temporarily deselected in order to test [[ivy-package]].
+
 This package is installed because I was inspired by some post. 
 Just for tests.
 https://github.com/nonsequitur/smex/
 
 #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
-;; smex ->
-(global-set-key (kbd "M-x") 'smex)
-(global-set-key (kbd "M-X") 'smex-major-mode-commands)
-;; This is your old M-x.
-(global-set-key (kbd "C-c C-c M-x") 'execute-extended-command) 
-;; <- smex
+  ;; smex ->
+  (global-set-key (kbd "M-x") 'smex)
+  (global-set-key (kbd "M-X") 'smex-major-mode-commands)
+  ;; This is your old M-x.
+  (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command) 
+  ;; <- smex
 #+end_src
 
+**** TODO Ivy (for testing) <<ivy-package>>
+Furthermore, according to [[https://ruzkuku.com/emacs.d.html#org804158b][some other users]]
+"Ivy is simpler (and faster) than Helm but more powerful than Ido".
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") :exports none
+  ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;; ;; *** Ivy
+  ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+  ;; (setq ivy-wrap t)
+  ;; (setq ivy-height 8)
+  ;; (setq ivy-display-style 'fancy)
+  ;; (setq ivy-use-virtual-buffers t)
+  ;; (setq ivy-case-fold-search-default t)
+  ;; (setq ivy-re-builders-alist '((t . ivy--regex-ignore-order)))
+  ;; (setq enable-recursive-minibuffers t)
+  ;; (ivy-mode t)
+#+end_src
+
+
+
+
+
+*** Autocomplete
+~auto-complete~ vs ~company~
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;; *** Auto-completing
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(add-hook 'after-init-hook 'global-company-mode)
+#+end_src
 
 **** Recently opened files
 #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
@@ -621,6 +727,28 @@ https://github.com/nonsequitur/smex/
 ;; **** org-special-block-extras -> 
 (add-hook #'org-mode-hook #'org-special-block-extras-mode)
 ;; <- **** org-special-block-extras 
+#+end_src
+
+**** Org-babel
+To have org-babel enabled (execution of portions of code):
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+
+;; enabling org-babel
+(org-babel-do-load-languages
+ 'org-babel-load-languages '(
+			     (C . t)
+			     (matlab . t)
+			     ;;(perl . t)
+			     (octave . t)
+			     (org . t)
+			     (python . t)
+			     (shell . t)
+ 			     ))
+			     
+;; no question about confirmation of evaluating babel code block
+(setq org-confirm-babel-evaluate nil)
+
 #+end_src
 
 **** Tailoring org-mode to markdown export
@@ -675,6 +803,96 @@ Besides, in order to have markdown exporter options in menu appearing after
 
 
 **** TODO Default org to latex exporting command
+     
+*** TODO Flyspell (TODO: dive deeper into the package and its capabilities)
+https://ruzkuku.com/emacs.d.html#org804158b
+https://www.emacswiki.org/emacs/FlySpell
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") :exports none
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; *** Flyspell 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+end_src
+
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") :exports none
+(flyspell-mode t)
+
+    (defun flyspell-on-for-buffer-type ()
+      "Enable Flyspell appropriately for the major mode of the current buffer.  Uses `flyspell-prog-mode' for modes derived from `prog-mode', so only strings and comments get checked.  All other buffers get `flyspell-mode' to check all text.  If flyspell is already enabled, does nothing."
+      (interactive)
+      (if (not (symbol-value flyspell-mode)) ; if not already on
+	(progn
+	  (if (derived-mode-p 'prog-mode)
+	    (progn
+	      (message "Flyspell on (code)")
+	      (flyspell-prog-mode))
+	    ;; else
+	    (progn
+	      (message "Flyspell on (text)")
+	      (flyspell-mode 1)))
+	  ;; I tried putting (flyspell-buffer) here but it didn't seem to work
+	  )))
+    
+    (defun flyspell-toggle ()
+      "Turn Flyspell on if it is off, or off if it is on.  When turning on, it uses `flyspell-on-for-buffer-type' so code-vs-text is handled appropriately."
+      (interactive)
+      (if (symbol-value flyspell-mode)
+	  (progn ; flyspell is on, turn it off
+	    (message "Flyspell off")
+	    (flyspell-mode -1))
+	  ; else - flyspell is off, turn it on
+	  (flyspell-on-for-buffer-type)))
+
+ (global-set-key (kbd "C-c f") 'flyspell-toggle )
+
+(defun fd-switch-dictionary()
+      (interactive)
+      (let* ((dic ispell-current-dictionary)
+    	 (change (if (string= dic "polish") "english" "polish")))
+        (ispell-change-dictionary change)
+        (message "Dictionary switched from %s to %s" dic change)
+        ))
+    
+      (global-set-key (kbd "<f8>")   'fd-switch-dictionary)
+#+end_src
+
+*** Flymake/Flycheck
+
+https://www.masteringemacs.org/article/spotlight-flycheck-a-flymake-replacement
+
+In Emacs 27.1 ~flymake~ is said to be competitive with ~flycheck~ again.
+It is built-in in Emacs. As for now, I'm gonna use ~flymake~.
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") :exports none
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; *** Flymake
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(flymake-mode t)
+#+end_src
+
+*** Bash completions
+Bash has usually very good command completion facilities, which aren't accessible by default from Emacs (except by running ~M-x term~). This package integrates them into regular commands such as ~shell-command~ and ~shell~.
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") :exports none
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; *** Bash completions
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(bash-completion-setup)
+#+end_src
+
+# *** YASnippet
+# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") :exports none
+# ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+# ;; *** YASnippet
+# ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+# (yas-global-mode t) ; activate yasnippet
+# (yas/initialize)
+# #+end_src
+
 
 *** General global shortcuts not restricted to specific package/mode
 #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
@@ -712,8 +930,8 @@ First, without it we cannot run Emacs in batch mode from command line
 (~emacs -batch -load ~/.emacs.d/init.el ...~). Second,... (I forgot the 
 second reason).
 
-# This is taken from modus manual, 
-#+begin_src emacs-lisp  
+# This is taken from modus manual. Do not tangle or export this code now.
+#+begin_src emacs-lisp  :exports noen
 ;; (setq modus-themes-headings ; this is an alist: read the manual or its doc string
 ;;       '((1 . (overline background variable-pitch 1.3))
 ;;         (2 . (rainbow overline 1.1))
@@ -742,6 +960,16 @@ second reason).
 #+end_src
 
 *** Manually downloaded packages
+sunrise-commander - https://www.emacswiki.org/emacs/Sunrise_Commander_Tips#h5o-1,
+https://pragmaticemacs.wordpress.com/2015/10/29/double-dired-with-sunrise-commander/
+
+- how to configure sunrise to be like Norton Commander
+https://enzuru.medium.com/sunrise-commander-an-orthodox-file-manager-for-emacs-2f92fd08ac9e
+
+- buttons extenstion https://www.emacswiki.org/emacs/sunrise-x-buttons.el
+
+https://pragmaticemacs.wordpress.com/2015/10/29/double-dired-with-sunrise-commander/
+
 #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") :exports none
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; *** Manually downloaded packages
@@ -767,6 +995,12 @@ second reason).
 ;; sunrise
 (add-to-list 'load-path "~/.emacs.d/manual-download/sunrise")
 (require 'sunrise)
+(require 'sunrise-buttons)
+(require 'sunrise-modeline)
+(add-to-list 'auto-mode-alist '("\\.srvm\\'" . sr-virtual-mode))
+
+
+
 
 ;; midnight-commander emulation
 ;; (require 'mc)
@@ -774,18 +1008,27 @@ second reason).
 ;; org to ipython exporter
 ;;(use-package ox-ipynb
 ;  :load-path "~/.emacs.d/manual-download/ox-ipynb")
-
 #+end_src
 
 
 *** TODO The end
-
-**** Workgroups (should be executed at the end of init.el)
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") :exports none
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; *** The ending
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+end_src
+**** Workgroups (should be executed at the end of init.el) <<workgroups2-and-sessions>>
 https://tuhdo.github.io/emacs-tutor3.html
 
+~workgroups2~ is a fine package for managing session. To enable it and 
+set the filepath for keeping sessions (default is ~/.emacs_workgroups~)
+ put this in your ~init.el~:
 #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 (workgroups-mode 1)    ; session manager for emacs
+(setq wg-session-file "~/.emacs.d/.emacs_workgroups") ; 
 #+end_src
+
+And then you can use the following commands to manage sessions:
 
 - To save window&buffer layout as a work group:
 ~M-x wg-create-workgroup~ or
@@ -799,6 +1042,25 @@ https://tuhdo.github.io/emacs-tutor3.html
 ~M-x wg-kill-workgroup~ or
 ~C-c z C-k~
 
+There is one problem with ~workgroups2~ packages. It does not like with 
+~desktop-save-mode~. When ~workgroups2~ is enabled ~desktop-save-mode~ 
+does not restore the windows layout from the previous Emacs session, which
+sucks.
+I decided to stick to ~workgroups2~ and supply the needed functionality 
+with the use of only this package. I did it by adding hooks:
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+(add-hook 'kill-emacs-hook (
+                     lambda () (wg-create-workgroup "currentsession" )))
+
+(setq inhibit-startup-message t)
+
+(add-hook 'window-setup-hook (
+                       lambda () (wg-open-workgroup "currentsession")))
+#+end_src
+
+The line ~(setq inhibit-startup-message t)~ is added in order to prevent
+Emacs splash screen to appear in one of the restored ~"currentsession"~ frames.
 
 **** Last lines
 #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") :exports none
@@ -807,23 +1069,28 @@ https://tuhdo.github.io/emacs-tutor3.html
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+end_src
 
+
+**** [DEPRECATED] Restoring previous session
+This section is deprecated in favour of [[workgroups2-and-sessions][~workgroups2 package~]].
+
 This way of restoring session throws some warnings and needs additional
 confirmations so I give it up. Simple ~(desktop-save-mode 1)~ which is 
 included [[oneliners][in the beginning of ~init.el~]] works ok.
 
-#+begin_example
+#+begin_src emacs-lisp 
 ;; Restore the "desktop" - do this as late as possible
 (if first-time
     (progn
-      (desktop-load-default)   ; this line throws an error:   void
+      ;(desktop-load-default)   ; this is for Emacs 20-21
       (desktop-read)))
-#+end_example
-
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
 
 ;; Indicate that this file has been read at least once
 (setq first-time nil)
+#+end_src
 
+**** Open some useful files in the background
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
 ;;; Always have several files opened at startup
 ;; hint: https://stackoverflow.com/a/19284395/4649238
 (find-file "~/.emacs.d/init.el")
