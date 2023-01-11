@@ -103,7 +103,7 @@ it's better to keep whole .emacs.d directory as a git repository and
 make a commit before executing this script. Then, in case any problems
 you can go back to restore properly working emacs installation.
 Before running this script you should have a git repository initialized in emacs
-directory and git itself installed in the system (see Sec. [1.4](#org54281ec)).
+directory and git itself installed in the system (see Sec. [1.4](#org0f7e72e)).
 Synchronization of the local repository with the remote one is not
 performed in this script. It should be performed explicitely by the user
 in a convenient time.
@@ -182,12 +182,15 @@ The main point of the file. Set the list of packages to be installed
     (setq my-packages
       '(
 
-    
+      ; counsel ; for ivy
+      company
       ;dockerfile-mode    
       ;flycheck
       ;flycheck-pos-tip
+      flyspell
       ;; google-this
       ido
+      ; ivy
       ; jedi
       magit
       markdown-mode
@@ -207,6 +210,7 @@ The main point of the file. Set the list of packages to be installed
       ; ox-ipynb -> manual-download
       ;pandoc-mode
       ;pdf-tools
+      popup   ; for yasnippet
       ;projectile
       ;pyenv-mode
       ;Pylint  ; zeby dzialal interpreter python'a po:  C-c C-c 
@@ -219,8 +223,9 @@ The main point of the file. Set the list of packages to be installed
       ;tao-theme ; https://github.com/11111000000/tao-theme-emacs
       ;treemacs
       ;use-package
-      ;workgroups
+      workgroups2
       ;w3m
+      yasnippet
       )
     ;; "A list of packages to be installed at Emacs launch."
     )
@@ -263,15 +268,42 @@ for now. An interesting discussion about this can be found [here](https://www.re
 
 [When Emacs `init.el` does not load at startup](https://stackoverflow.com/questions/12224575/emacs-init-el-file-doesnt-load).
 
-In theory, in new Emacs two following lines shouldn't be required to have 
-everything working fine.
-However, it seems that some packages (`modus-themes`, `workgroups2`?) cannot 
-run without it when emacs commands are to be executed from command line 
-without invoking Emacs 
-window (Post with demonstration makefile should be published soon).
+1.  [DEPRECATED] Setting an auxiliary variable
 
-    (require 'package)
-    (package-initialize)
+    This section is deprecated in favour of [`workgroups2 package`](#org525c8fd).
+    
+        ;; This file is designed to be re-evaled; use the variable first-time
+        ;; to avoid any problems with this.
+        (defvar first-time t
+          "Flag signifying this is the first time that .emacs has been evaled")
+
+2.  Package `package`  initialization
+
+    In theory, in new Emacs two following lines shouldn't be required to have 
+    everything working fine.
+    However, it seems that some packages (`modus-themes`, `workgroups2`?) cannot 
+    run without it when emacs commands are to be executed from command line 
+    without invoking Emacs 
+    window (Post with demonstration makefile should be published soon).
+    
+        (require 'package)
+        (package-initialize)
+
+
+### Setting separate file for emacs custom entries
+
+If you don't set the separate for custom entries, Emacs appends its code
+directly into `init.el`. To prevent this we need to define other file. 
+Remember to create `custom-file.el` file by hand! Emacs won't create it 
+for you.
+
+    (setq custom-file "~/.emacs.d/custom-file.el")
+
+Assuming that the code in custom-file is execute before the code
+ahead of this line is not a safe assumption. So load this file
+proactively.
+
+    (load-file custom-file)
 
 
 ### Global emacs customization
@@ -279,9 +311,10 @@ window (Post with demonstration makefile should be published soon).
 Here are global Emacs customization. 
 If necessary some useful infomation or link is added to the customization.
 
-1.  Self-descriptive oneliners <a id="org038fb29"></a>
+1.  Self-descriptive oneliners <a id="orgc143f22"></a>
 
         (auto-revert-mode 1)       ; Automatically reload file from a disk after change
+        (global-auto-revert-mode) 
         
         (delete-selection-mode 1)  ; Replace selected text
         
@@ -296,6 +329,12 @@ If necessary some useful infomation or link is added to the customization.
         (define-key global-map (kbd "RET") 'newline-and-indent) ; Auto-indent new lines
         
         (desktop-save-mode 1)      ; Save windows layout on closing
+        (setq desktop-load-locked-desktop t) ; and don't ask for confirmation when 
+        			   ; opening locked desktop
+        (setq desktop-save t)
+        
+        (save-place-mode t)        ; When re-entering a file, return to the place, 
+        			   ; where I was when I left it the last time.
 
 2.  Emacs shell history from previous sessions
 
@@ -305,8 +344,6 @@ If necessary some useful infomation or link is added to the customization.
 
 3.  Easily restore previous/next window layout
 
-    a
-    
     -   undo = previous window view
         
             C-c left
@@ -471,43 +508,59 @@ If necessary some useful infomation or link is added to the customization.
     That is why it's better to remap those keybindings to other 
     combination (`Super-Key-<arrow>` in the code below). 
     
-    According to [package's wikipage](https://www.emacswiki.org/emacs/WindMove) there exist some problem with the package,
-    namely:
-    "When you run for instance windmove-left and there is no window on the left,
-     windmove will throw exception (and if you have debug-on-error enabled) 
-    you will see Debugger complaining."
-    
-    Proposed workaround requires `cl` package, which unfortunately is
-    [deprecated in Emacs 27.1](https://github.com/kiwanami/emacs-epc/issues/35) (The workaround worked in Emacs < 27).
-    With the use of 
-    [this post](https://emacs.stackexchange.com/questions/15189/alternative-to-lexical-let) and 
-    [this part of emacs manual](https://www.gnu.org/software/emacs/manual/html_node/elisp/Using-Lexical-Binding.html) I sort of solved the problem and with the 
-    following code Emacs does not throw warnings or errors.
-    
         ;; windmove ->
         ;; Easy moving between windows
-          (when (fboundp 'windmove-default-keybindings)
-            (windmove-default-keybindings))
-        
-          (eval-when-compile (require 'cl))
-          (setq lexical-binding t)
-        
-          (defun ignore-error-wrapper (fn)
-            "Funtion return new function that ignore errors.
-             The function wraps a function with `ignore-errors' macro."
-            (lexical-let ((fn fn))
-              (lambda ()
-        	(interactive)
-        	(ignore-errors
-        	  (funcall fn)))))
         
           ;; setting windmove-default-keybindings to super-<arrow> in order
           ;; to avoid org-mode conflicts
-          (global-set-key (kbd "s-<left>") (ignore-error-wrapper 'windmove-left))
-          (global-set-key (kbd "s-<right>") (ignore-error-wrapper 'windmove-right))
-          (global-set-key (kbd "s-<up>") (ignore-error-wrapper 'windmove-up))
-          (global-set-key (kbd "s-<down>") (ignore-error-wrapper 'windmove-down))
+          (global-set-key (kbd "s-<left>")  'windmove-left)
+          (global-set-key (kbd "s-<right>") 'windmove-right)
+          (global-set-key (kbd "s-<up>")    'windmove-up)
+          (global-set-key (kbd "s-<down>")  'windmove-down)
         ;; <- windmove
+    
+    1.  [DEPRECATED] Useful For Emacs < 27.1
+    
+        (This section is deprecated. In Emacs 27.1 the package works ok without
+        the need of application of `ignore-error-wrapper` function.)
+        
+        According to [package's wikipage](https://www.emacswiki.org/emacs/WindMove) there exist some problem with the package,
+        namely:
+        "When you run for instance windmove-left and there is no window on the left,
+         windmove will throw exception (and if you have debug-on-error enabled) 
+        you will see Debugger complaining."
+        
+        Proposed workaround requires `cl` package, which unfortunately is
+        [deprecated in Emacs 27.1](https://github.com/kiwanami/emacs-epc/issues/35) (The workaround worked in Emacs < 27).
+        With the use of 
+        [this post](https://emacs.stackexchange.com/questions/15189/alternative-to-lexical-let) and 
+        [this part of emacs manual](https://www.gnu.org/software/emacs/manual/html_node/elisp/Using-Lexical-Binding.html) I sort of solved the problem and with the 
+        following code Emacs does not throw warnings or errors.
+        
+            ;; windmove ->
+            ;; Easy moving between windows
+              (when (fboundp 'windmove-default-keybindings)
+                (windmove-default-keybindings))
+            
+              (eval-when-compile (require 'cl))
+              (setq lexical-binding t)
+            
+              (defun ignore-error-wrapper (fn)
+                "Funtion return new function that ignore errors.
+                 The function wraps a function with `ignore-errors' macro."
+                (lexical-let ((fn fn))
+                  (lambda ()
+            	(interactive)
+            	(ignore-errors
+            	  (funcall fn)))))
+            
+              ;; setting windmove-default-keybindings to super-<arrow> in order
+              ;; to avoid org-mode conflicts
+              (global-set-key (kbd "s-<left>") (ignore-error-wrapper 'windmove-left))
+              (global-set-key (kbd "s-<right>") (ignore-error-wrapper 'windmove-right))
+              (global-set-key (kbd "s-<up>") (ignore-error-wrapper 'windmove-up))
+              (global-set-key (kbd "s-<down>") (ignore-error-wrapper 'windmove-down))
+            ;; <- windmove
 
 9.  Easy windows resize
 
@@ -518,7 +571,12 @@ If necessary some useful infomation or link is added to the customization.
           (global-set-key        (kbd "C-s-<up>") 'enlarge-window)
         ;; <- Easy windows resize 
 
-10. ido-mode
+
+### Completing
+
+ido/smex vs ivy/counsel/swiper vs helm 
+
+1.  ido-mode
 
     They say that `ido` is a [powerful package](https://www.masteringemacs.org/article/introduction-to-ido-mode) and you should have it enabled...
     I'm not going to argue with that, yet I haven't studied much its capabilities.
@@ -529,7 +587,7 @@ If necessary some useful infomation or link is added to the customization.
           (setq ido-everywhere t)  ; ido-mode for file searching
         ;; <- ido-mode
 
-11. smex
+2.  smex
 
     This package is installed because I was inspired by some post. 
     Just for tests.
@@ -542,7 +600,22 @@ If necessary some useful infomation or link is added to the customization.
         (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command) 
         ;; <- smex
 
-12. Recently opened files
+3.  TODO Ivy (for testing) <a id="org726997c"></a>
+
+    Furthermore, according to [some other users](https://ruzkuku.com/emacs.d.html#org804158b)
+    "Ivy is simpler (and faster) than Helm but more powerful than Ido".
+
+
+### Autocomplete
+
+`auto-complete` vs `company`
+
+    ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;; ;; *** Auto-completing
+    ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    (add-hook 'after-init-hook 'global-company-mode)
+
+1.  Recently opened files
 
         ;; Recently opened files ->
           (recentf-mode 1)
@@ -572,7 +645,27 @@ If necessary some useful infomation or link is added to the customization.
         (add-hook #'org-mode-hook #'org-special-block-extras-mode)
         ;; <- **** org-special-block-extras 
 
-3.  Tailoring org-mode to markdown export
+3.  Org-babel
+
+    To have org-babel enabled (execution of portions of code):
+    
+        
+        ;; enabling org-babel
+        (org-babel-do-load-languages
+         'org-babel-load-languages '(
+        			     (C . t)
+        			     (matlab . t)
+        			     ;;(perl . t)
+        			     (octave . t)
+        			     (org . t)
+        			     (python . t)
+        			     (shell . t)
+        			     ))
+        
+        ;; no question about confirmation of evaluating babel code block
+        (setq org-confirm-babel-evaluate nil)
+
+4.  Tailoring org-mode to markdown export
 
     When exporting to markdown I want to add some keywords in a special format to
     the preamble of .md file.
@@ -616,7 +709,26 @@ If necessary some useful infomation or link is added to the customization.
         
         ;; <- **** org-to-markdown exporter customization
 
-4.  TODO Default org to latex exporting command
+5.  TODO Default org to latex exporting command
+
+
+### TODO Flyspell (TODO: dive deeper into the package and its capabilities)
+
+<https://ruzkuku.com/emacs.d.html#org804158b>
+<https://www.emacswiki.org/emacs/FlySpell>
+
+
+### Flymake/Flycheck
+
+<https://www.masteringemacs.org/article/spotlight-flycheck-a-flymake-replacement>
+
+In Emacs 27.1 `flymake` is said to be competitive with `flycheck` again.
+It is built-in in Emacs. As for now, I'm gonna use `flymake`.
+
+
+### Bash completions
+
+Bash has usually very good command completion facilities, which aren't accessible by default from Emacs (except by running `M-x term`). This package integrates them into regular commands such as `shell-command` and `shell`.
 
 
 ### General global shortcuts not restricted to specific package/mode
@@ -671,6 +783,17 @@ If necessary some useful infomation or link is added to the customization.
 
 ### Manually downloaded packages
 
+sunrise-commander - <https://www.emacswiki.org/emacs/Sunrise_Commander_Tips#h5o-1>,
+<https://pragmaticemacs.wordpress.com/2015/10/29/double-dired-with-sunrise-commander/>
+
+-   how to configure sunrise to be like Norton Commander
+
+<https://enzuru.medium.com/sunrise-commander-an-orthodox-file-manager-for-emacs-2f92fd08ac9e>
+
+-   buttons extenstion <https://www.emacswiki.org/emacs/sunrise-x-buttons.el>
+
+<https://pragmaticemacs.wordpress.com/2015/10/29/double-dired-with-sunrise-commander/>
+
     
     ;; Set location for external packages.
     (add-to-list 'load-path "~/.emacs.d/manual-download/")
@@ -689,6 +812,12 @@ If necessary some useful infomation or link is added to the customization.
     ;; sunrise
     (add-to-list 'load-path "~/.emacs.d/manual-download/sunrise")
     (require 'sunrise)
+    (require 'sunrise-buttons)
+    (require 'sunrise-modeline)
+    (add-to-list 'auto-mode-alist '("\\.srvm\\'" . sr-virtual-mode))
+    
+    
+    
     
     ;; midnight-commander emulation
     ;; (require 'mc)
@@ -700,11 +829,18 @@ If necessary some useful infomation or link is added to the customization.
 
 ### TODO The end
 
-1.  Workgroups (should be executed at the end of init.el)
+1.  Workgroups (should be executed at the end of init.el) <a id="org525c8fd"></a>
 
     <https://tuhdo.github.io/emacs-tutor3.html>
     
+    `workgroups2` is a fine package for managing session. To enable it and 
+    set the filepath for keeping sessions (default is `/.emacs_workgroups`)
+     put this in your `init.el`:
+    
         (workgroups-mode 1)    ; session manager for emacs
+        (setq wg-session-file "~/.emacs.d/.emacs_workgroups") ; 
+    
+    And then you can use the following commands to manage sessions:
     
     -   To save window&buffer layout as a work group:
     
@@ -720,23 +856,46 @@ If necessary some useful infomation or link is added to the customization.
     
     `M-x wg-kill-workgroup` or
     `C-c z C-k`
+    
+    There is one problem with `workgroups2` packages. It does not like with 
+    `desktop-save-mode`. When `workgroups2` is enabled `desktop-save-mode` 
+    does not restore the windows layout from the previous Emacs session, which
+    sucks.
+    I decided to stick to `workgroups2` and supply the needed functionality 
+    with the use of only this package. I did it by adding hooks:
+    
+        (add-hook 'kill-emacs-hook (
+        		     lambda () (wg-create-workgroup "currentsession" )))
+        
+        (setq inhibit-startup-message t)
+        
+        (add-hook 'window-setup-hook (
+        		       lambda () (wg-open-workgroup "currentsession")))
+    
+    The line `(setq inhibit-startup-message t)` is added in order to prevent
+    Emacs splash screen to appear in one of the restored `"currentsession"` frames.
 
 2.  Last lines
 
+3.  [DEPRECATED] Restoring previous session
+
+    This section is deprecated in favour of [`workgroups2 package`](#org525c8fd).
+    
     This way of restoring session throws some warnings and needs additional
     confirmations so I give it up. Simple `(desktop-save-mode 1)` which is 
-    included [in the beginning of `init.el`](#org038fb29) works ok.
+    included [in the beginning of `init.el`](#orgc143f22) works ok.
     
         ;; Restore the "desktop" - do this as late as possible
         (if first-time
             (progn
-              (desktop-load-default)   ; this line throws an error:   void
+              ;(desktop-load-default)   ; this is for Emacs 20-21
               (desktop-read)))
-    
         
         ;; Indicate that this file has been read at least once
         (setq first-time nil)
-        
+
+4.  Open some useful files in the background
+
         ;;; Always have several files opened at startup
         ;; hint: https://stackoverflow.com/a/19284395/4649238
         (find-file "~/.emacs.d/init.el")
@@ -747,7 +906,7 @@ If necessary some useful infomation or link is added to the customization.
         (message "All done in init.el.")
 
 
-## Dependencies of the presented Emacs configuration <a id="org54281ec"></a>:
+## Dependencies of the presented Emacs configuration <a id="org0f7e72e"></a>:
 
 The list of external applications that this script is dependent on:
 
