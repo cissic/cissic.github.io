@@ -203,7 +203,7 @@ In Emacs 27.1 it [[https://emacs.stackexchange.com/a/44287][shouldn't be necessa
 #+end_src
 
 
-*** The main part of the script - list the packages
+*** The main part of the installation script - list of the packages
 I used to have ~(defvar my-packages ...~ instead of ~(setq my-packages ...~ 
 below but... *Do not* use ~defvar~ for declaring a list of packages to be installed!
 If the variable is already defined 
@@ -236,7 +236,7 @@ The main point of the file. Set the list of packages to be installed
     ;moe-theme ; https://github.com/kuanyui/moe-theme.el
     ;mh
     ;ob-async
-    ;; org   ; ver. 9.3  built-in in Emacs 27.1
+    org   ; ver. 9.3  built-in in Emacs 27.1; this install version 9.6 from melpa
     org-ac
     ;org-download
     ;org-mime
@@ -703,6 +703,32 @@ Furthermore, according to [[https://ruzkuku.com/emacs.d.html#org804158b][some ot
 ;; <- Recently opened files
 #+end_src
 
+*** Bibliography - citations
+**** oc [org-citations]
+***** Bibliography <<org-citations>>
+# ____________________________________________________________________________78
+
+
+- https://orgmode.org/manual/Citations.html
+- https://kristofferbalintona.me/posts/202206141852/
+- https://github.com/jkitchin/org-ref
+- https://blog.tecosaur.com/tmio/2021-07-31-citations.html#fn.3
+- https://emacs.stackexchange.com/questions/71817/how-to-export-bibliographies-with-org-mode
+- https://www.reddit.com/r/emacs/comments/q4wa40/issues_with_new_orgcite_for_citations/
+- https://nickgeorge.net/science/org-ref-setup/
+  
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+  ;; org citations
+  ;; (require 'oc)    ; probably not needed 
+  ;; (require 'oc-basic)
+  ;; (require 'oc-biblatex)
+#+end_src
+
+
+
+**** citar (to check?)
+     https://github.com/emacs-citar/citar
+
 *** Org customization
 #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") :exports none
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -802,13 +828,18 @@ Besides, in order to have markdown exporter options in menu appearing after
 
 
 
+**** TODO Asynchronous babel sessions
+ob-comint.el
+
 **** TODO Default org to latex exporting command
      
+
+
 *** TODO Flyspell (TODO: dive deeper into the package and its capabilities)
 https://ruzkuku.com/emacs.d.html#org804158b
 https://www.emacswiki.org/emacs/FlySpell
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") :exports none
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; *** Flyspell 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -960,15 +991,6 @@ second reason).
 #+end_src
 
 *** Manually downloaded packages
-sunrise-commander - https://www.emacswiki.org/emacs/Sunrise_Commander_Tips#h5o-1,
-https://pragmaticemacs.wordpress.com/2015/10/29/double-dired-with-sunrise-commander/
-
-- how to configure sunrise to be like Norton Commander
-https://enzuru.medium.com/sunrise-commander-an-orthodox-file-manager-for-emacs-2f92fd08ac9e
-
-- buttons extenstion https://www.emacswiki.org/emacs/sunrise-x-buttons.el
-
-https://pragmaticemacs.wordpress.com/2015/10/29/double-dired-with-sunrise-commander/
 
 #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") :exports none
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -991,20 +1013,68 @@ https://pragmaticemacs.wordpress.com/2015/10/29/double-dired-with-sunrise-comman
               '(("\\.pub$" . org-mode))
               auto-mode-alist))
 ;; <- doconce
+#+end_src
 
+**** Sunrise - Norton Commander-like file browser
+There are few packages to emulate Norton Commander experience in Emacs.
+I tested ~mc.el~, ~nc.el~ and ~sunrise.el~. From these three only 
+the last one turned out to be useful (or to run without errors).
+
+https://www.emacswiki.org/emacs/Sunrise_Commander_Tips#h5o-1
+
+https://pragmaticemacs.wordpress.com/2015/10/29/double-dired-with-sunrise-commander/
+
+https://enzuru.medium.com/sunrise-commander-an-orthodox-file-manager-for-emacs-2f92fd08ac9e
+
+- buttons extension for sunrise
+
+ https://www.emacswiki.org/emacs/sunrise-x-buttons.el
+
+https://pragmaticemacs.wordpress.com/2015/10/29/double-dired-with-sunrise-commander/
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 ;; sunrise
 (add-to-list 'load-path "~/.emacs.d/manual-download/sunrise")
 (require 'sunrise)
 (require 'sunrise-buttons)
 (require 'sunrise-modeline)
 (add-to-list 'auto-mode-alist '("\\.srvm\\'" . sr-virtual-mode))
+#+end_src
 
 
+**** Buffer-move - swapping buffers easily
+https://www.emacswiki.org/emacs/buffer-move.el
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+;; buffer-move - swap buffers easily
+(require 'buffer-move)
+#+end_src
+
+Now you can use commands:
+~buf-move-up~
+~buf-move-down~
+~buf-move-left~
+~buf-move-right~
+
+or you can define keybindings as package documentation recommends 
+(I guess it'll be used too seldom to waste keybinding for that):
+
+#+begin_src
+;; (global-set-key (kbd "<C-S-up>")     'buf-move-up)
+;; (global-set-key (kbd "<C-S-down>")   'buf-move-down)
+;; (global-set-key (kbd "<C-S-left>")   'buf-move-left)
+;; (global-set-key (kbd "<C-S-right>")  'buf-move-right)
+#+end_src
 
 
+**** Other packages
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") :exports none
+;; [DEPRECATED] - use sunrise instead of this
 ;; midnight-commander emulation
 ;; (require 'mc)
+#+end_src
 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 ;; org to ipython exporter
 ;;(use-package ox-ipynb
 ;  :load-path "~/.emacs.d/manual-download/ox-ipynb")

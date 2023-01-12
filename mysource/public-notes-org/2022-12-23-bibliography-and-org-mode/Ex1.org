@@ -1,0 +1,18 @@
+#+TITLE: Some title
+#+AUTHOR: Some author
+#+LATEX_CLASS: article
+#+CITE_EXPORT: basic
+#+BIBLIOGRAPHY: biblio.bib 
+
+* Chapter 1
+This is the text. These are citations
+[cite:@a1], [cite:@a2].
+
+Many citations in one shot:
+[cite:@a1 cite:@a2]
+
+AA
+
+** Bibliography
+
+#+PRINT_BIBLIOGRAPHY:

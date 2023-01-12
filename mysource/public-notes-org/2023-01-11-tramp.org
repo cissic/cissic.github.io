@@ -1,0 +1,78 @@
+# ____________________________________________________________________________78
+
+#+TITLE: Remote file access - tramp mode
+#+DESCRIPTION: 
+#+AUTHOR: cissic
+#+DATE: <2023-01-11 Wed>
+#+TAGS: tramp ssh remote
+#+OPTIONS: toc:nil
+#+OPTIONS: -:nil
+
+
+* {{{title}}}
+:PROPERTIES:
+PRJ-DIR: ./2023-01-11-tramp/
+:END:
+
+
+** Problem description
+I'd like to access files that are stored on remote server.
+
+
+
+
+
+
+
+#+begin_src sh :tangle (concat (org-entry-get nil "PRJ-DIR" t) "script.sh") :mkdirp yes :exports none :results none
+#+begin_src sh
+   printername=cups-pdf # your printer name
+   lpr -P $printername temp.pdf
+#+end_src
+
+# *** Merging pdf pages into multipage layout
+# In order to print multiple pages per sheet you need to use external program ~pdfjam~.
+# It is said to be a part of ~TeXLive~ distribution 
+# (If you don't have it you can always try:
+# ~sudo apt install pdfjam~). Then you can write:
+
+# #+begin_src sh 
+#    pdfjam --nup 2x2 aaa.pdf 
+# #+end_src
+
+# I have stumbled upon a problem when trying to do like above. 
+# It turned out that in order to have the above command working
+# I need to have ~pdflscape.sty~ package in my LaTeX distribution.
+# Usually when working on Linux one have TeXLive with all LaTeX 
+# packages installed by default. 
+# Since I have MikTeX distribution with packages installed 
+# only when required (on-the-fly), in this case I needed to install 
+# ~pdflscape~ package explicitely.
+
+# In newest ~MikTeX~ you can do this as follows:
+# #+begin_src sh 
+#    miktex packages install pdflscape
+# #+end_src
+
+# In this way I could finally have pdfjam working.
+
+
+
+
+# *** TODO Printing other files than pdf 
+# You might encounter a problem when trying to print on ~cups~ printer 
+# non-pdf file, i.e. ~.doc~.
+
+# TODO: 
+# [[https://en.opensuse.org/SDB:Using_Your_Own_Filters_to_Print_with_CUPS]]
+
+# **** A workaround
+# When printing LibreOffice documents you may find useful LibreOffice converter
+# that enables exporting documents to different formats [[https://superuser.com/questions/91779/how-can-i-convert-an-openoffice-document-to-pdf-from-the-linux-command-line][like this]]:
+# #+begin_src sh 
+#   soffice --headless --convert-to pdf  file.odt 
+#   soffice --headless --convert-to doc  file.odt 
+#   soffice --headless --convert-to html file.odt 
+# #+end_src
+
+# Then you can process .pdf file with appropriate program/function etc.
