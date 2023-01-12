@@ -103,7 +103,7 @@ it's better to keep whole .emacs.d directory as a git repository and
 make a commit before executing this script. Then, in case any problems
 you can go back to restore properly working emacs installation.
 Before running this script you should have a git repository initialized in emacs
-directory and git itself installed in the system (see Sec. [1.4](#org0f7e72e)).
+directory and git itself installed in the system (see Sec. [1.4](#org0e0358a)).
 Synchronization of the local repository with the remote one is not
 performed in this script. It should be performed explicitely by the user
 in a convenient time.
@@ -168,7 +168,7 @@ In Emacs 27.1 it [shouldn't be necessary to use](https://emacs.stackexchange.com
     ;; (require 'package)      ;; built-in in 27.1
 
 
-### The main part of the script - list the packages
+### The main part of the installation script - list of the packages
 
 I used to have `(defvar my-packages ...` instead of `(setq my-packages ...` 
 below but... **Do not** use `defvar` for declaring a list of packages to be installed!
@@ -199,7 +199,7 @@ The main point of the file. Set the list of packages to be installed
       ;moe-theme ; https://github.com/kuanyui/moe-theme.el
       ;mh
       ;ob-async
-      ;; org   ; ver. 9.3  built-in in Emacs 27.1
+      org   ; ver. 9.3  built-in in Emacs 27.1; this install version 9.6 from melpa
       org-ac
       ;org-download
       ;org-mime
@@ -270,7 +270,7 @@ for now. An interesting discussion about this can be found [here](https://www.re
 
 1.  [DEPRECATED] Setting an auxiliary variable
 
-    This section is deprecated in favour of [`workgroups2 package`](#org525c8fd).
+    This section is deprecated in favour of [`workgroups2 package`](#orgdff42a2).
     
         ;; This file is designed to be re-evaled; use the variable first-time
         ;; to avoid any problems with this.
@@ -311,7 +311,7 @@ proactively.
 Here are global Emacs customization. 
 If necessary some useful infomation or link is added to the customization.
 
-1.  Self-descriptive oneliners <a id="orgc143f22"></a>
+1.  Self-descriptive oneliners <a id="orgb12ab0d"></a>
 
         (auto-revert-mode 1)       ; Automatically reload file from a disk after change
         (global-auto-revert-mode) 
@@ -465,22 +465,22 @@ If necessary some useful infomation or link is added to the customization.
         <tbody>
         <tr>
         <td class="org-left">a day</td>
-        <td class="org-left">S-<left></td>
-        <td class="org-left">S-<right></td>
+        <td class="org-left">S-&lt;left&gt;</td>
+        <td class="org-left">S-&lt;right&gt;</td>
         </tr>
         
         
         <tr>
         <td class="org-left">a week</td>
-        <td class="org-left">S-<up></td>
-        <td class="org-left">S-<down></td>
+        <td class="org-left">S-&lt;up&gt;</td>
+        <td class="org-left">S-&lt;down&gt;</td>
         </tr>
         
         
         <tr>
         <td class="org-left">a month</td>
-        <td class="org-left">></td>
-        <td class="org-left"><</td>
+        <td class="org-left">&gt;</td>
+        <td class="org-left">&lt;</td>
         </tr>
         
         
@@ -600,7 +600,7 @@ ido/smex vs ivy/counsel/swiper vs helm
         (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command) 
         ;; <- smex
 
-3.  TODO Ivy (for testing) <a id="org726997c"></a>
+3.  TODO Ivy (for testing) <a id="org5dcfea6"></a>
 
     Furthermore, according to [some other users](https://ruzkuku.com/emacs.d.html#org804158b)
     "Ivy is simpler (and faster) than Helm but more powerful than Ido".
@@ -624,6 +624,30 @@ ido/smex vs ivy/counsel/swiper vs helm
           ;; in original emacs this binding is for "Find file read-only"
           (global-set-key "\C-x\ \C-r" 'recentf-open-files)
         ;; <- Recently opened files
+
+
+### Bibliography - citations
+
+1.  oc [org-citations]
+
+    1.  Bibliography <a id="orgd8c20aa"></a>
+    
+        -   <https://orgmode.org/manual/Citations.html>
+        -   <https://kristofferbalintona.me/posts/202206141852/>
+        -   <https://github.com/jkitchin/org-ref>
+        -   <https://blog.tecosaur.com/tmio/2021-07-31-citations.html#fn.3>
+        -   <https://emacs.stackexchange.com/questions/71817/how-to-export-bibliographies-with-org-mode>
+        -   <https://www.reddit.com/r/emacs/comments/q4wa40/issues_with_new_orgcite_for_citations/>
+        -   <https://nickgeorge.net/science/org-ref-setup/>
+        
+            ;; org citations
+            ;; (require 'oc)    ; probably not needed 
+            ;; (require 'oc-basic)
+            ;; (require 'oc-biblatex)
+
+2.  citar (to check?)
+
+    <https://github.com/emacs-citar/citar>
 
 
 ### Org customization
@@ -709,13 +733,21 @@ ido/smex vs ivy/counsel/swiper vs helm
         
         ;; <- **** org-to-markdown exporter customization
 
-5.  TODO Default org to latex exporting command
+5.  TODO Asynchronous babel sessions
+
+    ob-comint.el
+
+6.  TODO Default org to latex exporting command
 
 
 ### TODO Flyspell (TODO: dive deeper into the package and its capabilities)
 
 <https://ruzkuku.com/emacs.d.html#org804158b>
 <https://www.emacswiki.org/emacs/FlySpell>
+
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;; *** Flyspell 
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 ### Flymake/Flycheck
@@ -783,17 +815,6 @@ Bash has usually very good command completion facilities, which aren't accessibl
 
 ### Manually downloaded packages
 
-sunrise-commander - <https://www.emacswiki.org/emacs/Sunrise_Commander_Tips#h5o-1>,
-<https://pragmaticemacs.wordpress.com/2015/10/29/double-dired-with-sunrise-commander/>
-
--   how to configure sunrise to be like Norton Commander
-
-<https://enzuru.medium.com/sunrise-commander-an-orthodox-file-manager-for-emacs-2f92fd08ac9e>
-
--   buttons extenstion <https://www.emacswiki.org/emacs/sunrise-x-buttons.el>
-
-<https://pragmaticemacs.wordpress.com/2015/10/29/double-dired-with-sunrise-commander/>
-
     
     ;; Set location for external packages.
     (add-to-list 'load-path "~/.emacs.d/manual-download/")
@@ -808,28 +829,63 @@ sunrise-commander - <https://www.emacswiki.org/emacs/Sunrise_Commander_Tips#h5o-
     	      '(("\\.pub$" . org-mode))
     	      auto-mode-alist))
     ;; <- doconce
+
+1.  Sunrise - Norton Commander-like file browser
+
+    There are few packages to emulate Norton Commander experience in Emacs.
+    I tested `mc.el`, `nc.el` and `sunrise.el`. From these three only 
+    the last one turned out to be useful (or to run without errors).
     
-    ;; sunrise
-    (add-to-list 'load-path "~/.emacs.d/manual-download/sunrise")
-    (require 'sunrise)
-    (require 'sunrise-buttons)
-    (require 'sunrise-modeline)
-    (add-to-list 'auto-mode-alist '("\\.srvm\\'" . sr-virtual-mode))
+    <https://www.emacswiki.org/emacs/Sunrise_Commander_Tips#h5o-1>
     
+    <https://pragmaticemacs.wordpress.com/2015/10/29/double-dired-with-sunrise-commander/>
     
+    <https://enzuru.medium.com/sunrise-commander-an-orthodox-file-manager-for-emacs-2f92fd08ac9e>
     
+    -   buttons extension for sunrise
+        
+        <https://www.emacswiki.org/emacs/sunrise-x-buttons.el>
     
-    ;; midnight-commander emulation
-    ;; (require 'mc)
+    <https://pragmaticemacs.wordpress.com/2015/10/29/double-dired-with-sunrise-commander/>
     
-    ;; org to ipython exporter
-    ;;(use-package ox-ipynb
-    ;  :load-path "~/.emacs.d/manual-download/ox-ipynb")
+        ;; sunrise
+        (add-to-list 'load-path "~/.emacs.d/manual-download/sunrise")
+        (require 'sunrise)
+        (require 'sunrise-buttons)
+        (require 'sunrise-modeline)
+        (add-to-list 'auto-mode-alist '("\\.srvm\\'" . sr-virtual-mode))
+
+2.  Buffer-move - swapping buffers easily
+
+    <https://www.emacswiki.org/emacs/buffer-move.el>
+    
+        ;; buffer-move - swap buffers easily
+        (require 'buffer-move)
+    
+    Now you can use commands:
+    `buf-move-up`
+    `buf-move-down`
+    `buf-move-left`
+    `buf-move-right`
+    
+    or you can define keybindings as package documentation recommends 
+    (I guess it'll be used too seldom to waste keybinding for that):
+    
+        ;; (global-set-key (kbd "<C-S-up>")     'buf-move-up)
+        ;; (global-set-key (kbd "<C-S-down>")   'buf-move-down)
+        ;; (global-set-key (kbd "<C-S-left>")   'buf-move-left)
+        ;; (global-set-key (kbd "<C-S-right>")  'buf-move-right)
+
+3.  Other packages
+
+        ;; org to ipython exporter
+        ;;(use-package ox-ipynb
+        ;  :load-path "~/.emacs.d/manual-download/ox-ipynb")
 
 
 ### TODO The end
 
-1.  Workgroups (should be executed at the end of init.el) <a id="org525c8fd"></a>
+1.  Workgroups (should be executed at the end of init.el) <a id="orgdff42a2"></a>
 
     <https://tuhdo.github.io/emacs-tutor3.html>
     
@@ -879,11 +935,11 @@ sunrise-commander - <https://www.emacswiki.org/emacs/Sunrise_Commander_Tips#h5o-
 
 3.  [DEPRECATED] Restoring previous session
 
-    This section is deprecated in favour of [`workgroups2 package`](#org525c8fd).
+    This section is deprecated in favour of [`workgroups2 package`](#orgdff42a2).
     
     This way of restoring session throws some warnings and needs additional
     confirmations so I give it up. Simple `(desktop-save-mode 1)` which is 
-    included [in the beginning of `init.el`](#orgc143f22) works ok.
+    included [in the beginning of `init.el`](#orgb12ab0d) works ok.
     
         ;; Restore the "desktop" - do this as late as possible
         (if first-time
@@ -906,7 +962,7 @@ sunrise-commander - <https://www.emacswiki.org/emacs/Sunrise_Commander_Tips#h5o-
         (message "All done in init.el.")
 
 
-## Dependencies of the presented Emacs configuration <a id="org0f7e72e"></a>:
+## Dependencies of the presented Emacs configuration <a id="org0e0358a"></a>:
 
 The list of external applications that this script is dependent on:
 
