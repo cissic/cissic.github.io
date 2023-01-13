@@ -103,7 +103,7 @@ it's better to keep whole .emacs.d directory as a git repository and
 make a commit before executing this script. Then, in case any problems
 you can go back to restore properly working emacs installation.
 Before running this script you should have a git repository initialized in emacs
-directory and git itself installed in the system (see Sec. [1.4](#org0e0358a)).
+directory and git itself installed in the system (see Sec. [1.4](#orgaa2a215)).
 Synchronization of the local repository with the remote one is not
 performed in this script. It should be performed explicitely by the user
 in a convenient time.
@@ -270,7 +270,7 @@ for now. An interesting discussion about this can be found [here](https://www.re
 
 1.  [DEPRECATED] Setting an auxiliary variable
 
-    This section is deprecated in favour of [`workgroups2 package`](#orgdff42a2).
+    This section is deprecated in favour of [`workgroups2 package`](#org1730d15).
     
         ;; This file is designed to be re-evaled; use the variable first-time
         ;; to avoid any problems with this.
@@ -311,7 +311,7 @@ proactively.
 Here are global Emacs customization. 
 If necessary some useful infomation or link is added to the customization.
 
-1.  Self-descriptive oneliners <a id="orgb12ab0d"></a>
+1.  Self-descriptive oneliners <a id="orgd4f296b"></a>
 
         (auto-revert-mode 1)       ; Automatically reload file from a disk after change
         (global-auto-revert-mode) 
@@ -600,7 +600,7 @@ ido/smex vs ivy/counsel/swiper vs helm
         (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command) 
         ;; <- smex
 
-3.  TODO Ivy (for testing) <a id="org5dcfea6"></a>
+3.  TODO Ivy (for testing) <a id="orgfa9fdde"></a>
 
     Furthermore, according to [some other users](https://ruzkuku.com/emacs.d.html#org804158b)
     "Ivy is simpler (and faster) than Helm but more powerful than Ido".
@@ -630,8 +630,13 @@ ido/smex vs ivy/counsel/swiper vs helm
 
 1.  oc [org-citations]
 
-    1.  Bibliography <a id="orgd8c20aa"></a>
+    1.  Bibliography <a id="orga9b565f"></a>
     
+        In Org 9.6 we do not need explicitely load `oc` libraries.
+        Everything is covered in my post concerning bibliography and org-mode.
+        
+        Useful links:
+        
         -   <https://orgmode.org/manual/Citations.html>
         -   <https://kristofferbalintona.me/posts/202206141852/>
         -   <https://github.com/jkitchin/org-ref>
@@ -639,11 +644,6 @@ ido/smex vs ivy/counsel/swiper vs helm
         -   <https://emacs.stackexchange.com/questions/71817/how-to-export-bibliographies-with-org-mode>
         -   <https://www.reddit.com/r/emacs/comments/q4wa40/issues_with_new_orgcite_for_citations/>
         -   <https://nickgeorge.net/science/org-ref-setup/>
-        
-            ;; org citations
-            ;; (require 'oc)    ; probably not needed 
-            ;; (require 'oc-basic)
-            ;; (require 'oc-biblatex)
 
 2.  citar (to check?)
 
@@ -885,7 +885,7 @@ Bash has usually very good command completion facilities, which aren't accessibl
 
 ### TODO The end
 
-1.  Workgroups (should be executed at the end of init.el) <a id="orgdff42a2"></a>
+1.  Workgroups (should be executed at the end of init.el) <a id="org1730d15"></a>
 
     <https://tuhdo.github.io/emacs-tutor3.html>
     
@@ -935,11 +935,11 @@ Bash has usually very good command completion facilities, which aren't accessibl
 
 3.  [DEPRECATED] Restoring previous session
 
-    This section is deprecated in favour of [`workgroups2 package`](#orgdff42a2).
+    This section is deprecated in favour of [`workgroups2 package`](#org1730d15).
     
     This way of restoring session throws some warnings and needs additional
     confirmations so I give it up. Simple `(desktop-save-mode 1)` which is 
-    included [in the beginning of `init.el`](#orgb12ab0d) works ok.
+    included [in the beginning of `init.el`](#orgd4f296b) works ok.
     
         ;; Restore the "desktop" - do this as late as possible
         (if first-time
@@ -962,7 +962,7 @@ Bash has usually very good command completion facilities, which aren't accessibl
         (message "All done in init.el.")
 
 
-## Dependencies of the presented Emacs configuration <a id="org0e0358a"></a>:
+## Dependencies of the presented Emacs configuration <a id="orgaa2a215"></a>:
 
 The list of external applications that this script is dependent on:
 

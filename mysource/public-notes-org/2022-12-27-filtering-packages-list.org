@@ -27,3 +27,7 @@ Solution that works for me is presented [[https://emacs.stackexchange.com/a/3428
  : M-x occur
 and then you type a word you want to search for in the list (for example =installed=). (Another proposed solution is ~paradox~ command, however probably it's not built-in in my emacs distribution since I don't have it).
 
+# Local Variables:
+# eval: (add-hook 'org-export-before-processing-hook 
+# 'my/org-export-markdown-hook-function nil t)
+# End:

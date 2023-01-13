@@ -4,11 +4,15 @@ date: 2023-01-10 Tue
 tags: 'pdf bash pdftk cups'
 title: 'Operations on pdfs and printing from command line'
 ---
+---
+author: cissic
+date: 2023-01-10 Tue
+tags: 'pdf bash pdftk cups'
+title: 'Operations on pdfs and printing from command line'
+---
 
 
 # Operations on pdfs and printing from command line
-
-PRJ-DIR: ./2023-01-10-command-line-printing-and-pdf-operations/
 
 
 ## Problem description

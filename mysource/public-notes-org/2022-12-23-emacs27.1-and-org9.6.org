@@ -57,3 +57,7 @@ decipher.
 I don't have the time to deal with so I'll put upgrading Org off until some time
 and try to live with it now...
 
+# Local Variables:
+# eval: (add-hook 'org-export-before-processing-hook 
+# 'my/org-export-markdown-hook-function nil t)
+# End:

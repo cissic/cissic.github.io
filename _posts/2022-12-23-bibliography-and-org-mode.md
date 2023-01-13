@@ -6,7 +6,7 @@ title: 'Bibliography and org-mode'
 ---
 
 
-# Bibliography and org-mode Some title Some title
+# Bibliography and org-mode Some title Some title Some title
 
 
 ## Problem
@@ -43,9 +43,6 @@ That went a bit easier, however not without problems.
 
 Anyway I finally managed to have `org-cite` working with my Emacs.
 
-The problem I have now is that for it's working only  with "basic" exporter,
-but I hope I'll deal with that soon.
-
 
 ### How to use org-cite?
 
@@ -57,28 +54,28 @@ The only thing to remember is that you may need to explicitely load
 
 Assuming we have a bib file like this: 
 
-@article{a1,
-  title = {Art 1},
-  author = {Author, A.},
-  year = {1997},
-  month = jul,
-  journal = {journal},
-  volume = {20},
-  number = {1},
-  pages = {51--61},
-}
+    @article{a1,
+      title = {Art 1},
+      author = {Author, A.},
+      year = {1997},
+      month = jul,
+      journal = {journal},
+      volume = {20},
+      number = {1},
+      pages = {51--61},
+    }
+    
+    @article{a2,
+     title = {Art 2},
+     author = {Author, B.},
+     year = {1997},
+     month = jul,
+     journal = {journal},
+     volume = {20},
+     number = {1},
+     pages = {51--61},
+    }
 
- @article{a2,
-  title = {Art 2},
-  author = {Author, B.},
-  year = {1997},
-  month = jul,
-  journal = {journal},
-  volume = {20},
-  number = {1},
-  pages = {51--61},
- }
-\#+end<sub>src</sub>
 we can attach it to org-mode document like this:
 
     
@@ -88,13 +85,44 @@ we can attach it to org-mode document like this:
     #+CITE_EXPORT: basic
     #+BIBLIOGRAPHY: biblio.bib 
     
-    * Chapter 1
     
+    * Basic exporter
     
+    This is the text. These are citations
+    [cite:@a1], [cite:@a2].
+    
+    When many items  are to be produced in one list,
+    one needs to separate them with semi-colon:
+    [cite: @a1; @a2]
+    
+    ** Bibliography
     #+PRINT_BIBLIOGRAPHY:
 
 Inserting items is done via `org-cite-insert` command, binded by default to
 `C-c C-x @`.
+
+
+### Other exporters
+
+    
+    #+TITLE: Some title
+    #+AUTHOR: Some author
+    #+LATEX_CLASS: article
+    #+CITE_EXPORT: biblatex
+    #+BIBLIOGRAPHY: biblio.bib 
+    
+    
+    * Biblatex exporter
+    
+    This is the text. These are citations
+    [cite:@a1], [cite:@a2].
+    
+    When many items  are to be produced in one list,
+    one needs to separate them with semi-colon:
+    [cite: @a1; @a2]
+    
+    ** Bibliography
+    #+PRINT_BIBLIOGRAPHY:
 
 
 ## [DEPRECATED description] Problem

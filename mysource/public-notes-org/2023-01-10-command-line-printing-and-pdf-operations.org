@@ -11,7 +11,7 @@
 
 * {{{title}}}
 :PROPERTIES:
-PRJ-DIR: ./2023-01-10-command-line-printing-and-pdf-operations/
+:PRJ-DIR: ./2023-01-10-command-line-printing-and-pdf-operations/
 :END:
 
 
@@ -70,3 +70,8 @@ that enables exporting documents to different formats [[https://superuser.com/qu
 #+end_src
 
 Then you can process .pdf file with appropriate program/function etc.
+
+# Local Variables:
+# eval: (add-hook 'org-export-before-processing-hook 
+# 'my/org-export-markdown-hook-function nil t)
+# End:

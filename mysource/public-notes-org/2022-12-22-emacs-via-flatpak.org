@@ -64,3 +64,8 @@ So I uninstalled both of them and reinstalled my system Emacs once again.
 Then I turned to this thread: 
 https://www.reddit.com/r/emacs/comments/zd3l7p/org_mode_elpa_intall_invalid_function/
 which is described in another post.
+
+# Local Variables:
+# eval: (add-hook 'org-export-before-processing-hook 
+# 'my/org-export-markdown-hook-function nil t)
+# End:

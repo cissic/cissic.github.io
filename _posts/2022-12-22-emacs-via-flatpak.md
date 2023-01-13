@@ -4,6 +4,12 @@ date: 2022-12-22 Thu
 tags: 'flatpak snap emacs'
 title: 'Installing the newest emacs via flatpak'
 ---
+---
+author: cissic
+date: 2022-12-22 Thu
+tags: 'flatpak snap emacs'
+title: 'Installing the newest emacs via flatpak'
+---
 
 
 # Installing the newest emacs via flatpak

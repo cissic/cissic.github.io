@@ -48,8 +48,8 @@ That went a bit easier, however not without problems.
 
 Anyway I finally managed to have ~org-cite~ working with my Emacs.
 
-The problem I have now is that for it's working only  with "basic" exporter,
-but I hope I'll deal with that soon.
+# The problem I have now is that for it's working only  with "basic" exporter,
+# but I hope I'll deal with that soon.
 
 *** How to use org-cite?
 So now handling citations (with "basic" export method) is realy as easy
@@ -60,7 +60,7 @@ The only thing to remember is that you may need to explicitely load
 
 Assuming we have a bib file like this: 
 
-# #+begin_src  :tangle (concat (org-entry-get nil "PRJ-DIR" t) "biblio.bib") :mkdirp yes
+#+begin_src bib :tangle (concat (org-entry-get nil "PRJ-DIR" t) "biblio.bib") :mkdirp yes
  @article{a1,
    title = {Art 1},
    author = {Author, A.},
@@ -87,21 +87,57 @@ we can attach it to org-mode document like this:
 
 #+begin_src org :tangle (concat (org-entry-get nil "PRJ-DIR" t) "Ex1.org") :mkdirp yes
 
-      #+TITLE: Some title
-      #+AUTHOR: Some author
-      #+LATEX_CLASS: article
-      #+CITE_EXPORT: basic
-      #+BIBLIOGRAPHY: biblio.bib 
-
-      * Chapter 1
+   #+TITLE: Some title
+   #+AUTHOR: Some author
+   #+LATEX_CLASS: article
+   #+CITE_EXPORT: basic
+   #+BIBLIOGRAPHY: biblio.bib 
 
 
-      #+PRINT_BIBLIOGRAPHY:
+   * Basic exporter
+
+   This is the text. These are citations
+   [cite:@a1], [cite:@a2].
+
+   When many items  are to be produced in one list,
+   one needs to separate them with semi-colon:
+   [cite: @a1; @a2]
+
+   ** Bibliography
+   #+PRINT_BIBLIOGRAPHY:
+
 #+end_src
 
 
 Inserting items is done via ~org-cite-insert~ command, binded by default to
 ~C-c C-x @~.
+
+
+*** Other exporters
+
+#+begin_src org :tangle (concat (org-entry-get nil "PRJ-DIR" t) "Ex2.org") :mkdirp yes
+
+   #+TITLE: Some title
+   #+AUTHOR: Some author
+   #+LATEX_CLASS: article
+   #+CITE_EXPORT: biblatex
+   #+BIBLIOGRAPHY: biblio.bib 
+
+
+   * Biblatex exporter
+
+   This is the text. These are citations
+   [cite:@a1], [cite:@a2].
+
+   When many items  are to be produced in one list,
+   one needs to separate them with semi-colon:
+   [cite: @a1; @a2]
+
+   ** Bibliography
+   #+PRINT_BIBLIOGRAPHY:
+
+#+end_src
+
 
 
 
@@ -172,3 +208,9 @@ we can attach it to org-mode document like this:
       # ## End:
  
 #+end_src
+
+
+# Local Variables:
+# eval: (add-hook 'org-export-before-processing-hook 
+# 'my/org-export-markdown-hook-function nil t)
+# End:

@@ -708,7 +708,17 @@ Furthermore, according to [[https://ruzkuku.com/emacs.d.html#org804158b][some ot
 ***** Bibliography <<org-citations>>
 # ____________________________________________________________________________78
 
+In Org 9.6 we do not need explicitely load ~oc~ libraries.
+Everything is covered in my post concerning bibliography and org-mode.
 
+# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+  # ;; org citations
+  # ;; (require 'oc)    ; probably not needed 
+  # ;; (require 'oc-basic)
+  # ;; (require 'oc-biblatex)
+# #+end_src
+
+Useful links:
 - https://orgmode.org/manual/Citations.html
 - https://kristofferbalintona.me/posts/202206141852/
 - https://github.com/jkitchin/org-ref
@@ -716,13 +726,10 @@ Furthermore, according to [[https://ruzkuku.com/emacs.d.html#org804158b][some ot
 - https://emacs.stackexchange.com/questions/71817/how-to-export-bibliographies-with-org-mode
 - https://www.reddit.com/r/emacs/comments/q4wa40/issues_with_new_orgcite_for_citations/
 - https://nickgeorge.net/science/org-ref-setup/
-  
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
-  ;; org citations
-  ;; (require 'oc)    ; probably not needed 
-  ;; (require 'oc-basic)
-  ;; (require 'oc-biblatex)
-#+end_src
+
+
+
+
 
 
 

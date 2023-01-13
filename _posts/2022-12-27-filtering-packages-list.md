@@ -4,6 +4,12 @@ date: 2022-12-27 Tue
 tags: 'emacs packages'
 title: 'How to filter out packages in list-packages'
 ---
+---
+author: cissic
+date: 2022-12-27 Tue
+tags: 'emacs packages'
+title: 'How to filter out packages in list-packages'
+---
 
 
 # How to filter out packages in list-packages

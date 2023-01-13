@@ -1,3 +1,15 @@
+---
+author: cissic
+date: 2022-12-17 Sat
+tags: 'kde x-window-system'
+title: 'Sequence of keys for keyboard shortcuts'
+---
+---
+author: cissic
+date: 2022-12-17 Sat
+tags: 'kde x-window-system'
+title: 'Sequence of keys for keyboard shortcuts'
+---
 
 
 # Sequence of keys for keyboard shortcuts

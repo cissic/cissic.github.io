@@ -1,7 +1,7 @@
 #+TITLE: Some title
 #+AUTHOR: Some author
 #+LATEX_CLASS: article
-#+CITE_EXPORT: basic
+#+CITE_EXPORT: biblatex
 #+BIBLIOGRAPHY: biblio.bib 
 
 

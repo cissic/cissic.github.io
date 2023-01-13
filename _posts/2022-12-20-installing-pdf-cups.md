@@ -4,6 +4,12 @@ date: 2022-12-20 Tue
 tags: 'pdf cups debian printer'
 title: 'Installing pdf printer in cups'
 ---
+---
+author: cissic
+date: 2022-12-20 Tue
+tags: 'pdf cups debian printer'
+title: 'Installing pdf printer in cups'
+---
 
 
 # Installing pdf printer in cups
