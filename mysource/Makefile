@@ -45,7 +45,7 @@ all: $(objects)
 
 ## Recipe for converting an org file into md file using Emacs
 $(output)/%.md: $(source)/%.org
-	emacs -batch -load ~/.emacs.d/init.el \
+	emacs -batch -Q -load ~/.emacs.d/init.el \
 	--eval '(setq enable-local-variables :all)' \
 	--visit=$< \
 	-f org-md-export-to-markdown

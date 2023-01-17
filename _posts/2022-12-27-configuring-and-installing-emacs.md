@@ -9,6 +9,17 @@ title: 'Initialization files setup in Emacs'
 # Initialization files setup in Emacs
 
 
+## TL;DR
+
+An org source of this post can be found
+[here](https://github.com/cissic/cissic.github.io/blob/main/mysource/public-notes-org/2022-12-27-configuring-and-installing-emacs.org). This org-file can be used to tangle
+to required scripts:
+`install-packages.el` and
+`init.el`.
+Place them in your `./emacs.d` and hope it will run without
+problems on your machine.
+
+
 ## Problem description
 
 The aim of this post is to finally have clean and tidy Emacs initialization file.
@@ -103,7 +114,7 @@ it's better to keep whole .emacs.d directory as a git repository and
 make a commit before executing this script. Then, in case any problems
 you can go back to restore properly working emacs installation.
 Before running this script you should have a git repository initialized in emacs
-directory and git itself installed in the system (see Sec. [1.4](#orgaa2a215)).
+directory and git itself installed in the system (see Sec. [1.5](#org9222985)).
 Synchronization of the local repository with the remote one is not
 performed in this script. It should be performed explicitely by the user
 in a convenient time.
@@ -270,7 +281,7 @@ for now. An interesting discussion about this can be found [here](https://www.re
 
 1.  [DEPRECATED] Setting an auxiliary variable
 
-    This section is deprecated in favour of [`workgroups2 package`](#org1730d15).
+    This section is deprecated in favour of [`workgroups2 package`](#orgf7c5dc0).
     
         ;; This file is designed to be re-evaled; use the variable first-time
         ;; to avoid any problems with this.
@@ -311,7 +322,7 @@ proactively.
 Here are global Emacs customization. 
 If necessary some useful infomation or link is added to the customization.
 
-1.  Self-descriptive oneliners <a id="orgd4f296b"></a>
+1.  Self-descriptive oneliners <a id="orgdf2d88b"></a>
 
         (auto-revert-mode 1)       ; Automatically reload file from a disk after change
         (global-auto-revert-mode) 
@@ -600,7 +611,7 @@ ido/smex vs ivy/counsel/swiper vs helm
         (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command) 
         ;; <- smex
 
-3.  TODO Ivy (for testing) <a id="orgfa9fdde"></a>
+3.  TODO Ivy (for testing) <a id="orga32c2ca"></a>
 
     Furthermore, according to [some other users](https://ruzkuku.com/emacs.d.html#org804158b)
     "Ivy is simpler (and faster) than Helm but more powerful than Ido".
@@ -630,7 +641,7 @@ ido/smex vs ivy/counsel/swiper vs helm
 
 1.  oc [org-citations]
 
-    1.  Bibliography <a id="orga9b565f"></a>
+    1.  Bibliography <a id="orgbab809a"></a>
     
         In Org 9.6 we do not need explicitely load `oc` libraries.
         Everything is covered in my post concerning bibliography and org-mode.
@@ -885,7 +896,7 @@ Bash has usually very good command completion facilities, which aren't accessibl
 
 ### TODO The end
 
-1.  Workgroups (should be executed at the end of init.el) <a id="org1730d15"></a>
+1.  Workgroups (should be executed at the end of init.el) <a id="orgf7c5dc0"></a>
 
     <https://tuhdo.github.io/emacs-tutor3.html>
     
@@ -930,16 +941,63 @@ Bash has usually very good command completion facilities, which aren't accessibl
     
     The line `(setq inhibit-startup-message t)` is added in order to prevent
     Emacs splash screen to appear in one of the restored `"currentsession"` frames.
+    
+    There is one problem with the code above. When running Emacs in batch mode like
+    this:
+    
+    `emacs -batch -Q -load ~/.emacs.d/init.el`
+    
+    (I have such a line of code in the makefile of this blog)
+    it asks in the command line about saving the "currentsession". It sucks.
+    As a workaround we can put those hooks inside if statement, which checks
+    whether Emacs was run in batch mode or not.
+    How to write an if statements is [here](https://www.gnu.org/software/emacs/manual/html_node/elisp/Conditionals.html).
+    In the code below I also use
+    [`noninteractive` variable](https://emacs.stackexchange.com/questions/20603/how-to-know-if-emacs-is-running-in-batch-mode) which is true
+    if emacs is run in batch mode.
+    
+    The code below somehow worked for a while. Then, out of a sudden it stopped.
+    
+        (if (not noninteractive)
+            ( ; if Emacs is started in graphical environment
+              (add-hook 'kill-emacs-hook (
+        		     lambda () (wg-create-workgroup "currentsession")))
+              (setq inhibit-startup-message t)
+              (add-hook 'window-setup-hook (
+        		       lambda () (wg-open-workgroup "currentsession")))
+            )
+           (
+            ; if Emacs is run in batch mode - do not care about workgroups
+           )
+        )
+    
+    The problem was the lack of a special keyword `progn` as I found
+    [here](https://stackoverflow.com/questions/912355/how-can-you-write-multiple-statements-in-elisp-if-statement) ([Part of the manual about it](https://www.gnu.org/software/emacs/manual/html_node/elisp/Sequencing.html)). All in all, now everything seems
+    to be ok with the following lines:
+    
+        (if (not noninteractive)
+            ( ; if Emacs is started in graphical environment
+              progn
+              (add-hook 'kill-emacs-hook (
+        		     lambda () (wg-create-workgroup "currentsession")))
+              (setq inhibit-startup-message t)
+              (add-hook 'window-setup-hook (
+        		       lambda () (wg-open-workgroup "currentsession")))
+            )
+           (
+            ; if Emacs is run in batch mode - do not care about workgroups
+           )
+        )
 
 2.  Last lines
 
 3.  [DEPRECATED] Restoring previous session
 
-    This section is deprecated in favour of [`workgroups2 package`](#org1730d15).
+    This section is deprecated in favour of [`workgroups2 package`](#orgf7c5dc0).
     
     This way of restoring session throws some warnings and needs additional
     confirmations so I give it up. Simple `(desktop-save-mode 1)` which is 
-    included [in the beginning of `init.el`](#orgd4f296b) works ok.
+    included [in the beginning of `init.el`](#orgdf2d88b) works ok.
     
         ;; Restore the "desktop" - do this as late as possible
         (if first-time
@@ -950,19 +1008,30 @@ Bash has usually very good command completion facilities, which aren't accessibl
         ;; Indicate that this file has been read at least once
         (setq first-time nil)
 
-4.  Open some useful files in the background
+4.  [DEPRECATED] Open some useful files in the background
 
+    I don't use this part of `init.el` anymore. I can get the similar
+    functionality by using `recentf` package or prepare a session
+    with required files opened in it.
+    
         ;;; Always have several files opened at startup
         ;; hint: https://stackoverflow.com/a/19284395/4649238
         (find-file "~/.emacs.d/init.el")
         (find-file "~/.emacs.d/install-packages.el")
         (find-file "~/.emacs.d/useful-shortcuts.org")
-        
+    
+    What's more, the commands above cause an unwanted behaviour when
+    evaluating `init.el`. The last file in the list is opened in an active buffer.
+    I'd like to have those files opened "in background".
+    I found `find-file-noselect` function have this functionality,
+    but first: it is [not recommended way](https://emacs.stackexchange.com/questions/2868/whats-wrong-with-find-file-noselect) of doing this thing;
+    second: it is not present in Emacs 27.1 anyway.
+    
         ;; All done
         (message "All done in init.el.")
 
 
-## Dependencies of the presented Emacs configuration <a id="orgaa2a215"></a>:
+## Dependencies of the presented Emacs configuration <a id="org9222985"></a>:
 
 The list of external applications that this script is dependent on:
 

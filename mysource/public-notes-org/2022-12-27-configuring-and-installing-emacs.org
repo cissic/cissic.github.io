@@ -11,10 +11,22 @@
 
 * {{{title}}}
 :PROPERTIES:
-:PRJ-DIR: ~/.emacs.d/     
+:PRJ-DIR: ./2022-12-27-init-and-setup-Emacs/
 :END:
+# :PROPERTIES:
+# :PRJ-DIR: ~/.emacs.d/     
+# :END:
 
-# PRJ-DIR: ./2022-12-27-init-and-setup-Emacs/
+
+** TL;DR
+An org source of this post can be found
+[[https://github.com/cissic/cissic.github.io/blob/main/mysource/public-notes-org/2022-12-27-configuring-and-installing-emacs.org][here]]. This org-file can be used to tangle
+to required scripts:
+~install-packages.el~ and
+~init.el~.
+Place them in your ~./emacs.d~ and hope it will run without
+problems on your machine.
+
 
 ** Problem description
 The aim of this post is to finally have clean and tidy Emacs initialization file.
@@ -102,14 +114,17 @@ variable for this but a bit of redundancy won't do much harm).
 
 #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "install-packages.el") :mkdirp yes :exports none
 
-;; ____________________________________________________________________________78
-;; install-mb-packages.el
-;; The full description of what is done in this file is included in 
-;; accompanying .org file (configuring-and-installing-emacs.org).
+    ;; ____________________________________________________________________________78
+    ;; install-mb-packages.el
+    ;; The full description of what is done in this file is included in 
+    ;; accompanying .org file (configuring-and-installing-emacs.org) that is
+    ;; described here:
+    ;; https://cissic.github.io/posts/configuring-and-installing-emacs/
 
-;; Path to your Emacs directory:
-(setq my-emacs-dir "~/.emacs.d/")
-;;;; (let (my-emacs-dir "~/.emacs.d/"))
+
+    ;; Path to your Emacs directory:
+    (setq my-emacs-dir "~/.emacs.d/")
+    ;;;; (let (my-emacs-dir "~/.emacs.d/"))
 
 #+end_src
 
@@ -682,6 +697,26 @@ Furthermore, according to [[https://ruzkuku.com/emacs.d.html#org804158b][some ot
 
 
 
+# **** Abbreviations (abbrev-mode)
+# I've just discovered this mode and wanted to use it.
+# I'm not sure whether ~abbrev-mode~, ~yasnippet~ and ~company~
+# aren't substitute modes. 
+
+# - [[https://www.youtube.com/watch?v=AtdWuYImviw][Abbrev-mode movie tutorial]]
+
+# Emacs abbreviations are
+# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
+#   ;; abbrev-mode ->
+#     (setq-default abbrev-mode t)          
+#     (read-abbrev-file "~/.emacs.d/abbrev_defs")
+#     (setq save-abbrevs t)  
+#   ;; <- abbrev-mode
+# #+end_src
+
+# ***** Useful commands
+# - C-x a 
+
+
 *** Autocomplete
 ~auto-complete~ vs ~company~
 
@@ -1126,7 +1161,7 @@ sucks.
 I decided to stick to ~workgroups2~ and supply the needed functionality 
 with the use of only this package. I did it by adding hooks:
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+#+begin_src emacs-lisp 
 (add-hook 'kill-emacs-hook (
                      lambda () (wg-create-workgroup "currentsession" )))
 
@@ -1138,6 +1173,59 @@ with the use of only this package. I did it by adding hooks:
 
 The line ~(setq inhibit-startup-message t)~ is added in order to prevent
 Emacs splash screen to appear in one of the restored ~"currentsession"~ frames.
+
+There is one problem with the code above. When running Emacs in batch mode like
+this:
+
+~emacs -batch -Q -load ~/.emacs.d/init.el~
+
+(I have such a line of code in the makefile of this blog)
+it asks in the command line about saving the "currentsession". It sucks.
+As a workaround we can put those hooks inside if statement, which checks
+whether Emacs was run in batch mode or not.
+How to write an if statements is [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Conditionals.html][here]].
+In the code below I also use
+[[https://emacs.stackexchange.com/questions/20603/how-to-know-if-emacs-is-running-in-batch-mode][~noninteractive~ variable]] which is true
+if emacs is run in batch mode.
+
+The code below somehow worked for a while. Then, out of a sudden it stopped.
+
+#+begin_src emacs-lisp 
+(if (not noninteractive)
+    ( ; if Emacs is started in graphical environment
+      (add-hook 'kill-emacs-hook (
+                     lambda () (wg-create-workgroup "currentsession")))
+      (setq inhibit-startup-message t)
+      (add-hook 'window-setup-hook (
+                       lambda () (wg-open-workgroup "currentsession")))
+    )
+   (
+    ; if Emacs is run in batch mode - do not care about workgroups
+   )
+)
+#+end_src
+
+The problem was the lack of a special keyword ~progn~ as I found
+[[https://stackoverflow.com/questions/912355/how-can-you-write-multiple-statements-in-elisp-if-statement][here]] ([[https://www.gnu.org/software/emacs/manual/html_node/elisp/Sequencing.html][Part of the manual about it]]). All in all, now everything seems
+to be ok with the following lines:
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+  (if (not noninteractive)
+      ( ; if Emacs is started in graphical environment
+        progn
+	(add-hook 'kill-emacs-hook (
+		       lambda () (wg-create-workgroup "currentsession")))
+	(setq inhibit-startup-message t)
+	(add-hook 'window-setup-hook (
+			 lambda () (wg-open-workgroup "currentsession")))
+      )
+     (
+      ; if Emacs is run in batch mode - do not care about workgroups
+     )
+  )
+#+end_src
+
+
 
 **** Last lines
 #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") :exports none
@@ -1165,17 +1253,32 @@ included [[oneliners][in the beginning of ~init.el~]] works ok.
 (setq first-time nil)
 #+end_src
 
-**** Open some useful files in the background
+**** [DEPRECATED] Open some useful files in the background
+I don't use this part of ~init.el~ anymore. I can get the similar
+functionality by using ~recentf~ package or prepare a session
+with required files opened in it.
+
+# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
+#+begin_src emacs-lisp
+  ;;; Always have several files opened at startup
+  ;; hint: https://stackoverflow.com/a/19284395/4649238
+  (find-file "~/.emacs.d/init.el")
+  (find-file "~/.emacs.d/install-packages.el")
+  (find-file "~/.emacs.d/useful-shortcuts.org")
+#+end_src
+
+What's more, the commands above cause an unwanted behaviour when
+evaluating ~init.el~. The last file in the list is opened in an active buffer.
+I'd like to have those files opened "in background".
+I found ~find-file-noselect~ function have this functionality,
+but first: it is [[https://emacs.stackexchange.com/questions/2868/whats-wrong-with-find-file-noselect][not recommended way]] of doing this thing;
+second: it is not present in Emacs 27.1 anyway.
+
+
 
 #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
-;;; Always have several files opened at startup
-;; hint: https://stackoverflow.com/a/19284395/4649238
-(find-file "~/.emacs.d/init.el")
-(find-file "~/.emacs.d/install-packages.el")
-(find-file "~/.emacs.d/useful-shortcuts.org")
-
-;; All done
-(message "All done in init.el.")
+  ;; All done
+  (message "All done in init.el.")
 #+end_src
 
 ** Dependencies of the presented Emacs configuration <<dependencies-section>>:

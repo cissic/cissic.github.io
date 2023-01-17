@@ -26,7 +26,7 @@ the possibility of logging with the use of GPG keys you should apply it.
 
 
 *** Mounting
-#+begin_src sh :tangle (concat (org-entry-get nil "PRJ-DIR" t) "mountCloud.sh") :mkdirp yes :exports none :eval no :results none
+#+begin_src sh :tangle (concat (org-entry-get nil "PRJ-DIR" t) "mountCloud.sh") :mkdirp yes :eval no :results none
   #!/bin/bash
 
   ## Caution: Sourcing this script like this:
@@ -62,7 +62,7 @@ bind remote volumes mounted by ~sshfs~
 
 *** Umounting
 
-#+begin_src sh :tangle (concat (org-entry-get nil "PRJ-DIR" t) "umountCloud.sh") :mkdirp yes :exports none :eval no :results none  
+#+begin_src sh :tangle (concat (org-entry-get nil "PRJ-DIR" t) "umountCloud.sh") :mkdirp yes  :eval no :results none  
   #!/bin/bash
 
   ## Caution: Sourcing this script like this:
@@ -151,7 +151,7 @@ and (*don't forget about this point!*) perform:
 Have in mind that the number at the beginning of the filename is file's priority
 (order of the execution when sleep action is invoked).
 
-#+begin_src sh :tangle (concat (org-entry-get nil "PRJ-DIR" t) "55umountCloud_usr_lib_systemd_system-sleep") :mkdirp yes :exports none :eval no :results none
+#+begin_src sh :tangle (concat (org-entry-get nil "PRJ-DIR" t) "55umountCloud_usr_lib_systemd_system-sleep") :mkdirp yes :eval no :results none
   #!/bin/bash
 
   # put it in  
