@@ -125,6 +125,16 @@ Inserting items is done via `org-cite-insert` command, binded by default to
     #+PRINT_BIBLIOGRAPHY:
 
 
+### Important remark!
+
+The exporter won't work properly if there are problems with the `.bib` file itself.
+For example, (that was my case) duplicate items won't let `org-cite` to end the job.
+It is signalized with warnings in `BibTeX validation errors` buffer which
+displays `bibtex-validate` messages.
+
+After getting rid of duplicates `org-cite` worked ok.
+
+
 ## [DEPRECATED description] Problem
 
 How to write in `org` and use bibliography files? 

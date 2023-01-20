@@ -114,7 +114,7 @@ it's better to keep whole .emacs.d directory as a git repository and
 make a commit before executing this script. Then, in case any problems
 you can go back to restore properly working emacs installation.
 Before running this script you should have a git repository initialized in emacs
-directory and git itself installed in the system (see Sec. [1.5](#org5773c6b)).
+directory and git itself installed in the system (see Sec. [1.5](#orgcf5dc6e)).
 Synchronization of the local repository with the remote one is not
 performed in this script. It should be performed explicitely by the user
 in a convenient time.
@@ -281,7 +281,7 @@ for now. An interesting discussion about this can be found [here](https://www.re
 
 1.  [DEPRECATED] Setting an auxiliary variable
 
-    This section is deprecated in favour of [`workgroups2 package`](#org26bc5cc).
+    This section is deprecated in favour of [`workgroups2 package`](#orge027a37).
     
         ;; This file is designed to be re-evaled; use the variable first-time
         ;; to avoid any problems with this.
@@ -322,7 +322,7 @@ proactively.
 Here are global Emacs customization. 
 If necessary some useful infomation or link is added to the customization.
 
-1.  Self-descriptive oneliners <a id="org0dea960"></a>
+1.  Self-descriptive oneliners <a id="org51e0c8f"></a>
 
         (auto-revert-mode 1)       ; Automatically reload file from a disk after change
         (global-auto-revert-mode 1) 
@@ -407,7 +407,32 @@ If necessary some useful infomation or link is added to the customization.
     
         (set-frame-font "liberation mono 11" nil t) ; Set default font
 
-7.  Time and calendar
+7.  Highlight on an active window/buffer
+
+    Although the active window can be recognized
+    by the cursor which blinking in it, sometimes it is hard to
+    find in on the screen (especially if you use a colourful theme
+    like [1.4.12.1](#org3ab8636).
+    
+    I found a [post](https://stackoverflow.com/questions/33195122/highlight-current-active-window) adressing this issue.
+    Although the accepted answer is using 
+    `auto-dim-other-buffers.el`
+    I prefer [this solution](https://stackoverflow.com/a/33196798) which does not rely on external package
+    
+        ;;Highlight an active window/buffer or dim all other windows
+        
+          (defun highlight-selected-window ()
+            "Highlight selected window with a different background color."
+            (walk-windows (lambda (w)
+              (unless (eq w (selected-window)) 
+        	(with-current-buffer (window-buffer w)
+        	  (buffer-face-set '(:background "#111"))))))
+            (buffer-face-set 'default))
+        
+            (add-hook 'buffer-list-update-hook 'highlight-selected-window)
+        ;;
+
+8.  Time and calendar
 
     1.  DONE Locale for names of days of the week in org-mode
     
@@ -514,7 +539,7 @@ If necessary some useful infomation or link is added to the customization.
         </tbody>
         </table>
 
-8.  Easy moving between windows
+9.  Easy moving between windows
 
     It is managed by [WindMove package](https://www.emacswiki.org/emacs/WindMove) that is built-in in Emacs.
     The default keybindings of this package is `Shift arrow`, which sometimes
@@ -577,7 +602,7 @@ If necessary some useful infomation or link is added to the customization.
               (global-set-key (kbd "s-<down>") (ignore-error-wrapper 'windmove-down))
             ;; <- windmove
 
-9.  Easy windows resize
+10. Easy windows resize
 
         ;; Easy windows resize ->
           (define-key global-map (kbd "C-s-<left>") 'shrink-window-horizontally)
@@ -615,7 +640,7 @@ ido/smex vs ivy/counsel/swiper vs helm
         (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command) 
         ;; <- smex
 
-3.  TODO Ivy (for testing) <a id="orgd060771"></a>
+3.  TODO Ivy (for testing) <a id="org86543ee"></a>
 
     Furthermore, according to [some other users](https://ruzkuku.com/emacs.d.html#org804158b)
     "Ivy is simpler (and faster) than Helm but more powerful than Ido".
@@ -674,7 +699,7 @@ ido/smex vs ivy/counsel/swiper vs helm
 
 1.  oc [org-citations]
 
-    1.  Bibliography <a id="orgccc7c4c"></a>
+    1.  Bibliography <a id="org1d44698"></a>
     
         In Org 9.6 we do not need explicitely load `oc` libraries.
         Everything is covered in my post concerning bibliography and org-mode.
@@ -828,7 +853,7 @@ Bash has usually very good command completion facilities, which aren't accessibl
 
 ### Load Emacs theme of your preference
 
-1.  Modus themes by Protesilaos Stavrou
+1.  Modus themes by Protesilaos Stavrou <a id="org3ab8636"></a>
 
     -   [Author's page](https://protesilaos.com/codelog/2021-01-11-modus-themes-review-select-faint-colours/)
     -   [Youtube's tutorial](https://www.youtube.com/watch?v=JJPokfFxyFo)
@@ -934,7 +959,7 @@ Bash has usually very good command completion facilities, which aren't accessibl
 
 ### TODO The end
 
-1.  Workgroups (should be executed at the end of init.el) <a id="org26bc5cc"></a>
+1.  Workgroups (should be executed at the end of init.el) <a id="orge027a37"></a>
 
     <https://tuhdo.github.io/emacs-tutor3.html>
     
@@ -1031,11 +1056,11 @@ Bash has usually very good command completion facilities, which aren't accessibl
 
 3.  [DEPRECATED] Restoring previous session
 
-    This section is deprecated in favour of [`workgroups2 package`](#org26bc5cc).
+    This section is deprecated in favour of [`workgroups2 package`](#orge027a37).
     
     This way of restoring session throws some warnings and needs additional
     confirmations so I give it up. Simple `(desktop-save-mode 1)` which is 
-    included [in the beginning of `init.el`](#org0dea960) works ok.
+    included [in the beginning of `init.el`](#org51e0c8f) works ok.
     
         ;; Restore the "desktop" - do this as late as possible
         (if first-time
@@ -1069,7 +1094,7 @@ Bash has usually very good command completion facilities, which aren't accessibl
         (message "All done in init.el.")
 
 
-## Dependencies of the presented Emacs configuration <a id="org5773c6b"></a>:
+## Dependencies of the presented Emacs configuration <a id="orgcf5dc6e"></a>:
 
 The list of external applications that this script is dependent on:
 

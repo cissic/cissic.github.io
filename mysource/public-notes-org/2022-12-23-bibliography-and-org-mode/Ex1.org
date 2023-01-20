@@ -2,8 +2,8 @@
 #+AUTHOR: Some author
 #+LATEX_CLASS: article
 #+CITE_EXPORT: basic
-#+BIBLIOGRAPHY: biblio.bib 
-
+# #+BIBLIOGRAPHY: biblio.bib
+#+BIBLIOGRAPHY: ~/texmf/bibtex/bib/myBibliography/cissic.bib
 
 * Basic exporter
 
