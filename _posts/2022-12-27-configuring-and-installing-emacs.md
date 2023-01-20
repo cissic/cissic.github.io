@@ -6,17 +6,17 @@ title: 'Initialization files setup in Emacs'
 ---
 
 
-# Initialization files setup in Emacs
+# {{{title}}
 
 
 ## TL;DR
 
 An org source of this post can be found
-[here](https://github.com/cissic/cissic.github.io/blob/main/mysource/public-notes-org/2022-12-27-configuring-and-installing-emacs.org). This org-file can be used to tangle
-to required scripts:
+[here](https://github.com/cissic/cissic.github.io/blob/main/mysource/public-notes-org/2022-12-27-configuring-and-installing-emacs.org). This org-file can be used to generate (tangle in Emacs nomenclature)
+to scripts:
 `install-packages.el` and
 `init.el`.
-Place them in your `./emacs.d` and hope it will run without
+Place them in your `./emacs.d` and hope ;) they will run without
 problems on your machine.
 
 
@@ -114,7 +114,7 @@ it's better to keep whole .emacs.d directory as a git repository and
 make a commit before executing this script. Then, in case any problems
 you can go back to restore properly working emacs installation.
 Before running this script you should have a git repository initialized in emacs
-directory and git itself installed in the system (see Sec. [1.5](#org9222985)).
+directory and git itself installed in the system (see Sec. [1.5](#org5773c6b)).
 Synchronization of the local repository with the remote one is not
 performed in this script. It should be performed explicitely by the user
 in a convenient time.
@@ -281,7 +281,7 @@ for now. An interesting discussion about this can be found [here](https://www.re
 
 1.  [DEPRECATED] Setting an auxiliary variable
 
-    This section is deprecated in favour of [`workgroups2 package`](#orgf7c5dc0).
+    This section is deprecated in favour of [`workgroups2 package`](#org26bc5cc).
     
         ;; This file is designed to be re-evaled; use the variable first-time
         ;; to avoid any problems with this.
@@ -322,16 +322,20 @@ proactively.
 Here are global Emacs customization. 
 If necessary some useful infomation or link is added to the customization.
 
-1.  Self-descriptive oneliners <a id="orgdf2d88b"></a>
+1.  Self-descriptive oneliners <a id="org0dea960"></a>
 
         (auto-revert-mode 1)       ; Automatically reload file from a disk after change
-        (global-auto-revert-mode) 
+        (global-auto-revert-mode 1) 
         
         (delete-selection-mode 1)  ; Replace selected text
         
         (show-paren-mode 1)        ; Highlight matching parenthesis
         
         (global-linum-mode 1)      ; Enable line numbering
+        
+        (scroll-bar-mode 1)        ; Enable scrollbar
+        (menu-bar-mode 1)          ; Enable menubar
+        (tool-bar-mode -1)         ; Disable toolbar since it's rather useless
         
         (setq line-number-mode t)  ; Show line number
         
@@ -611,10 +615,39 @@ ido/smex vs ivy/counsel/swiper vs helm
         (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command) 
         ;; <- smex
 
-3.  TODO Ivy (for testing) <a id="orga32c2ca"></a>
+3.  TODO Ivy (for testing) <a id="orgd060771"></a>
 
     Furthermore, according to [some other users](https://ruzkuku.com/emacs.d.html#org804158b)
     "Ivy is simpler (and faster) than Helm but more powerful than Ido".
+
+4.  Abbreviations (abbrev-mode)
+
+    I've just discovered this mode and wanted to use it.
+    I'm not sure whether `abbrev-mode`, `yasnippet` and `company`
+    aren't substitute modes. [Well, in fact they partly are](https://emacs.stackexchange.com/questions/42556/best-pratice-advices-for-abbrev-vs-completion-vs-snippets).
+    
+    -   [Abbrev-mode movie tutorial](https://www.youtube.com/watch?v=AtdWuYImviw)
+    -   [Xah movie tutorial](https://www.youtube.com/watch?v=Holxu96YKrc&t=1s)
+    -   [Xah page about abbrev](http://xahlee.info/emacs/emacs/emacs_abbrev_mode_tutorial.html)
+    
+    Emacs abbreviations are
+    
+        ;; abbrev-mode ->
+          (setq-default abbrev-mode t)          
+          (read-abbrev-file "~/.emacs.d/abbrev_defs")
+          (setq save-abbrevs t)  
+        ;; <- abbrev-mode
+    
+    1.  Useful commands
+    
+        -   C-x a - inverse-add-global-abbrev
+        -   C-x a i l - inverse-add-global-abbrev
+        -   C-x a i g - inverse-add-mode-abbrev
+        -   unexpand-abbrev
+        -   edit-abbrevs
+        -   list-abbrevs
+        -   kill-all-abbrevs
+            i
 
 
 ### Autocomplete
@@ -641,7 +674,7 @@ ido/smex vs ivy/counsel/swiper vs helm
 
 1.  oc [org-citations]
 
-    1.  Bibliography <a id="orgbab809a"></a>
+    1.  Bibliography <a id="orgccc7c4c"></a>
     
         In Org 9.6 we do not need explicitely load `oc` libraries.
         Everything is covered in my post concerning bibliography and org-mode.
@@ -744,11 +777,16 @@ ido/smex vs ivy/counsel/swiper vs helm
         
         ;; <- **** org-to-markdown exporter customization
 
-5.  TODO Asynchronous babel sessions
+5.  Miscellaneous oneliners
+
+        ;; alphabetical ordered lists
+        (setq org-list-allow-alphabetical t)
+
+6.  TODO Asynchronous babel sessions
 
     ob-comint.el
 
-6.  TODO Default org to latex exporting command
+7.  TODO Default org to latex exporting command
 
 
 ### TODO Flyspell (TODO: dive deeper into the package and its capabilities)
@@ -896,7 +934,7 @@ Bash has usually very good command completion facilities, which aren't accessibl
 
 ### TODO The end
 
-1.  Workgroups (should be executed at the end of init.el) <a id="orgf7c5dc0"></a>
+1.  Workgroups (should be executed at the end of init.el) <a id="org26bc5cc"></a>
 
     <https://tuhdo.github.io/emacs-tutor3.html>
     
@@ -993,11 +1031,11 @@ Bash has usually very good command completion facilities, which aren't accessibl
 
 3.  [DEPRECATED] Restoring previous session
 
-    This section is deprecated in favour of [`workgroups2 package`](#orgf7c5dc0).
+    This section is deprecated in favour of [`workgroups2 package`](#org26bc5cc).
     
     This way of restoring session throws some warnings and needs additional
     confirmations so I give it up. Simple `(desktop-save-mode 1)` which is 
-    included [in the beginning of `init.el`](#orgdf2d88b) works ok.
+    included [in the beginning of `init.el`](#org0dea960) works ok.
     
         ;; Restore the "desktop" - do this as late as possible
         (if first-time
@@ -1031,7 +1069,7 @@ Bash has usually very good command completion facilities, which aren't accessibl
         (message "All done in init.el.")
 
 
-## Dependencies of the presented Emacs configuration <a id="org9222985"></a>:
+## Dependencies of the presented Emacs configuration <a id="org5773c6b"></a>:
 
 The list of external applications that this script is dependent on:
 

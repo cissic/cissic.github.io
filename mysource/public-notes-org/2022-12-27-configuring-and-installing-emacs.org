@@ -9,22 +9,22 @@
 #+OPTIONS: -:nil
 
 
-* {{{title}}}
+* {{{title}}
 :PROPERTIES:
-:PRJ-DIR: ./2022-12-27-init-and-setup-Emacs/
+:PRJ-DIR: ~/.emacs.d/     
 :END:
 # :PROPERTIES:
-# :PRJ-DIR: ~/.emacs.d/     
+# :PRJ-DIR: ./2022-12-27-init-and-setup-Emacs/
 # :END:
 
 
 ** TL;DR
 An org source of this post can be found
-[[https://github.com/cissic/cissic.github.io/blob/main/mysource/public-notes-org/2022-12-27-configuring-and-installing-emacs.org][here]]. This org-file can be used to tangle
-to required scripts:
+[[https://github.com/cissic/cissic.github.io/blob/main/mysource/public-notes-org/2022-12-27-configuring-and-installing-emacs.org][here]]. This org-file can be used to generate (tangle in Emacs nomenclature)
+to scripts:
 ~install-packages.el~ and
 ~init.el~.
-Place them in your ~./emacs.d~ and hope it will run without
+Place them in your ~./emacs.d~ and hope ;) they will run without
 problems on your machine.
 
 
@@ -394,28 +394,32 @@ If necessary some useful infomation or link is added to the customization.
 **** Self-descriptive oneliners <<oneliners>>
 
 #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
-(auto-revert-mode 1)       ; Automatically reload file from a disk after change
-(global-auto-revert-mode) 
+  (auto-revert-mode 1)       ; Automatically reload file from a disk after change
+  (global-auto-revert-mode 1) 
 
-(delete-selection-mode 1)  ; Replace selected text
+  (delete-selection-mode 1)  ; Replace selected text
 
-(show-paren-mode 1)        ; Highlight matching parenthesis
+  (show-paren-mode 1)        ; Highlight matching parenthesis
 
-(global-linum-mode 1)      ; Enable line numbering
+  (global-linum-mode 1)      ; Enable line numbering
 
-(setq line-number-mode t)  ; Show line number
+  (scroll-bar-mode 1)        ; Enable scrollbar
+  (menu-bar-mode 1)          ; Enable menubar
+  (tool-bar-mode -1)         ; Disable toolbar since it's rather useless
 
-(setq column-number-mode t); Show column number
+  (setq line-number-mode t)  ; Show line number
 
-(define-key global-map (kbd "RET") 'newline-and-indent) ; Auto-indent new lines
+  (setq column-number-mode t); Show column number
 
-(desktop-save-mode 1)      ; Save windows layout on closing
-(setq desktop-load-locked-desktop t) ; and don't ask for confirmation when 
-                           ; opening locked desktop
-(setq desktop-save t)
+  (define-key global-map (kbd "RET") 'newline-and-indent) ; Auto-indent new lines
 
-(save-place-mode t)        ; When re-entering a file, return to the place, 
-                           ; where I was when I left it the last time.
+  (desktop-save-mode 1)      ; Save windows layout on closing
+  (setq desktop-load-locked-desktop t) ; and don't ask for confirmation when 
+			     ; opening locked desktop
+  (setq desktop-save t)
+
+  (save-place-mode t)        ; When re-entering a file, return to the place, 
+			     ; where I was when I left it the last time.
 
 #+end_src
 
@@ -697,25 +701,33 @@ Furthermore, according to [[https://ruzkuku.com/emacs.d.html#org804158b][some ot
 
 
 
-# **** Abbreviations (abbrev-mode)
-# I've just discovered this mode and wanted to use it.
-# I'm not sure whether ~abbrev-mode~, ~yasnippet~ and ~company~
-# aren't substitute modes. 
+**** Abbreviations (abbrev-mode)
+I've just discovered this mode and wanted to use it.
+I'm not sure whether ~abbrev-mode~, ~yasnippet~ and ~company~
+aren't substitute modes. [[https://emacs.stackexchange.com/questions/42556/best-pratice-advices-for-abbrev-vs-completion-vs-snippets][Well, in fact they partly are]].
 
-# - [[https://www.youtube.com/watch?v=AtdWuYImviw][Abbrev-mode movie tutorial]]
+- [[https://www.youtube.com/watch?v=AtdWuYImviw][Abbrev-mode movie tutorial]]
+- [[https://www.youtube.com/watch?v=Holxu96YKrc&t=1s][Xah movie tutorial]]
+- [[http://xahlee.info/emacs/emacs/emacs_abbrev_mode_tutorial.html][Xah page about abbrev]]
+  
+Emacs abbreviations are
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
+  ;; abbrev-mode ->
+    (setq-default abbrev-mode t)          
+    (read-abbrev-file "~/.emacs.d/abbrev_defs")
+    (setq save-abbrevs t)  
+  ;; <- abbrev-mode
+#+end_src
 
-# Emacs abbreviations are
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
-#   ;; abbrev-mode ->
-#     (setq-default abbrev-mode t)          
-#     (read-abbrev-file "~/.emacs.d/abbrev_defs")
-#     (setq save-abbrevs t)  
-#   ;; <- abbrev-mode
-# #+end_src
-
-# ***** Useful commands
-# - C-x a 
-
+***** Useful commands
+- C-x a - inverse-add-global-abbrev
+- C-x a i l - inverse-add-global-abbrev
+- C-x a i g - inverse-add-mode-abbrev
+- unexpand-abbrev
+- edit-abbrevs
+- list-abbrevs
+- kill-all-abbrevs
+  i 
 
 *** Autocomplete
 ~auto-complete~ vs ~company~
@@ -869,6 +881,12 @@ Besides, in order to have markdown exporter options in menu appearing after
 #+end_src
 
 
+
+**** Miscellaneous oneliners
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+;; alphabetical ordered lists
+(setq org-list-allow-alphabetical t)
+#+end_src
 
 **** TODO Asynchronous babel sessions
 ob-comint.el
