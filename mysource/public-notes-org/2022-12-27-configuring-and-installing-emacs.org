@@ -740,7 +740,10 @@ Emacs abbreviations are
 #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
   ;; abbrev-mode ->
     (setq-default abbrev-mode t)          
-    (read-abbrev-file "~/.emacs.d/abbrev_defs")
+    ; (read-abbrev-file "~/.emacs.d/abbrev_defs")
+    (read-abbrev-file "~/.emacs.d/abbrev_defs_autocorrectionEN")
+    (read-abbrev-file "~/.emacs.d/abbrev_defs_autocorrectionPL")  
+    (read-abbrev-file "~/.emacs.d/abbrev_defs_cis")  
     (setq save-abbrevs t)  
   ;; <- abbrev-mode
 #+end_src
@@ -917,9 +920,29 @@ Besides, in order to have markdown exporter options in menu appearing after
 **** TODO Asynchronous babel sessions
 ob-comint.el
 
-**** TODO Default org to latex exporting command
-     
+**** Org to latex nice org-babel source code formatting
+# exporting command
+The following instructions are based on
+[[https://stackoverflow.com/questions/46438516/how-to-encapsualte-code-blocks-into-a-frame-when-exporting-to-pdf][this post]].
 
+
+1. We need to have Python installed and ~Pygments~ package.
+#+begin_src
+  pip install Pygments
+#+end_src
+   
+2. In org file preamble you need the line: ~#+LaTeX_HEADER: \usepackage{minted}~.
+
+3. In init.el
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
+;; org-to-latex exporter to have nice code formatting
+  (setq org-latex-listings 'minted
+     org-latex-packages-alist '(("" "minted"))
+     org-latex-pdf-process
+     '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+       "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+       "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+#+end_src
 
 *** TODO Flyspell (TODO: dive deeper into the package and its capabilities)
 https://ruzkuku.com/emacs.d.html#org804158b

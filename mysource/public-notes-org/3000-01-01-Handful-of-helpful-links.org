@@ -14,10 +14,23 @@
 # :END:
 
 
+** How to use output of one source block in other source block
+- https://emacs.stackexchange.com/questions/49092/passing-variable-into-a-org-babel-code-on-export/49098#49098
+
+- https://emacs.stackexchange.com/questions/49092/passing-variable-into-a-org-babel-code-on-export/49098#49098
+
+*** macro approach (impossible)
+- https://emacs.stackexchange.com/questions/59164/org-mode-text-expansion-macro-in-src-block
+
+*** noweb approach (mentioned in one post in the last link)
+https://orgmode.org/manual/Noweb-Reference-Syntax.html
+
+
 ** How to word wrap within code blocks
 https://emacs.stackexchange.com/questions/33010/how-to-word-wrap-within-code-blocks
 
-** How to force newline inside macro: https://stackoverflow.com/questions/22132603/define-org-mode-macro-with-line-breaks
+** How to force newline inside macro:
+https://stackoverflow.com/questions/22132603/define-org-mode-macro-with-line-breaks
 
 ** Literate programming (setting up python virtual-environment for working with org-babel)
 http://cachestocaches.com/2018/6/org-literate-programming/

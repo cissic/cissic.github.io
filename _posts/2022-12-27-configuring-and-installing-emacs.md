@@ -114,7 +114,7 @@ it's better to keep whole .emacs.d directory as a git repository and
 make a commit before executing this script. Then, in case any problems
 you can go back to restore properly working emacs installation.
 Before running this script you should have a git repository initialized in emacs
-directory and git itself installed in the system (see Sec. [1.5](#orgcf5dc6e)).
+directory and git itself installed in the system (see Sec. [1.5](#orgb93fa24)).
 Synchronization of the local repository with the remote one is not
 performed in this script. It should be performed explicitely by the user
 in a convenient time.
@@ -281,7 +281,7 @@ for now. An interesting discussion about this can be found [here](https://www.re
 
 1.  [DEPRECATED] Setting an auxiliary variable
 
-    This section is deprecated in favour of [`workgroups2 package`](#orge027a37).
+    This section is deprecated in favour of [`workgroups2 package`](#org4cf9d95).
     
         ;; This file is designed to be re-evaled; use the variable first-time
         ;; to avoid any problems with this.
@@ -322,7 +322,7 @@ proactively.
 Here are global Emacs customization. 
 If necessary some useful infomation or link is added to the customization.
 
-1.  Self-descriptive oneliners <a id="org51e0c8f"></a>
+1.  Self-descriptive oneliners <a id="orge87ad0c"></a>
 
         (auto-revert-mode 1)       ; Automatically reload file from a disk after change
         (global-auto-revert-mode 1) 
@@ -412,7 +412,7 @@ If necessary some useful infomation or link is added to the customization.
     Although the active window can be recognized
     by the cursor which blinking in it, sometimes it is hard to
     find in on the screen (especially if you use a colourful theme
-    like [1.4.12.1](#org3ab8636).
+    like [1.4.12.1](#org8a52d90).
     
     I found a [post](https://stackoverflow.com/questions/33195122/highlight-current-active-window) adressing this issue.
     Although the accepted answer is using 
@@ -640,7 +640,7 @@ ido/smex vs ivy/counsel/swiper vs helm
         (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command) 
         ;; <- smex
 
-3.  TODO Ivy (for testing) <a id="org86543ee"></a>
+3.  TODO Ivy (for testing) <a id="org5d51972"></a>
 
     Furthermore, according to [some other users](https://ruzkuku.com/emacs.d.html#org804158b)
     "Ivy is simpler (and faster) than Helm but more powerful than Ido".
@@ -659,7 +659,10 @@ ido/smex vs ivy/counsel/swiper vs helm
     
         ;; abbrev-mode ->
           (setq-default abbrev-mode t)          
-          (read-abbrev-file "~/.emacs.d/abbrev_defs")
+          ; (read-abbrev-file "~/.emacs.d/abbrev_defs")
+          (read-abbrev-file "~/.emacs.d/abbrev_defs_autocorrectionEN")
+          (read-abbrev-file "~/.emacs.d/abbrev_defs_autocorrectionPL")  
+          (read-abbrev-file "~/.emacs.d/abbrev_defs_cis")  
           (setq save-abbrevs t)  
         ;; <- abbrev-mode
     
@@ -699,7 +702,7 @@ ido/smex vs ivy/counsel/swiper vs helm
 
 1.  oc [org-citations]
 
-    1.  Bibliography <a id="org1d44698"></a>
+    1.  Bibliography <a id="org17b4f88"></a>
     
         In Org 9.6 we do not need explicitely load `oc` libraries.
         Everything is covered in my post concerning bibliography and org-mode.
@@ -811,7 +814,26 @@ ido/smex vs ivy/counsel/swiper vs helm
 
     ob-comint.el
 
-7.  TODO Default org to latex exporting command
+7.  Org to latex nice org-babel source code formatting
+
+    The following instructions are based on
+    [this post](https://stackoverflow.com/questions/46438516/how-to-encapsualte-code-blocks-into-a-frame-when-exporting-to-pdf).
+    
+    1.  We need to have Python installed and `Pygments` package.
+    
+        pip install Pygments
+    
+    1.  In org file preamble you need the line: `#+LaTeX_HEADER: \usepackage{minted}`.
+    
+    2.  In init.el
+    
+        ;; org-to-latex exporter to have nice code formatting
+          (setq org-latex-listings 'minted
+             org-latex-packages-alist '(("" "minted"))
+             org-latex-pdf-process
+             '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+               "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+               "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
 
 
 ### TODO Flyspell (TODO: dive deeper into the package and its capabilities)
@@ -853,7 +875,7 @@ Bash has usually very good command completion facilities, which aren't accessibl
 
 ### Load Emacs theme of your preference
 
-1.  Modus themes by Protesilaos Stavrou <a id="org3ab8636"></a>
+1.  Modus themes by Protesilaos Stavrou <a id="org8a52d90"></a>
 
     -   [Author's page](https://protesilaos.com/codelog/2021-01-11-modus-themes-review-select-faint-colours/)
     -   [Youtube's tutorial](https://www.youtube.com/watch?v=JJPokfFxyFo)
@@ -959,7 +981,7 @@ Bash has usually very good command completion facilities, which aren't accessibl
 
 ### TODO The end
 
-1.  Workgroups (should be executed at the end of init.el) <a id="orge027a37"></a>
+1.  Workgroups (should be executed at the end of init.el) <a id="org4cf9d95"></a>
 
     <https://tuhdo.github.io/emacs-tutor3.html>
     
@@ -1056,11 +1078,11 @@ Bash has usually very good command completion facilities, which aren't accessibl
 
 3.  [DEPRECATED] Restoring previous session
 
-    This section is deprecated in favour of [`workgroups2 package`](#orge027a37).
+    This section is deprecated in favour of [`workgroups2 package`](#org4cf9d95).
     
     This way of restoring session throws some warnings and needs additional
     confirmations so I give it up. Simple `(desktop-save-mode 1)` which is 
-    included [in the beginning of `init.el`](#org51e0c8f) works ok.
+    included [in the beginning of `init.el`](#orge87ad0c) works ok.
     
         ;; Restore the "desktop" - do this as late as possible
         (if first-time
@@ -1094,7 +1116,7 @@ Bash has usually very good command completion facilities, which aren't accessibl
         (message "All done in init.el.")
 
 
-## Dependencies of the presented Emacs configuration <a id="orgcf5dc6e"></a>:
+## Dependencies of the presented Emacs configuration <a id="orgb93fa24"></a>:
 
 The list of external applications that this script is dependent on:
 
