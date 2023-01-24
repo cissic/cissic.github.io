@@ -41,9 +41,9 @@ Nice tutorial is [here](https://orgmode.org/worg/org-tutorials/org-latex-export.
     pip install Pygments
 
 1.  In org file preamble you need the line: `#+LaTeX_HEADER: \usepackage{minted}`, but
-    this is covered [below](#org05e6231).
+    this is covered [below](#orge9e838a).
 
-2.  In `init.el` you could put something like this: <a id="org05e6231"></a>
+2.  In `init.el` you could put something like this: <a id="orge9e838a"></a>
 
     
     (setq org-latex-listings 'minted
@@ -156,7 +156,7 @@ in `resultsminted` package.
     Hit ~C-c C-c~ when cursor is on the code block below to obtain
     the results embraced with ~#+begin_resultsminted #+end_resultsminted~.
     
-    #+begin_src sh :exports both :tangle (concat (org-entry-get nil "PRJ-DIR" t) "") :mkdirp yes :wrap resultsminted :results raw
+    #+begin_src sh :exports both :tangle (concat (org-entry-get nil "PRJ-DIR" t) "") :mkdirp yes :results raw :wrap resultsminted 
       ls -la 
     #+end_src
     

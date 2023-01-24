@@ -860,6 +860,40 @@ To have org-babel enabled (execution of portions of code):
 
 #+end_src
 
+**** Set path to Python executable to work in org-babel code block
+Pythonic org-babel code blocks like the one below:
+
+#+begin_src python :results output
+print("Hello world")
+#+end_src
+don't work out-of-the-box.
+The similar problem for ~R~ can be found [[https://stackoverflow.com/questions/54007309/problem-org-babel-code-does-not-work-with-r][here]].
+
+In order to fix the problem you need to
+explicitely set the path to your
+Python interpreter. 
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+;; Python in org-babel
+(setq org-babel-python-command "/bin/python3")
+#+end_src
+
+Two observations:
+- ~python script.py~ executed in command line works ok
+- there is no ~python~ comannd in ~/bin/~ directory.
+
+An interesting discussion on python/python2/python3 related issues can be found [[https://stackoverflow.com/questions/6908143/should-i-put-shebang-in-python-scripts-and-what-form-should-it-take][here]].
+
+Another interesting remark about python in org-babel is available [[https://emacs.stackexchange.com/a/41290][here]]. The following code block
+#+begin_src org
+  ,#+begin_src python
+  ,print("Hello world")
+  ,#+end_src
+#+end_src
+
+won't work as expected. You need to add ~results output~ to get string printed
+by python in results block in org.
+
 **** Tailoring org-mode to markdown export
 When exporting to markdown I want to add some keywords in a special format to
 the preamble of .md file.
@@ -924,6 +958,7 @@ ob-comint.el
 # exporting command
 The following instructions are based on
 [[https://stackoverflow.com/questions/46438516/how-to-encapsualte-code-blocks-into-a-frame-when-exporting-to-pdf][this post]].
+Nice tutorial is [[https://orgmode.org/worg/org-tutorials/org-latex-export.html][here]].
 
 
 1. We need to have Python installed and ~Pygments~ package.
@@ -933,7 +968,7 @@ The following instructions are based on
    
 2. In org file preamble you need the line: ~#+LaTeX_HEADER: \usepackage{minted}~.
 
-3. In init.el
+3. In init.el:
 #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
 ;; org-to-latex exporter to have nice code formatting
   (setq org-latex-listings 'minted

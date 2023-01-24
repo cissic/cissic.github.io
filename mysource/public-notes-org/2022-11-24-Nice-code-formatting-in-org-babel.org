@@ -176,7 +176,7 @@ in ~resultsminted~ package.
   Hit ~C-c C-c~ when cursor is on the code block below to obtain
   the results embraced with ~#+begin_resultsminted #+end_resultsminted~.
 
-  ,#+begin_src sh :exports both :tangle (concat (org-entry-get nil "PRJ-DIR" t) "") :mkdirp yes :wrap resultsminted :results raw
+  ,#+begin_src sh :exports both :tangle (concat (org-entry-get nil "PRJ-DIR" t) "") :mkdirp yes :results raw :wrap resultsminted 
     ls -la 
   ,#+end_src
 
