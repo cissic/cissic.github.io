@@ -37,20 +37,21 @@ Nice tutorial is [here](https://orgmode.org/worg/org-tutorials/org-latex-export.
 
 1.  We need to have Python installed and `Pygments` package.
 
+    
     pip install Pygments
 
 1.  In org file preamble you need the line: `#+LaTeX_HEADER: \usepackage{minted}`, but
-    this is covered [below](#orgd275a3f).
+    this is covered [below](#org6834646).
 
-2.  In `init.el` you could put something like this: <a id="orgd275a3f"></a>
+2.  In `init.el` you could put something like this: <a id="org6834646"></a>
 
-    ;;
-      (setq org-latex-listings 'minted
-         org-latex-packages-alist '(("" "minted"))
-         org-latex-pdf-process
-         '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-           "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-           "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+    
+    (setq org-latex-listings 'minted
+       org-latex-packages-alist '(("" "minted"))
+       org-latex-pdf-process
+       '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+         "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+         "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
 
 However this will change the global settings of latex exporter.
 Especially the triple pdflatex compiling takes a while when exporting, and I believe

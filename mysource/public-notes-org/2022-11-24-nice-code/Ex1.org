@@ -1,3 +1,0 @@
-#+begin_src org
- This is *some* text.
-#+end_src

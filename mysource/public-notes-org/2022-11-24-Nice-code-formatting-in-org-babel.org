@@ -42,7 +42,9 @@ Nice tutorial is [[https://orgmode.org/worg/org-tutorials/org-latex-export.html]
 
 1. We need to have Python installed and ~Pygments~ package.
 #+begin_src
+  
   pip install Pygments
+  
 #+end_src
    
 2. In org file preamble you need the line: ~#+LaTeX_HEADER: \usepackage{minted}~, but
@@ -50,13 +52,14 @@ Nice tutorial is [[https://orgmode.org/worg/org-tutorials/org-latex-export.html]
 
 3. In ~init.el~ you could put something like this: <<org-configuration-update>>
 #+begin_src emacs-lisp 
-;;
+
   (setq org-latex-listings 'minted
      org-latex-packages-alist '(("" "minted"))
      org-latex-pdf-process
      '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
        "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
        "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+  
 #+end_src
 
 However this will change the global settings of latex exporter.
