@@ -41,17 +41,17 @@ Nice tutorial is [here](https://orgmode.org/worg/org-tutorials/org-latex-export.
     pip install Pygments
 
 1.  In org file preamble you need the line: `#+LaTeX_HEADER: \usepackage{minted}`, but
-    this is covered [below](#org6834646).
+    this is covered [below](#org05e6231).
 
-2.  In `init.el` you could put something like this: <a id="org6834646"></a>
+2.  In `init.el` you could put something like this: <a id="org05e6231"></a>
 
     
     (setq org-latex-listings 'minted
-    org-latex-packages-alist '(("" "minted"))
-    org-latex-pdf-process
-    '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-    "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-    "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+       org-latex-packages-alist '(("" "minted"))
+       org-latex-pdf-process
+       '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+         "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+         "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
 
 However this will change the global settings of latex exporter.
 Especially the triple pdflatex compiling takes a while when exporting, and I believe
@@ -87,14 +87,14 @@ To have this attribute always on we can, instead of using the following code
 at the bottom of the file:
 
     
-    ,# Local Variables:
-    ,# eval: (setq org-latex-listings 'minted
-    ,#  org-latex-packages-alist '(("" "minted"))
-    ,#  org-latex-pdf-process
-    ,#  '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-    ,#    "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-    ,#    "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
-    ,# End:
+    # Local Variables:
+    # eval: (setq org-latex-listings 'minted
+    #  org-latex-packages-alist '(("" "minted"))
+    #  org-latex-pdf-process
+    #  '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+    #    "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+    #    "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+    # End:
 
 use something like this
 
@@ -153,9 +153,14 @@ in `resultsminted` package.
     :PRJ-DIR: ./2023-11-24-nice-code-format/
     :END:  
     
+    Hit ~C-c C-c~ when cursor is on the code block below to obtain
+    the results embraced with ~#+begin_resultsminted #+end_resultsminted~.
+    
     #+begin_src sh :exports both :tangle (concat (org-entry-get nil "PRJ-DIR" t) "") :mkdirp yes :wrap resultsminted :results raw
       ls -la 
     #+end_src
+    
+    Now you can export the org file to pdf with ~C-c C-e C-l C-p~.
     
     # Local Variables:
     # eval: (setq org-latex-listings 'minted
