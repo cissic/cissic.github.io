@@ -47,11 +47,11 @@ Nice tutorial is [here](https://orgmode.org/worg/org-tutorials/org-latex-export.
 
     
     (setq org-latex-listings 'minted
-       org-latex-packages-alist '(("" "minted"))
-       org-latex-pdf-process
-       '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-         "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-         "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+    org-latex-packages-alist '(("" "minted"))
+    org-latex-pdf-process
+    '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+    "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+    "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
 
 However this will change the global settings of latex exporter.
 Especially the triple pdflatex compiling takes a while when exporting, and I believe
