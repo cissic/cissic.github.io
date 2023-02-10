@@ -114,7 +114,7 @@ it's better to keep whole .emacs.d directory as a git repository and
 make a commit before executing this script. Then, in case any problems
 you can go back to restore properly working emacs installation.
 Before running this script you should have a git repository initialized in emacs
-directory and git itself installed in the system (see Sec. [1.5](#org2183341)).
+directory and git itself installed in the system (see Sec. [1.5](#orgd0d5396)).
 Synchronization of the local repository with the remote one is not
 performed in this script. It should be performed explicitely by the user
 in a convenient time.
@@ -195,7 +195,8 @@ The main point of the file. Set the list of packages to be installed
 
       ; counsel ; for ivy
       company
-      ;dockerfile-mode    
+      ;dockerfile-mode
+      fill-column-indicator
       ;flycheck
       ;flycheck-pos-tip
       flyspell
@@ -281,7 +282,7 @@ for now. An interesting discussion about this can be found [here](https://www.re
 
 1.  [DEPRECATED] Setting an auxiliary variable
 
-    This section is deprecated in favour of [`workgroups2 package`](#org73464fc).
+    This section is deprecated in favour of [`workgroups2 package`](#org21ebfee).
     
         ;; This file is designed to be re-evaled; use the variable first-time
         ;; to avoid any problems with this.
@@ -322,7 +323,7 @@ proactively.
 Here are global Emacs customization. 
 If necessary some useful infomation or link is added to the customization.
 
-1.  Self-descriptive oneliners <a id="org7a4f805"></a>
+1.  Self-descriptive oneliners <a id="org69fddc5"></a>
 
         (auto-revert-mode 1)       ; Automatically reload file from a disk after change
         (global-auto-revert-mode 1) 
@@ -412,7 +413,7 @@ If necessary some useful infomation or link is added to the customization.
     Although the active window can be recognized
     by the cursor which blinking in it, sometimes it is hard to
     find in on the screen (especially if you use a colourful theme
-    like [1.4.12.1](#org6be1328).
+    like [1.4.13.1](#org13dcb0c).
     
     I found a [post](https://stackoverflow.com/questions/33195122/highlight-current-active-window) adressing this issue.
     Although the accepted answer is using 
@@ -611,6 +612,19 @@ If necessary some useful infomation or link is added to the customization.
           (global-set-key        (kbd "C-s-<up>") 'enlarge-window)
         ;; <- Easy windows resize 
 
+11. Column marker
+
+    The vertical line for marking specific column width.
+    <https://www.emacswiki.org/emacs/FillColumnIndicator>
+    
+        ;; Fill column indicator -> 
+        (require 'fill-column-indicator)
+        (setq fci-rule-column 81)
+        ; (add-hook 'after-change-major-mode-hook 'fci-mode)
+        (define-globalized-minor-mode global-fci-mode fci-mode (lambda () (fci-mode 1)))
+        (global-fci-mode 1)
+        ;; <- Fill column indicator
+
 
 ### Completing
 
@@ -640,7 +654,7 @@ ido/smex vs ivy/counsel/swiper vs helm
         (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command) 
         ;; <- smex
 
-3.  TODO Ivy (for testing) <a id="org0051461"></a>
+3.  TODO Ivy (for testing) <a id="org4826999"></a>
 
     Furthermore, according to [some other users](https://ruzkuku.com/emacs.d.html#org804158b)
     "Ivy is simpler (and faster) than Helm but more powerful than Ido".
@@ -698,11 +712,80 @@ ido/smex vs ivy/counsel/swiper vs helm
         ;; <- Recently opened files
 
 
+### Settings for modes
+
+It's good to have keybindings for the commands often used,
+and it's good to have them enabled per specific mode.
+
+How to define keybindings and key sequences:
+[Link 1](https://www.gnu.org/software/emacs/manual/html_node/elisp/Key-Sequences.html),
+[Link 2](https://www.gnu.org/software/emacs/manual/html_node/emacs/Init-Rebinding.html#Init-Rebinding).
+
+How to define shortcuts for major modes:
+[Link 1](http://xahlee.info/emacs/emacs/reclaim_keybindings.html),
+[Link 2](https://docs.freebsd.org/en/books/developers-handbook/tools/#Emacs).
+
+The problem that can be encountered in this point is that
+we choose wrong (restricted) keybinding. In that case Emacs will
+print an error message like:
+
+    Key sequence M-x g starts with non-prefix key M-x
+
+We can check the bindings that are restricted for the specific mode:
+In the buffer with the mode enabled press `C-h m`. New window with
+information on the modes enabled for the buffer appears. You can
+find the bindings tagged as `Prefix Command`. If you'd really like to use
+other shortcut
+
+you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i-make-c-p-an-emacs-prefix-key-for-develperlysense), [2](https://stackoverflow.com/questions/9462111/emacs-error-key-sequence-m-x-g-starts-with-non-prefix-key-m-x), [3](https://emacs.stackexchange.com/questions/68328/general-el-error-key-sequence-starts-with-non-prefix-key)).
+
+    ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;; ;; *** Minor mode settings and keybindings
+    ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+1.  Emacs-Lisp mode
+
+    Be sure to set `emacs-lisp-mode` maps/hooks etc, not just `lisp-mode-...`  otherwise
+    the shortcuts won't work.
+    
+        ;; Emacs-Lisp mode...
+        (defun my-emacs-lisp-mode-hook ()e
+        (define-key emacs-lisp-mode-map (kbd "C-e b") 'eval-buffer)
+        (define-key emacs-lisp-mode-map (kbd "C-e e") 'eval-expression)
+        (define-key emacs-lisp-mode-map (kbd "C-e r") 'eval-region)  
+        )
+
+2.  Python mode
+
+3.  Org mode
+
+4.  Updating all of the hooks to make them aware of your mode settings
+
+    Now we need to update the hooks to 
+    
+        ;; Add all of the hooks...
+        ;(add-hook 'c++-mode-hook 'my-c++-mode-hook)
+        ;(add-hook 'c-mode-hook 'my-c-mode-hook)
+        (add-hook 'emacs-lisp-mode-hook 'my-emacs-lisp-mode-hook)
+        ; (add-hook 'lisp-mode-hook 'my-lisp-mode-hook)
+        ;(add-hook 'perl-mode-hook 'my-perl-mode-hook)
+
+5.  Change font color for specific mode (eww)
+
+    Based on [this](https://stackoverflow.com/questions/27973721/how-set-colors-for-a-specific-mode).
+    
+        ;; Change font color for eww
+        (defun my-eww-mode-faces ()
+          (face-remap-add-relative 'default '(:foreground "#BD8700")))
+        
+        (add-hook 'eww-mode-hook 'my-eww-mode-faces)
+
+
 ### Bibliography - citations
 
 1.  oc [org-citations]
 
-    1.  Bibliography <a id="orgb500336"></a>
+    1.  Bibliography <a id="orga1a721b"></a>
     
         In Org 9.6 we do not need explicitely load `oc` libraries.
         Everything is covered in my post concerning bibliography and org-mode.
@@ -905,10 +988,83 @@ Bash has usually very good command completion facilities, which aren't accessibl
     (global-set-key (kbd "C-C C-e C-w C-w") 'eww-list-bookmarks) ; Open eww bookmarks
     (defun mynet ()  (interactive) (eww-list-bookmarks))
 
+1.  Useful fast line-copying shortcut
+
+    1.  Solution
+    
+        Based on idea presented [here](https://stackoverflow.com/questions/88399/how-do-i-duplicate-a-whole-line-in-Emacs). Smart but not recommended approach!
+        However it works for me.
+        You only need to remember that it may break down at any momement,
+        if you encounter a mode that rebinds one of the default keybindings used
+        in the sequence.
+        
+            ;; fast copy-line-comment-it-and-paste-below
+            (global-set-key "\C-c\C-k"        "\C-a\C- \C-e\M-w\M-;\C-e\C-m\C-y")
+        
+        The code below is not fully doing what it is meant to do. I don't have a time now
+        to correct it.
+        
+            ;; copy-selection-comment-it-and-paste-below (works ok provided selection is
+            ;; performed from left to right....
+            (global-set-key "\C-c\C-l" "\M-w\M-;\C-e\C-m\C-y")
+    
+    2.  OLD: Solution 1 (NOT FULLY WORKING)
+    
+        <https://www.emacswiki.org/emacs/CopyingWholeLines>
+        
+        This solution only copies active line and moves the pointer to the next line
+        
+            ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+            ;; fast copy-line shortcut
+            (defun copy-line (arg)
+              "Copy lines (as many as prefix argument) in the kill ring.
+                  Ease of use features:
+                  - Move to start of next line.
+                  - Appends the copy on sequential calls.
+                  - Use newline as last char even on the last line of the buffer.
+                  - If region is active, copy its lines."
+              (interactive "p")
+              (let ((beg (line-beginning-position))
+            	(end (line-end-position arg)))
+                (when mark-active
+                  (if (> (point) (mark))
+            	  (setq beg (save-excursion (goto-char (mark)) (line-beginning-position)))
+            	(setq end (save-excursion (goto-char (mark)) (line-end-position)))))
+                (if (eq last-command 'copy-line)
+            	(kill-append (buffer-substring beg end) (< end beg))
+                  (kill-ring-save beg end)))
+              (kill-append "\n" nil)
+              (beginning-of-line (or (and arg (1+ arg)) 2))
+              (if (and arg (not (= 1 arg))) (message "%d lines copied" arg)))
+            
+            (global-set-key "\C-c\C-k" 'copy-line)  
+    
+    3.  OLD: Solution 2 (NOT FULLY WORKING)
+    
+        And even better solution because it also comments out the line and yanks
+        (pastes) copied text the line below. [Based on the post](https://stackoverflow.com/a/23588908).
+        
+              ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+              ;; fast copy-line-comment-and-paste-below
+            (defun copy-and-comment-region (beg end &optional arg)
+              "Duplicate the region and comment-out the copied text.
+            See `comment-region' for behavior of a prefix arg."
+              (interactive "r\nP")
+              (copy-region-as-kill beg end)
+              (goto-char end)
+              (yank)
+              (comment-region beg end arg))
+            
+            (global-set-key "\C-c\C-v\C-k" 'copy-and-comment-region)
+    
+    4.  Solution 3 (NOT WORKING)
+    
+        <https://www.emacswiki.org/emacs/CopyWithoutSelection>
+
 
 ### Load Emacs theme of your preference
 
-1.  Modus themes by Protesilaos Stavrou <a id="org6be1328"></a>
+1.  Modus themes by Protesilaos Stavrou <a id="org13dcb0c"></a>
 
     -   [Author's page](https://protesilaos.com/codelog/2021-01-11-modus-themes-review-select-faint-colours/)
     -   [Youtube's tutorial](https://www.youtube.com/watch?v=JJPokfFxyFo)
@@ -958,6 +1114,11 @@ Bash has usually very good command completion facilities, which aren't accessibl
     	      '(("\\.pub$" . org-mode))
     	      auto-mode-alist))
     ;; <- doconce
+
+Adding custom useful keybindings for doconce. As for now, this is added as
+a global shortcut...
+
+    (global-set-key "\C-c\C-j" "\C-k =====")
 
 1.  Sunrise - Norton Commander-like file browser
 
@@ -1014,7 +1175,7 @@ Bash has usually very good command completion facilities, which aren't accessibl
 
 ### TODO The end
 
-1.  Workgroups (should be executed at the end of init.el) <a id="org73464fc"></a>
+1.  Workgroups (should be executed at the end of init.el) <a id="org21ebfee"></a>
 
     <https://tuhdo.github.io/emacs-tutor3.html>
     
@@ -1111,11 +1272,11 @@ Bash has usually very good command completion facilities, which aren't accessibl
 
 3.  [DEPRECATED] Restoring previous session
 
-    This section is deprecated in favour of [`workgroups2 package`](#org73464fc).
+    This section is deprecated in favour of [`workgroups2 package`](#org21ebfee).
     
     This way of restoring session throws some warnings and needs additional
     confirmations so I give it up. Simple `(desktop-save-mode 1)` which is 
-    included [in the beginning of `init.el`](#org7a4f805) works ok.
+    included [in the beginning of `init.el`](#org69fddc5) works ok.
     
         ;; Restore the "desktop" - do this as late as possible
         (if first-time
@@ -1149,7 +1310,7 @@ Bash has usually very good command completion facilities, which aren't accessibl
         (message "All done in init.el.")
 
 
-## Dependencies of the presented Emacs configuration <a id="org2183341"></a>:
+## Dependencies of the presented Emacs configuration <a id="orgd0d5396"></a>:
 
 The list of external applications that this script is dependent on:
 

@@ -236,7 +236,8 @@ The main point of the file. Set the list of packages to be installed
 #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "install-packages.el")
     ; counsel ; for ivy
     company
-    ;dockerfile-mode    
+    ;dockerfile-mode
+    fill-column-indicator
     ;flycheck
     ;flycheck-pos-tip
     flyspell
@@ -672,6 +673,20 @@ following code Emacs does not throw warnings or errors.
 #+end_src
 
 
+**** Column marker
+The vertical line for marking specific column width.
+https://www.emacswiki.org/emacs/FillColumnIndicator
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+;; Fill column indicator -> 
+(require 'fill-column-indicator)
+(setq fci-rule-column 81)
+; (add-hook 'after-change-major-mode-hook 'fci-mode)
+(define-globalized-minor-mode global-fci-mode fci-mode (lambda () (fci-mode 1)))
+(global-fci-mode 1)
+;; <- Fill column indicator
+#+end_src
+
+
 *** Completing 
 ido/smex vs ivy/counsel/swiper vs helm 
 **** ido-mode
@@ -777,6 +792,81 @@ Emacs abbreviations are
   ;; in original emacs this binding is for "Find file read-only"
   (global-set-key "\C-x\ \C-r" 'recentf-open-files)
 ;; <- Recently opened files
+#+end_src
+
+
+*** Settings for modes 
+
+It's good to have keybindings for the commands often used,
+and it's good to have them enabled per specific mode.
+
+How to define keybindings and key sequences:
+[[https://www.gnu.org/software/emacs/manual/html_node/elisp/Key-Sequences.html][Link 1]],
+[[https://www.gnu.org/software/emacs/manual/html_node/emacs/Init-Rebinding.html#Init-Rebinding][Link 2]].
+
+
+How to define shortcuts for major modes:
+[[http://xahlee.info/emacs/emacs/reclaim_keybindings.html][Link 1]],
+[[https://docs.freebsd.org/en/books/developers-handbook/tools/#Emacs][Link 2]].
+
+The problem that can be encountered in this point is that
+we choose wrong (restricted) keybinding. In that case Emacs will
+print an error message like:
+#+begin_src emacs-lisp 
+Key sequence M-x g starts with non-prefix key M-x
+#+end_src
+
+We can check the bindings that are restricted for the specific mode:
+In the buffer with the mode enabled press ~C-h m~. New window with
+information on the modes enabled for the buffer appears. You can
+find the bindings tagged as =Prefix Command=. If you'd really like to use
+other shortcut
+# them
+you need to rebind it ([[https://stackoverflow.com/questions/1024374/how-can-i-make-c-p-an-emacs-prefix-key-for-develperlysense][1]], [[https://stackoverflow.com/questions/9462111/emacs-error-key-sequence-m-x-g-starts-with-non-prefix-key-m-x][2]], [[https://emacs.stackexchange.com/questions/68328/general-el-error-key-sequence-starts-with-non-prefix-key][3]]).
+   
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;; *** Minor mode settings and keybindings
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+end_src
+
+**** Emacs-Lisp mode
+Be sure to set ~emacs-lisp-mode~ maps/hooks etc, not just ~lisp-mode-...~  otherwise
+the shortcuts won't work.
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
+;; Emacs-Lisp mode...
+(defun my-emacs-lisp-mode-hook ()e
+(define-key emacs-lisp-mode-map (kbd "C-e b") 'eval-buffer)
+(define-key emacs-lisp-mode-map (kbd "C-e e") 'eval-expression)
+(define-key emacs-lisp-mode-map (kbd "C-e r") 'eval-region)  
+)
+#+end_src
+
+**** Python mode
+
+**** Org mode
+
+**** Updating all of the hooks to make them aware of your mode settings
+Now we need to update the hooks to 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
+;; Add all of the hooks...
+;(add-hook 'c++-mode-hook 'my-c++-mode-hook)
+;(add-hook 'c-mode-hook 'my-c-mode-hook)
+(add-hook 'emacs-lisp-mode-hook 'my-emacs-lisp-mode-hook)
+; (add-hook 'lisp-mode-hook 'my-lisp-mode-hook)
+;(add-hook 'perl-mode-hook 'my-perl-mode-hook)
+#+end_src
+
+**** Change font color for specific mode (eww)
+Based on [[https://stackoverflow.com/questions/27973721/how-set-colors-for-a-specific-mode][this]].
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
+;; Change font color for eww
+(defun my-eww-mode-faces ()
+  (face-remap-add-relative 'default '(:foreground "#BD8700")))
+
+(add-hook 'eww-mode-hook 'my-eww-mode-faces)
 #+end_src
 
 *** Bibliography - citations
@@ -1029,7 +1119,7 @@ https://www.emacswiki.org/emacs/FlySpell
         (message "Dictionary switched from %s to %s" dic change)
         ))
     
-      (global-set-key (kbd "<f8>")   'fd-switch-dictionary)
+      (global-set-key (kbd "C-c s")   'fd-switch-dictionary)
 #+end_src
 
 *** Flymake/Flycheck
@@ -1082,6 +1172,86 @@ Bash has usually very good command completion facilities, which aren't accessibl
 (global-set-key (kbd "C-C C-e C-w C-w") 'eww-list-bookmarks) ; Open eww bookmarks
 (defun mynet ()  (interactive) (eww-list-bookmarks))
 #+end_src
+
+**** Useful fast line-copying shortcut
+
+***** Solution 
+
+Based on idea presented [[https://stackoverflow.com/questions/88399/how-do-i-duplicate-a-whole-line-in-Emacs][here]]. Smart but not recommended approach!
+However it works for me.
+You only need to remember that it may break down at any momement,
+if you encounter a mode that rebinds one of the default keybindings used
+in the sequence.
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+;; fast copy-line-comment-it-and-paste-below
+(global-set-key "\C-c\C-k"        "\C-a\C- \C-e\M-w\M-;\C-e\C-m\C-y")
+#+end_src
+
+The code below is not fully doing what it is meant to do. I don't have a time now
+to correct it.
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+;; copy-selection-comment-it-and-paste-below (works ok provided selection is
+;; performed from left to right....
+(global-set-key "\C-c\C-l" "\M-w\M-;\C-e\C-m\C-y")
+#+end_src
+
+***** OLD: Solution 1 (NOT FULLY WORKING)
+https://www.emacswiki.org/emacs/CopyingWholeLines
+
+This solution only copies active line and moves the pointer to the next line
+
+# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
+#+begin_src emacs-lisp 
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;; fast copy-line shortcut
+  (defun copy-line (arg)
+    "Copy lines (as many as prefix argument) in the kill ring.
+	Ease of use features:
+	- Move to start of next line.
+	- Appends the copy on sequential calls.
+	- Use newline as last char even on the last line of the buffer.
+	- If region is active, copy its lines."
+    (interactive "p")
+    (let ((beg (line-beginning-position))
+	  (end (line-end-position arg)))
+      (when mark-active
+	(if (> (point) (mark))
+	    (setq beg (save-excursion (goto-char (mark)) (line-beginning-position)))
+	  (setq end (save-excursion (goto-char (mark)) (line-end-position)))))
+      (if (eq last-command 'copy-line)
+	  (kill-append (buffer-substring beg end) (< end beg))
+	(kill-ring-save beg end)))
+    (kill-append "\n" nil)
+    (beginning-of-line (or (and arg (1+ arg)) 2))
+    (if (and arg (not (= 1 arg))) (message "%d lines copied" arg)))
+
+  (global-set-key "\C-c\C-k" 'copy-line)  
+#+end_src
+
+***** OLD: Solution 2 (NOT FULLY WORKING)
+And even better solution because it also comments out the line and yanks
+(pastes) copied text the line below. [[https://stackoverflow.com/a/23588908][Based on the post]].
+
+# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
+#+begin_src emacs-lisp 
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;; fast copy-line-comment-and-paste-below
+(defun copy-and-comment-region (beg end &optional arg)
+  "Duplicate the region and comment-out the copied text.
+See `comment-region' for behavior of a prefix arg."
+  (interactive "r\nP")
+  (copy-region-as-kill beg end)
+  (goto-char end)
+  (yank)
+  (comment-region beg end arg))
+
+(global-set-key "\C-c\C-v\C-k" 'copy-and-comment-region)
+#+end_src
+
+***** Solution 3 (NOT WORKING)
+https://www.emacswiki.org/emacs/CopyWithoutSelection
+
 
 *** Load Emacs theme of your preference
 #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") :exports none
@@ -1159,6 +1329,22 @@ second reason).
 ;; <- doconce
 #+end_src
 
+
+Adding custom useful keybindings for doconce. As for now, this is added as
+a global shortcut...
+
+# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
+# ;; Doconce mode...
+# (defun my-doconce-mode-hook ()
+# (define-key doconce-mode-map (kbd "\C-c\C-j") (kbd "\C-c\C-j" "\C-k ====="))
+# )
+# #+end_src
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
+(global-set-key "\C-c\C-j" "\C-k =====")
+#+end_src
+
+
 **** Sunrise - Norton Commander-like file browser
 There are few packages to emulate Norton Commander experience in Emacs.
 I tested ~mc.el~, ~nc.el~ and ~sunrise.el~. From these three only 
@@ -1209,6 +1395,8 @@ or you can define keybindings as package documentation recommends
 ;; (global-set-key (kbd "<C-S-left>")   'buf-move-left)
 ;; (global-set-key (kbd "<C-S-right>")  'buf-move-right)
 #+end_src
+
+
 
 
 **** Other packages

@@ -16,6 +16,11 @@ title: 'Handful of helpful links'
 # Found on the internet with no time to go through it
 
 
+## Different ways of including Local variables at the end of an org file:
+
+-   <https://stackoverflow.com/questions/20033467/setting-a-local-file-variable-in-emacs-org-mode>
+
+
 ## How to use output of one source block in other source block
 
 -   <https://emacs.stackexchange.com/questions/49092/passing-variable-into-a-org-babel-code-on-export/49098#49098>
