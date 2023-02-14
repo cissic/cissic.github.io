@@ -14,7 +14,15 @@
 :PRJ-DIR: ./2023-02-14-org-babel-sudo/
 :END:
 
-Tramp-mode is useful or running sudo commands in org-babel:
+Tramp-mode is useful or running sudo commands in org-babel (Add =:dir /sudo::=
+to src block preamble) like this:
+
+#+begin_src org :tangle (concat (org-entry-get nil "PRJ-DIR" t) "Ex1.org") :mkdirp yes
+  ,#+begin_src sh :dir /sudo::
+  sudo blkid
+  ,#+end_src
+#+end_src
+
 
 #+begin_src sh :dir /sudo::
 sudo blkid
@@ -30,3 +38,4 @@ sudo blkid
 # eval: (add-hook 'org-export-before-processing-hook 
 # 'my/org-export-markdown-hook-function nil t)
 # End:
+
