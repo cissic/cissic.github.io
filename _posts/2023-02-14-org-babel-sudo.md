@@ -14,7 +14,12 @@ title: 'Running sudo commands in org-babel'
 
 # Running sudo commands in org-babel
 
-Tramp-mode is useful or running sudo commands in org-babel:
+Tramp-mode is useful or running sudo commands in org-babel (Add `:dir /sudo::`
+to src block preamble) like this:
+
+    #+begin_src sh :dir /sudo::
+    sudo blkid
+    #+end_src
 
     sudo blkid
 
