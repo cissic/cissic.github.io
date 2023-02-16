@@ -16,6 +16,16 @@ title: 'Handful of helpful links'
 # Found on the internet with no time to go through it
 
 
+## Short introduction on using TRAMP:
+
+-   <https://www.gnu.org/software/emacs/manual/html_node/tramp/Quick-Start-Guide.html>
+
+
+## Emacs init.el doesn't load:
+
+-   <https://stackoverflow.com/questions/12224575/emacs-init-el-file-doesnt-load>
+
+
 ## Different ways of including Local variables at the end of an org file:
 
 -   <https://stackoverflow.com/questions/20033467/setting-a-local-file-variable-in-emacs-org-mode>

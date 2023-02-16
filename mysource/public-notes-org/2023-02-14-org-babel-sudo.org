@@ -14,8 +14,8 @@
 :PRJ-DIR: ./2023-02-14-org-babel-sudo/
 :END:
 
-Tramp-mode is useful or running sudo commands in org-babel (Add =:dir /sudo::=
-to src block preamble) like this:
+Tramp-mode is useful or running sudo commands in org-babel. Just add =:dir /sudo::=
+to src block preamble like this:
 
 #+begin_src org :tangle (concat (org-entry-get nil "PRJ-DIR" t) "Ex1.org") :mkdirp yes
   ,#+begin_src sh :dir /sudo::
@@ -23,10 +23,13 @@ to src block preamble) like this:
   ,#+end_src
 #+end_src
 
+and in the bottom line Emacs will ask you about the password.
 
-#+begin_src sh :dir /sudo::
-sudo blkid
-#+end_src
+# #+begin_src sh :dir /sudo::
+#   sudo blkid
+#   pwd
+# #+end_src
+
 
 ** Links
 - https://emacs.stackexchange.com/questions/39158/how-to-execute-sudo-command-in-org-babel-in-relative-path-under-current-working
