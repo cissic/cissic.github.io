@@ -234,6 +234,7 @@ The main point of the file. Set the list of packages to be installed
 #+end_src
 
 #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "install-packages.el")
+    bash-completion
     ; counsel ; for ivy
     company
     ;dockerfile-mode
@@ -742,7 +743,17 @@ Furthermore, according to [[https://ruzkuku.com/emacs.d.html#org804158b][some ot
 
 
 
-**** Abbreviations (abbrev-mode)
+**** TODO (TEMPORARILY COMMENTED OUT) Abbreviations (abbrev-mode)
+
+- NOTE: This part of my init.el is temporarily commented out.
+=abbrev-mode= can be useful, however it brings some trouble when working with more than
+one language. I would like to come back here after having prepared
+a piece of code that would recognize the language of the current document and 
+based on this, change the autocorrection dictionary. Until then it's better
+to manually trigger =abbrev-mode= per a document (in English), when you
+really need it.
+
+
 I've just discovered this mode and wanted to use it.
 I'm not sure whether ~abbrev-mode~, ~yasnippet~ and ~company~
 aren't substitute modes. [[https://emacs.stackexchange.com/questions/42556/best-pratice-advices-for-abbrev-vs-completion-vs-snippets][Well, in fact they partly are]].
@@ -753,14 +764,14 @@ aren't substitute modes. [[https://emacs.stackexchange.com/questions/42556/best-
   
 Emacs abbreviations are
 #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
-  ;; abbrev-mode ->
-    (setq-default abbrev-mode t)          
-    ; (read-abbrev-file "~/.emacs.d/abbrev_defs")
-    (read-abbrev-file "~/.emacs.d/abbrev_defs_autocorrectionEN")
-    (read-abbrev-file "~/.emacs.d/abbrev_defs_autocorrectionPL")  
-    (read-abbrev-file "~/.emacs.d/abbrev_defs_cis")  
-    (setq save-abbrevs t)  
-  ;; <- abbrev-mode
+  ;; ;; abbrev-mode ->
+  ;;   (setq-default abbrev-mode t)          
+  ;;   ; (read-abbrev-file "~/.emacs.d/abbrev_defs")
+  ;;   (read-abbrev-file "~/.emacs.d/abbrev_defs_autocorrectionEN")
+  ;;   (read-abbrev-file "~/.emacs.d/abbrev_defs_autocorrectionPL")  
+  ;;   (read-abbrev-file "~/.emacs.d/abbrev_defs_cis")  
+  ;;   (setq save-abbrevs t)  
+  ;; ;; <- abbrev-mode
 #+end_src
 
 ***** Useful commands

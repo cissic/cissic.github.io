@@ -16,6 +16,11 @@ title: 'Handful of helpful links'
 # Found on the internet with no time to go through it
 
 
+## About .ONESHELL
+
+-   <https://www.gnu.org/software/make/manual/html_node/One-Shell.html>
+
+
 ## Short introduction on using TRAMP:
 
 -   <https://www.gnu.org/software/emacs/manual/html_node/tramp/Quick-Start-Guide.html>
