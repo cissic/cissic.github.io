@@ -782,7 +782,7 @@ Emacs abbreviations are
 - edit-abbrevs
 - list-abbrevs
 - kill-all-abbrevs
-  i 
+ 
 
 *** Autocomplete
 ~auto-complete~ vs ~company~
@@ -1044,6 +1044,19 @@ Besides, in order to have markdown exporter options in menu appearing after
 ;; <- **** org-to-markdown exporter customization
 #+end_src
 
+
+
+**** Coloring ~code parts~ on export from org-mode to latex
+Taken from [[https://emacs.stackexchange.com/questions/58993/how-color-code-on-export-from-org-mode-to-latex-pdf][here]]:
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+  ;; colorting ~code~ on org to latex export
+  (defun tmp-latex-code-filter (text backend info)
+    "red inline code"
+    (when (org-export-derived-backend-p backend 'latex) 
+      (format "{\\color{red} %s }" text)))
+
+  (defun tmp-f-strike-through (s backend info) "")
+#+end_src
 
 
 **** Miscellaneous oneliners
@@ -1328,8 +1341,9 @@ second reason).
 ;; Set location for external packages.
 (add-to-list 'load-path "~/.emacs.d/manual-download/")
 
-;; doconce -> 
+;; doconce (M-x DocOnce) may be needed to activate it -> 
 (load-file "~/.emacs.d/manual-download/.doconce-mode.el")
+
 
 ;; activating org-mode for doconce pub files:
 ;; https://github.com/doconce/publish/blob/master/doc/manual/publish-user-manual.pdf
