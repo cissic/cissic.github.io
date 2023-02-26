@@ -12,10 +12,31 @@ title: 'Using command line `lftp` for FTP connections'
 ---
 
 
-# TODO Using command line `lftp` for FTP connections
+# Using command line `lftp` for FTP connections
 
 
-## How to use `lftp` for uploading a file to your ftp account?
+## How to use `lftp` for uploading a file or a directory to your ftp account?
+
+Below is a script based on [this post](https://stackoverflow.com/questions/27635292/transfer-files-using-lftp-in-bash-script).
+
+[How to upload directory with a content to your ftp server](https://serverfault.com/questions/220988/how-to-upload-a-directory-recursively-to-an-ftp-server-by-just-using-ftp-or-lftp)?
+
+    #!/bin/bash
+    
+    pwd # you're in your local bash now, check where to be sure
+    
+    lftp -u USERNAME,PASSWORD FTPSERVER-IP-OR-NAME << EOF
+    set ftp:ssl-force true         # this is done in order to prevent some errors
+    set ssl:verify-certificate no  # and warnings if your server is moody
+    # hash is a comment mark even in lftp connection :-)
+    # # pwd   # do this only when you're alone at the keyboard!!!!
+    	  # it will show your password in the command line!!!!    
+    ls 
+    cd to/the/directory/you/wan
+    put ../some/local_file  # to your current directory on ftp    # if you want to copy a file
+    mirror -R local/dir path/to/some/ftp/dir              # if you want to copy a directory
+    bye
+    EOF
 
 
 ## Links that can be useful
