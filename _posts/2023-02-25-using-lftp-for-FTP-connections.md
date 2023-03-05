@@ -19,11 +19,14 @@ title: 'Using command line `lftp` for FTP connections'
 
 Below is a script based on [this post](https://stackoverflow.com/questions/27635292/transfer-files-using-lftp-in-bash-script).
 
-[How to upload directory with a content to your ftp server](https://serverfault.com/questions/220988/how-to-upload-a-directory-recursively-to-an-ftp-server-by-just-using-ftp-or-lftp)?
+[How to upload directory with a content to your ftp server](https://serverfault.com/questions/220988/how-to-upload-a-directory-recursively-to-an-ftp-server-by-just-using-ftp-or-lftp)? Attention `-R` flag
+denotes that remote directory will be synchronized with the local directory
+(upload from local to remote). Without `-R` flag the direction should be the
+other way round (mirroring remote to local = download from remote to local)
 
     #!/bin/bash
     
-    pwd # you're in your local bash now, check where to be sure
+    pwd # you're in your local bash now, to be sure where exactly, check it
     
     lftp -u USERNAME,PASSWORD FTPSERVER-IP-OR-NAME << EOF
     set ftp:ssl-force true         # this is done in order to prevent some errors

@@ -237,7 +237,7 @@ The main point of the file. Set the list of packages to be installed
     bash-completion
     ; counsel ; for ivy
     company
-    ;dockerfile-mode
+    dockerfile-mode
     fill-column-indicator
     ;flycheck
     ;flycheck-pos-tip
