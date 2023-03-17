@@ -1637,4 +1637,10 @@ second: it is not present in Emacs 27.1 anyway.
 The list of external applications that this script is dependent on:
 - git
 - LaTeX distribution (for org to latex exporters)
-  
+
+
+* COMMENT Local Variables 
+# Local Variables:
+# eval: (add-hook 'org-export-before-processing-hook 
+# 'my/org-export-markdown-hook-function nil t)
+# End:
