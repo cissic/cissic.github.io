@@ -1639,7 +1639,8 @@ The list of external applications that this script is dependent on:
 - LaTeX distribution (for org to latex exporters)
 
 
-* COMMENT Local Variables 
+* COMMENT Local Variables
+
 # Local Variables:
 # eval: (add-hook 'org-export-before-processing-hook 
 # 'my/org-export-markdown-hook-function nil t)
