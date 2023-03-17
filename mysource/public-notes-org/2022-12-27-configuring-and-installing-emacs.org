@@ -1025,39 +1025,49 @@ by python in results block in org.
 **** Tailoring org-mode to markdown export
 When exporting to markdown I want to add some keywords in a special format to
 the preamble of .md file.
-[[https://emacs.stackexchange.com/questions/74505/how-can-i-add-specific-text-to-the-content-generated-by-org-mode-export-to-mark#74513][How to do that is descried here.]]
+[[https://emacs.stackexchange.com/questions/74505/how-can-i-add-specific-text-to-the-content-generated-by-org-mode-export-to-mark#74513][How to do that is described here.]]
 
 
 #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
-;; **** org-to-markdown exporter customization  -> 
+  ;; **** org-to-markdown exporter customization  -> 
 
-(defun org-export-md-format-front-matter ()
-  (let* ((kv-alist (org-element-map (org-element-parse-buffer 'greater-element)
-                       'keyword
-                     (lambda (keyword)
-                       (cons (intern (downcase (org-element-property :key keyword)))
-                             (org-element-property :value keyword)))))
-         (lines (mapcar (lambda (kw)
-                          (let ((val (alist-get kw kv-alist)))
-                            (format (pcase kw
-                                      ('author "%s: %s")
-                                      ((or 'tags 'title) "%s: '%s'")
-                                      (_ "%s: %s"))
-                                    (downcase (symbol-name kw))
-                                    (pcase kw
-                                      ('date (substring val 1 -1))
-                                      (_ val)))))
-                        '(author date tags title))))
-    (concat "---\n" (concat (mapconcat #'identity lines "\n")) "\n---")))
+  (defun org-export-md-format-front-matter ()
+    (let* ((kv-alist (org-element-map (org-element-parse-buffer 'greater-element)
+			 'keyword
+		       (lambda (keyword)
+			 (cons (intern (downcase (org-element-property :key keyword)))
+			       (org-element-property :value keyword)))))
+	   (lines (mapcar (lambda (kw)
+			    (let ((val (alist-get kw kv-alist)))
+			      (format (pcase kw
+					('author "%s: %s")
+					((or 'tags 'title) "%s: '%s'")
+					(_ "%s: %s"))
+				      (downcase (symbol-name kw))
+				      (pcase kw
+					('date (substring val 1 -1))
+					(_ val)))))
+			  '(author date tags title))))
+      (concat "---\n" (concat (mapconcat #'identity lines "\n")) "\n---")))
 
-(defun my/org-export-markdown-hook-function (backend)
-    (if (eq backend 'md)
-        (insert (org-export-md-format-front-matter) "\n")))
+  (defun my/org-export-markdown-hook-function (backend)
+      (if (eq backend 'md)
+	  (insert (org-export-md-format-front-matter) "\n")))
 
-;; This hook should be added per file in my org posts. Unfortunately, so far I don't know
-;; how to do this.
-(add-hook 'org-export-before-processing-hook #'my/org-export-markdown-hook-function)
+#+end_src  
 
+In the beginning the line below where hook is added was uncommented because
+of my unawareness of how Emacs works.
+Now I add the hook below per each org-file and this line is the cause
+of unwanted behaviour that the required information (title, tags, etc.) is
+added twice in exported ~md~ file. So I comment out the line below,
+however in the free time I should supplement all the older posts with this line.
+(TODO!)
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")   
+  ;; This hook should be added per file in my org posts. Unfortunately, so far I don't know
+  ;; how to do this.
+  ;; (add-hook 'org-export-before-processing-hook #'my/org-export-markdown-hook-function)
 #+end_src
 
 Besides, in order to have markdown exporter options in menu appearing after
