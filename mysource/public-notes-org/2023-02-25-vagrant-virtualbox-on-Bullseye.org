@@ -10,7 +10,7 @@
 
 
 
-* TODO {{{title}}}
+* {{{title}}}
 :PROPERTIES:
 :PRJ-DIR: ./2023-02-25-virtualbox-Bullseye/
 :END:

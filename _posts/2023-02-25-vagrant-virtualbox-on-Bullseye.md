@@ -12,7 +12,7 @@ title: 'Vagrant and Virtualbox (6.1?) and Debian Bullseye'
 ---
 
 
-# TODO Vagrant and Virtualbox (6.1?) and Debian Bullseye
+# Vagrant and Virtualbox (6.1?) and Debian Bullseye
 
 
 ## Problem
