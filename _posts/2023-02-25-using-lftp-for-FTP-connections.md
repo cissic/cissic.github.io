@@ -4,12 +4,6 @@ date: 2023-02-25 Sat
 tags: 'shell ftp linux'
 title: 'Using command line `lftp` for FTP connections'
 ---
----
-author: cissic
-date: 2023-02-25 Sat
-tags: 'shell ftp linux'
-title: 'Using command line `lftp` for FTP connections'
----
 
 
 # Using command line `lftp` for FTP connections

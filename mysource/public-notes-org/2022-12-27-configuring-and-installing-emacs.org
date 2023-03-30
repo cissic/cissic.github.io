@@ -165,7 +165,7 @@ loading the init file ([[https://www.masteringemacs.org/article/whats-new-in-ema
 #+end_src
 
 # ____________________________________________________________________________78
-then declare repositories where emacs packages can be found. It used to be more  
+then declare repositories where emacs packages can be found. There used to be more  
 addresses here, something like:
 
 #+begin_src emacs-lisp 
@@ -183,6 +183,23 @@ but, at the time of writing this (Jan, 2023), the biggest, the freshest etc.
 repository is ~melpa~ and it is advised to work with it. ~Marmalade~ is 
 outdated, and I also needed to get rid of ~orgmode~ as a remedy for 
 [[https://emacs.stackexchange.com/questions/70081/how-to-deal-with-this-message-important-please-install-org-from-gnu-elpa-as-o][some problem]] ([[https://www.reddit.com/r/emacs/comments/9rj5ou/comment/e8iizni/?utm_source=share&utm_medium=web2x&context=3][BTW]]).
+
+What is more, at some point I stumbled upon the troubles with refreshing ~melpa~
+repository. Even after explicit running ~(package-refresh-contents)~ I couldn't
+see melpa packages in ~packages-list~.
+There is quite a [[https://github.com/melpa/melpa/issues/7238][long thread]] on this problem.
+
+What helped me was replacing
+~("melpa" . "https://melpa.org/packages/")~ to
+~("melpa" . "http://melpa.org/packages/")~ _and_ restarting emacs. Restarting is
+important part of the procedure!
+
+(Aside note: A way to go might also be [[https://github.com/melpa/melpa/issues/7238#issuecomment-761608049][this post]] that recommends adding
+~(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")~
+in your ~init.el~. This should allow to use ~https~ adresses as package archives.
+I haven't check this approach but I should try this if anything goes
+wrong in the future.)
+
 So now my list of repositories looks as follows: 
 
 #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "install-packages.el")
@@ -190,7 +207,7 @@ So now my list of repositories looks as follows:
 ;;first, declare repositories
 (setq package-archives
       '(("gnu" . "http://elpa.gnu.org/packages/")  ;; default value of package-archives in Emacs 27.1
-        ("melpa" . "https://melpa.org/packages/")
+        ("melpa" . "http://melpa.org/packages/")
 	("melpa-stable" . "http://stable.melpa.org/packages/")
 	))
 
@@ -248,7 +265,7 @@ The main point of the file. Set the list of packages to be installed
     ; jedi
     magit
     markdown-mode
-    ;matlab-mode 
+    matlab-mode 
     modus-themes ; theme by Protesilaos Stavrou
     ;moe-theme ; https://github.com/kuanyui/moe-theme.el
     ;mh
@@ -674,7 +691,7 @@ following code Emacs does not throw warnings or errors.
 #+end_src
 
 
-**** Column marker
+**** TODO Column marker
 The vertical line for marking specific column width.
 https://www.emacswiki.org/emacs/FillColumnIndicator
 #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
@@ -686,6 +703,42 @@ https://www.emacswiki.org/emacs/FillColumnIndicator
 (global-fci-mode 1)
 ;; <- Fill column indicator
 #+end_src
+
+~fci-mode~ causes problems with proper display of the buffer when buffer widht
+is less than ~fci-rule-column~ variable. [[https://emacs.stackexchange.com/questions/29113/how-to-disable-fill-column-indicator-fci-when-its-outside-the-window][Here's a stackexchange thread]]
+on this, which includes a [[https://emacs.stackexchange.com/a/29125/30035][patch]] for this bug.
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+;; Fill column indicator patch -> 
+(defvar i42/fci-mode-suppressed nil)
+(make-variable-buffer-local 'i42/fci-mode-suppressed)
+
+(defun fci-width-workaround (frame)
+  (let ((fci-enabled (symbol-value 'fci-mode))
+        (fci-column (if fci-rule-column fci-rule-column fill-column))
+        (current-window-list (window-list frame 'no-minibuf)))
+    (dolist (window current-window-list)
+      (with-selected-window window
+        (if i42/fci-mode-suppressed
+            (when (and (eq fci-enabled nil)
+                       (< fci-column
+                          (+ (window-width) (window-hscroll))))
+              (setq i42/fci-mode-suppressed nil)
+              (turn-on-fci-mode))
+          ;; i42/fci-mode-suppressed == nil
+          (when (and fci-enabled fci-column
+                     (>= fci-column
+                         (+ (window-width) (window-hscroll))))
+            (setq i42/fci-mode-suppressed t)
+            (turn-off-fci-mode)))))))
+(add-hook 'window-size-change-functions 'fci-width-workaround)
+;; <- Fill column indicator patch 
+#+end_src
+
+
+One of the posts (@Qudit) recommends using ~whitespace-mode~ instead of
+~fci-column-mode~. I tested ~whitespace-mode~ however it does not look as
+nice as I expected (perhaps it needs some additional configuration...).
+
 
 
 *** Completing 
@@ -854,7 +907,7 @@ the shortcuts won't work.
 )
 #+end_src
 
-**** Octave mode
+**** Octave/Matlab mode
 Based on [[https://wiki.octave.org/Emacs]].
 
 Three files mentioned in the link must be already installed somewhere within
@@ -862,7 +915,7 @@ my ~Emacs 26.1~, because ~octve-mode~ command is available.
 The only thing to do is to add ~octave-mode-hook~:
 
 #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
-;; Emacs-Lisp mode...
+;; Octave mode...
 (defun my-octave-mode-hook()
           (lambda ()
             (abbrev-mode 1)
@@ -880,9 +933,59 @@ Now =C-c TAB a= should invoke octave and run a buffer in it
 (run =C-h m= or visit https://wiki.octave.org/Emacs to see the keybindings)
 
 
+Define your own custom shortcuts to run specific script in matlab shell.
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
+; Matlab mode...
+(defun my-matlab-mode-hook()
+  (define-key matlab-mode-map (kbd "<f8>")
+    '(lambda () (interactive)
+      (matlab-shell-send-command "emacsrun('/home/mb/projects/TSdistributed/srcMTLB/main')" ))
+     )
+)
+#+end_src
+
 **** Python mode
 
+The below code does not work as expected. Probably it'd be better to
+apply the configuration given [[https://realpython.com/emacs-the-best-python-editor/#integration-with-jupyter-and-ipython][here]].
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
+  ;; Python mode...
+
+  (defun my-python-mode-hook()
+             (lambda ()
+               (setq python-shell-interpreter "python3") ))
+
+#+end_src
+
 **** Org mode
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
+  ;; Org mode...
+
+  (defun my-org-mode-hook()
+	     (lambda ()
+		(local-set-key (kbd "<f9>") "\C-x\C-s\C-c\C-e\C-a l p")
+	       ;; (define-key org-mode-map (kbd "<f9>") "\C-x\C-s\C-c\C-e l p")
+	       ))
+  ;; (global-set-key (kbd "<f9>") "\C-x\C-s\C-c\C-e l p")
+#+end_src
+
+By default emacs waits until all exporting processes finish. It may take quite
+a while in some situations (for example when exporting long document to LaTeX).
+In order to make emacs work in asynchronous mode you need to toggle this
+([[https://orgmode.org/manual/The-Export-Dispatcher.html][link 1]], [[https://superuser.com/questions/483554/org-export-run-in-background-how-to-troubleshoot][link 2]]).
+
+One way is to do it each time when exporting: after pressing =C-c C-e= you
+get =exporting menu= and in the third line you can see  =Async export= option
+that can be enabled by pressin =C-a=. It is rather cumbersome.
+
+To have this option toggled after launching emacs put the line below in your
+init file.
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
+  (setq org-export-in-background t)
+#+end_src
 
 **** Updating all of the hooks to make them aware of your mode settings
 Now we need to update the hooks to 
@@ -892,6 +995,10 @@ Now we need to update the hooks to
 ;(add-hook 'c-mode-hook 'my-c-mode-hook)
 (add-hook 'emacs-lisp-mode-hook 'my-emacs-lisp-mode-hook)
 (add-hook 'octave-mode-hook 'my-octave-mode-hook)
+(add-hook 'matlab-mode-hook 'my-matlab-mode-hook)
+(add-hook 'python-mode-hook 'my-python-mode-hook)
+(add-hook 'org-mode-hook 'my-org-mode-hook)
+
 ; (add-hook 'lisp-mode-hook 'my-lisp-mode-hook)
 ;(add-hook 'perl-mode-hook 'my-perl-mode-hook)
 #+end_src
