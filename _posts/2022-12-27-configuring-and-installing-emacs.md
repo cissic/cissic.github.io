@@ -114,7 +114,7 @@ it's better to keep whole .emacs.d directory as a git repository and
 make a commit before executing this script. Then, in case any problems
 you can go back to restore properly working emacs installation.
 Before running this script you should have a git repository initialized in emacs
-directory and git itself installed in the system (see Sec. [1.5](#org9f3d25d)).
+directory and git itself installed in the system (see Sec. [1.5](#org3fccf61)).
 Synchronization of the local repository with the remote one is not
 performed in this script. It should be performed explicitely by the user
 in a convenient time.
@@ -138,7 +138,7 @@ loading the init file ([see here](https://www.masteringemacs.org/article/whats-n
       (package-initialize)) ;  set up the load-paths and autoloads for installed packages
     (setq package-check-signature nil)
 
-then declare repositories where emacs packages can be found. It used to be more  
+then declare repositories where emacs packages can be found. There used to be more  
 addresses here, something like:
 
     
@@ -154,13 +154,30 @@ but, at the time of writing this (Jan, 2023), the biggest, the freshest etc.
 repository is `melpa` and it is advised to work with it. `Marmalade` is 
 outdated, and I also needed to get rid of `orgmode` as a remedy for 
 [some problem](https://emacs.stackexchange.com/questions/70081/how-to-deal-with-this-message-important-please-install-org-from-gnu-elpa-as-o) ([BTW](https://www.reddit.com/r/emacs/comments/9rj5ou/comment/e8iizni/?utm_source=share&utm_medium=web2x&context=3)).
+
+What is more, at some point I stumbled upon the troubles with refreshing `melpa`
+repository. Even after explicit running `(package-refresh-contents)` I couldn't
+see melpa packages in `packages-list`.
+There is quite a [long thread](https://github.com/melpa/melpa/issues/7238) on this problem.
+
+What helped me was replacing
+`("melpa" . "https://melpa.org/packages/")` to
+`("melpa" . "http://melpa.org/packages/")` <span class="underline">and</span> restarting emacs. Restarting is
+important part of the procedure!
+
+(Aside note: A way to go might also be [this post](https://github.com/melpa/melpa/issues/7238#issuecomment-761608049) that recommends adding
+`(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")`
+in your `init.el`. This should allow to use `https` adresses as package archives.
+I haven't check this approach but I should try this if anything goes
+wrong in the future.)
+
 So now my list of repositories looks as follows: 
 
     
     ;;first, declare repositories
     (setq package-archives
           '(("gnu" . "http://elpa.gnu.org/packages/")  ;; default value of package-archives in Emacs 27.1
-    	("melpa" . "https://melpa.org/packages/")
+    	("melpa" . "http://melpa.org/packages/")
     	("melpa-stable" . "http://stable.melpa.org/packages/")
     	))
 
@@ -207,7 +224,7 @@ The main point of the file. Set the list of packages to be installed
       ; jedi
       magit
       markdown-mode
-      ;matlab-mode 
+      matlab-mode 
       modus-themes ; theme by Protesilaos Stavrou
       ;moe-theme ; https://github.com/kuanyui/moe-theme.el
       ;mh
@@ -283,7 +300,7 @@ for now. An interesting discussion about this can be found [here](https://www.re
 
 1.  [DEPRECATED] Setting an auxiliary variable
 
-    This section is deprecated in favour of [`workgroups2 package`](#org7e8875d).
+    This section is deprecated in favour of [`workgroups2 package`](#orgb18a855).
     
         ;; This file is designed to be re-evaled; use the variable first-time
         ;; to avoid any problems with this.
@@ -324,7 +341,7 @@ proactively.
 Here are global Emacs customization. 
 If necessary some useful infomation or link is added to the customization.
 
-1.  Self-descriptive oneliners <a id="orgb0404c2"></a>
+1.  Self-descriptive oneliners <a id="org661edb8"></a>
 
         (auto-revert-mode 1)       ; Automatically reload file from a disk after change
         (global-auto-revert-mode 1) 
@@ -414,7 +431,7 @@ If necessary some useful infomation or link is added to the customization.
     Although the active window can be recognized
     by the cursor which blinking in it, sometimes it is hard to
     find in on the screen (especially if you use a colourful theme
-    like [1.4.13.1](#org479e571).
+    like [1.4.13.1](#orgac94938).
     
     I found a [post](https://stackoverflow.com/questions/33195122/highlight-current-active-window) adressing this issue.
     Although the accepted answer is using 
@@ -615,16 +632,49 @@ If necessary some useful infomation or link is added to the customization.
 
 11. Column marker
 
-    The vertical line for marking specific column width.
-    <https://www.emacswiki.org/emacs/FillColumnIndicator>
+    In Emacs 27.1 in only needs to add the following lines in
+    your `init.el` to have properly working fill-column indicator in all buffers.
+    (<https://www.gnu.org/software/emacs/manual/html_node/emacs/Displaying-Boundaries.html>)
     
-        ;; Fill column indicator -> 
-        (require 'fill-column-indicator)
-        (setq fci-rule-column 81)
-        ; (add-hook 'after-change-major-mode-hook 'fci-mode)
-        (define-globalized-minor-mode global-fci-mode fci-mode (lambda () (fci-mode 1)))
-        (global-fci-mode 1)
-        ;; <- Fill column indicator
+          ;; Fill column indicator -> 
+        (global-display-fill-column-indicator-mode)
+          ;; <- Fill column indicator
+    
+    This behaviour, however, may not be wanted in some buffers
+    (for example ipython command line
+    bufffer or octave command line buffer). In order to have fill-column-indicator
+    only for buffers of some type (code files, text files (org, doconce etc.) we
+    could add a hook for [`prog-mode`](https://www.emacswiki.org/emacs/ProgMode) and two relative modes `text-mode` and `special-mode`.
+    Unfortunately, these modes do not contain all required modes
+    (`DocOnce-mode` or `org-mode` are absent on the list of modes).
+    (The list of modes inherited after `prog-mode` and two other modes  can be viewed
+    with the use of the [following function](https://gist.github.com/davep/c16534ef91e9868aaff3d3658f880e4a):
+    
+        (defun list-prog-modes ()
+          "List all programming modes known to this Emacs."
+          (interactive)
+          (with-help-window "*Programming Major Modes*"
+            (mapatoms (lambda (f)
+        		(when (provided-mode-derived-p f 'prog-mode) ;; prog-mode or text-mode or special-mode
+        		  (princ f)
+        		  (princ "\n"))))))
+    
+    Anyway, I decided on the following approach based on [this page](https://www.gnu.org/software/emacs/manual/html_node/emacs/Displaying-Boundaries.html):
+    
+    -   enable display-fill-column mode, which can be done by settings variable
+    
+          ;; Fill column indicator -> 
+        (setq display-fill-column-indicator-column 81)
+    
+    -   write general function that can be hooked into mode
+    
+        (defun my-default-text-buffer-settings-mode-hook()
+          (display-fill-column-indicator-mode 1)
+          )
+          ;; <- Fill column indicator
+    
+    -   and add this hook per each required mode (this is done in [1.4.6](#org400ffa3) section
+        of this document
 
 
 ### Completing
@@ -655,7 +705,7 @@ ido/smex vs ivy/counsel/swiper vs helm
         (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command) 
         ;; <- smex
 
-3.  TODO Ivy (for testing) <a id="orgc018413"></a>
+3.  TODO Ivy (for testing) <a id="org6d2ab3d"></a>
 
     Furthermore, according to [some other users](https://ruzkuku.com/emacs.d.html#org804158b)
     "Ivy is simpler (and faster) than Helm but more powerful than Ido".
@@ -764,7 +814,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
         (define-key emacs-lisp-mode-map (kbd "C-e r") 'eval-region)  
         )
 
-2.  Octave mode
+2.  Octave/Matlab mode
 
     Based on <https://wiki.octave.org/Emacs>.
     
@@ -772,7 +822,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
     my `Emacs 26.1`, because `octve-mode` command is available.
     The only thing to do is to add `octave-mode-hook`:
     
-        ;; Emacs-Lisp mode...
+        ;; Octave mode...
         (defun my-octave-mode-hook()
         	  (lambda ()
         	    (abbrev-mode 1)
@@ -787,10 +837,52 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
     
     Now `C-c TAB a` should invoke octave and run a buffer in it
     (run `C-h m` or visit <https://wiki.octave.org/Emacs> to see the keybindings)
+    
+    Define your own custom shortcuts to run specific script in matlab shell.
+    
+        ; Matlab mode...
+        (defun my-matlab-mode-hook()
+          (define-key matlab-mode-map (kbd "<f8>")
+            '(lambda () (interactive)
+              (matlab-shell-send-command "emacsrun('/home/mb/projects/TSdistributed/srcMTLB/main')" ))
+             )
+        )
 
 3.  Python mode
 
+    The below code does not work as expected. Probably it'd be better to
+    apply the configuration given [here](https://realpython.com/emacs-the-best-python-editor/#integration-with-jupyter-and-ipython).
+    
+        ;; Python mode...
+        
+        (defun my-python-mode-hook()
+        	   (lambda ()
+        	     (setq python-shell-interpreter "python3") ))
+
 4.  Org mode
+
+        ;; Org mode...
+        
+        (defun my-org-mode-hook()
+        	   (lambda ()
+        	      (local-set-key (kbd "<f9>") "\C-x\C-s\C-c\C-e\C-a l p")
+        	     ;; (define-key org-mode-map (kbd "<f9>") "\C-x\C-s\C-c\C-e l p")
+        	     ))
+        ;; (global-set-key (kbd "<f9>") "\C-x\C-s\C-c\C-e l p")
+    
+    By default emacs waits until all exporting processes finish. It may take quite
+    a while in some situations (for example when exporting long document to LaTeX).
+    In order to make emacs work in asynchronous mode you need to toggle this
+    ([link 1](https://orgmode.org/manual/The-Export-Dispatcher.html), [link 2](https://superuser.com/questions/483554/org-export-run-in-background-how-to-troubleshoot)).
+    
+    One way is to do it each time when exporting: after pressing `C-c C-e` you
+    get `exporting menu` and in the third line you can see  `Async export` option
+    that can be enabled by pressin `C-a`. It is rather cumbersome.
+    
+    To have this option toggled after launching emacs put the line below in your
+    init file.
+    
+        (setq org-export-in-background t)
 
 5.  Updating all of the hooks to make them aware of your mode settings
 
@@ -799,8 +891,13 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
         ;; Add all of the hooks...
         ;(add-hook 'c++-mode-hook 'my-c++-mode-hook)
         ;(add-hook 'c-mode-hook 'my-c-mode-hook)
-        (add-hook 'emacs-lisp-mode-hook 'my-emacs-lisp-mode-hook)
-        (add-hook 'octave-mode-hook 'my-octave-mode-hook)
+        (add-hook 'emacs-lisp-mode-hook 'my-emacs-lisp-mode-hook 'my-default-text-buffer-settings-mode-hook)
+        (add-hook 'octave-mode-hook 'my-octave-mode-hook 'my-default-text-buffer-settings-mode-hook)
+        (add-hook 'matlab-mode-hook 'my-matlab-mode-hook 'my-default-text-buffer-settings-mode-hook)
+        (add-hook 'python-mode-hook 'my-python-mode-hook 'my-default-text-buffer-settings-mode-hook)
+        (add-hook 'org-mode-hook 'my-org-mode-hook 'my-default-text-buffer-settings-mode-hook)
+        
+        (add-hook 'DocOnce-hook 'my-default-text-buffer-settings-mode-hook)
         ; (add-hook 'lisp-mode-hook 'my-lisp-mode-hook)
         ;(add-hook 'perl-mode-hook 'my-perl-mode-hook)
 
@@ -819,7 +916,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
 
 1.  oc [org-citations]
 
-    1.  Bibliography <a id="orgbb5e522"></a>
+    1.  Bibliography <a id="org068234f"></a>
     
         In Org 9.6 we do not need explicitely load `oc` libraries.
         Everything is covered in my post concerning bibliography and org-mode.
@@ -1118,7 +1215,7 @@ Bash has usually very good command completion facilities, which aren't accessibl
 
 ### Load Emacs theme of your preference
 
-1.  Modus themes by Protesilaos Stavrou <a id="org479e571"></a>
+1.  Modus themes by Protesilaos Stavrou <a id="orgac94938"></a>
 
     -   [Author's page](https://protesilaos.com/codelog/2021-01-11-modus-themes-review-select-faint-colours/)
     -   [Youtube's tutorial](https://www.youtube.com/watch?v=JJPokfFxyFo)
@@ -1230,7 +1327,7 @@ a global shortcut...
 
 ### TODO The end
 
-1.  Workgroups (should be executed at the end of init.el) <a id="org7e8875d"></a>
+1.  Workgroups (should be executed at the end of init.el) <a id="orgb18a855"></a>
 
     <https://tuhdo.github.io/emacs-tutor3.html>
     
@@ -1327,11 +1424,11 @@ a global shortcut...
 
 3.  [DEPRECATED] Restoring previous session
 
-    This section is deprecated in favour of [`workgroups2 package`](#org7e8875d).
+    This section is deprecated in favour of [`workgroups2 package`](#orgb18a855).
     
     This way of restoring session throws some warnings and needs additional
     confirmations so I give it up. Simple `(desktop-save-mode 1)` which is 
-    included [in the beginning of `init.el`](#orgb0404c2) works ok.
+    included [in the beginning of `init.el`](#org661edb8) works ok.
     
         ;; Restore the "desktop" - do this as late as possible
         (if first-time
@@ -1365,7 +1462,7 @@ a global shortcut...
         (message "All done in init.el.")
 
 
-## Dependencies of the presented Emacs configuration <a id="org9f3d25d"></a>:
+## Dependencies of the presented Emacs configuration <a id="org3fccf61"></a>:
 
 The list of external applications that this script is dependent on:
 

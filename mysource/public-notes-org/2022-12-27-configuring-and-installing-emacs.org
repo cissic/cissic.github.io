@@ -691,7 +691,55 @@ following code Emacs does not throw warnings or errors.
 #+end_src
 
 
-**** TODO Column marker
+**** Column marker
+In Emacs 27.1 in only needs to add the following lines in
+your ~init.el~ to have properly working fill-column indicator in all buffers.
+(https://www.gnu.org/software/emacs/manual/html_node/emacs/Displaying-Boundaries.html)
+#+begin_src emacs-lisp
+  ;; Fill column indicator -> 
+(global-display-fill-column-indicator-mode)
+  ;; <- Fill column indicator
+#+end_src
+This behaviour, however, may not be wanted in some buffers
+(for example ipython command line
+bufffer or octave command line buffer). In order to have fill-column-indicator
+only for buffers of some type (code files, text files (org, doconce etc.) we
+could add a hook for [[https://www.emacswiki.org/emacs/ProgMode][~prog-mode~]] and two relative modes ~text-mode~ and ~special-mode~.
+Unfortunately, these modes do not contain all required modes
+(~DocOnce-mode~ or ~org-mode~ are absent on the list of modes).
+(The list of modes inherited after ~prog-mode~ and two other modes  can be viewed
+with the use of the [[https://gist.github.com/davep/c16534ef91e9868aaff3d3658f880e4a][following function]]:
+#+begin_src emacs-lisp
+(defun list-prog-modes ()
+  "List all programming modes known to this Emacs."
+  (interactive)
+  (with-help-window "*Programming Major Modes*"
+    (mapatoms (lambda (f)
+                (when (provided-mode-derived-p f 'prog-mode) ;; prog-mode or text-mode or special-mode
+                  (princ f)
+                  (princ "\n"))))))
+#+end_src
+
+Anyway, I decided on the following approach based on [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Displaying-Boundaries.html][this page]]:
+- enable display-fill-column mode, which can be done by settings variable
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+  ;; Fill column indicator -> 
+(setq display-fill-column-indicator-column 81)
+#+end_src  
+- write general function that can be hooked into mode
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+(defun my-default-text-buffer-settings-mode-hook()
+  (display-fill-column-indicator-mode 1)
+  )
+  ;; <- Fill column indicator
+#+end_src  
+- and add this hook per each required mode (this is done in [[Settings for modes]] section
+  of this document 
+
+
+
+
+***** COMMENT DEPRECATED
 The vertical line for marking specific column width.
 https://www.emacswiki.org/emacs/FillColumnIndicator
 #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
@@ -993,12 +1041,13 @@ Now we need to update the hooks to
 ;; Add all of the hooks...
 ;(add-hook 'c++-mode-hook 'my-c++-mode-hook)
 ;(add-hook 'c-mode-hook 'my-c-mode-hook)
-(add-hook 'emacs-lisp-mode-hook 'my-emacs-lisp-mode-hook)
-(add-hook 'octave-mode-hook 'my-octave-mode-hook)
-(add-hook 'matlab-mode-hook 'my-matlab-mode-hook)
-(add-hook 'python-mode-hook 'my-python-mode-hook)
-(add-hook 'org-mode-hook 'my-org-mode-hook)
+(add-hook 'emacs-lisp-mode-hook 'my-emacs-lisp-mode-hook 'my-default-text-buffer-settings-mode-hook)
+(add-hook 'octave-mode-hook 'my-octave-mode-hook 'my-default-text-buffer-settings-mode-hook)
+(add-hook 'matlab-mode-hook 'my-matlab-mode-hook 'my-default-text-buffer-settings-mode-hook)
+(add-hook 'python-mode-hook 'my-python-mode-hook 'my-default-text-buffer-settings-mode-hook)
+(add-hook 'org-mode-hook 'my-org-mode-hook 'my-default-text-buffer-settings-mode-hook)
 
+(add-hook 'DocOnce-hook 'my-default-text-buffer-settings-mode-hook)
 ; (add-hook 'lisp-mode-hook 'my-lisp-mode-hook)
 ;(add-hook 'perl-mode-hook 'my-perl-mode-hook)
 #+end_src

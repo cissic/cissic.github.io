@@ -15,6 +15,16 @@ There is a problem when using Vagrant and VirtualBox on Debian Bullseye:
 <https://superuser.com/questions/1769582/vagrant-virtualbox-on-debian-bullseye>
 
 
+## Prerequisites
+
+You might need perform full uninstall of previous installations of `virtualbox`
+(if you had it installed) before going on with installation process.
+How to do it properly is described [here](https://askubuntu.com/a/957281) and it comes down to running:
+
+    sudo apt update && sudo apt install -f
+    sudo apt remove --purge *virtualbox*
+
+
 ## Solution
 
 To circumvent it you need to install Vagrant and VirtualBox manually, not from
