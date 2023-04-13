@@ -1008,16 +1008,18 @@ apply the configuration given [[https://realpython.com/emacs-the-best-python-edi
 #+end_src
 
 **** Org mode
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
-  ;; Org mode...
+# Old approach 
+# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
+#   ;; Org mode...
 
-  (defun my-org-mode-hook()
-	     (lambda ()
-		(local-set-key (kbd "<f9>") "\C-x\C-s\C-c\C-e\C-a l p")
-	       ;; (define-key org-mode-map (kbd "<f9>") "\C-x\C-s\C-c\C-e l p")
-	       ))
-  ;; (global-set-key (kbd "<f9>") "\C-x\C-s\C-c\C-e l p")
-#+end_src
+#   (defun my-org-mode-hook()
+# 	     (lambda ()
+# 		(local-set-key (kbd "<f9>") "\C-x\C-s\C-c\C-e\C-a l p")
+# 	       ;; (define-key org-mode-map (kbd "<f9>") "\C-x\C-s\C-c\C-e l p")
+# 	       ))
+#   ;; (global-set-key (kbd "<f9>") "\C-x\C-s\C-c\C-e l p")
+# #+end_src
+
 
 By default emacs waits until all exporting processes finish. It may take quite
 a while in some situations (for example when exporting long document to LaTeX).
@@ -1035,22 +1037,68 @@ init file.
   (setq org-export-in-background t)
 #+end_src
 
+This setting has impact only when exporting via =org exporting menu=
+(triggered by =C-c C-e=). When calling =org-latex-export-to-pdf= this
+setting is not taken into account. Fortunately, this function has
+optional parameter that can be set to obtain async behaviour.
+All in all, the working solution can be written as a custom hook like this:
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
+(defun my-org-mode-hook()
+  (define-key org-mode-map (kbd "<f9>")
+    '(lambda () (interactive)
+      (org-latex-export-to-pdf :async t))
+     )  
+)
+#+end_src
+
+
 **** Updating all of the hooks to make them aware of your mode settings
 Now we need to update the hooks to 
 #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
 ;; Add all of the hooks...
 ;(add-hook 'c++-mode-hook 'my-c++-mode-hook)
 ;(add-hook 'c-mode-hook 'my-c-mode-hook)
-(add-hook 'emacs-lisp-mode-hook 'my-emacs-lisp-mode-hook 'my-default-text-buffer-settings-mode-hook)
-(add-hook 'octave-mode-hook 'my-octave-mode-hook 'my-default-text-buffer-settings-mode-hook)
-(add-hook 'matlab-mode-hook 'my-matlab-mode-hook 'my-default-text-buffer-settings-mode-hook)
-(add-hook 'python-mode-hook 'my-python-mode-hook 'my-default-text-buffer-settings-mode-hook)
-(add-hook 'org-mode-hook 'my-org-mode-hook 'my-default-text-buffer-settings-mode-hook)
+(add-hook 'emacs-lisp-mode-hook 'my-emacs-lisp-mode-hook)
+(add-hook 'octave-mode-hook 'my-octave-mode-hook)
+(add-hook 'matlab-mode-hook 'my-matlab-mode-hook)
+(add-hook 'python-mode-hook 'my-python-mode-hook)
+(add-hook 'org-mode-hook 'my-org-mode-hook)
 
-(add-hook 'DocOnce-hook 'my-default-text-buffer-settings-mode-hook)
 ; (add-hook 'lisp-mode-hook 'my-lisp-mode-hook)
 ;(add-hook 'perl-mode-hook 'my-perl-mode-hook)
 #+end_src
+
+
+**** Adding a hook to more than a one mode at once
+https://emacs.stackexchange.com/questions/501/how-do-i-group-hooks
+https://stackoverflow.com/questions/7398216/how-can-i-apply-a-hook-to-multiple-emacs-modes-at-once
+
+In order to add a hook to more than one modes we need to use a function (taken from
+[[https://stackoverflow.com/a/7400476/4649238][here]].
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
+  ;; Add a hook to the list of modes
+  (defun my-add-to-multiple-hooks (function hooks)
+    (mapc (lambda (hook)
+	    (add-hook hook function))
+	  hooks))
+
+  (defun my-turn-on-auto-fill ()
+      my-default-text-buffer-settings-mode-hook  )
+
+  (my-add-to-multiple-hooks
+   'my-default-text-buffer-settings-mode-hook         ;; my-turn-on-auto-fill
+   '(DocOnce-hook
+     emacs-lisp-mode-hook
+     matlab-mode-hook
+     octave-mode-hook
+     org-mode-hook
+     python-mode-hook
+   ))
+#+end_src
+
+
 
 **** Change font color for specific mode (eww)
 Based on [[https://stackoverflow.com/questions/27973721/how-set-colors-for-a-specific-mode][this]].

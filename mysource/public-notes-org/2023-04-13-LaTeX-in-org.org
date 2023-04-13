@@ -1,0 +1,174 @@
+# ____________________________________________________________________________78
+
+#+TITLE: Using LaTeX fragments in org-mode
+#+DESCRIPTION: 
+#+AUTHOR: cissic
+#+DATE: <2023-04-13 Thu>
+#+TAGS: kde kde-activity windows-manager
+#+OPTIONS: toc:nil
+#+OPTIONS: -:nil
+
+
+
+* TODO {{{title}}}
+:PROPERTIES:
+:PRJ-DIR: ./2023-04-13-LaTeX-in-org/
+:END:
+
+** Different ways to include LaTeX in org documented
+How embed LaTeX math in org document in described [[https://orgmode.org/manual/LaTeX-fragments.html][here]].
+
+Be careful when nesting math environments between \dollar \dollar or
+=$$= =$$=!
+You might get unexpected behaviour when starting a line with
+=\begin=
+inside dollar delimiters!
+
+In such cases it is safe to use =\begin{equation}= enviroment.
+
+*** Example 1
+
+**** Improper 
+=\begin= at the beginning of the line inside ==$$ $$== or =$ $=.
+
+#+begin_src
+$$A =
+\left[
+\begin{array}{cc}
+a & v \\
+c & d
+\end{array}
+\right]$$
+#+end_src
+
+$$A =
+\left[
+\begin{array}{cc}
+a & v \\
+c & d
+\end{array}
+\right]$$
+
+**** Proper
+#+begin_src 
+$$A =
+\left[\begin{array}{cc}
+a & v \\
+c & d
+\end{array}
+\right]$$
+#+end_src
+
+$$A =
+\left[\begin{array}{cc}
+a & v \\
+c & d
+\end{array}
+\right]$$
+
+*** Example 2
+
+**** Improper 
+Whitespaces after begginning dollar sign or before ending dollar sign
+(space, tab or newline)
+
+#+begin_src
+$
+A =
+\left[
+\begin{array}{cc}
+a & v \\
+c & d
+\end{array}
+\right] $
+#+end_src
+
+$
+A =
+\left[\begin{array}{cc}
+a & v \\
+c & d
+\end{array}
+\right] $
+
+
+**** Proper
+
+Do note that in this example =$begin{array}= at the beginning of
+the line is ok!
+
+#+begin_src
+$A =
+\left[
+\begin{array}{cc}
+a & v \\
+c & d
+\end{array}
+\right]$
+#+end_src
+
+$A =
+\left[\begin{array}{cc}
+a & v \\
+c & d
+\end{array}
+\right]$
+
+*** Example 3
+
+**** Improper 
+=\begin= at the beginning of the line inside ==$$ $$== or =$ $=.
+
+#+begin_src
+$$A =
+\left[
+\begin{array}{cc}
+a & v \\
+c & d
+\end{array}
+\right]$$
+#+end_src
+
+$$A =
+\left[
+\begin{array}{cc}
+a & v \\
+c & d
+\end{array}
+\right]$$
+
+
+**** Proper 
+When using =equation= environement you can start nested
+environemnts from the beginning of the line.
+
+#+begin_src
+\begin{equation}
+A =
+\left[
+\begin{array}{cc}
+a & v \\
+c & d
+\end{array}
+\right]
+\end{equation}
+#+end_src
+
+\begin{equation}
+A =
+\left[
+\begin{array}{cc}
+a & v \\
+c & d
+\end{array}
+\right]
+\end{equation}
+
+
+
+
+# Local Variables:
+# eval: (add-hook 'org-export-before-processing-hook 
+# 'my/org-export-markdown-hook-function nil t)
+# End:
+
