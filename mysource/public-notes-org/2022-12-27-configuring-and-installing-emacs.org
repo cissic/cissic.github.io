@@ -280,7 +280,7 @@ The main point of the file. Set the list of packages to be installed
     ;ox-pandoc
     ; ox-ipynb -> manual-download
     ;pandoc-mode
-    ;pdf-tools
+    pdf-tools
     popup   ; for yasnippet
     ;projectile
     ;pyenv-mode
@@ -965,6 +965,8 @@ The only thing to do is to add ~octave-mode-hook~:
 #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
 ;; Octave mode...
 (defun my-octave-mode-hook()
+  (define-key octave-mode-map (kbd "C-c C-s") 'octave-send-buffer)
+  (define-key octave-mode-map (kbd "<f8>") 'octave-send-buffer)
           (lambda ()
             (abbrev-mode 1)
             (auto-fill-mode 1)

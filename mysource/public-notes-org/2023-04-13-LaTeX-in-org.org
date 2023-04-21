@@ -15,7 +15,7 @@
 :PRJ-DIR: ./2023-04-13-LaTeX-in-org/
 :END:
 
-** Different ways to include LaTeX in org documented
+** Different ways to include LaTeX in org documents
 How embed LaTeX math in org document in described [[https://orgmode.org/manual/LaTeX-fragments.html][here]].
 
 Be careful when nesting math environments between \dollar \dollar or
@@ -25,6 +25,11 @@ You might get unexpected behaviour when starting a line with
 inside dollar delimiters!
 
 In such cases it is safe to use =\begin{equation}= enviroment.
+
+
+To see the baddness of the examples below they need to be
+exported to pdf format (When exporting to html there are other
+issues.)
 
 *** Example 1
 
