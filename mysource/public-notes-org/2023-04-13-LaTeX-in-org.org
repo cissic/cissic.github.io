@@ -5,7 +5,7 @@
 #+AUTHOR: cissic
 #+DATE: <2023-04-13 Thu>
 #+TAGS: kde kde-activity windows-manager
-#+OPTIONS: toc:nil
+# #+OPTIONS: toc:nil
 #+OPTIONS: -:nil
 
 

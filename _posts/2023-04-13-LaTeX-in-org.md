@@ -1,3 +1,13 @@
+
+# Table of Contents
+
+1.  [Using LaTeX in org-mode](#org90ba956)
+    1.  [Different ways to include LaTeX in org documents](#org78dcc5f)
+        1.  [Example 1](#org287c1df)
+        2.  [Example 2](#orga43cfad)
+        3.  [Example 3](#orgab9a593)
+    2.  [Hard space, non-breaking space in org-mode](#orgf8c8af8)
+
 ---
 author: cissic
 date: 2023-04-13 Thu
@@ -6,8 +16,12 @@ title: 'Using LaTeX in org-mode'
 ---
 
 
+<a id="org90ba956"></a>
+
 # TODO Using LaTeX in org-mode
 
+
+<a id="org78dcc5f"></a>
 
 ## Different ways to include LaTeX in org documents
 
@@ -25,6 +39,8 @@ To see the baddness of the examples below they need to be
 exported to pdf format (When exporting to html there are other
 issues.)
 
+
+<a id="org287c1df"></a>
 
 ### Example 1
 
@@ -66,6 +82,8 @@ issues.)
     \end{array}
     \right]$$
 
+
+<a id="orga43cfad"></a>
 
 ### Example 2
 
@@ -111,6 +129,8 @@ issues.)
     \end{array}
     \right]$
 
+
+<a id="orgab9a593"></a>
 
 ### Example 3
 
@@ -161,6 +181,8 @@ issues.)
     \right]
     \end{equation}
 
+
+<a id="orgf8c8af8"></a>
 
 ## Hard space, non-breaking space in org-mode
 
