@@ -1,5 +1,3 @@
-# ____________________________________________________________________________78
-
 #+TITLE: Smart way of changing window KDE-activity property
 #+DESCRIPTION: 
 #+AUTHOR: cissic

@@ -1,5 +1,3 @@
-# ____________________________________________________________________________78
-
 #+TITLE: Using LaTeX in org-mode
 #+DESCRIPTION: 
 #+AUTHOR: cissic

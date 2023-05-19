@@ -4,12 +4,6 @@ date: 2023-02-26 Sun
 tags: 'kde kde-activity windows-manager'
 title: 'Smart way of changing window KDE-activity property'
 ---
----
-author: cissic
-date: 2023-02-26 Sun
-tags: 'kde kde-activity windows-manager'
-title: 'Smart way of changing window KDE-activity property'
----
 
 
 # TODO Smart way of changing window KDE-activity property

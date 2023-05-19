@@ -1,12 +1,12 @@
 
 # Table of Contents
 
-1.  [Using LaTeX in org-mode](#org90ba956)
-    1.  [Different ways to include LaTeX in org documents](#org78dcc5f)
-        1.  [Example 1](#org287c1df)
-        2.  [Example 2](#orga43cfad)
-        3.  [Example 3](#orgab9a593)
-    2.  [Hard space, non-breaking space in org-mode](#orgf8c8af8)
+1.  [Using LaTeX in org-mode](#orgff0e351)
+    1.  [Different ways to include LaTeX in org documents](#org267c476)
+        1.  [Example 1](#org5533861)
+        2.  [Example 2](#orgb03430e)
+        3.  [Example 3](#orgc42eef6)
+    2.  [Hard space, non-breaking space in org-mode](#org7d42e26)
 
 ---
 author: cissic
@@ -16,12 +16,12 @@ title: 'Using LaTeX in org-mode'
 ---
 
 
-<a id="org90ba956"></a>
+<a id="orgff0e351"></a>
 
 # TODO Using LaTeX in org-mode
 
 
-<a id="org78dcc5f"></a>
+<a id="org267c476"></a>
 
 ## Different ways to include LaTeX in org documents
 
@@ -40,7 +40,7 @@ exported to pdf format (When exporting to html there are other
 issues.)
 
 
-<a id="org287c1df"></a>
+<a id="org5533861"></a>
 
 ### Example 1
 
@@ -83,7 +83,7 @@ issues.)
     \right]$$
 
 
-<a id="orga43cfad"></a>
+<a id="orgb03430e"></a>
 
 ### Example 2
 
@@ -130,7 +130,7 @@ issues.)
     \right]$
 
 
-<a id="orgab9a593"></a>
+<a id="orgc42eef6"></a>
 
 ### Example 3
 
@@ -182,7 +182,7 @@ issues.)
     \end{equation}
 
 
-<a id="orgf8c8af8"></a>
+<a id="org7d42e26"></a>
 
 ## Hard space, non-breaking space in org-mode
 
