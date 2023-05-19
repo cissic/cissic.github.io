@@ -1,6 +1,6 @@
 # ____________________________________________________________________________78
 
-#+TITLE: Using LaTeX fragments in org-mode
+#+TITLE: Using LaTeX in org-mode
 #+DESCRIPTION: 
 #+AUTHOR: cissic
 #+DATE: <2023-04-13 Thu>
@@ -169,8 +169,20 @@ c & d
 \right]
 \end{equation}
 
+** Hard space, non-breaking space in org-mode
+
+A way to include non-breaking space (nbsp) in org document to
+have it properly exported to latex document is
+presented here
+https://emacs.stackexchange.com/questions/45083/non-breaking-space-in-org-mode
+or
+https://stackoverflow.com/questions/9311538/how-to-make-non-breaking-spaces-ties-in-org-mode-that-exports-properly-to-late
+
+Instead of =~= you should use: =\nbsp{}=.
 
 
+
+* COMMENT Local Variables
 
 # Local Variables:
 # eval: (add-hook 'org-export-before-processing-hook 

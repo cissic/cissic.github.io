@@ -251,8 +251,10 @@ The main point of the file. Set the list of packages to be installed
 #+end_src
 
 #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "install-packages.el")
-    bash-completion
+    auctex ; in order to have reftex working
+    bash-completion  
     ; counsel ; for ivy
+    cdlatex
     company
     dockerfile-mode
     fill-column-indicator
@@ -290,6 +292,7 @@ The main point of the file. Set the list of packages to be installed
     ;session-async
     ;shell-pop
     smex
+    ssh
     ; tramp  ; ver. 2.4.2 built-in in Emacs 27.1
     ;tao-theme ; https://github.com/11111000000/tao-theme-emacs
     ;treemacs
@@ -1336,6 +1339,51 @@ Nice tutorial is [[https://orgmode.org/worg/org-tutorials/org-latex-export.html]
        "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
 #+end_src
 
+
+**** CDLatex installed in order to ease working with LaTeX in org-mode
+The special mode ~org-cdlatex-mode~ is included in ~org~ package.
+In order to have it working properly we need to install ~cdlatex~
+itself. This can be done in
+[[The main part of the installation script - list of the packages]].
+
+Link to ~org-cdlatex-mode~ description:
+http://doc.endlessparentheses.com/Fun/org-cdlatex-mode.html.
+
+After launching ~org-cdlatex-mode~ you can insert latex environments
+by typing:
+ : C-c {
+
+
+**** Reftex for managing references
+[[https://www.gnu.org/software/emacs/manual/html_mono/reftex.html][~Reftex~]]
+is preinstalled since Emacs 20.2, however in order to
+have it working you need to [[https://emacs.stackexchange.com/questions/35179/reftex-complete-failed-with-wrong-type-argument-stringp-nil][install ~auctex~ package]]! 
+
+Then you can turn on ~reftex~ per a buffer via:
+~reftex-mode~.
+
+At the beginning type:
+ : C-c = (reftex-toc)
+and choose ~r~ to generate a list of all labels, references in the
+document.
+
+From now on, every time you type ~C-c =~ ~reftex~ menu appears
+on the top of the current buffer prompting the actions you can
+take.
+
+The problem with ~reftex~ is that it does not recognize
+org-mode references added by =#+NAME:= =#+LABEL:= etc.
+
+~org-ref~ [[https://emacs.stackexchange.com/questions/9767/can-reftex-be-used-with-org-label][is said to handle this]], so maybe in the future I will
+return to this package. As for now I'm going to work with ~reftex~
+and LaTeX tags.
+
+
+
+**** Fix for Octave/Matlab org-babel
+
+(require 'ob-octave-fix nil t)
+ 
 *** TODO Flyspell (TODO: dive deeper into the package and its capabilities)
 https://ruzkuku.com/emacs.d.html#org804158b
 https://www.emacswiki.org/emacs/FlySpell
@@ -1424,6 +1472,57 @@ Bash has usually very good command completion facilities, which aren't accessibl
 # (yas-global-mode t) ; activate yasnippet
 # (yas/initialize)
 # #+end_src
+
+
+*** PDF-Tools
+Original repo: https://github.com/politza/pdf-tools.
+Maintened fork: https://github.com/vedang/pdf-tools
+
+http://alberto.am/2020-04-11-pdf-tools-as-default-pdf-viewer.html
+
+After installation you need to activate the package by running:
+~M-x pdf-tools-install~.
+
+Something important is that this library doesn't play well with Emacs
+=linum-mode=. The following lines of code will deactivate this mode
+when rendering the .pdf:
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; Add this hook in order to run pdf-tools without a warning message.
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(add-hook 'pdf-view-mode-hook (lambda() (linum-mode -1)))
+#+end_src
+
+
+*** TRAMP
+
+https://emacs.stackexchange.com/questions/57919/preview-images-and-pdfs-inside-a-ssh-terminal-session-or-inside-emacsclient-ses
+
+->
+
+https://emacs.stackexchange.com/questions/42252/run-local-command-on-remote-file-with-tramp
+
+Something is wrong with this part of code and ~init.el~ is not
+loading properly. 
+
+# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+# ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+# ;;;; TRAMP
+# ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+# ;; Auxiliary function - useful for TRAMP editing
+# (defun dired-do-local-command ()
+#   (interactive)
+#   (let* ((marked-files (dired-get-marked-files nil current-prefix-arg))
+#          (local-tmp-files (mapcar #'file-local-copy marked-files))
+#          (num-files (length local-tmp-files))
+#          (default-directory temporary-file-directory)
+#          (command (dired-read-shell-command "! on %s: " num-files marked-files)))
+#     (dired-do-shell-command command num-files local-tmp-files)))
+
+# (define-key dired-mode-map (kbd "\"") 'dired-do-local-command)
+# #+end_src
+
 
 
 *** General global shortcuts not restricted to specific package/mode
@@ -1663,7 +1762,6 @@ or you can define keybindings as package documentation recommends
 ;; (global-set-key (kbd "<C-S-left>")   'buf-move-left)
 ;; (global-set-key (kbd "<C-S-right>")  'buf-move-right)
 #+end_src
-
 
 
 

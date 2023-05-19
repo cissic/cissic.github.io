@@ -89,7 +89,7 @@ push-all:
 	mv $(source)/*.md $(output)
 	git add -u
 	git -C $(source) add *.org
-	git -C $(output) add *.md
+	git -C $(output) add *.md	
 	git -C $(output) commit -m"Yet Another Post(s)"
 	git -C $(output) push
 #	+$(MAKE) -C cissicblog git --git-dir=/home/mb/projects/mynotes/cissicblog/.git status
