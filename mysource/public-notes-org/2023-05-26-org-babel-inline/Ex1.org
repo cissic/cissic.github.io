@@ -1,0 +1,12 @@
+src_python{x = 5; return(x+2)}{{{results(=7=)}}}
+
+src_python{x = 5; x+2}{{{results(=None=)}}}
+
+#+begin_src python :session *py_e* :tangle (concat (org-entry-get nil "PRJ-DIR" t) "example.py")     :mkdirp yes :exports code :exports yes :wrap export latex :eval yes :results both
+   a = 4
+   b = 3
+#+end_src
+
+src_python[:session *py_e*]{x = 5; return(x+a)} {{{results(==)}}}
+
+src_python[:session *py_e*]{x = 5; x+a} {{{results(=9=)}}}

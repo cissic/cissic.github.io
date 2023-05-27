@@ -114,7 +114,7 @@ it's better to keep whole .emacs.d directory as a git repository and
 make a commit before executing this script. Then, in case any problems
 you can go back to restore properly working emacs installation.
 Before running this script you should have a git repository initialized in emacs
-directory and git itself installed in the system (see Sec. [1.5](#org83b9de9)).
+directory and git itself installed in the system (see Sec. [1.5](#org7912c0f)).
 Synchronization of the local repository with the remote one is not
 performed in this script. It should be performed explicitely by the user
 in a convenient time.
@@ -235,7 +235,7 @@ The main point of the file. Set the list of packages to be installed
       org-ac
       ;org-download
       ;org-mime
-      ;org-ref
+      org-ref ; for handling org-mode references https://emacs.stackexchange.com/questions/9767/can-reftex-be-used-with-org-label
       org-special-block-extras
       ;ox-gfm
       ;ox-pandoc
@@ -303,7 +303,7 @@ for now. An interesting discussion about this can be found [here](https://www.re
 
 1.  [DEPRECATED] Setting an auxiliary variable
 
-    This section is deprecated in favour of [`workgroups2 package`](#org3eb891f).
+    This section is deprecated in favour of [`workgroups2 package`](#org6cc8126).
     
         ;; This file is designed to be re-evaled; use the variable first-time
         ;; to avoid any problems with this.
@@ -344,8 +344,21 @@ proactively.
 Here are global Emacs customization. 
 If necessary some useful infomation or link is added to the customization.
 
-1.  Self-descriptive oneliners <a id="orgf7baf38"></a>
+1.  Self-descriptive oneliners <a id="org195d2bf"></a>
 
+    Remarks:
+    At around May 2023 I stopped using `global-linum-mode` because
+    of the annoying lags while typing in a buffer that occured quite
+    frequently, Links:
+    
+    -   <https://github.com/jrblevin/markdown-mode/issues/181>
+    -   <https://www.reddit.com/r/orgmode/comments/e7pq7k/linummode_very_slow_for_large_org_files/>
+    -   <https://emacs.stackexchange.com/questions/49032/line-numbering-stick-with-linum-or-nlinum>
+    
+    From two possible alternatives at the time:
+     `nlinum-mode` and `display-line-numbers-mode`
+    I decided on the latter because it was built-in Emacs.
+    
         (auto-revert-mode 1)       ; Automatically reload file from a disk after change
         (global-auto-revert-mode 1) 
         
@@ -353,7 +366,9 @@ If necessary some useful infomation or link is added to the customization.
         
         (show-paren-mode 1)        ; Highlight matching parenthesis
         
-        (global-linum-mode 1)      ; Enable line numbering
+        ; Enable line numbering
+        ;; DEPRECATED, CAUSES LAGS WHEN TYPING: (global-linum-mode 1)			
+        (global-display-line-numbers-mode 1) 
         
         (scroll-bar-mode 1)        ; Enable scrollbar
         (menu-bar-mode 1)          ; Enable menubar
@@ -434,7 +449,7 @@ If necessary some useful infomation or link is added to the customization.
     Although the active window can be recognized
     by the cursor which blinking in it, sometimes it is hard to
     find in on the screen (especially if you use a colourful theme
-    like [1.4.15.1](#orgf315614).
+    like [1.4.15.1](#org29767b1).
     
     I found a [post](https://stackoverflow.com/questions/33195122/highlight-current-active-window) adressing this issue.
     Although the accepted answer is using 
@@ -676,8 +691,19 @@ If necessary some useful infomation or link is added to the customization.
           )
           ;; <- Fill column indicator
     
-    -   and add this hook per each required mode (this is done in [1.4.6](#orgab96003) section
+    -   and add this hook per each required mode (this is done in [1.4.6](#org5a80be3) section
         of this document
+
+12. Turning on/off beeping
+
+    Completely out of the blue my emacs started beeping. I guess it
+    had to be some keybinding I accidentally pressed but have no idea
+    what I did.
+    Anyway, to disable it we must [do the following](https://stackoverflow.com/questions/10545437/how-to-disable-the-beep-in-emacs-on-windows):
+    
+          ;; Setring alarms in Emacs -> 
+        (setq-default visible-bell t) 
+        (setq ring-bell-function 'ignore)
 
 
 ### Completing
@@ -708,7 +734,7 @@ ido/smex vs ivy/counsel/swiper vs helm
         (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command) 
         ;; <- smex
 
-3.  TODO Ivy (for testing) <a id="org3392fd2"></a>
+3.  TODO Ivy (for testing) <a id="orgf75ed94"></a>
 
     Furthermore, according to [some other users](https://ruzkuku.com/emacs.d.html#org804158b)
     "Ivy is simpler (and faster) than Helm but more powerful than Ido".
@@ -951,7 +977,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
 
 1.  oc [org-citations]
 
-    1.  Bibliography <a id="orgb379f02"></a>
+    1.  Bibliography <a id="orge44a7bb"></a>
     
         In Org 9.6 we do not need explicitely load `oc` libraries.
         Everything is covered in my post concerning bibliography and org-mode.
@@ -1142,7 +1168,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
     The special mode `org-cdlatex-mode` is included in `org` package.
     In order to have it working properly we need to install `cdlatex`
     itself. This can be done in
-    [1.3.2](#orgd593f97).
+    [1.3.2](#orge477fba).
     
     Link to `org-cdlatex-mode` description:
     <http://doc.endlessparentheses.com/Fun/org-cdlatex-mode.html>.
@@ -1179,7 +1205,24 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
     return to this package. As for now I'm going to work with `reftex`
     and LaTeX tags.
 
-12. Fix for Octave/Matlab org-babel
+12. Listing name tags of environments
+
+    Based on [this page](https://emacs.stackexchange.com/questions/77326/how-to-display-the-list-of-all-name-tags-is-org-mode-document).
+    
+        ;; Managing org-mode #+NAME properties like in reftex-mode
+        (defun my/get-name (e)
+              (org-element-property :name e))
+        
+        (defun my/latex-environment-names ()
+              (org-element-map (org-element-parse-buffer) 'latex-environment #'my/get-name))
+        
+        (defun my/report-latex-environment-names ()
+            (interactive)
+            (message (format "%S" (my/latex-environment-names))))
+        
+          (define-key org-mode-map (kbd "C-z z") #'my/report-latex-environment-names)
+
+13. Fix for Octave/Matlab org-babel
 
     (require 'ob-octave-fix nil t)
 
@@ -1328,7 +1371,7 @@ loading properly.
 
 ### Load Emacs theme of your preference
 
-1.  Modus themes by Protesilaos Stavrou <a id="orgf315614"></a>
+1.  Modus themes by Protesilaos Stavrou <a id="org29767b1"></a>
 
     -   [Author's page](https://protesilaos.com/codelog/2021-01-11-modus-themes-review-select-faint-colours/)
     -   [Youtube's tutorial](https://www.youtube.com/watch?v=JJPokfFxyFo)
@@ -1431,7 +1474,15 @@ a global shortcut...
         ;; (global-set-key (kbd "<C-S-left>")   'buf-move-left)
         ;; (global-set-key (kbd "<C-S-right>")  'buf-move-right)
 
-3.  Other packages
+3.  My own packages and settings
+
+    1.  Custom org-special-block-extras definitions used globally in org-mode files
+    
+            ;; custom org-special-block-extras blocks
+            (add-to-list 'load-path "~/.emacs.d/myarch")
+            (require 'MB-org-special-block-extras)
+
+4.  Other packages
 
         ;; org to ipython exporter
         ;;(use-package ox-ipynb
@@ -1440,7 +1491,7 @@ a global shortcut...
 
 ### TODO The end
 
-1.  Workgroups (should be executed at the end of init.el) <a id="org3eb891f"></a>
+1.  Workgroups (should be executed at the end of init.el) <a id="org6cc8126"></a>
 
     <https://tuhdo.github.io/emacs-tutor3.html>
     
@@ -1537,11 +1588,11 @@ a global shortcut...
 
 3.  [DEPRECATED] Restoring previous session
 
-    This section is deprecated in favour of [`workgroups2 package`](#org3eb891f).
+    This section is deprecated in favour of [`workgroups2 package`](#org6cc8126).
     
     This way of restoring session throws some warnings and needs additional
     confirmations so I give it up. Simple `(desktop-save-mode 1)` which is 
-    included [in the beginning of `init.el`](#orgf7baf38) works ok.
+    included [in the beginning of `init.el`](#org195d2bf) works ok.
     
         ;; Restore the "desktop" - do this as late as possible
         (if first-time
@@ -1575,10 +1626,18 @@ a global shortcut...
         (message "All done in init.el.")
 
 
-## Dependencies of the presented Emacs configuration <a id="org83b9de9"></a>:
+## Dependencies of the presented Emacs configuration <a id="org7912c0f"></a>:
 
 The list of external applications that this script is dependent on:
 
 -   git
 -   LaTeX distribution (for org to latex exporters)
+
+
+## Some useful information and links:
+
+
+### What to do when Emacs is slow and laggy:
+
+<https://emacs.stackexchange.com/questions/5359/how-can-i-troubleshoot-a-very-slow-emacs>
 

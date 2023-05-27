@@ -1,5 +1,3 @@
-# ____________________________________________________________________________78
-
 #+TITLE: Initialization files setup in Emacs
 #+DESCRIPTION: 
 #+AUTHOR: cissic
@@ -276,7 +274,7 @@ The main point of the file. Set the list of packages to be installed
     org-ac
     ;org-download
     ;org-mime
-    ;org-ref
+    org-ref ; for handling org-mode references https://emacs.stackexchange.com/questions/9767/can-reftex-be-used-with-org-label
     org-special-block-extras
     ;ox-gfm
     ;ox-pandoc
@@ -415,6 +413,18 @@ If necessary some useful infomation or link is added to the customization.
 
 **** Self-descriptive oneliners <<oneliners>>
 
+Remarks:
+At around May 2023 I stopped using ~global-linum-mode~ because
+of the annoying lags while typing in a buffer that occured quite
+frequently, Links:
+- https://github.com/jrblevin/markdown-mode/issues/181
+- https://www.reddit.com/r/orgmode/comments/e7pq7k/linummode_very_slow_for_large_org_files/
+- https://emacs.stackexchange.com/questions/49032/line-numbering-stick-with-linum-or-nlinum
+
+From two possible alternatives at the time:
+ ~nlinum-mode~ and ~display-line-numbers-mode~
+I decided on the latter because it was built-in Emacs.
+
 #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
   (auto-revert-mode 1)       ; Automatically reload file from a disk after change
   (global-auto-revert-mode 1) 
@@ -423,7 +433,9 @@ If necessary some useful infomation or link is added to the customization.
 
   (show-paren-mode 1)        ; Highlight matching parenthesis
 
-  (global-linum-mode 1)      ; Enable line numbering
+  ; Enable line numbering
+  ;; DEPRECATED, CAUSES LAGS WHEN TYPING: (global-linum-mode 1)			
+  (global-display-line-numbers-mode 1) 
 
   (scroll-bar-mode 1)        ; Enable scrollbar
   (menu-bar-mode 1)          ; Enable menubar
@@ -790,6 +802,19 @@ One of the posts (@Qudit) recommends using ~whitespace-mode~ instead of
 ~fci-column-mode~. I tested ~whitespace-mode~ however it does not look as
 nice as I expected (perhaps it needs some additional configuration...).
 
+
+
+**** Turning on/off beeping
+Completely out of the blue my emacs started beeping. I guess it
+had to be some keybinding I accidentally pressed but have no idea
+what I did.
+Anyway, to disable it we must [[https://stackoverflow.com/questions/10545437/how-to-disable-the-beep-in-emacs-on-windows][do the following]]:
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+  ;; Setring alarms in Emacs -> 
+(setq-default visible-bell t) 
+(setq ring-bell-function 'ignore)
+#+end_src
 
 
 *** Completing 
@@ -1380,10 +1405,36 @@ and LaTeX tags.
 
 
 
+**** Listing name tags of environments
+Based on [[https://emacs.stackexchange.com/questions/77326/how-to-display-the-list-of-all-name-tags-is-org-mode-document][this page]].
+
+
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
+  ;; Managing org-mode #+NAME properties like in reftex-mode
+  (defun my/get-name (e)
+	(org-element-property :name e))
+
+  (defun my/latex-environment-names ()
+	(org-element-map (org-element-parse-buffer) 'latex-environment #'my/get-name))
+
+  (defun my/report-latex-environment-names ()
+      (interactive)
+      (message (format "%S" (my/latex-environment-names))))
+
+    (define-key org-mode-map (kbd "C-z z") #'my/report-latex-environment-names)
+#+end_src
+
+
+
 **** Fix for Octave/Matlab org-babel
 
 (require 'ob-octave-fix nil t)
- 
+
+
+
+
+
 *** TODO Flyspell (TODO: dive deeper into the package and its capabilities)
 https://ruzkuku.com/emacs.d.html#org804158b
 https://www.emacswiki.org/emacs/FlySpell
@@ -1765,6 +1816,19 @@ or you can define keybindings as package documentation recommends
 
 
 
+
+**** My own packages and settings
+
+***** Custom org-special-block-extras definitions used globally in org-mode files
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+;; custom org-special-block-extras blocks
+(add-to-list 'load-path "~/.emacs.d/myarch")
+(require 'MB-org-special-block-extras)
+#+end_src
+
+
+
 **** Other packages
 #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") :exports none
 ;; [DEPRECATED] - use sunrise instead of this
@@ -1942,6 +2006,11 @@ The list of external applications that this script is dependent on:
 - git
 - LaTeX distribution (for org to latex exporters)
 
+
+** Some useful information and links:
+
+*** What to do when Emacs is slow and laggy:
+https://emacs.stackexchange.com/questions/5359/how-can-i-troubleshoot-a-very-slow-emacs
 
 * COMMENT Local Variables
 
