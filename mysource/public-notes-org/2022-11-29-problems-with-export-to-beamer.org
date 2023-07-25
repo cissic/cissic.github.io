@@ -1,6 +1,6 @@
 # ____________________________________________________________________________78
 
-#+TITLE: Beamer exporter not working
+#+TITLE: Beamer exporter not working (EDITED: 2023.05.29)
 #+DESCRIPTION: 
 #+AUTHOR: cissic
 #+DATE: <2022-11-29 Tue>
@@ -27,6 +27,12 @@ to be embedded into emacs I finally found solution in the
 To solve the problem I needed to do:
 #+begin_example
 C-u M-x org-reload
+#+end_example
+
+** Another solution
+It appears that beamer exporter can be enabled by
+#+begin_example
+M-x org-beamer-mode
 #+end_example
 
 

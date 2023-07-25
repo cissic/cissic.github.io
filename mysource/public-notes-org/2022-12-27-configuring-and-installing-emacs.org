@@ -2,9 +2,11 @@
 #+DESCRIPTION: 
 #+AUTHOR: cissic
 #+DATE: <2022-12-27 Tue>
+#+TODO: TODO ABANDONED | DONE DEPRECATED
 #+TAGS: emacs packages
 #+OPTIONS: toc:nil
 #+OPTIONS: -:nil
+
 
 
 * {{{title}}
@@ -79,6 +81,7 @@ https://karthinks.com/software/latex-input-for-impatient-scholars/
 
 
 ** Installation/upgrade script
+
 This script is meant to (re-)install/prepare/upgrade Emacs packages in order
 to have fully working Emacs environment.  
 
@@ -234,6 +237,8 @@ In Emacs 27.1 it [[https://emacs.stackexchange.com/a/44287][shouldn't be necessa
 
 
 *** The main part of the installation script - list of the packages
+<<installation-script>>
+
 I used to have ~(defvar my-packages ...~ instead of ~(setq my-packages ...~ 
 below but... *Do not* use ~defvar~ for declaring a list of packages to be installed!
 If the variable is already defined 
@@ -255,6 +260,7 @@ The main point of the file. Set the list of packages to be installed
     cdlatex
     company
     dockerfile-mode
+    emacs-everywhere
     fill-column-indicator
     ;flycheck
     ;flycheck-pos-tip
@@ -273,6 +279,7 @@ The main point of the file. Set the list of packages to be installed
     org   ; ver. 9.3  built-in in Emacs 27.1; this install version 9.6 from melpa
     org-ac
     ;org-download
+    org-plus-contrib
     ;org-mime
     org-ref ; for handling org-mode references https://emacs.stackexchange.com/questions/9767/can-reftex-be-used-with-org-label
     org-special-block-extras
@@ -352,7 +359,7 @@ for now. An interesting discussion about this can be found [[https://www.reddit.
 #+end_src
 
 
-**** [DEPRECATED] Setting an auxiliary variable
+**** DEPRECATED Setting an auxiliary variable
 This section is deprecated in favour of [[workgroups2-and-sessions][~workgroups2 package~]].
 
 #+begin_src emacs-lisp
@@ -447,7 +454,9 @@ I decided on the latter because it was built-in Emacs.
 
   (define-key global-map (kbd "RET") 'newline-and-indent) ; Auto-indent new lines
 
-  (desktop-save-mode 1)      ; Save windows layout on closing
+  (if (not (daemonp))           ; if this is not a --daemon session -> see: [[emacs-everywhere]] section
+     (desktop-save-mode 1)      ; Save buffers on closing and restore them at startup
+  )
   (setq desktop-load-locked-desktop t) ; and don't ask for confirmation when 
 			     ; opening locked desktop
   (setq desktop-save t)
@@ -514,9 +523,16 @@ the =...= at the end.
 ([[https://stackoverflow.com/questions/13747749/font-families-for-emacs][Source]]).
 
 The font of my choice is:
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")  
-(set-frame-font "liberation mono 11" nil t) ; Set default font
+
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
+;; now this setting is done much lower in the code due to
+;; problems with fonts in  emacsclient/daemonp instances -> see [[emacs-everywhere]]
+;; (set-frame-font "liberation mono 11" nil t) ; Set default font
 #+end_src
+
+Due to  due to the  problems with fonts in =emacsclient/daemonp=
+instances font is set now in the section [[emacs-everywhere]].
 
 **** Highlight on an active window/buffer
 Although the active window can be recognized
@@ -648,7 +664,7 @@ combination (~Super-Key-<arrow>~ in the code below).
 ;; <- windmove
 #+end_src
 
-***** [DEPRECATED] Useful For Emacs < 27.1
+***** DEPRECATED Useful For Emacs < 27.1
 (This section is deprecated. In Emacs 27.1 the package works ok without
 the need of application of ~ignore-error-wrapper~ function.)
 
@@ -685,10 +701,10 @@ following code Emacs does not throw warnings or errors.
   
   ;; setting windmove-default-keybindings to super-<arrow> in order
   ;; to avoid org-mode conflicts
-  (global-set-key (kbd "s-<left>") (ignore-error-wrapper 'windmove-left))
-  (global-set-key (kbd "s-<right>") (ignore-error-wrapper 'windmove-right))
-  (global-set-key (kbd "s-<up>") (ignore-error-wrapper 'windmove-up))
-  (global-set-key (kbd "s-<down>") (ignore-error-wrapper 'windmove-down))
+  (global-set-key (kbd "M-s-<left>") (ignore-error-wrapper 'windmove-left))
+  (global-set-key (kbd "M-s-<right>") (ignore-error-wrapper 'windmove-right))
+  (global-set-key (kbd "M-s-<up>") (ignore-error-wrapper 'windmove-up))
+  (global-set-key (kbd "M-s-<down>") (ignore-error-wrapper 'windmove-down))
 ;; <- windmove
 #+end_src
 
@@ -1053,7 +1069,7 @@ apply the configuration given [[https://realpython.com/emacs-the-best-python-edi
 
 By default emacs waits until all exporting processes finish. It may take quite
 a while in some situations (for example when exporting long document to LaTeX).
-In order to make emacs work in asynchronous mode you need to toggle this
+In order to make emacs work in asyncronous mode you need to toggle this
 ([[https://orgmode.org/manual/The-Export-Dispatcher.html][link 1]], [[https://superuser.com/questions/483554/org-export-run-in-background-how-to-troubleshoot][link 2]]).
 
 One way is to do it each time when exporting: after pressing =C-c C-e= you
@@ -1064,6 +1080,7 @@ To have this option toggled after launching emacs put the line below in your
 init file.
 
 #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
+  ;; Org mode...
   (setq org-export-in-background t)
 #+end_src
 
@@ -1071,16 +1088,60 @@ This setting has impact only when exporting via =org exporting menu=
 (triggered by =C-c C-e=). When calling =org-latex-export-to-pdf= this
 setting is not taken into account. Fortunately, this function has
 optional parameter that can be set to obtain async behaviour.
-All in all, the working solution can be written as a custom hook like this:
+All in all, the (almost) working solution can be written as a custom hook like this:
 
 #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
-(defun my-org-mode-hook()
-  (define-key org-mode-map (kbd "<f9>")
-    '(lambda () (interactive)
-      (org-latex-export-to-pdf :async t))
-     )  
-)
+  (defun my-org-mode-hook()
+    (define-key org-mode-map (kbd "<f9>")
+      '(lambda () (interactive)
+	(org-latex-export-to-pdf :async t)
+	(org-beamer-export-to-pdf :async t)
+	(org-odt-export-to-odt :async t)
+	(org-odt-export-as-pdf :async t)
+	)
+       )  
+  )
 #+end_src
+
+Why "almost"? Because this solution still won't work when exporting
+files to Beamer. In order one needs to create appropriate
+init file with settings for async export and
+set ~org-export-async-init-file~ variable as path to this file (see 
+[[org:export:async:beamer]]).
+
+***** Setting ~org-export-async-init-file~ to avoid failure while exporting to Beamer
+<<org:export:async:beamer>>
+
+Org-beamer *async* exporter may fail because of lacking
+=org-export-async-init-file= 
+(as it is stated [[https://superuser.com/questions/738492/org-mode-8-async-export-process-fails][here]] and [[https://lists.gnu.org/archive/html/emacs-orgmode/2014-09/msg00463.html][here]]). 
+
+In order to avoid this problem we can create a file with the
+following content (note setting ~org-export-allow-bind-keywords~
+[[https://www.mail-archive.com/emacs-orgmode@gnu.org/msg118389.html][variable]]):
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "myarch/async_init.el")
+(require 'package)
+(setq package-enable-at-startup nil)
+(package-initialize)
+
+(require 'org) 
+(require 'ox)
+(require 'cl)
+(require 'ox-beamer)
+(setq org-export-async-debug t)
+(setq org-export-allow-bind-keywords t) ;; Important! In order to have #+BIND command working.
+#+end_src
+
+and set the variable ~org-export-async-init-file~.
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
+  (setq org-export-async-init-file (expand-file-name "~/.emacs.d/myarch/async_init.el"))
+  (setq org-export-async-debug t)
+#+end_src
+
+The important line is =(require 'ox-beamer)= !!! ([[https://lists.gnu.org/archive/html/emacs-orgmode/2018-05/msg00253.html][link]])
+
+***** TODO async for odt documents still not working
 
 
 **** Updating all of the hooks to make them aware of your mode settings
@@ -1174,12 +1235,104 @@ Useful links:
 **** citar (to check?)
      https://github.com/emacs-citar/citar
 
-*** Org customization
+*** Org customization: org-mode, org-babel ...
 #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") :exports none
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; *** Org customization
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+end_src
+
+**** Modyfing TODO-DONE sequence in org-mode
+https://emacs.stackexchange.com/questions/31466/all-todos-how-to-set-different-colors-for-different-categories
+
+https://orgmode.org/manual/TODO-Extensions.html
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+;; customized todo-done sequence
+(setq org-todo-keywords
+  '(
+(sequence "TODO" "????" "POSTPONED" "|" "DONE")
+(sequence "TODO" "ABANDONED"  "|" "DONE" "DEPRECATED")
+))
+
+(setq org-todo-keyword-faces
+'(
+("????" . (:foreground "red" :weight bold))
+("POSTPONED" . (:foreground "blue" :weight bold))
+("ABANDONED" . (:foreground "orange" :weight bold))
+("DEPRECATED" . (:foreground "green" :weight bold))
+)
+)
+#+end_src
+
+WARNING! When changing this variables in the middle of the emacs
+session you need to restart org-mode (=M-x org-mode-restart=) to
+to have them enabled ([[https://lists.gnu.org/archive/html/emacs-orgmode/2010-11/msg00130.html][source]])!
+
+Furthermore, it may be more convenient to have this tags set for
+individual file (=#+TODO:=) ([[https://orgmode.org/manual/Per_002dfile-keywords.html][link]]).
+
+
+**** Customizing font style for TODO-DONE keywords in latex export
+https://stackoverflow.com/questions/36197545/org-mode-latex-export-making-todos-red
+
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+;; customized todo-done keywords in latex documents
+(defun org-latex-format-headline-colored-keywords-function
+    (todo _todo-type priority text tags _info)
+  "Default format function for a headline.
+See `org-latex-format-headline-function' for details."
+  (concat
+   ;; (and todo (format "{\\bfseries\\sffamily %s} " todo))
+  (cond
+   ((string= todo "TODO")(and todo (format "{\\color{red}\\bfseries\\sffamily %s} " todo)))
+   ((string= todo "????")(and todo (format "{\\color{red}\\bfseries\\sffamily %s} " todo)))
+   ((string= todo "POSTPONED")(and todo (format "{\\color{blue}\\bfseries\\sffamily %s} " todo)))
+   ((string= todo "DONE")(and todo (format "{\\color{green}\\bfseries\\sffamily %s} " todo)))
+   )
+   (and priority (format "\\framebox{\\#%c} " priority))
+   text
+   (and tags
+	(format "\\hfill{}\\textsc{%s}"
+		(mapconcat #'org-latex--protect-text tags ":")))))
+
+(setq org-latex-format-headline-function 'org-latex-format-headline-colored-keywords-function)
+#+end_src
+
+
+**** Toggle between TODO-DONE keywords for all subnodes of the current node
+Based on:
+https://emacs.stackexchange.com/questions/52492/change-todo-keywords-of-all-nodes-in-an-orgmode-subtree-in-elisp
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+(defun mb/org-toggle-org-keywords-right ()
+    "Toggle between todo-done keywords for all subnodes of the current node."
+    (interactive)
+    (org-map-entries (lambda () (org-shiftright)) nil 'tree)
+  )
+(defun mb/org-toggle-org-keywords-left ()
+    "Toggle between todo-done keywords for all subnodes of the current node."
+    (interactive)
+    (org-map-entries (lambda () (org-shiftleft)) nil 'tree)
+  )
+#+end_src
+
+# **** Adding custom keywords to org-mode headline of the of the node and its subnodes
+# -> Moved to RDITITcode.org
+
+# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+# (defun mb/org-add-keyword ()
+#     "Add '{{{opt}}}' string to the headline of the node and all of its subnodes."
+#     (interactive)
+#     (org-map-entries (lambda () (concat "{{{opt}}}" (org-entry-get nil "ITEM")  )) nil 'tree)
+#   )
+# (defun mb/org-remove-keyword ()
+#     "Remove '{{{opt}}}' string to the headline of the node and all of its subnodes."
+#     (interactive)
+#     (org-map-entries (lambda () (org-shiftleft)) nil 'tree)
+#   )
+# #+end_src
+
 
 **** Org-agenda activation
  https://orgmode.org/manual/Activation.html#Activation
@@ -1221,6 +1374,64 @@ To have org-babel enabled (execution of portions of code):
 (setq org-confirm-babel-evaluate nil)
 
 #+end_src
+
+
+**** Fix for Octave/Matlab org-babel - problems with matlab in org-babel
+<<matlab-in-org-babel>>
+http://gewhere.github.io/blog/2017/12/19/setup-matlab-in-emacs-and-babel-orgmode/
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+
+;; setup matlab in babel
+(setq org-babel-default-header-args:matlab
+  '((:results . "output") (:session . "*MATLAB*")))
+
+#+end_src
+
+
+In the current version of matlab org-babel there is a problem of
+including input lines in the output of org-babel block.
+The way to circumvent it is to use the approach suggested by
+the user named =karthink= (=karthinks=?). I traced it starting
+from the pages:
+- https://www.reddit.com/r/emacs/comments/pufgce/matlab_mode/
+- https://www.reddit.com/r/emacs/comments/fy98bs/orgbabels_matlab_session_output_is_malformed/
+
+In the last link user =nakkaya=
+refers to his/her solution of the problem,
+however his/her link does not seem to include this solution.
+
+I searched web for =karthink=, =matlab=, =emacs= appearances and
+found the fix here:
+https://github.com/karthink/.emacs.d/blob/master/plugins/ob-octave-fix.el
+
+In the end I just downloaded the file and the inclusion of this package is
+done in section [[ob-octave-fix]].
+
+Remark: There exist at least two versions of the fix (I renamed
+the one I already had to =ob-octave-fixOLDER.el=). Previous version
+of the file didn't seem to resolve the problem.
+
+Remark 2: In case of matlab code-block
+newer version of =ob-octave-fix.el= depends on
+=altmany='s ~export_fig~ function! I have been using it for a while
+so I don't care anyway but in one may obtain errors when using
+this library without ~export_fig~!
+
+***** Export plots to png
+https://lists.gnu.org/archive/html/emacs-orgmode/2017-08/msg00376.html
+
+https://emacs.stackexchange.com/questions/54695/no-graphic-output-for-matlab-src-block-in-org-mode
+
+***** Wrong formatting of matlab output's in org-babel
+
+https://www.reddit.com/r/emacs/comments/fy98bs/orgbabels_matlab_session_output_is_malformed/
+
+
+
+
+
+
 
 **** Set path to Python executable to work in org-babel code block
 Pythonic org-babel code blocks like the one below:
@@ -1427,9 +1638,7 @@ Based on [[https://emacs.stackexchange.com/questions/77326/how-to-display-the-li
 
 
 
-**** Fix for Octave/Matlab org-babel
 
-(require 'ob-octave-fix nil t)
 
 
 
@@ -1670,6 +1879,108 @@ See `comment-region' for behavior of a prefix arg."
 https://www.emacswiki.org/emacs/CopyWithoutSelection
 
 
+*** ABANDONED Emailing in Emacs 
+As a temporary workaround I decided to try [[emacs-everywhere]].
+
+Basing on  [[https://www.reddit.com/r/emacs/comments/4rl0a9/email_in_emacs_i_want_to_but_wow_its_overwhelming/][this post]] I decided to perform configuration of email service 
+within Emacs in three steps. Each of them takes care of one of the 
+following problems
+- fetching emails
+- sending emails
+- viewing emails.
+
+**** Links that can be useful:
+- https://www.reddit.com/r/emacs/comments/4rl0a9/email_in_emacs_i_want_to_but_wow_its_overwhelming/
+- https://www.emacswiki.org/emacs/GettingMail
+- [[https://www.jonatkinson.co.uk/posts/syncing-gmail-with-mbsync/]]
+- https://isync.sourceforge.io
+- https://brian-thompson.medium.com/setting-up-isync-mbsync-on-linux-e9fe10c692c0
+- https://wiki.archlinux.org/title/isync
+- https://www.maketecheasier.com/use-email-within-emacs/
+
+
+**** ABANDONED Another approach: External Editor Revived -- a Thunderbird extension 
+External Editor Revived is a Thunderbird extension that allows 
+using external editor (vim/emacs/...) to edit your mails.
+
+I had problems with installing necessary binary 
+(https://github.com/Frederick888/external-editor-revived/releases/download/v0.6.0/ubuntu-latest-gnu-native-messaging-host-v0.6.0.zip)
+due to lacking dependencies:
+#+begin_example
+./external-editor-revived: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.33' not found (required by ./external-editor-revived)
+./external-editor-revived: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.32' not found (required by ./external-editor-revived)
+./external-editor-revived: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.34' not found (required by ./external-editor-revived)
+#+end_example
+so I abandoned this idea at this stage.
+
+*** Emacs-everywhere 
+<<emacs-everywhere>>
+
+Repository of the package and some basic information can be found
+[[https://github.com/tecosaur/emacs-everywhere/][here]].
+
+1. Install package ~emacs-everywhere~ from melpa ([[installation-script]])
+2. Add system-wide shortcut for the command 
+   #+begin_src sh :tangle  "~/binmb/emacs-everywhere.sh"
+   #!/bin/bash
+   # https://github.com/tecosaur/emacs-everywhere/
+   
+   emacsclient --eval "(emacs-everywhere)"
+   #+end_src
+   (I added =Ctrl+Alt+E= in custom shortcuts of KDE)
+3. Run emacs daemon in the system (for example after hitting =Alt+F2=)  with:
+   #+begin_src sh 
+   emacs --daemon 
+   #+end_src
+   Warning!: In order not to restore files from previous session 
+   (and avoid being asked for confirmation of loading some commands
+   when files are restored) additional if statement is added to
+   embrace ~(desktop-save-mode 1)~ at the beginning of the =init.el=.
+   
+4. Now you can invoke Emacs anywhere in the system with =Ctrl+Alt+E=.
+   (If a piece of code is highlighted, it will be copied into Emacs
+   buffer). After editing Emacs buffer press =C-c C-c= or =C-x 5 0= 
+   to go back to the original programme. If you do not wish to paste 
+   the buffer content into the original window, =C-c C-k= still
+   copies the content to the clipboard, but never pastes.
+
+5. The buffer opened within Emacs deamon instance has small fonts 
+   despite the fact that font is set somewhere at the beginning of the 
+   =init.el=. It is well-known problem:
+   1. https://www.google.com/search?q=emacs+default+font+emacs+daemon
+   2. https://emacs.stackexchange.com/questions/52063/emacsclient-gui-has-small-fonts
+   3. https://github.com/doomemacs/doomemacs/issues/1223
+   4. https://www.reddit.com/r/emacs/comments/pc189c/fonts_in_emacs_daemon_mode/
+   5. https://www.reddit.com/r/emacs/comments/dwy299/how_to_set_fonts_in_daemon_mode_windows/
+
+   I used the solution based on the one presented in the last link above,
+   however the one presented in the second link seems to be simpler... 
+
+   #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+   ;; setting up configuration for emacs-everywhere:
+   ;; 1. font size
+   ;(if (daemonp)
+   ;(
+   (defun my-after-frame (frame)
+     (if (display-graphic-p frame)
+         (progn
+            (set-frame-font "liberation mono 11" nil t) )))
+
+   (mapc 'my-after-frame (frame-list))
+   (add-hook 'after-make-frame-functions 'my-after-frame)
+   ;)
+   ;) 
+   #+end_src
+   
+ 
+
+**** Links that I found useful setting up this package:
+- https://wikemacs.org/wiki/Command-line_startup_options
+- https://ftp.gnu.org/old-gnu/Manuals/emacs-20.7/html_chapter/emacs_37.html
+https://emacs.stackexchange.com/questions/3035/how-to-know-if-emacs-is-running-as-a-daemon
+- https://stackoverflow.com/questions/45332003/how-can-i-detect-if-emacs-was-started-with-q 
+- http://xahlee.info/emacs/emacs/elisp_command_line_argv.html
+
 *** Load Emacs theme of your preference
 #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") :exports none
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1709,7 +2020,10 @@ second reason).
       modus-themes-region '(bg-only no-extend))
 
 ;; Load the theme of your choice:
-(load-theme 'modus-vivendi :noconfirm) ;; OR (load-theme 'modus-operandi)
+; (load-theme 'modus-operandi) ;; bright 
+; (load-theme 'modus-vivendi) ;; dark
+
+(load-theme 'modus-vivendi :noconfirm) 
 
 (setq modus-themes-headings ; this is an alist: read the manual or its doc string
       '((1 . (rainbow overline background 1.4))
@@ -1719,6 +2033,21 @@ second reason).
 
 (setq modus-themes-scale-headings t)
 (setq modus-themes-org-blocks 'tinted-background)
+#+end_src
+
+There are two types of modus themes: ~modus-operandi~ which is bright
+and ~modus-vivendi~ which is dark one.
+In order to ease switching between them it is convenient to define
+custom keybinding [[https://emacs.stackexchange.com/a/48627][(details]]).
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+;; Auxiliary function to toggle betwen bright and dark theme
+(defun toggle-theme ()
+  (interactive)
+  (if (eq (car custom-enabled-themes) 'modus-vivendi)
+      (disable-theme 'modus-vivendi)
+    (load-theme 'modus-vivendi :noconfirm)))
+(global-set-key [f6] 'toggle-theme)
 #+end_src
 
 *** Manually downloaded packages
@@ -1815,6 +2144,20 @@ or you can define keybindings as package documentation recommends
 #+end_src
 
 
+
+
+**** ob-octave-fix.el
+<<ob-octave-fix>>
+
+The discussion on this is thread can be found in section
+[[matlab-in-org-babel]] so I here I just include the solution, namely
+I load fixed library.
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+  ;; octave/matlab-fix
+  ;;;; (require 'ob-octave-fix nil t)    ; This is for older approach
+  (require 'ob-octave-fix)
+#+end_src
 
 
 **** My own packages and settings
@@ -1955,7 +2298,7 @@ to be ok with the following lines:
 #+end_src
 
 
-**** [DEPRECATED] Restoring previous session
+**** DEPRECATED Restoring previous session
 This section is deprecated in favour of [[workgroups2-and-sessions][~workgroups2 package~]].
 
 This way of restoring session throws some warnings and needs additional
@@ -1973,7 +2316,7 @@ included [[oneliners][in the beginning of ~init.el~]] works ok.
 (setq first-time nil)
 #+end_src
 
-**** [DEPRECATED] Open some useful files in the background
+**** DEPRECATED Open some useful files in the background
 I don't use this part of ~init.el~ anymore. I can get the similar
 functionality by using ~recentf~ package or prepare a session
 with required files opened in it.
@@ -2005,6 +2348,11 @@ second: it is not present in Emacs 27.1 anyway.
 The list of external applications that this script is dependent on:
 - git
 - LaTeX distribution (for org to latex exporters)
+
+- xclip ([[emacs-everywhere]])
+- xdotool ([[emacs-everywhere]])
+- xprop ([[emacs-everywhere]]) - this is not a package but executable
+- xwininfo ([[emacs-everywhere]]) - this is not a package but executable
 
 
 ** Some useful information and links:
