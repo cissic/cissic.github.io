@@ -176,6 +176,7 @@ addresses here, something like:
         ; ("marmalade" . "http://marmalade-repo.org/packages/")
         ("melpa" . "https://melpa.org/packages/")
 	("melpa-stable" . "http://stable.melpa.org/packages/")
+
 	; ("org" . "https://orgmode.org/elpa/")    ;;; removed as a way of dealing with https://emacs.stackexchange.com/questions/70081/how-to-deal-with-this-message-important-please-install-org-from-gnu-elpa-as-o
 	))
 #+end_src
@@ -201,18 +202,24 @@ in your ~init.el~. This should allow to use ~https~ adresses as package archives
 I haven't check this approach but I should try this if anything goes
 wrong in the future.)
 
+NOTE (2023.08.30): In order to install =org-contrib= package
+(=mediawiki= needs it as a dependency) I also needed to add 
+~("nongnu"       . "https://elpa.nongnu.org/nongnu/")~ repository.
+
 So now my list of repositories looks as follows: 
 
 #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "install-packages.el")
 
-;;first, declare repositories
-(setq package-archives
-      '(("gnu" . "http://elpa.gnu.org/packages/")  ;; default value of package-archives in Emacs 27.1
-        ("melpa" . "http://melpa.org/packages/")
-	("melpa-stable" . "http://stable.melpa.org/packages/")
-	))
-
+  ;;first, declare repositories
+  (setq package-archives
+	'(("gnu" . "http://elpa.gnu.org/packages/")  ;; default value of package-archives in Emacs 27.1
+	  ("melpa" . "http://melpa.org/packages/")
+	  ("melpa-stable" . "http://stable.melpa.org/packages/")
+	  ("nongnu"       . "https://elpa.nongnu.org/nongnu/")
+	  ))
 #+end_src
+
+
 
 Now, synchronize your data: download descriptions of ELPA packages 
 and update the cache with current versions of
@@ -827,10 +834,87 @@ what I did.
 Anyway, to disable it we must [[https://stackoverflow.com/questions/10545437/how-to-disable-the-beep-in-emacs-on-windows][do the following]]:
 
 #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
-  ;; Setring alarms in Emacs -> 
+  ;; Setting alarms in Emacs -> 
 (setq-default visible-bell t) 
 (setq ring-bell-function 'ignore)
 #+end_src
+
+
+**** Ibuffer - an advanced replacement for BufferMenu
+<<Ibuffer>>
+
+Description of the package is [[https://www.emacswiki.org/emacs/IbufferMode][here]].
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+  ;; Advanced buffer mode
+(global-set-key (kbd "C-x C-b") 'ibuffer)
+#+end_src
+
+
+
+
+*** Useful tools
+
+**** Dired
+https://www.emacswiki.org/emacs/DiredBookmarks
+
+The default behaviour of Dired when walking across directory
+structure is to open each directory in a new buffer. In this
+way you end up with a lot of (probably unnecessary) buffers.
+How to circumvent this behaviour. (*Beware!* There are some [[https://www.emacswiki.org/emacs/DiredReuseDirectoryBuffer][reasons]]
+you might want to keep it!)
+
+***** Straightforward solution
+The most straighforward way is to kill them by going to buffer menu
+: C-x C-b
+and selecting the ones you want to kill with ~d~ and delete them all
+at once with ~x~.
+
+
+***** Ibuffer interactive way
+In [[Ibuffer]] there a nice shortcut to do this. You can select all
+the files of the given mode with:
+: * M
+(note the capital ~M~! ~* m~ is for selecting *modified* buffers).
+and then kill them with (again capital!) ~D~.
+
+Summary (providing you have Ibuffer, which is built-in in Emacs 27.1):
+1. Open ibuffer
+   : C-x C-b
+   or
+   : M-x ibuffer
+2. Select all the buffer of the mode
+   : * M
+3. Search for all ~dired~ or ~sunrise~ mode buffers and kill them:
+   : * D
+
+***** Simple dired way 
+You can use ~dired-find-alternate-file~ function which is bounded
+to key ~a~ in ~dired-mode~ for going down the directory structure. 
+For going up you need to do some more tweaks and the simplest way is
+given by Xah Lee ([[http://xahlee.info/emacs/emacs/emacs_dired_tips.html][original source]], [[https://stackoverflow.com/questions/1839313/how-do-i-stop-emacs-dired-mode-from-opening-so-many-buffers][stackoverflow]]).
+
+
+
+**** Dired and bookmarks
+When going up and down the directory structure you can mark/add
+the favourite places into bookmarks which comes down to:
+: C-x r m
+
+Then, you can go to your bookmarks menu by:
+: C-x r b
+Select the directory you want to open and go there in dired/sunrise mode.
+
+To delete, rename a bookmark:
+: M-x list-bookmarks
+- ~d~ to mark to delete 
+- ~x~ to delete all D marked ones
+- ~r~ to rename
+- ~s~ to save changes
+
+
+You can always achieve the same functionality without bookmarks feature
+like [[https://emacs.stackexchange.com/a/75448/30035][here]].
 
 
 *** Completing 
@@ -943,8 +1027,8 @@ Emacs abbreviations are
 #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 ;; Recently opened files ->
   (recentf-mode 1)
-  (setq recentf-max-menu-items 50)
-  (setq recentf-max-saved-items 50)
+  (setq recentf-max-menu-items 100)
+  (setq recentf-max-saved-items 100)
   ;; in original emacs this binding is for "Find file read-only"
   (global-set-key "\C-x\ \C-r" 'recentf-open-files)
 ;; <- Recently opened files
@@ -1128,7 +1212,7 @@ following content (note setting ~org-export-allow-bind-keywords~
 (require 'ox)
 (require 'cl)
 (require 'ox-beamer)
-(setq org-export-async-debug t)
+(setq org-export-async-debug nil) ;; no impact here. Do it in main init.el
 (setq org-export-allow-bind-keywords t) ;; Important! In order to have #+BIND command working.
 #+end_src
 
@@ -1136,10 +1220,11 @@ and set the variable ~org-export-async-init-file~.
 
 #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
   (setq org-export-async-init-file (expand-file-name "~/.emacs.d/myarch/async_init.el"))
-  (setq org-export-async-debug t)
+  (setq org-export-async-debug nil) ;; when set to 't' it stores all "*Org Export Process*" buffers, when set to 'nil' it leaves only the last one in the buffer list, but already killed
 #+end_src
 
 The important line is =(require 'ox-beamer)= !!! ([[https://lists.gnu.org/archive/html/emacs-orgmode/2018-05/msg00253.html][link]])
+
 
 ***** TODO async for odt documents still not working
 
@@ -1251,7 +1336,8 @@ https://orgmode.org/manual/TODO-Extensions.html
 (setq org-todo-keywords
   '(
 (sequence "TODO" "????" "POSTPONED" "|" "DONE")
-(sequence "TODO" "ABANDONED"  "|" "DONE" "DEPRECATED")
+(sequence "TODO" "ABANDONED"  "|" "DEPRECATED" "DONE")
+(sequence "TODO" "????" "ABANDONED" "POSTPONED" "|" "DEPRECATED" "DONE")
 ))
 
 (setq org-todo-keyword-faces
@@ -1361,12 +1447,13 @@ To have org-babel enabled (execution of portions of code):
 ;; enabling org-babel
 (org-babel-do-load-languages
  'org-babel-load-languages '(
-			     (C . t)
+			     (C . t) ; enable processing C, C++, and D source blocks
 			     (matlab . t)
 			     ;;(perl . t)
 			     (octave . t)
 			     (org . t)
 			     (python . t)
+                             (plantuml . t)
 			     (shell . t)
  			     ))
 			     
@@ -1374,6 +1461,27 @@ To have org-babel enabled (execution of portions of code):
 (setq org-confirm-babel-evaluate nil)
 
 #+end_src
+
+***** =plantuml=
+- https://orgmode.org/worg/org-contrib/babel/languages/ob-doc-plantuml.html
+- https://medium.com/@shibucite/emacs-and-plantuml-for-uml-diagrams-academic-tools-6c34bc07fd2
+- https://plantuml.com/activity-diagram-beta
+  
+In order to work with =plantuml= you need to install it (there's
+another way which is documented in the link above, but I won't use it).
+On debian machine I'll just execute:
+#+begin_src bash
+  sudo apt install plantuml
+#+end_src
+and add the following line to tell emacs to use system installed
+plantuml:
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+;; enabling plantuml
+
+(setq plantuml-executable-path "plantuml")
+(setq org-plantuml-exec-mode 'plantuml)
+#+end_src
+
 
 
 **** Fix for Octave/Matlab org-babel - problems with matlab in org-babel
@@ -1418,6 +1526,24 @@ newer version of =ob-octave-fix.el= depends on
 so I don't care anyway but in one may obtain errors when using
 this library without ~export_fig~!
 
+
+Now, results show only the first line without semicolon and ...
+all the lines below it! (even if they end with semicolon!).
+
+#+BEGIN_SRC matlab :session *MATLAB* :exports both 
+  x = 2 ;
+  a = x+1 ;
+  y = x + 1 ;
+  z = 3 ;
+  t = 2
+
+#+END_SRC
+
+#+RESULTS:
+: t =
+:      2
+
+
 ***** Export plots to png
 https://lists.gnu.org/archive/html/emacs-orgmode/2017-08/msg00376.html
 
@@ -1431,6 +1557,21 @@ https://www.reddit.com/r/emacs/comments/fy98bs/orgbabels_matlab_session_output_i
 
 
 
+
+
+***** TODO Erroneous behaviour when plotting
+When exporting graphic file from matlab code-block, the resulting
+image does not appear when followed by automatically generated
+keyword =#+RESULTS:=. When this keyword is deleted the image appears
+in generated pdf.
+
+#+BEGIN_SRC matlab :session *MATLAB* :results graphics file :file plot.png 
+  plot([1 2],[1 2])
+  print -dpng ./images/plot.png ;
+#+END_SRC
+
+#+RESULTS:
+[[file:./images/plot.png]]
 
 
 **** Set path to Python executable to work in org-babel code block
@@ -1550,6 +1691,14 @@ Taken from [[https://emacs.stackexchange.com/questions/58993/how-color-code-on-e
 **** TODO Asynchronous babel sessions
 ob-comint.el
 
+
+**** LaTeX fragments in org-mode source code
+To have nice-coloured latex syntax in _Emacs_editor_ while writing
+in org-mode you need to embrace it with
+~#+begin_export latex~ and ~#+end_export~ keywords ([[https://emacs.stackexchange.com/questions/27866/syntax-highlighting-in-org-mode-begin-latex-block][source]]).
+
+Another hints can be found [[https://lucidmanager.org/productivity/ricing-org-mode/][here]].
+
 **** Org to latex nice org-babel source code formatting
 # exporting command
 The following instructions are based on
@@ -1567,14 +1716,52 @@ Nice tutorial is [[https://orgmode.org/worg/org-tutorials/org-latex-export.html]
 3. In init.el:
 #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
 ;; org-to-latex exporter to have nice code formatting
-  (setq org-latex-listings 'minted
-     org-latex-packages-alist '(("" "minted"))
-     org-latex-pdf-process
-     '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-       "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-       "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+(setq org-latex-listings 'minted
+      org-export-with-sub-superscripts 'nil
+      org-latex-minted-options '(("bgcolor=lightgray") ("frame" "lines"))
+      org-latex-packages-alist '(("" "minted"))
+      org-latex-pdf-process
+      '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+        "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+        "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
 #+end_src
 
+*COMMENT*: The lines above should be also included in ~async-init.el~
+to have colored syntax working during asynchronous export!
+
+
+**** How to properly deal with picture/figure size attributes when picture is produced by org-babel block
+- https://emacs.stackexchange.com/a/59902/30035
+
+***** Making asynchronous exporter deals easily with ~minted~ source code colorization
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "myarch/async_init.el")
+;; org-to-latex exporter to have nice code formatting
+(setq org-latex-listings 'minted
+      org-export-with-sub-superscripts 'nil
+      org-latex-minted-options '(("bgcolor=lightgray") ("frame" "lines"))
+      org-latex-packages-alist '(("" "minted"))
+      org-latex-pdf-process
+      '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+        "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+        "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+#+end_src
+
+
+# ;; # Local Variables:
+# ;; # org-latex-listings: minted
+# ;; # eval: (setq org-export-with-sub-superscripts nil)
+# ;; # eval: (setq org-latex-packages-alist '(("" "minted")))
+# ;; # eval: (setq org-latex-minted-options '(("bgcolor=lightgray") ("frame" "lines")))
+# ;; # eval: (setq org-latex-pdf-process
+# ;; #  '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+# ;; #    "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+# ;; #    "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+# ;; # org-src-preserve-indentation: t
+# ;; # org-babel-min-lines-for-block-output: 0
+# ;; # End:
+
+***** TODO Problems with passing "Local variables:" to asynchronous exporter
 
 **** CDLatex installed in order to ease working with LaTeX in org-mode
 The special mode ~org-cdlatex-mode~ is included in ~org~ package.
@@ -1787,9 +1974,9 @@ loading properly.
 
 *** General global shortcuts not restricted to specific package/mode
 #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; Useful global shortcuts (text operations)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (global-set-key (kbd "C-d") 'delete-forward-char)    ; Backspace/Insert remapping
 (global-set-key (kbd "C-S-d") 'delete-backward-char) 
 ; (global-set-key (kbd "M-S-d") 'backward-kill-word)
@@ -1798,6 +1985,26 @@ loading properly.
 (global-set-key (kbd "C-C C-e C-w C-w") 'eww-list-bookmarks) ; Open eww bookmarks
 (defun mynet ()  (interactive) (eww-list-bookmarks))
 #+end_src
+
+
+**** Defining own prefix key to ease finding free keybindings
+https://stackoverflow.com/a/1025257/4649238
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; my own prefix keymap
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(define-prefix-command 'mb-map)
+(global-set-key (kbd "C-z") 'mb-map)
+; (define-key mb-map (kbd "C-k") "\C-a\C- \C-e\M-w\M-;\C-e\C-m\C-y")
+; (define-key mb-map (kbd "C-l")  "\M-w\M-;\C-e\C-m\C-y")
+#+end_src
+
+Now you can create your own shortcut with the command
+#+begin_src emacs-lisp 
+(define-key mb-map (kbd "C-k") "\C-a\C- \C-e\M-w\M-;\C-e\C-m\C-y")
+#+end_src
+which will be triggered by ~C-z C-k~.
 
 **** Useful fast line-copying shortcut
 
@@ -1811,7 +2018,8 @@ in the sequence.
 
 #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 ;; fast copy-line-comment-it-and-paste-below
-(global-set-key "\C-c\C-k"        "\C-a\C- \C-e\M-w\M-;\C-e\C-m\C-y")
+;(global-set-key "\C-c\C-k"        "\C-a\C- \C-e\M-w\M-;\C-e\C-m\C-y")
+(define-key mb-map (kbd "C-k") "\C-a\C- \C-e\M-w\M-;\C-e\C-m\C-y")
 #+end_src
 
 The code below is not fully doing what it is meant to do. I don't have a time now
@@ -1819,10 +2027,21 @@ to correct it.
 #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 ;; copy-selection-comment-it-and-paste-below (works ok provided selection is
 ;; performed from left to right....
-(global-set-key "\C-c\C-l" "\M-w\M-;\C-e\C-m\C-y")
+; (global-set-key "\C-c\C-l" "\M-w\M-;\C-e\C-m\C-y")
+ (define-key mb-map (kbd "C-l")  "\M-w\M-;\C-e\C-m\C-y")
 #+end_src
 
-***** OLD: Solution 1 (NOT FULLY WORKING)
+Aside notes:
+- I used to use ~C-c C-k~ and ~C-c C-l~ keybindings, respectively, for 
+the above commands. However, they are overwriten when working in 
+org-mode. That's why I needed to change them 
+
+- Then I used ~C-p~ shortcut for invoking ~mb-map~,
+but at some point I realized that it overwrittens default 
+keybinding for ~previous-line~.
+
+
+***** ABANDONED OLD: Solution 1 (NOT FULLY WORKING)
 https://www.emacswiki.org/emacs/CopyingWholeLines
 
 This solution only copies active line and moves the pointer to the next line
@@ -1855,7 +2074,7 @@ This solution only copies active line and moves the pointer to the next line
   (global-set-key "\C-c\C-k" 'copy-line)  
 #+end_src
 
-***** OLD: Solution 2 (NOT FULLY WORKING)
+***** ABANDONED OLD: Solution 2 (NOT FULLY WORKING)
 And even better solution because it also comments out the line and yanks
 (pastes) copied text the line below. [[https://stackoverflow.com/a/23588908][Based on the post]].
 
@@ -1875,9 +2094,56 @@ See `comment-region' for behavior of a prefix arg."
 (global-set-key "\C-c\C-v\C-k" 'copy-and-comment-region)
 #+end_src
 
-***** Solution 3 (NOT WORKING)
+***** ABANDONED Solution 3 (NOT WORKING)
 https://www.emacswiki.org/emacs/CopyWithoutSelection
 
+
+**** Open the directory of the current file/buffer in the external file manager
+
+Based on this link:
+https://www.reddit.com/r/emacs/comments/4zmly1/how_to_open_the_directory_of_a_file/
+in KDE with =dolphin= installed we can do like below.
+
+So we need to use =call-process". However in order to pass
+a parameter to it you need 
+
+Warning 1:
+The original solution uses =shell-command= which is not
+asynchronous operation and it blocks emacs until I close the external 
+window.
+https://emacs.stackexchange.com/questions/65090/how-to-start-a-persistent-asynchronous-process-trough-emacs
+
+#+begin_src emacs-lisp
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; Useful global shortcuts (system-wide operations)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun mb/browse-file-directory()
+  (interactive)
+  (shell-command "dolphin ."))
+
+(define-key global-map (kbd "<s-f12>") 'mb/browse-file-directory)
+#+end_src
+
+So, in order to ''spawn'' a new process we need to use =call-process=
+function. However, in this case, calling the function with parameter
+is a bit more complicated than for =shell-command=
+(https://stackoverflow.com/questions/4858975/in-emacs-lisp-what-is-the-correct-way-to-use-call-process-on-an-ls-command)
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; Useful global shortcuts (system-wide operations)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun mb/browse-file-directory()
+  (interactive)
+  (call-process "dolphin" nil 0 nil "."))
+
+(define-key global-map (kbd "<s-f12>") 'mb/browse-file-directory)
+#+end_src
+
+Warning: NickD's solution contains: =#'ndk/desktop-open-link-at-point=.
+I had to delete =#= from it to have properly working keybinding!
+
+Similar solution is given [[https://emacs.stackexchange.com/questions/7742/what-is-the-easiest-way-to-open-the-folder-containing-the-current-file-by-the-de][here]] (actually, I did not test it).
 
 *** ABANDONED Emailing in Emacs 
 As a temporary workaround I decided to try [[emacs-everywhere]].
@@ -1973,6 +2239,62 @@ Repository of the package and some basic information can be found
    #+end_src
    
  
+
+*** Diary
+[[https://www.gnu.org/software/emacs/manual/html_node/emacs/Diary.html][information in emacs manual]]
+
+By default, emacs expects diary file to be located in ~/.emacs.d/diary
+
+Tutorial by [[https://www.youtube.com/watch?v=NkhgIB64zgc][Protesilaos Stavrou]].
+
+**** Changing date format to iso and some other configurations
+Some variables need to be set in order to have calendar/diary
+looking working fancy. You can see those settings in Stavrou's
+init.el in the movie linked above.
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;;;; Diary
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+  ; 'american’ - month/day/year
+  ; ‘european’ - day/month/year
+  ; ‘iso’      - year/month/day
+
+  (setq calendar-date-style "iso")
+  (setq diary-date-forms diary-iso-date-forms)
+  (setq diary-comment-start ";;")
+  (setq diary-comment-end "")
+  (setq diary-nonmarking-symbol "!")
+  ; (setq diary-show-holidays-flag t)
+#+end_src
+
+In order to include diary entries in calendar you need to set:
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+  (setq calendar-mark-diary-entries-flag t)
+#+end_src
+
+Stavrou mentions that he does not use org-agenda's features (and
+org-mode syntax) with calendar/diary, as he does not need to
+makes things so complex.
+And that's the way how I'm gonna use it for a moment.
+
+# In order to include entries from the Emacs diary into Org mode’s agenda,
+# you only need to customize the variable.
+
+# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+#   (setq org-agenda-include-diary t)
+# #+end_src
+# After that, everything happens automatically.
+
+A nice thing to have in the future is
+
+**** TODO Sending emails with calendar events
+To be done in some free time.
+
+
+
 
 **** Links that I found useful setting up this package:
 - https://wikemacs.org/wiki/Command-line_startup_options
@@ -2116,6 +2438,21 @@ https://pragmaticemacs.wordpress.com/2015/10/29/double-dired-with-sunrise-comman
 (require 'sunrise-buttons)
 (require 'sunrise-modeline)
 (add-to-list 'auto-mode-alist '("\\.srvm\\'" . sr-virtual-mode))
+#+end_src
+
+The thing that may be annoying in sunrise/dired mode is that is redefines
+~C-x k~ keybinding which does not kill buffer anymore, but it is
+bounded to ~sunrise-kill-pane-buffer~ command which, at least to me,
+works only for =commander-like= frame layout, which is triggered
+after invoking ~M-x sunrise~.
+
+In order to have ~C-x k~ working as usual we can apply the following
+rebinding:
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+(add-hook 'sunrise-mode-hook
+   '(lambda ()
+     (local-set-key (kbd "C-x k") 'kill-buffer)
+     (local-set-key (kbd "C-x j") 'sunrise-kill-pane-buffer)))
 #+end_src
 
 
