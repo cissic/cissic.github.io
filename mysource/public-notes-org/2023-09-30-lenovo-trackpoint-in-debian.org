@@ -43,6 +43,13 @@ system settings:
 =System settings= -> ... -> =Touchpad= -> "Tapping" (Tap to click)
 and "Scrolling" -> (Two fingers).
 
+** TODO Post scriptum
+This problem is still unsolved because it looks like uninstalling
+~xserver-org-input-synaptics~ disables the possibility to
+manage the behaviour of the touchpad from =System settings=.
+Namely, after setting "Tapping" for clicking like it was described
+hgghabove, the functionality does not last between system booting.
+"SynPS/2 Synaptics Touchpad" is greyed out.
 
 * COMMENT Local Variables
 

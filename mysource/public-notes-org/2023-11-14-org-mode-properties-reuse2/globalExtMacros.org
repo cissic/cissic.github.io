@@ -1,0 +1,2 @@
+#+MACRO: dateOfMeeting 22.11.2023
+#+MACRO: anotherMacro another Macro

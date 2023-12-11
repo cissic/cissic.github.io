@@ -1,0 +1,61 @@
+#+TITLE: Docker for non-root
+#+DESCRIPTION: 
+#+AUTHOR: cissic
+#+DATE: <2023-10-23 Mon>
+#+TAGS: kde kde-activity windows-manager
+# #+OPTIONS: toc:nil
+#+OPTIONS: -:nil
+
+
+* TODO {{{title}}}
+:PROPERTIES:
+:PRJ-DIR: ./2023-10-25-docker-for-non-root/
+:END:
+
+** Docker for non-root
+
+*** Creating
+Create user account with his/her home directory content copied
+from =/etc/skel= (=-m=) and default shell (=-s /usr/bin/bash=):
+
+
+#+begin_src bash :eval no
+  
+  username=mikdat
+  sudo useradd -m -s /usr/bin/bash $username
+
+  # set password for username
+  sudo passwd $username
+
+  # add user to a docker group
+  sudo usermod -a -G docker $username
+
+  # check the groups that user is assigned to
+  sudo groups $username
+
+  # change context to username and check if everything is ok on his/her side
+  su - $username
+#+end_src
+
+*** Deleting
+#+begin_src bash :eval no
+  username=jakmat
+  userdel $username
+  # or delete user and its home directory and mail directory
+  userdel -r $username
+#+end_src
+
+
+
+** Useful links:
+- https://cloudyuga.guru/hands_on_lab/docker-as-non-root-user
+
+* COMMENT Local Variables
+
+# Local Variables:
+# eval: (setq org-latex-pdf-process
+#  '("pdflatex -shell-escape -synctex=1 -interaction=nonstopmode -output-directory %o %f"
+#    "pdflatex -shell-escape -synctex=1 -interaction=nonstopmode -output-directory %o %f"
+#    "pdflatex -shell-escape -synctex=1 -interaction=nonstopmode -output-directory %o %f"))
+# End:
+ 

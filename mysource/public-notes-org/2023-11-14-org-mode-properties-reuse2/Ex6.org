@@ -1,0 +1,100 @@
+* Section about src_elisp{(org-entry-get nil "Name")} :this:
+:PROPERTIES:
+:Name:     J.S. Bach
+:END:
+
+* Section about src_elisp{(org-entry-get nil "Composer")} from src_elisp{(org-entry-get nil "Town")} :this:
+:PROPERTIES:
+#+INCLUDE: myprop1.org
+#+INCLUDE: myprop2.org
+:END:
+
+** Subsection checking if properties included in the node above are still valid - The name of the composer: src_elisp{(org-entry-get nil "Composer")} <- should be here
+
+* Code
+#+begin_src elisp :eval yes :results output :exports both
+  ; tests
+  (setq stri "#+MACRO: macroname value and more")
+  (setq firstSpace  (string-match " " stri))
+  (print firstSpace)
+  (setq propName (substring stri 0 firstSpace))
+  (setq propVal  (substring stri (+ firstSpace 1) (length stri) ))
+  (print propName)
+  (print propVal)
+
+
+   (defun macros2properties (inputFile outputFile)
+     ;; Parse inputFile in search of lines beginning with #+MACRO: mName mVal
+     ;; and transform them into property lines: :mName: mVal
+     ;; in the outputFile
+
+     (setq splitPos 0) ;; cursor position of split, for each line
+     (setq restLine "")
+     (setq moreLines t )
+
+     ;; open the file
+     (find-file inputFile)
+     (goto-char (point-min)) ;; needed in case the file is already open.
+
+
+     (find-file outputFile)
+     (erase-buffer)
+     (save-buffer)
+     (kill-buffer (current-buffer))
+
+     (while moreLines
+       (search-forward "#+MACRO: ")
+
+       (setq splitPos (1- (point)))
+       (beginning-of-line)
+       (setq fName (buffer-substring-no-properties (point) splitPos))
+       (end-of-line)
+
+       (setq restLine (string-trim (buffer-substring-no-properties splitPos (point) )))
+
+       (setq firstSpace  (string-match " " restLine))
+       (print firstSpace)
+       (setq propName (substring restLine 0 firstSpace))
+       (setq propVal  (substring restLine (+ firstSpace 1) (length restLine) ))
+
+       ;; ;; create the file
+       (find-file outputFile)
+       (setq outString/property (concat ":" propName ": " propVal "\n"  ) )
+       (insert outString/property)
+
+       (save-buffer)
+       (kill-buffer (current-buffer))
+
+       (setq moreLines (= 0 (forward-line 1)))
+       )
+     )
+
+
+  (defun replace-in-string (what with in)
+    (replace-regexp-in-string (regexp-quote what) with in nil 'literal))
+
+
+  (defun level1-headlines-filter ()
+    (let (headline props)
+      (setq headline (org-entry-get nil "ITEM"))
+      (setq props (org-get-entry))
+      (setq string 
+	    (replace-in-string "\n" "" 
+	    (replace-in-string "* " "" 
+	    (replace-in-string "=" "" 
+	    (org-export-string-as 
+	      (concat 
+		      "* " headline "\n" props) 
+	      'org t '(:with-toc nil))))))
+     ))
+
+  (setq HEADLINES-PARSED (org-map-entries #'level1-headlines-filter "LEVEL=1+this") )
+
+  (print HEADLINES-PARSED)
+
+  (macros2properties "./globalExtMacros.org" "./Output.org")
+
+;; (setq aa "string")
+;; (insert (concat ":" aa ":"))
+
+#+end_src

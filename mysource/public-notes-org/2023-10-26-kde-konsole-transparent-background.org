@@ -1,0 +1,30 @@
+#+TITLE: Transparent background in KDE bash konsole
+#+DESCRIPTION: 
+#+AUTHOR: cissic
+#+DATE: <2023-10-23 Mon>
+#+TAGS: kde kde-activity windows-manager
+# #+OPTIONS: toc:nil
+#+OPTIONS: -:nil
+
+
+* TODO {{{title}}}
+:PROPERTIES:
+:PRJ-DIR: ./2023-05-26-transparent/
+:END:
+
+** Useful links:
+- https://devicetests.com/configure-background-transparency-kde-terminal
+
+
+To configure background transparency for KDE Terminal (Konsole), open the terminal, go to Settings, select "Edit Current Profile", navigate to the "Appearance" tab, click on "Edit…" next to the profile selection, adjust the transparency slider, and save your changes.
+
+
+* COMMENT Local Variables
+
+# Local Variables:
+# eval: (setq org-latex-pdf-process
+#  '("pdflatex -shell-escape -synctex=1 -interaction=nonstopmode -output-directory %o %f"
+#    "pdflatex -shell-escape -synctex=1 -interaction=nonstopmode -output-directory %o %f"
+#    "pdflatex -shell-escape -synctex=1 -interaction=nonstopmode -output-directory %o %f"))
+# End:
+ 

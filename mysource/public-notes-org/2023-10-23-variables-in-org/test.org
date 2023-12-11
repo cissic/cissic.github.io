@@ -1,0 +1,9 @@
+#+name: emacs-lisp-hello-world
+#+begin_src elisp :exports both 
+   (princ "Hello World!")
+#+end_src
+
+elisp_src{(insert custom-face-menu)}
+
+Tu mamy zwykly tekst
+src_elisp[:exports results]{(print "AAA")}

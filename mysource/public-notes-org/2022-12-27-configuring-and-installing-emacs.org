@@ -174,9 +174,8 @@ addresses here, something like:
 (setq package-archives
       '(("gnu" . "http://elpa.gnu.org/packages/")  ;; default value of package-archives in Emacs 27.1
         ; ("marmalade" . "http://marmalade-repo.org/packages/")
-        ("melpa" . "https://melpa.org/packages/")
 	("melpa-stable" . "http://stable.melpa.org/packages/")
-
+        ("melpa" . "https://melpa.org/packages/")
 	; ("org" . "https://orgmode.org/elpa/")    ;;; removed as a way of dealing with https://emacs.stackexchange.com/questions/70081/how-to-deal-with-this-message-important-please-install-org-from-gnu-elpa-as-o
 	))
 #+end_src
@@ -206,7 +205,14 @@ NOTE (2023.08.30): In order to install =org-contrib= package
 (=mediawiki= needs it as a dependency) I also needed to add 
 ~("nongnu"       . "https://elpa.nongnu.org/nongnu/")~ repository.
 
-So now my list of repositories looks as follows: 
+NOTE (2023.12.06): In order to be sure that emacs downloads the freshest
+version of the package I changed the order of the
+=melpa= and =melpa-stable= archives. I read somewhere that if
+two packages of the same name are provided from two different
+repositories, Emacs takes the first one to install. So, from now on,
+let =melpa= be before =melpa-stable=.
+
+Now my list of repositories looks as follows: 
 
 #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "install-packages.el")
 
@@ -266,12 +272,18 @@ The main point of the file. Set the list of packages to be installed
     ; counsel ; for ivy
     cdlatex
     company
+    chatgpt-shell
+    dall-e-shell
+    ;; ob-chatgpt-shell
+    ;; ob-dall-e-shell
     dockerfile-mode
     emacs-everywhere
+    engrave-faces
     fill-column-indicator
     ;flycheck
     ;flycheck-pos-tip
     flyspell
+    ;; gptel ;; not working
     ;; google-this
     ido
     ; ivy
@@ -285,6 +297,7 @@ The main point of the file. Set the list of packages to be installed
     ;ob-async
     org   ; ver. 9.3  built-in in Emacs 27.1; this install version 9.6 from melpa
     org-ac
+    org-ai
     ;org-download
     org-plus-contrib
     ;org-mime
@@ -309,6 +322,7 @@ The main point of the file. Set the list of packages to be installed
     ;tao-theme ; https://github.com/11111000000/tao-theme-emacs
     ;treemacs
     ;use-package
+    websocket
     workgroups2
     ;w3m
     yasnippet
@@ -852,6 +866,36 @@ Description of the package is [[https://www.emacswiki.org/emacs/IbufferMode][her
 
 
 
+
+**** Setting font size for all buffers
+
+https://stackoverflow.com/questions/24705984/increase-decrease-font-size-in-an-emacs-frame-not-just-buffer
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+;; Resize the whole frame, and not only a window
+;; Adapted from https://stackoverflow.com/a/24714383/5103881
+(defun acg/zoom-frame (&optional amt frame)
+  "Increaze FRAME font size by amount AMT. Defaults to selected
+frame if FRAME is nil, and to 1 if AMT is nil."
+  (interactive "p")
+  (let* ((frame (or frame (selected-frame)))
+         (font (face-attribute 'default :font frame))
+         (size (font-get font :size))
+         (amt (or amt 1))
+         (new-size (+ size amt)))
+    (set-frame-font (font-spec :size new-size) t `(,frame))
+    (message "Frame's font new size: %d" new-size)))
+
+(defun acg/zoom-frame-out (&optional amt frame)
+  "Call `acg/zoom-frame' with negative argument."
+  (interactive "p")
+  (acg/zoom-frame (- (or amt 1)) frame))
+
+(global-set-key (kbd "C-x C-=") 'acg/zoom-frame)
+(global-set-key (kbd "C-x C--") 'acg/zoom-frame-out)
+(global-set-key (kbd "<C-down-mouse-4>") 'acg/zoom-frame)
+(global-set-key (kbd "<C-down-mouse-5>") 'acg/zoom-frame-out)
+#+end_src
 
 *** Useful tools
 
@@ -1669,7 +1713,11 @@ Besides, in order to have markdown exporter options in menu appearing after
 
 
 
-**** Coloring ~code parts~ on export from org-mode to latex
+**** DEPRECATED COMMENT Coloring ~code parts~ on export from org-mode to latex
+NOTE (2023.12.01): I cannot remember why I needed this functionality... 
+I guess it's overwritten by =minted= or =engraved=
+exporting backends, isn't it?
+
 Taken from [[https://emacs.stackexchange.com/questions/58993/how-color-code-on-export-from-org-mode-to-latex-pdf][here]]:
 #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
   ;; colorting ~code~ on org to latex export
@@ -1699,7 +1747,7 @@ in org-mode you need to embrace it with
 
 Another hints can be found [[https://lucidmanager.org/productivity/ricing-org-mode/][here]].
 
-**** Org to latex nice org-babel source code formatting
+**** DEPRECATED COMMENT Org to latex nice org-babel source code formatting
 # exporting command
 The following instructions are based on
 [[https://stackoverflow.com/questions/46438516/how-to-encapsualte-code-blocks-into-a-frame-when-exporting-to-pdf][this post]].
@@ -1729,6 +1777,17 @@ Nice tutorial is [[https://orgmode.org/worg/org-tutorials/org-latex-export.html]
 *COMMENT*: The lines above should be also included in ~async-init.el~
 to have colored syntax working during asynchronous export!
 
+
+**** Engraved - the better (?) way of having nice source code formatting
+Following some internet posts about =Engraved= package I decided to give it a try. We'll if it works better than minted (which has obvious flaws, such as dependency on external code or slowing down
+overall compilation process)
+
+The installation process is easier than with minted. All you need to do is to install package =engrave-faces= (it's done in =install-packages.el=) and then set
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
+;; org-to-latex exporter to have nice code formatting
+(setq org-latex-src-block-backend 'engraved)
+#+end_src
 
 **** How to properly deal with picture/figure size attributes when picture is produced by org-babel block
 - https://emacs.stackexchange.com/a/59902/30035
@@ -1941,6 +2000,58 @@ when rendering the .pdf:
 (add-hook 'pdf-view-mode-hook (lambda() (linum-mode -1)))
 #+end_src
 
+
+*** ChatGPT
+In order to get some help from AI I decided to give it a try inside
+Emacs.
+There are tons of pages about it.
+[[https://notes.alexkehayias.com/using-chatgpt-with-emacs/][Here]] you have a list of Emacs libraries that handle this issue.
+
+**** org-ai
+At first, I decided on [[https://github.com/rksm/org-ai][org-ai]]. It looks promising, mature, and
+seems to have a quite a lot of features.
+To use it, you also need to have =websocket= package.
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;;;; AI - ChatGPT, Dall-E, Stable Diffusion and ...
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;; (require 'org-ai)
+  (add-hook 'org-mode-hook #'org-ai-mode)
+  (org-ai-global-mode)
+  ;; (setq org-ai-default-chat-model "gpt-4") ; if you are on the gpt-4 beta:
+  ;; (org-ai-install-yasnippets) ; if you are using yasnippet and want `ai` snippets
+#+end_src
+
+Now, in order to keep my secrets off my =init.el= instead of
+storing api key directly in my =init.el=, I'll load it here
+from another file, which is located outside this repository.
+The content of the file looks like:
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+  (load-file "../.mysecrets/openaiapi.el")
+#+end_src
+where the content of the =openaiapi.el= looks like:
+#+begin_example
+(setq org-ai-openai-api-token "<ENTER YOUR API TOKEN HERE>")
+#+end_example
+
+
+
+
+**** gptel
+I also tried with =gptel=. Unfortunately I wasn't able to succeed in
+installing it.
+
+**** chatgpt-shell
+Also tried with this:
+https://github.com/xenodium/chatgpt-shell
+(But I've got too old version of curl (7.76 while I have 7.74 on Debian)
+
+
+**** Interesting/funny links:
+- https://github.com/f/awesome-chatgpt-prompts
+- https://www.engraved.blog/building-a-virtual-machine-inside/
+  
 
 *** TRAMP
 
@@ -2345,7 +2456,7 @@ second reason).
 ; (load-theme 'modus-operandi) ;; bright 
 ; (load-theme 'modus-vivendi) ;; dark
 
-(load-theme 'modus-vivendi :noconfirm) 
+
 
 (setq modus-themes-headings ; this is an alist: read the manual or its doc string
       '((1 . (rainbow overline background 1.4))
@@ -2370,6 +2481,16 @@ custom keybinding [[https://emacs.stackexchange.com/a/48627][(details]]).
       (disable-theme 'modus-vivendi)
     (load-theme 'modus-vivendi :noconfirm)))
 (global-set-key [f6] 'toggle-theme)
+#+end_src
+
+Load theme *after* defining all necessary definitions
+(otherwise different font sizes
+won't work after running =init.el= at the startup and
+you'll need to eval it once again
+or manually invoke the following command):
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+;; load theme after defining 
+(load-theme 'modus-vivendi :noconfirm) 
 #+end_src
 
 *** Manually downloaded packages

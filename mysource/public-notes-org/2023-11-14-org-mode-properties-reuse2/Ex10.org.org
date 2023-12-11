@@ -1,0 +1,66 @@
+# Created 2023-11-27 Mon 10:58
+#+title: 
+#+author: mb
+#+macro: mymacro an awesome macro
+#+macro: town Boston
+#+property: AnotherComposer Vivaldi
+
+* Section about =J.S. Bach= from Boston                                :this:
+
+* Section about =W.A. Mozart= and an awesome macro                     :this:
+
+* Code
+#+begin_src elisp
+
+      (defun replace-in-string (what with in)
+  	 (replace-regexp-in-string (regexp-quote what) with in nil 'literal))
+
+      (defun remove-text-up-to-asterisk (text)
+  	 "Remove text from the beginning of the line to the first asterisk."
+  	 (when (string-match "\\*" text)
+  	   (setq text (substring text (match-end 0))))
+  	 text)
+
+      (defun level1-headlines-filter ()
+  	 (let (headline props)
+  	   (setq headline (org-entry-get nil "ITEM"))
+  	   (setq props (org-get-entry))
+  	   (setq string 
+  		 (string-trim ;replace-in-string "\n" "" 
+  		   ;(replace-in-string "* " "" 
+  		   (remove-text-up-to-asterisk
+  		   (replace-in-string "=" "" 
+  		   (org-export-string-as 
+  		     (concat "#+INCLUDE: mymacros.org" "\n" 
+  			     "* " headline "\n" props) 
+  		     'org t '(:with-toc nil)))))) ;)
+  	    ))
+
+  	 (setq HEADLINES-PARSED (org-map-entries #'level1-headlines-filter "LEVEL=1+this") ) 
+
+  	 (print HEADLINES-PARSED)
+
+  ;;; poniższe nie działa
+  ;;    (org-entry-get (org-element-at-point) "AnotherComposer") 
+#+end_src
+
+#+results: 
+: 
+: ("Section about J.S. Bach from Boston" "Section about W.A. Mozart and an awesome macro")
+
+* Example
+#+name: get_property
+#+begin_src elisp
+  (org-entry-get nil prop t)
+#+end_src
+
+#+begin_src emacs-lisp
+  (print "hello")
+#+end_src
+
+#+begin_src emacs-lisp
+  (print "Vivaldi")
+#+end_src
+
+A tu przykład użycia inline:
+=Vivaldi=
