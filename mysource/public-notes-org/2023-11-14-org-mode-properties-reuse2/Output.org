@@ -1,2 +1,0 @@
-:dateOfMeeting: 22.11.2023
-:anotherMacro: another Macro

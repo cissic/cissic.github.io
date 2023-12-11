@@ -1,2 +1,0 @@
-#+MACRO: mymacro an awesome macro
-#+MACRO: town Boston

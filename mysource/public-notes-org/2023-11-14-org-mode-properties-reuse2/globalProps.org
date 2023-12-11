@@ -1,1 +1,0 @@
-#+PROPERTY: global-property property Name

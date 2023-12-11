@@ -1,8 +1,0 @@
-# -*- mode: Org; org-use-property-inheritance: t -*- 
-* Headline 1 with name taken from properties - src_elisp{(org-entry-get nil "Name")}
-:PROPERTIES:
-:Title:     Goldberg Variations
-:Name:  J.S. Bach
-:END:
-
-** SubHeadline  - src_elisp{(org-entry-get nil "Name" 'selective)}
