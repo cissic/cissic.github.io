@@ -1,0 +1,178 @@
+#+TITLE: Debian on Dell
+#+DESCRIPTION: 
+#+AUTHOR: cissic
+#+DATE: <2023-12-14 Thu>
+#+TAGS: debian dell 
+# #+OPTIONS: toc:nil
+#+OPTIONS: -:nil
+
+
+* {{{title}}}
+:PROPERTIES:
+:PRJ-DIR: ./2023-12-14-debian-installation-on-dell/
+:END:
+
+
+** Preparation
+
+*** Debian live
+user: user
+pass: live
+
+*** TODO Warnings
+**** ,,Keymap changes do not work in Plasma on Wayland. Please use systemsettings5 instead.'' ?
+
+*** Disk partitioning
+
+**** Partitioning
+|      MB |       GB |
+|---------+----------|
+|    1024 |          |
+|    2048 |          |
+|    4096 |          |
+|    8192 |          |
+|   16384 |          |
+|   32768 |       32 |
+|   65536 |       64 |
+|   81920 |       80 |
+|  131072 |      128 |
+|  262144 |      256 |
+|  524288 |      512 |
+| 1048576 |     1024 |
+|---------+----------|
+|   81920 | 80=64+16 |
+|---------+----------|
+|  442368 |      432 |
+| 1367056 |     1300 |
+|         |          |
+
+
+
+***** / - 80 GB
+
+***** /home - (512-80)= 432 GB
+
+***** arch - 1383440-16384
+
+***** NTFSTrash - 16 GB
+
+***** no SWAP
+
+
+
+
+**** GPT / MBR
+After using gparted from live Debian (Bookworm) which created
+new partitions
+I ran the command
+#+begin_src sh 
+  sudo parted -l
+#+end_src
+to check what was the type of partition table. The answer was: gpt.
+For GPT partition table there can exist as many as
+[[https://www.google.com/search?q=how+many+primary+partitions+on+gpt&sca_esv=591149029&ei=Wxd8ZZrAJpSrxc8PxLCwYA&ved=0ahUKEwja2afbi5GDAxWUVfEDHUQYDAwQ4dUDCBA&uact=5&oq=how+many+primary+partitions+on+gpt&gs_lp=Egxnd3Mtd2l6LXNlcnAiImhvdyBtYW55IHByaW1hcnkgcGFydGl0aW9ucyBvbiBncHQyBhAAGBYYHjILEAAYgAQYigUYhgNIhEhQAFjmRnAEeAGQAQCYAZcBoAGmHaoBBTE2LjIwuAEDyAEA-AEBwgILEAAYgAQYigUYkQLCAgsQLhiABBjHARjRA8ICBRAAGIAEwgIOEC4YgAQYxwEY0QMY1ALCAgUQLhiABMICCBAuGIAEGNQCwgIKEAAYgAQYigUYQ8ICCxAuGIAEGIoFGJECwgImEC4YgAQYigUYkQIYlwUY3AQY3gQY4AQY9AMY8QMY9QMY9gPYAQHCAggQABgWGB4YCsICCBAAGBYYHhgPwgIFECEYoAHCAggQIRgWGB4YHcICBBAhGBXiAwQYACBBiAYBugYGCAEQARgU&sclient=gws-wiz-serp][128 primary partitions on the disk]].
+
+
+**** POSTPONED Partitioning via parted and fdisk
+:PROPERTIES:
+:FNAME: disk_partitioning.el
+:END:
+
+I abandoned this section because of the fact that partitions in
+=parted= didn't have the same size as the ones created by =gparted=
+although I calculated the numbers to correspond to each other.
+In the end I created the partitions in =gparted=. .
+
+
+According to https://phoenixnap.com/kb/linux-create-partition.
+
+List disks available for the system:
+#+begin_src sh  :tangle (concat (org-entry-get nil "PRJ-DIR" t) (org-entry-get nil "FNAME" t)) :mkdirp yes
+  sudo parted -l
+#+end_src
+
+Select the disk you want to partition:
+#+begin_src sh :tangle (concat (org-entry-get nil "PRJ-DIR" t) (org-entry-get nil "FNAME" t)) 
+  sudo parted /dev/nvme0n1
+#+end_src
+Now parted opens the disk for being partitioned.
+
+***** In =(parted)= command line
+Inside =parted= command line create a partition table before partitioning the disk:
+#+begin_src sh :tangle (concat (org-entry-get nil "PRJ-DIR" t) (org-entry-get nil "FNAME" t)) 
+  mklabel gpt
+#+end_src
+
+Now, you can check if the partition table was created:
+#+begin_src sh :tangle (concat (org-entry-get nil "PRJ-DIR" t) (org-entry-get nil "FNAME" t)) 
+  print
+#+end_src
+
+
+Let's create partitions. The assigned disk start for the first partition *shall be 1MB*. We want to create disks of the following
+sizes:
+- root: 81920 MB (80 GB)
+- home: 442368 MB (432 GB)
+- 
+
+*WARNING!* The disk sizes given below in =parted= do not match the sizes given in graphical =gparted=. 
+
+#+begin_src sh :tangle (concat (org-entry-get nil "PRJ-DIR" t) (org-entry-get nil "FNAME" t)) 
+  mkpart primary ext4 1MB 81921MB
+  mkpart primary ext4 81922MB 524290MB
+#+end_src
+
+
+
+
+
+** Installation
+During the installation I obtained the error mentioned here:
+https://askubuntu.com/questions/502307/the-attempt-to-mount-a-file-system-with-type-vfat-in-ssi10-0-0-partition1sda
+
+How to circumvent it?
+- I disabled in BIOS:
+  - =SecureBoot=
+  - =Microsoft UEFI CA=
+  - =Secure Boot Mode= set to =Audit Mode=
+
+  - =Storage= -> =SATA/NVMe Operation= -> (RAID On) changed to =AHCI/NVMe=
+
+I don't know whether the above steps were needed. I think the most
+important was creating FAT32 EFI partition at the beginning of the
+disk. I didn't have it after cleaning all partitions from the disk.
+
+The easiest approach to the problem was to use Calamares installator
+launched from inside Debian Live.
+It suggested proper partitioning of the disk:
+- 300 MB for FAT32 (EFI partition) flagged as boot and mount point /boot/efi
+- 68,74 GB for swap
+- and the rest for ext4.
+
+# I let it do it that way and then 
+
+Following this clue and basing on the following threads (550 MB per efi partition):
+- https://askubuntu.com/questions/1313154/how-to-know-the-proper-amount-of-needed-disk-space-for-efi-partition
+- https://askubuntu.com/questions/1011821/what-is-the-correct-and-reliable-way-to-freshly-install-ubuntu-gnome-in-an-nvme?newreg=52d1fba44a84418fbb0e15cc74e25b30
+
+I have created the following partition:
+- 2MB unallocated     (this is probably needed by all this new uefi stuff)
+- 550 MB fat32 flagged as boot, esp   (this is for /boot/efi)
+- 80 GB ext4 (root)
+- 432 GB ext4 (home)
+- 1,30 TB ext4 (arch)
+- rest: 15,46 GB ntfs 
+
+
+*** Useful links:
+
+
+* COMMENT Local Variables
+
+# Local Variables:
+# eval: (setq org-latex-pdf-process
+#  '("pdflatex -shell-escape -synctex=1 -interaction=nonstopmode -output-directory %o %f"
+#    "pdflatex -shell-escape -synctex=1 -interaction=nonstopmode -output-directory %o %f"
+#    "pdflatex -shell-escape -synctex=1 -interaction=nonstopmode -output-directory %o %f"))
+# End:
+ 

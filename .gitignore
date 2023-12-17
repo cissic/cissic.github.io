@@ -21,6 +21,7 @@ mysource/public-notes-org/.#*.org
 mysource/public-notes-org/#*#
 mysource/draft-notes-org(Local)
 mysource/public-notes-org/!AUX-GENERATED/
+mysource/public-notes-org/auto/
 mysource/gists
 mysource/todo
 *.mdORIG

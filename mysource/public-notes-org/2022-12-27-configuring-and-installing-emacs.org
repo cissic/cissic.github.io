@@ -1483,7 +1483,7 @@ https://emacs.stackexchange.com/questions/52492/change-todo-keywords-of-all-node
 ;; <- **** org-special-block-extras 
 #+end_src
 
-**** Org-babel
+**** Org-babel and tangling
 To have org-babel enabled (execution of portions of code):
 
 #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
@@ -1505,6 +1505,29 @@ To have org-babel enabled (execution of portions of code):
 (setq org-confirm-babel-evaluate nil)
 
 #+end_src
+
+***** Tangling the specific/named block of code and other useful functions to work with source blocks
+
+****** Tangle the specific (pointed) block of code
+#+begin_src elisp :results silent :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+(defun mb/org-babel-tangle-block()
+  (interactive)
+  (let ((current-prefix-arg '(4)))
+     (call-interactively 'org-babel-tangle)
+))
+#+end_src
+
+****** tangle the block of code given by the name
+#+begin_src elisp :results silent :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+(defun mb/org-babel-tangle-named-block(block-name)
+  (interactive)
+  (save-excursion 
+   (org-babel-goto-named-src-block block-name)
+    (mb/org-babel-tangle-block)) 
+)
+#+end_src
+
+
 
 ***** =plantuml=
 - https://orgmode.org/worg/org-contrib/babel/languages/ob-doc-plantuml.html
@@ -2026,15 +2049,29 @@ To use it, you also need to have =websocket= package.
 Now, in order to keep my secrets off my =init.el= instead of
 storing api key directly in my =init.el=, I'll load it here
 from another file, which is located outside this repository.
+In order to have this file properly loaded when running emacs daemon
+we need to explicitely use =user-emacs-directory= variable
+when refering to the file.
 The content of the file looks like:
 #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
-  (load-file "../.mysecrets/openaiapi.el")
+  (load-file (concat user-emacs-directory "../.mysecrets/openaiapi.el"))
 #+end_src
 where the content of the =openaiapi.el= looks like:
 #+begin_example
 (setq org-ai-openai-api-token "<ENTER YOUR API TOKEN HERE>")
 #+end_example
 
+
+***** Useful commands/shortcuts:
+
+=org-ai-mark-block-contents= - marks the contents of the current
+block between =#+begin_ai= and =#+end_ai=. Useful for clearing the
+buffer after the session is finished and you don't want to store
+its results.
+
+~C-c Backspace~ - kills the ai region where the cursor is located (
+~C-c DEL~ does not work in my case, see =org-ai.el= to view other
+keybindings...)
 
 
 

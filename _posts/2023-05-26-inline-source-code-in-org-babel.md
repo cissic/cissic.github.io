@@ -20,7 +20,7 @@ show the same result as the result that is evaluated in Emacs buffer!
 
 ## How to include inline source blocks in org-babel
 
-When working in `org-mode~~org-babel` you can stumble
+When working in `org-mode`  `org-babel` you can stumble
 upon a problem when
 including inline blocks that should be run in the context of
 a certain session.
@@ -72,6 +72,49 @@ of some session the opposite is true!
     gives
     
     ==
+
+
+## Python source blocks
+
+Another possible point of problems is inappropriate drawers description.
+Take for example the following pieces of code:
+
+1.  Code 1
+    
+        #+begin_src python :session *py_e* :tangle (concat (org-entry-get nil "PRJ-DIR" t) "const_e.py") :mkdirp yes :exports code :exports results :wrap export latex :eval yes :results both
+        # initialize session
+        import sys
+        sys.path.insert(1, '/home/mb/.emacs.d/myarch/')
+        from pythonscripts4emacs import *
+        
+        a = 5
+        #+end_src
+        
+        Now call python inline:
+        a plus 2 is src_python[:session *py_e*]{x = 2; (x+a)} {{{results(=6=)}}}
+
+2.  Code 2
+    
+        #+begin_src python :session *py_e* :tangle (concat (org-entry-get nil "PRJ-DIR" t) "const_e.py") :mkdirp yes :exports code :exports yes :wrap export latex :eval yes :results both
+        # initialize session
+        import sys
+        sys.path.insert(1, '/home/mb/.emacs.d/myarch/')
+        from pythonscripts4emacs import *
+        
+        a = 5
+        #+end_src
+        
+        Now call python inline:
+        a plus 2 is src_python[:session *py_e*]{x = 2; (x+a)} {{{results(=6=)}}}
+
+In the first example everything is ok and the inline invoking
+of python code in the expected result.
+
+However in the second example drawer `exports` was described
+inappropriately (`exports` can take the following values: `none`, `both`,
+`code`, `results`).
+This inappropriate word causes that inline invoking of python gives
+no results!!!
 
 
 ## Links that can be useful
