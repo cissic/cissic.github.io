@@ -9,7 +9,7 @@
 
 
 
-* {{{title}}
+* {{{title}}}
 :PROPERTIES:
 :PRJ-DIR: ~/.emacs.d/     
 :END:
@@ -1632,14 +1632,15 @@ image does not appear when followed by automatically generated
 keyword =#+RESULTS:=. When this keyword is deleted the image appears
 in generated pdf.
 
-#+BEGIN_SRC matlab :session *MATLAB* :results graphics file :file plot.png 
-  plot([1 2],[1 2])
-  print -dpng ./images/plot.png ;
-#+END_SRC
+#+begin_example 
+  ,#+BEGIN_SRC matlab :session *MATLAB* :results graphics file :file plot.png 
+    plot([1 2],[1 2])
+    print -dpng ./images/plot.png ;
+  ,#+END_SRC
 
-#+RESULTS:
-[[file:./images/plot.png]]
-
+  ,#+RESULTS:
+  [[file:./images/plot.png]]
+#+end_example
 
 **** Set path to Python executable to work in org-babel code block
 Pythonic org-babel code blocks like the one below:
