@@ -1,0 +1,27 @@
+# ____________________________________________________________________________78
+
+#+TITLE: Sequence of keys for keyboard shortcuts
+#+DESCRIPTION: 
+#+AUTHOR: cissic
+#+DATE: <2022-12-17 Sat>
+#+TAGS: kde x-window-system 
+#+OPTIONS: toc:nil
+#+OPTIONS: -:nil
+
+* {{{title}}}
+:PROPERTIES:
+:PRJ-DIR: ./2022-12-17-key-sequence/
+:END:
+
+** Problem 
+Just a bunch of links related to the topic:
+ - https://www.reddit.com/r/kde/comments/hyt99b/sequence_of_keys_for_keyboard_shortcuts/
+ - https://github.com/baskerville/sxhkd
+ - https://www.google.com/search?q=sxhkd
+ -  https://askubuntu.com/questions/676422/inserting-text-with-a-keyboard-shortcuts-in-ubuntu
+
+
+# Local Variables:
+# eval: (add-hook 'org-export-before-processing-hook 
+# 'my/org-export-markdown-hook-function nil t)
+# End:

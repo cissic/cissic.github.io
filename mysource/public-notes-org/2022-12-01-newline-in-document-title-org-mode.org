@@ -1,0 +1,27 @@
+# ____________________________________________________________________________78
+
+#+TITLE: How to insert a newline in a title of org-mode document
+#+DESCRIPTION: 
+#+AUTHOR: cissic
+#+DATE: <2022-12-01 Thu>
+#+TAGS: org-mode 
+#+OPTIONS: toc:nil
+#+OPTIONS: -:nil
+
+* {{{title}}}
+:PROPERTIES:
+:PRJ-DIR: ./2022-12-01-newline-in-org-mode-doc/
+:END:
+
+** Problem and solution
+Solution can be found [[https://emacs.stackexchange.com/questions/255/new-line-in-title-of-an-org-mode-exported-html-document][here]].
+
+#+begin_example
+,#+TITLE: Foo @@latex:\\@@ Bar
+#+end_example
+
+# Local Variables:
+# eval: (add-hook 'org-export-before-processing-hook 
+# 'my/org-export-markdown-hook-function nil t)
+# End:
+

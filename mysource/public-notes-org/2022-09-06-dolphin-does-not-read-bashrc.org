@@ -1,0 +1,29 @@
+#+TITLE: How to make Dolphin read settings in =~/.bashrc=
+#+DESCRIPTION: 
+#+AUTHOR: cissic
+#+DATE: <2022-09-08 Thu>
+#+TAGS: linux git bash 
+
+
+** How to make Dolphin read settings in =~/.bashrc=
+
+A bug found in Debian Bullseye/Plasma 5.20.5/Dolphin 20.12.2
+
+*** TL;DR tip:
+
+#+BEGIN_EXAMPLE
+    Dolphin Settings -> Configure Dolphin -> Startup 
+    
+    untick 'Folders, tabs, and ...'
+    tick   'Show on startup /home/username'
+#+END_EXAMPLE
+
+*** Description
+Workaround/Fix found [[https://bugs.kde.org/show_bug.cgi?id=279614#c41][here]].
+
+#+BEGIN_QUOTE
+> KDE 5.23.1
+Dolphin 21.08.2
+If in dolphin enabled conf Startup->Show on startup: Folder, tabs, and window state from last time, then dolphin shell panel don't read .bashrc.
+#+END_QUOTE
+
