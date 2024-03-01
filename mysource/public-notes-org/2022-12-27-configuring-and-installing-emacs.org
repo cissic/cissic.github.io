@@ -1509,11 +1509,7 @@ To have org-babel enabled (execution of portions of code):
 ***** Tangling the specific/named block of code and other useful functions to work with source blocks
 
 ****** Tangle the specific (pointed) block of code
-<<<<<<< HEAD
 #+begin_src elisp :results silent :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
-=======
-#+begin_src elisp :results silent :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
->>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
 (defun mb/org-babel-tangle-block()
   (interactive)
   (let ((current-prefix-arg '(4)))
@@ -1522,11 +1518,7 @@ To have org-babel enabled (execution of portions of code):
 #+end_src
 
 ****** tangle the block of code given by the name
-<<<<<<< HEAD
 #+begin_src elisp :results silent :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
-=======
-#+begin_src elisp :results silent :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
->>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
 (defun mb/org-babel-tangle-named-block(block-name)
   (interactive)
   (save-excursion 
@@ -2061,11 +2053,7 @@ In order to have this file properly loaded when running emacs daemon
 we need to explicitely use =user-emacs-directory= variable
 when refering to the file.
 The content of the file looks like:
-<<<<<<< HEAD
 #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
-=======
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
->>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
   (load-file (concat user-emacs-directory "../.mysecrets/openaiapi.el"))
 #+end_src
 where the content of the =openaiapi.el= looks like:
