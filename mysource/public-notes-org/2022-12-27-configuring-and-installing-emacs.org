@@ -1597,18 +1597,18 @@ this library without ~export_fig~!
 Now, results show only the first line without semicolon and ...
 all the lines below it! (even if they end with semicolon!).
 
-#+BEGIN_SRC matlab :session *MATLAB* :exports both 
-  x = 2 ;
-  a = x+1 ;
-  y = x + 1 ;
-  z = 3 ;
-  t = 2
+# #+BEGIN_SRC matlab :session *MATLAB* :exports both 
+#   x = 2 ;
+#   a = x+1 ;
+#   y = x + 1 ;
+#   z = 3 ;
+#   t = 2
 
-#+END_SRC
+# #+END_SRC
 
-#+RESULTS:
-: t =
-:      2
+# #+RESULTS:
+# : t =
+# :      2
 
 
 ***** Export plots to png
@@ -1632,15 +1632,15 @@ image does not appear when followed by automatically generated
 keyword =#+RESULTS:=. When this keyword is deleted the image appears
 in generated pdf.
 
-#+begin_verbatim
-  #+BEGIN_SRC matlab :session *MATLAB* :results graphics file :file plot.png 
-    plot([1 2],[1 2])
-    print -dpng ./images/plot.png ;
-  #+END_SRC
+# #+begin_verbatim
+#   #+BEGIN_SRC matlab :session *MATLAB* :results graphics file :file plot.png 
+#     plot([1 2],[1 2])
+#     print -dpng ./images/plot.png ;
+#   #+END_SRC
 
-  #+RESULTS:
-  [[file:./images/plot.png]]
-#+end_verbatim
+#   #+RESULTS:
+#   [[file:./images/plot.png]]
+# #+end_verbatim
 
 
 

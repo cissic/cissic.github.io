@@ -114,7 +114,7 @@ it's better to keep whole .emacs.d directory as a git repository and
 make a commit before executing this script. Then, in case any problems
 you can go back to restore properly working emacs installation.
 Before running this script you should have a git repository initialized in emacs
-directory and git itself installed in the system (see Sec. [1.5](#org8744bc8)).
+directory and git itself installed in the system (see Sec. [1.5](#orgb9690af)).
 Synchronization of the local repository with the remote one is not
 performed in this script. It should be performed explicitely by the user
 in a convenient time.
@@ -210,7 +210,7 @@ In Emacs 27.1 it [shouldn't be necessary to use](https://emacs.stackexchange.com
 
 ### The main part of the installation script - list of the packages
 
-<a id="org8f2ec5c"></a>
+<a id="orgdd7694b"></a>
 
 I used to have `(defvar my-packages ...` instead of `(setq my-packages ...` 
 below but... **Do not** use `defvar` for declaring a list of packages to be installed!
@@ -327,7 +327,7 @@ for now. An interesting discussion about this can be found [here](https://www.re
 
 1.  DEPRECATED Setting an auxiliary variable
 
-    This section is deprecated in favour of [`workgroups2 package`](#orgc88adb8).
+    This section is deprecated in favour of [`workgroups2 package`](#org1b6ce1b).
     
         ;; This file is designed to be re-evaled; use the variable first-time
         ;; to avoid any problems with this.
@@ -368,7 +368,7 @@ proactively.
 Here are global Emacs customization. 
 If necessary some useful infomation or link is added to the customization.
 
-1.  Self-descriptive oneliners <a id="orgc711626"></a>
+1.  Self-descriptive oneliners <a id="org8b92c80"></a>
 
     Remarks:
     At around May 2023 I stopped using `global-linum-mode` because
@@ -473,14 +473,14 @@ If necessary some useful infomation or link is added to the customization.
         ;; (set-frame-font "liberation mono 11" nil t) ; Set default font
     
     Due to  due to the  problems with fonts in `emacsclient/daemonp`
-    instances font is set now in the section [1.4.18](#org317a341).
+    instances font is set now in the section [1.4.18](#orgce88eb5).
 
 7.  Highlight on an active window/buffer
 
     Although the active window can be recognized
     by the cursor which blinking in it, sometimes it is hard to
     find in on the screen (especially if you use a colourful theme
-    like [1.4.20.1](#orge6386a7).
+    like [1.4.20.1](#orgf0ee1b2).
     
     I found a [post](https://stackoverflow.com/questions/33195122/highlight-current-active-window) adressing this issue.
     Although the accepted answer is using 
@@ -722,7 +722,7 @@ If necessary some useful infomation or link is added to the customization.
           )
           ;; <- Fill column indicator
     
-    -   and add this hook per each required mode (this is done in [1.4.7](#org58c8269) section
+    -   and add this hook per each required mode (this is done in [1.4.7](#orgb1a21b6) section
         of this document
 
 12. Turning on/off beeping
@@ -738,7 +738,7 @@ If necessary some useful infomation or link is added to the customization.
 
 13. Ibuffer - an advanced replacement for BufferMenu
 
-    <a id="orga74ec60"></a>
+    <a id="orgec3e11e"></a>
     
     Description of the package is [here](https://www.emacswiki.org/emacs/IbufferMode).
     
@@ -797,7 +797,7 @@ If necessary some useful infomation or link is added to the customization.
     
     2.  Ibuffer interactive way
     
-        In [1.4.3.13](#orga74ec60) there a nice shortcut to do this. You can select all
+        In [1.4.3.13](#orgec3e11e) there a nice shortcut to do this. You can select all
         the files of the given mode with:
         
             * M
@@ -882,7 +882,7 @@ ido/smex vs ivy/counsel/swiper vs helm
         (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command) 
         ;; <- smex
 
-3.  TODO Ivy (for testing) <a id="orgd780bf2"></a>
+3.  TODO Ivy (for testing) <a id="orgb49f5bc"></a>
 
     Furthermore, according to [some other users](https://ruzkuku.com/emacs.d.html#org804158b)
     "Ivy is simpler (and faster) than Helm but more powerful than Ido".
@@ -1076,11 +1076,11 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
     files to Beamer. In order one needs to create appropriate
     init file with settings for async export and
     set `org-export-async-init-file` variable as path to this file (see 
-    [1.4.7.4.1](#orgfb1892a)).
+    [1.4.7.4.1](#orgeaf43a1)).
     
     1.  Setting `org-export-async-init-file` to avoid failure while exporting to Beamer
     
-        <a id="orgfb1892a"></a>
+        <a id="orgeaf43a1"></a>
         
         Org-beamer **async** exporter may fail because of lacking
         `org-export-async-init-file` 
@@ -1168,7 +1168,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
 
 1.  oc [org-citations]
 
-    1.  Bibliography <a id="org9182ffc"></a>
+    1.  Bibliography <a id="orgfbb733e"></a>
     
         In Org 9.6 we do not need explicitely load `oc` libraries.
         Everything is covered in my post concerning bibliography and org-mode.
@@ -1340,7 +1340,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
 
 7.  Fix for Octave/Matlab org-babel - problems with matlab in org-babel
 
-    <a id="orgf55e0cf"></a>
+    <a id="orge9d4b44"></a>
     <http://gewhere.github.io/blog/2017/12/19/setup-matlab-in-emacs-and-babel-orgmode/>
     
         
@@ -1366,7 +1366,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
     <https://github.com/karthink/.emacs.d/blob/master/plugins/ob-octave-fix.el>
     
     In the end I just downloaded the file and the inclusion of this package is
-    done in section [1.4.21.3](#org3458241).
+    done in section [1.4.21.3](#org1d0bbd6).
     
     Remark: There exist at least two versions of the fix (I renamed
     the one I already had to `ob-octave-fixOLDER.el`). Previous version
@@ -1380,25 +1380,6 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
     
     Now, results show only the first line without semicolon and ...
     all the lines below it! (even if they end with semicolon!).
-    
-        x = 2 ;
-        a = x+1 ;
-        y = x + 1 ;
-        z = 3 ;
-        t = 2
-    
-        Fontconfig warning: "/usr/share/fontconfig/conf.avail/05-reset-dirs-sample.conf", line 6: unknown element "reset-dirs"
-                                    < M A T L A B (R) >
-                          Copyright 1984-2023 The MathWorks, Inc.
-                     R2023b Update 4 (23.2.0.2428915) 64-bit (glnxa64)
-                                      October 23, 2023
-         
-        To get started, type doc.
-        For product information, visit www.mathworks.com.
-         
-        x>>  = 2 ;
-        t =
-             2
     
     1.  Export plots to png
     
@@ -1416,14 +1397,6 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
         image does not appear when followed by automatically generated
         keyword `#+RESULTS:`. When this keyword is deleted the image appears
         in generated pdf.
-        
-            , #+BEGIN_SRC matlab :session *MATLAB* :results graphics file :file plot.png 
-            ,  plot([1 2],[1 2])
-            ,  print -dpng ./images/plot.png ;
-            , #+END_SRC
-            
-            , #+RESULTS:
-            , [[file:./images/plot.png]]
 
 8.  Set path to Python executable to work in org-babel code block
 
@@ -1559,7 +1532,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
     The special mode `org-cdlatex-mode` is included in `org` package.
     In order to have it working properly we need to install `cdlatex`
     itself. This can be done in
-    [1.3.2](#org82a8a12).
+    [1.3.2](#orgdaf92f1).
     
     Link to `org-cdlatex-mode` description:
     <http://doc.endlessparentheses.com/Fun/org-cdlatex-mode.html>.
@@ -1897,7 +1870,7 @@ loading properly.
 
 ### ABANDONED Emailing in Emacs
 
-As a temporary workaround I decided to try [1.4.18](#org317a341).
+As a temporary workaround I decided to try [1.4.18](#orgce88eb5).
 
 Basing on  [this post](https://www.reddit.com/r/emacs/comments/4rl0a9/email_in_emacs_i_want_to_but_wow_its_overwhelming/) I decided to perform configuration of email service 
 within Emacs in three steps. Each of them takes care of one of the 
@@ -1935,12 +1908,12 @@ following problems
 
 ### Emacs-everywhere
 
-<a id="org317a341"></a>
+<a id="orgce88eb5"></a>
 
 Repository of the package and some basic information can be found
 [here](https://github.com/tecosaur/emacs-everywhere/).
 
-1.  Install package `emacs-everywhere` from melpa ([1.3.2](#org8f2ec5c))
+1.  Install package `emacs-everywhere` from melpa ([1.3.2](#orgdd7694b))
 2.  Add system-wide shortcut for the command 
     
         #!/bin/bash
@@ -2050,7 +2023,7 @@ Tutorial by [Protesilaos Stavrou](https://www.youtube.com/watch?v=NkhgIB64zgc).
 
 ### Load Emacs theme of your preference
 
-1.  Modus themes by Protesilaos Stavrou <a id="orge6386a7"></a>
+1.  Modus themes by Protesilaos Stavrou <a id="orgf0ee1b2"></a>
 
     -   [Author's page](https://protesilaos.com/codelog/2021-01-11-modus-themes-review-select-faint-colours/)
     -   [Youtube's tutorial](https://www.youtube.com/watch?v=JJPokfFxyFo)
@@ -2194,10 +2167,10 @@ a global shortcut...
 
 3.  ob-octave-fix.el
 
-    <a id="org3458241"></a>
+    <a id="org1d0bbd6"></a>
     
     The discussion on this is thread can be found in section
-    [1.4.9.7](#orgf55e0cf) so I here I just include the solution, namely
+    [1.4.9.7](#orge9d4b44) so I here I just include the solution, namely
     I load fixed library.
     
         ;; octave/matlab-fix
@@ -2221,7 +2194,7 @@ a global shortcut...
 
 ### TODO The end
 
-1.  Workgroups (should be executed at the end of init.el) <a id="orgc88adb8"></a>
+1.  Workgroups (should be executed at the end of init.el) <a id="org1b6ce1b"></a>
 
     <https://tuhdo.github.io/emacs-tutor3.html>
     
@@ -2318,11 +2291,11 @@ a global shortcut...
 
 3.  DEPRECATED Restoring previous session
 
-    This section is deprecated in favour of [`workgroups2 package`](#orgc88adb8).
+    This section is deprecated in favour of [`workgroups2 package`](#org1b6ce1b).
     
     This way of restoring session throws some warnings and needs additional
     confirmations so I give it up. Simple `(desktop-save-mode 1)` which is 
-    included [in the beginning of `init.el`](#orgc711626) works ok.
+    included [in the beginning of `init.el`](#org8b92c80) works ok.
     
         ;; Restore the "desktop" - do this as late as possible
         (if first-time
@@ -2356,17 +2329,17 @@ a global shortcut...
         (message "All done in init.el.")
 
 
-## Dependencies of the presented Emacs configuration <a id="org8744bc8"></a>:
+## Dependencies of the presented Emacs configuration <a id="orgb9690af"></a>:
 
 The list of external applications that this script is dependent on:
 
 -   git
 -   LaTeX distribution (for org to latex exporters)
 
--   xclip ([1.4.18](#org317a341))
--   xdotool ([1.4.18](#org317a341))
--   xprop ([1.4.18](#org317a341)) - this is not a package but executable
--   xwininfo ([1.4.18](#org317a341)) - this is not a package but executable
+-   xclip ([1.4.18](#orgce88eb5))
+-   xdotool ([1.4.18](#orgce88eb5))
+-   xprop ([1.4.18](#orgce88eb5)) - this is not a package but executable
+-   xwininfo ([1.4.18](#orgce88eb5)) - this is not a package but executable
 
 
 ## Some useful information and links:
