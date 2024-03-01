@@ -114,7 +114,7 @@ it's better to keep whole .emacs.d directory as a git repository and
 make a commit before executing this script. Then, in case any problems
 you can go back to restore properly working emacs installation.
 Before running this script you should have a git repository initialized in emacs
-directory and git itself installed in the system (see Sec. [1.5](#org7912c0f)).
+directory and git itself installed in the system (see Sec. [1.5](#org63b6435)).
 Synchronization of the local repository with the remote one is not
 performed in this script. It should be performed explicitely by the user
 in a convenient time.
@@ -145,8 +145,8 @@ addresses here, something like:
     (setq package-archives
           '(("gnu" . "http://elpa.gnu.org/packages/")  ;; default value of package-archives in Emacs 27.1
     	; ("marmalade" . "http://marmalade-repo.org/packages/")
-    	("melpa" . "https://melpa.org/packages/")
     	("melpa-stable" . "http://stable.melpa.org/packages/")
+    	("melpa" . "https://melpa.org/packages/")
     	; ("org" . "https://orgmode.org/elpa/")    ;;; removed as a way of dealing with https://emacs.stackexchange.com/questions/70081/how-to-deal-with-this-message-important-please-install-org-from-gnu-elpa-as-o
     	))
 
@@ -171,7 +171,18 @@ in your `init.el`. This should allow to use `https` adresses as package archives
 I haven't check this approach but I should try this if anything goes
 wrong in the future.)
 
-So now my list of repositories looks as follows: 
+NOTE (2023.08.30): In order to install `org-contrib` package
+(`mediawiki` needs it as a dependency) I also needed to add 
+`("nongnu"       . "https://elpa.nongnu.org/nongnu/")` repository.
+
+NOTE (2023.12.06): In order to be sure that emacs downloads the freshest
+version of the package I changed the order of the
+`melpa` and `melpa-stable` archives. I read somewhere that if
+two packages of the same name are provided from two different
+repositories, Emacs takes the first one to install. So, from now on,
+let `melpa` be before `melpa-stable`.
+
+Now my list of repositories looks as follows: 
 
     
     ;;first, declare repositories
@@ -179,6 +190,7 @@ So now my list of repositories looks as follows:
           '(("gnu" . "http://elpa.gnu.org/packages/")  ;; default value of package-archives in Emacs 27.1
     	("melpa" . "http://melpa.org/packages/")
     	("melpa-stable" . "http://stable.melpa.org/packages/")
+    	("nongnu"       . "https://elpa.nongnu.org/nongnu/")
     	))
 
 Now, synchronize your data: download descriptions of ELPA packages 
@@ -198,6 +210,8 @@ In Emacs 27.1 it [shouldn't be necessary to use](https://emacs.stackexchange.com
 
 ### The main part of the installation script - list of the packages
 
+<a id="orga61264e"></a>
+
 I used to have `(defvar my-packages ...` instead of `(setq my-packages ...` 
 below but... **Do not** use `defvar` for declaring a list of packages to be installed!
 If the variable is already defined 
@@ -215,11 +229,18 @@ The main point of the file. Set the list of packages to be installed
       ; counsel ; for ivy
       cdlatex
       company
+      chatgpt-shell
+      dall-e-shell
+      ;; ob-chatgpt-shell
+      ;; ob-dall-e-shell
       dockerfile-mode
+      emacs-everywhere
+      engrave-faces
       fill-column-indicator
       ;flycheck
       ;flycheck-pos-tip
       flyspell
+      ;; gptel ;; not working
       ;; google-this
       ido
       ; ivy
@@ -233,7 +254,9 @@ The main point of the file. Set the list of packages to be installed
       ;ob-async
       org   ; ver. 9.3  built-in in Emacs 27.1; this install version 9.6 from melpa
       org-ac
+      org-ai
       ;org-download
+      org-plus-contrib
       ;org-mime
       org-ref ; for handling org-mode references https://emacs.stackexchange.com/questions/9767/can-reftex-be-used-with-org-label
       org-special-block-extras
@@ -256,6 +279,7 @@ The main point of the file. Set the list of packages to be installed
       ;tao-theme ; https://github.com/11111000000/tao-theme-emacs
       ;treemacs
       ;use-package
+      websocket
       workgroups2
       ;w3m
       yasnippet
@@ -301,9 +325,9 @@ for now. An interesting discussion about this can be found [here](https://www.re
 
 [When Emacs `init.el` does not load at startup](https://stackoverflow.com/questions/12224575/emacs-init-el-file-doesnt-load).
 
-1.  [DEPRECATED] Setting an auxiliary variable
+1.  DEPRECATED Setting an auxiliary variable
 
-    This section is deprecated in favour of [`workgroups2 package`](#org6cc8126).
+    This section is deprecated in favour of [`workgroups2 package`](#orgf855351).
     
         ;; This file is designed to be re-evaled; use the variable first-time
         ;; to avoid any problems with this.
@@ -344,7 +368,7 @@ proactively.
 Here are global Emacs customization. 
 If necessary some useful infomation or link is added to the customization.
 
-1.  Self-descriptive oneliners <a id="org195d2bf"></a>
+1.  Self-descriptive oneliners <a id="org55bd697"></a>
 
     Remarks:
     At around May 2023 I stopped using `global-linum-mode` because
@@ -380,7 +404,9 @@ If necessary some useful infomation or link is added to the customization.
         
         (define-key global-map (kbd "RET") 'newline-and-indent) ; Auto-indent new lines
         
-        (desktop-save-mode 1)      ; Save windows layout on closing
+        (if (not (daemonp))           ; if this is not a --daemon session -> see: [[emacs-everywhere]] section
+           (desktop-save-mode 1)      ; Save buffers on closing and restore them at startup
+        )
         (setq desktop-load-locked-desktop t) ; and don't ask for confirmation when 
         			   ; opening locked desktop
         (setq desktop-save t)
@@ -442,14 +468,19 @@ If necessary some useful infomation or link is added to the customization.
     
     The font of my choice is:
     
-        (set-frame-font "liberation mono 11" nil t) ; Set default font
+        ;; now this setting is done much lower in the code due to
+        ;; problems with fonts in  emacsclient/daemonp instances -> see [[emacs-everywhere]]
+        ;; (set-frame-font "liberation mono 11" nil t) ; Set default font
+    
+    Due to  due to the  problems with fonts in `emacsclient/daemonp`
+    instances font is set now in the section [1.4.18](#orgc1310e4).
 
 7.  Highlight on an active window/buffer
 
     Although the active window can be recognized
     by the cursor which blinking in it, sometimes it is hard to
     find in on the screen (especially if you use a colourful theme
-    like [1.4.15.1](#org29767b1).
+    like [1.4.20.1](#org57b666c).
     
     I found a [post](https://stackoverflow.com/questions/33195122/highlight-current-active-window) adressing this issue.
     Although the accepted answer is using 
@@ -596,7 +627,7 @@ If necessary some useful infomation or link is added to the customization.
           (global-set-key (kbd "s-<down>")  'windmove-down)
         ;; <- windmove
     
-    1.  [DEPRECATED] Useful For Emacs < 27.1
+    1.  DEPRECATED Useful For Emacs < 27.1
     
         (This section is deprecated. In Emacs 27.1 the package works ok without
         the need of application of `ignore-error-wrapper` function.)
@@ -633,10 +664,10 @@ If necessary some useful infomation or link is added to the customization.
             
               ;; setting windmove-default-keybindings to super-<arrow> in order
               ;; to avoid org-mode conflicts
-              (global-set-key (kbd "s-<left>") (ignore-error-wrapper 'windmove-left))
-              (global-set-key (kbd "s-<right>") (ignore-error-wrapper 'windmove-right))
-              (global-set-key (kbd "s-<up>") (ignore-error-wrapper 'windmove-up))
-              (global-set-key (kbd "s-<down>") (ignore-error-wrapper 'windmove-down))
+              (global-set-key (kbd "M-s-<left>") (ignore-error-wrapper 'windmove-left))
+              (global-set-key (kbd "M-s-<right>") (ignore-error-wrapper 'windmove-right))
+              (global-set-key (kbd "M-s-<up>") (ignore-error-wrapper 'windmove-up))
+              (global-set-key (kbd "M-s-<down>") (ignore-error-wrapper 'windmove-down))
             ;; <- windmove
 
 10. Easy windows resize
@@ -691,7 +722,7 @@ If necessary some useful infomation or link is added to the customization.
           )
           ;; <- Fill column indicator
     
-    -   and add this hook per each required mode (this is done in [1.4.6](#org5a80be3) section
+    -   and add this hook per each required mode (this is done in [1.4.7](#org452cb6b) section
         of this document
 
 12. Turning on/off beeping
@@ -701,9 +732,126 @@ If necessary some useful infomation or link is added to the customization.
     what I did.
     Anyway, to disable it we must [do the following](https://stackoverflow.com/questions/10545437/how-to-disable-the-beep-in-emacs-on-windows):
     
-          ;; Setring alarms in Emacs -> 
+          ;; Setting alarms in Emacs -> 
         (setq-default visible-bell t) 
         (setq ring-bell-function 'ignore)
+
+13. Ibuffer - an advanced replacement for BufferMenu
+
+    <a id="org4f9c2ec"></a>
+    
+    Description of the package is [here](https://www.emacswiki.org/emacs/IbufferMode).
+    
+          ;; Advanced buffer mode
+        (global-set-key (kbd "C-x C-b") 'ibuffer)
+
+14. Setting font size for all buffers
+
+    <https://stackoverflow.com/questions/24705984/increase-decrease-font-size-in-an-emacs-frame-not-just-buffer>
+    
+        ;; Resize the whole frame, and not only a window
+        ;; Adapted from https://stackoverflow.com/a/24714383/5103881
+        (defun acg/zoom-frame (&optional amt frame)
+          "Increaze FRAME font size by amount AMT. Defaults to selected
+        frame if FRAME is nil, and to 1 if AMT is nil."
+          (interactive "p")
+          (let* ((frame (or frame (selected-frame)))
+        	 (font (face-attribute 'default :font frame))
+        	 (size (font-get font :size))
+        	 (amt (or amt 1))
+        	 (new-size (+ size amt)))
+            (set-frame-font (font-spec :size new-size) t `(,frame))
+            (message "Frame's font new size: %d" new-size)))
+        
+        (defun acg/zoom-frame-out (&optional amt frame)
+          "Call `acg/zoom-frame' with negative argument."
+          (interactive "p")
+          (acg/zoom-frame (- (or amt 1)) frame))
+        
+        (global-set-key (kbd "C-x C-=") 'acg/zoom-frame)
+        (global-set-key (kbd "C-x C--") 'acg/zoom-frame-out)
+        (global-set-key (kbd "<C-down-mouse-4>") 'acg/zoom-frame)
+        (global-set-key (kbd "<C-down-mouse-5>") 'acg/zoom-frame-out)
+
+
+### Useful tools
+
+1.  Dired
+
+    <https://www.emacswiki.org/emacs/DiredBookmarks>
+    
+    The default behaviour of Dired when walking across directory
+    structure is to open each directory in a new buffer. In this
+    way you end up with a lot of (probably unnecessary) buffers.
+    How to circumvent this behaviour. (**Beware!** There are some [reasons](https://www.emacswiki.org/emacs/DiredReuseDirectoryBuffer)
+    you might want to keep it!)
+    
+    1.  Straightforward solution
+    
+        The most straighforward way is to kill them by going to buffer menu
+        
+            C-x C-b
+        
+        and selecting the ones you want to kill with `d` and delete them all
+        at once with `x`.
+    
+    2.  Ibuffer interactive way
+    
+        In [1.4.3.13](#org4f9c2ec) there a nice shortcut to do this. You can select all
+        the files of the given mode with:
+        
+            * M
+        
+        (note the capital `M`! `* m` is for selecting **modified** buffers).
+        and then kill them with (again capital!) `D`.
+        
+        Summary (providing you have Ibuffer, which is built-in in Emacs 27.1):
+        
+        1.  Open ibuffer
+            
+                C-x C-b
+            
+            or
+            
+                M-x ibuffer
+        2.  Select all the buffer of the mode
+            
+                * M
+        3.  Search for all `dired` or `sunrise` mode buffers and kill them:
+            
+                * D
+    
+    3.  Simple dired way
+    
+        You can use `dired-find-alternate-file` function which is bounded
+        to key `a` in `dired-mode` for going down the directory structure. 
+        For going up you need to do some more tweaks and the simplest way is
+        given by Xah Lee ([original source](http://xahlee.info/emacs/emacs/emacs_dired_tips.html), [stackoverflow](https://stackoverflow.com/questions/1839313/how-do-i-stop-emacs-dired-mode-from-opening-so-many-buffers)).
+
+2.  Dired and bookmarks
+
+    When going up and down the directory structure you can mark/add
+    the favourite places into bookmarks which comes down to:
+    
+        C-x r m
+    
+    Then, you can go to your bookmarks menu by:
+    
+        C-x r b
+    
+    Select the directory you want to open and go there in dired/sunrise mode.
+    
+    To delete, rename a bookmark:
+    
+        M-x list-bookmarks
+    
+    -   `d` to mark to delete
+    -   `x` to delete all D marked ones
+    -   `r` to rename
+    -   `s` to save changes
+    
+    You can always achieve the same functionality without bookmarks feature
+    like [here](https://emacs.stackexchange.com/a/75448/30035).
 
 
 ### Completing
@@ -734,7 +882,7 @@ ido/smex vs ivy/counsel/swiper vs helm
         (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command) 
         ;; <- smex
 
-3.  TODO Ivy (for testing) <a id="orgf75ed94"></a>
+3.  TODO Ivy (for testing) <a id="orge70da9f"></a>
 
     Furthermore, according to [some other users](https://ruzkuku.com/emacs.d.html#org804158b)
     "Ivy is simpler (and faster) than Helm but more powerful than Ido".
@@ -793,8 +941,8 @@ ido/smex vs ivy/counsel/swiper vs helm
 
         ;; Recently opened files ->
           (recentf-mode 1)
-          (setq recentf-max-menu-items 50)
-          (setq recentf-max-saved-items 50)
+          (setq recentf-max-menu-items 100)
+          (setq recentf-max-saved-items 100)
           ;; in original emacs this binding is for "Find file read-only"
           (global-set-key "\C-x\ \C-r" 'recentf-open-files)
         ;; <- Recently opened files
@@ -894,7 +1042,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
 
     By default emacs waits until all exporting processes finish. It may take quite
     a while in some situations (for example when exporting long document to LaTeX).
-    In order to make emacs work in asynchronous mode you need to toggle this
+    In order to make emacs work in asyncronous mode you need to toggle this
     ([link 1](https://orgmode.org/manual/The-Export-Dispatcher.html), [link 2](https://superuser.com/questions/483554/org-export-run-in-background-how-to-troubleshoot)).
     
     One way is to do it each time when exporting: after pressing `C-c C-e` you
@@ -904,20 +1052,63 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
     To have this option toggled after launching emacs put the line below in your
     init file.
     
+        ;; Org mode...
         (setq org-export-in-background t)
     
     This setting has impact only when exporting via `org exporting menu`
     (triggered by `C-c C-e`). When calling `org-latex-export-to-pdf` this
     setting is not taken into account. Fortunately, this function has
     optional parameter that can be set to obtain async behaviour.
-    All in all, the working solution can be written as a custom hook like this:
+    All in all, the (almost) working solution can be written as a custom hook like this:
     
         (defun my-org-mode-hook()
           (define-key org-mode-map (kbd "<f9>")
             '(lambda () (interactive)
-              (org-latex-export-to-pdf :async t))
+              (org-latex-export-to-pdf :async t)
+              (org-beamer-export-to-pdf :async t)
+              (org-odt-export-to-odt :async t)
+              (org-odt-export-as-pdf :async t)
+              )
              )  
         )
+    
+    Why "almost"? Because this solution still won't work when exporting
+    files to Beamer. In order one needs to create appropriate
+    init file with settings for async export and
+    set `org-export-async-init-file` variable as path to this file (see 
+    [1.4.7.4.1](#orgfae5cd2)).
+    
+    1.  Setting `org-export-async-init-file` to avoid failure while exporting to Beamer
+    
+        <a id="orgfae5cd2"></a>
+        
+        Org-beamer **async** exporter may fail because of lacking
+        `org-export-async-init-file` 
+        (as it is stated [here](https://superuser.com/questions/738492/org-mode-8-async-export-process-fails) and [here](https://lists.gnu.org/archive/html/emacs-orgmode/2014-09/msg00463.html)). 
+        
+        In order to avoid this problem we can create a file with the
+        following content (note setting `org-export-allow-bind-keywords`
+        [variable](https://www.mail-archive.com/emacs-orgmode@gnu.org/msg118389.html)):
+        
+            (require 'package)
+            (setq package-enable-at-startup nil)
+            (package-initialize)
+            
+            (require 'org) 
+            (require 'ox)
+            (require 'cl)
+            (require 'ox-beamer)
+            (setq org-export-async-debug nil) ;; no impact here. Do it in main init.el
+            (setq org-export-allow-bind-keywords t) ;; Important! In order to have #+BIND command working.
+        
+        and set the variable `org-export-async-init-file`.
+        
+            (setq org-export-async-init-file (expand-file-name "~/.emacs.d/myarch/async_init.el"))
+            (setq org-export-async-debug nil) ;; when set to 't' it stores all "*Org Export Process*" buffers, when set to 'nil' it leaves only the last one in the buffer list, but already killed
+        
+        The important line is `(require 'ox-beamer)` !!! ([link](https://lists.gnu.org/archive/html/emacs-orgmode/2018-05/msg00253.html))
+    
+    2.  TODO async for odt documents still not working
 
 5.  Updating all of the hooks to make them aware of your mode settings
 
@@ -977,7 +1168,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
 
 1.  oc [org-citations]
 
-    1.  Bibliography <a id="orge44a7bb"></a>
+    1.  Bibliography <a id="org7dfa2ff"></a>
     
         In Org 9.6 we do not need explicitely load `oc` libraries.
         Everything is covered in my post concerning bibliography and org-mode.
@@ -997,9 +1188,80 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
     <https://github.com/emacs-citar/citar>
 
 
-### Org customization
+### Org customization: org-mode, org-babel ...
 
-1.  Org-agenda activation
+1.  Modyfing TODO-DONE sequence in org-mode
+
+    <https://emacs.stackexchange.com/questions/31466/all-todos-how-to-set-different-colors-for-different-categories>
+    
+    <https://orgmode.org/manual/TODO-Extensions.html>
+    
+        ;; customized todo-done sequence
+        (setq org-todo-keywords
+          '(
+        (sequence "TODO" "????" "POSTPONED" "|" "DONE")
+        (sequence "TODO" "ABANDONED"  "|" "DEPRECATED" "DONE")
+        (sequence "TODO" "????" "ABANDONED" "POSTPONED" "|" "DEPRECATED" "DONE")
+        ))
+        
+        (setq org-todo-keyword-faces
+        '(
+        ("????" . (:foreground "red" :weight bold))
+        ("POSTPONED" . (:foreground "blue" :weight bold))
+        ("ABANDONED" . (:foreground "orange" :weight bold))
+        ("DEPRECATED" . (:foreground "green" :weight bold))
+        )
+        )
+    
+    WARNING! When changing this variables in the middle of the emacs
+    session you need to restart org-mode (`M-x org-mode-restart`) to
+    to have them enabled ([source](https://lists.gnu.org/archive/html/emacs-orgmode/2010-11/msg00130.html))!
+    
+    Furthermore, it may be more convenient to have this tags set for
+    individual file (`#+TODO:`) ([link](https://orgmode.org/manual/Per_002dfile-keywords.html)).
+
+2.  Customizing font style for TODO-DONE keywords in latex export
+
+    <https://stackoverflow.com/questions/36197545/org-mode-latex-export-making-todos-red>
+    
+        ;; customized todo-done keywords in latex documents
+        (defun org-latex-format-headline-colored-keywords-function
+            (todo _todo-type priority text tags _info)
+          "Default format function for a headline.
+        See `org-latex-format-headline-function' for details."
+          (concat
+           ;; (and todo (format "{\\bfseries\\sffamily %s} " todo))
+          (cond
+           ((string= todo "TODO")(and todo (format "{\\color{red}\\bfseries\\sffamily %s} " todo)))
+           ((string= todo "????")(and todo (format "{\\color{red}\\bfseries\\sffamily %s} " todo)))
+           ((string= todo "POSTPONED")(and todo (format "{\\color{blue}\\bfseries\\sffamily %s} " todo)))
+           ((string= todo "DONE")(and todo (format "{\\color{green}\\bfseries\\sffamily %s} " todo)))
+           )
+           (and priority (format "\\framebox{\\#%c} " priority))
+           text
+           (and tags
+        	(format "\\hfill{}\\textsc{%s}"
+        		(mapconcat #'org-latex--protect-text tags ":")))))
+        
+        (setq org-latex-format-headline-function 'org-latex-format-headline-colored-keywords-function)
+
+3.  Toggle between TODO-DONE keywords for all subnodes of the current node
+
+    Based on:
+    <https://emacs.stackexchange.com/questions/52492/change-todo-keywords-of-all-nodes-in-an-orgmode-subtree-in-elisp>
+    
+        (defun mb/org-toggle-org-keywords-right ()
+            "Toggle between todo-done keywords for all subnodes of the current node."
+            (interactive)
+            (org-map-entries (lambda () (org-shiftright)) nil 'tree)
+          )
+        (defun mb/org-toggle-org-keywords-left ()
+            "Toggle between todo-done keywords for all subnodes of the current node."
+            (interactive)
+            (org-map-entries (lambda () (org-shiftleft)) nil 'tree)
+          )
+
+4.  Org-agenda activation
 
     <https://orgmode.org/manual/Activation.html#Activation>
     
@@ -1008,7 +1270,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
         (global-set-key (kbd "C-c a") #'org-agenda)
         (global-set-key (kbd "C-c c") #'org-capture)
 
-2.  Org-special-block-extras
+5.  Org-special-block-extras
 
     [Author's page](http://alhassy.com/org-special-block-extras/)
     
@@ -1016,7 +1278,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
         (add-hook #'org-mode-hook #'org-special-block-extras-mode)
         ;; <- **** org-special-block-extras 
 
-3.  Org-babel
+6.  Org-babel
 
     To have org-babel enabled (execution of portions of code):
     
@@ -1024,19 +1286,122 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
         ;; enabling org-babel
         (org-babel-do-load-languages
          'org-babel-load-languages '(
-        			     (C . t)
+        			     (C . t) ; enable processing C, C++, and D source blocks
         			     (matlab . t)
         			     ;;(perl . t)
         			     (octave . t)
         			     (org . t)
         			     (python . t)
+        			     (plantuml . t)
         			     (shell . t)
         			     ))
         
         ;; no question about confirmation of evaluating babel code block
         (setq org-confirm-babel-evaluate nil)
+    
+    1.  `plantuml`
+    
+        -   <https://orgmode.org/worg/org-contrib/babel/languages/ob-doc-plantuml.html>
+        -   <https://medium.com/@shibucite/emacs-and-plantuml-for-uml-diagrams-academic-tools-6c34bc07fd2>
+        -   <https://plantuml.com/activity-diagram-beta>
+        
+        In order to work with `plantuml` you need to install it (there's
+        another way which is documented in the link above, but I won't use it).
+        On debian machine I'll just execute:
+        
+            sudo apt install plantuml
+        
+        and add the following line to tell emacs to use system installed
+        plantuml:
+        
+            ;; enabling plantuml
+            
+            (setq plantuml-executable-path "plantuml")
+            (setq org-plantuml-exec-mode 'plantuml)
 
-4.  Set path to Python executable to work in org-babel code block
+7.  Fix for Octave/Matlab org-babel - problems with matlab in org-babel
+
+    <a id="org110de87"></a>
+    <http://gewhere.github.io/blog/2017/12/19/setup-matlab-in-emacs-and-babel-orgmode/>
+    
+        
+        ;; setup matlab in babel
+        (setq org-babel-default-header-args:matlab
+          '((:results . "output") (:session . "*MATLAB*")))
+    
+    In the current version of matlab org-babel there is a problem of
+    including input lines in the output of org-babel block.
+    The way to circumvent it is to use the approach suggested by
+    the user named `karthink` (`karthinks`?). I traced it starting
+    from the pages:
+    
+    -   <https://www.reddit.com/r/emacs/comments/pufgce/matlab_mode/>
+    -   <https://www.reddit.com/r/emacs/comments/fy98bs/orgbabels_matlab_session_output_is_malformed/>
+    
+    In the last link user `nakkaya`
+    refers to his/her solution of the problem,
+    however his/her link does not seem to include this solution.
+    
+    I searched web for `karthink`, `matlab`, `emacs` appearances and
+    found the fix here:
+    <https://github.com/karthink/.emacs.d/blob/master/plugins/ob-octave-fix.el>
+    
+    In the end I just downloaded the file and the inclusion of this package is
+    done in section [1.4.21.3](#orge763cc0).
+    
+    Remark: There exist at least two versions of the fix (I renamed
+    the one I already had to `ob-octave-fixOLDER.el`). Previous version
+    of the file didn't seem to resolve the problem.
+    
+    Remark 2: In case of matlab code-block
+    newer version of `ob-octave-fix.el` depends on
+    `altmany`'s `export_fig` function! I have been using it for a while
+    so I don't care anyway but in one may obtain errors when using
+    this library without `export_fig`!
+    
+    Now, results show only the first line without semicolon and ...
+    all the lines below it! (even if they end with semicolon!).
+    
+        x = 2 ;
+        a = x+1 ;
+        y = x + 1 ;
+        z = 3 ;
+        t = 2
+    
+        < M A T L A B (R) >
+                          Copyright 1984-2023 The MathWorks, Inc.
+                     R2023a Update 5 (9.14.0.2337262) 64-bit (glnxa64)
+                                       July 24, 2023
+         
+        To get started, type doc.
+        For product information, visit www.mathworks.com.
+         
+        x
+        = 2 ;
+        t =
+             2
+    
+    1.  Export plots to png
+    
+        <https://lists.gnu.org/archive/html/emacs-orgmode/2017-08/msg00376.html>
+        
+        <https://emacs.stackexchange.com/questions/54695/no-graphic-output-for-matlab-src-block-in-org-mode>
+    
+    2.  Wrong formatting of matlab output's in org-babel
+    
+        <https://www.reddit.com/r/emacs/comments/fy98bs/orgbabels_matlab_session_output_is_malformed/>
+    
+    3.  TODO Erroneous behaviour when plotting
+    
+        When exporting graphic file from matlab code-block, the resulting
+        image does not appear when followed by automatically generated
+        keyword `#+RESULTS:`. When this keyword is deleted the image appears
+        in generated pdf.
+        
+            plot([1 2],[1 2])
+            print -dpng ./images/plot.png ;
+
+8.  Set path to Python executable to work in org-babel code block
 
     Pythonic org-babel code blocks like the one below:
     
@@ -1068,7 +1433,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
     won't work as expected. You need to add `results output` to get string printed
     by python in results block in org.
 
-5.  Tailoring org-mode to markdown export
+9.  Tailoring org-mode to markdown export
 
     When exporting to markdown I want to add some keywords in a special format to
     the preamble of .md file.
@@ -1120,55 +1485,57 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
         
         ;; <- **** org-to-markdown exporter customization
 
-6.  Coloring `code parts` on export from org-mode to latex
-
-    Taken from [here](https://emacs.stackexchange.com/questions/58993/how-color-code-on-export-from-org-mode-to-latex-pdf):
-    
-        ;; colorting ~code~ on org to latex export
-        (defun tmp-latex-code-filter (text backend info)
-          "red inline code"
-          (when (org-export-derived-backend-p backend 'latex) 
-            (format "{\\color{red} %s }" text)))
-        
-        (defun tmp-f-strike-through (s backend info) "")
-
-7.  Miscellaneous oneliners
+10. Miscellaneous oneliners
 
         ;; alphabetical ordered lists
         (setq org-list-allow-alphabetical t)
 
-8.  TODO Asynchronous babel sessions
+11. TODO Asynchronous babel sessions
 
     ob-comint.el
 
-9.  Org to latex nice org-babel source code formatting
+12. LaTeX fragments in org-mode source code
 
-    The following instructions are based on
-    [this post](https://stackoverflow.com/questions/46438516/how-to-encapsualte-code-blocks-into-a-frame-when-exporting-to-pdf).
-    Nice tutorial is [here](https://orgmode.org/worg/org-tutorials/org-latex-export.html).
+    To have nice-coloured latex syntax in <span class="underline">Emacs<sub>editor</sub></span> while writing
+    in org-mode you need to embrace it with
+    `#+begin_export latex` and `#+end_export` keywords ([source](https://emacs.stackexchange.com/questions/27866/syntax-highlighting-in-org-mode-begin-latex-block)).
     
-    1.  We need to have Python installed and `Pygments` package.
+    Another hints can be found [here](https://lucidmanager.org/productivity/ricing-org-mode/).
+
+13. Engraved - the better (?) way of having nice source code formatting
+
+    Following some internet posts about `Engraved` package I decided to give it a try. We'll if it works better than minted (which has obvious flaws, such as dependency on external code or slowing down
+    overall compilation process)
     
-        pip install Pygments
-    
-    1.  In org file preamble you need the line: `#+LaTeX_HEADER: \usepackage{minted}`.
-    
-    2.  In init.el:
+    The installation process is easier than with minted. All you need to do is to install package `engrave-faces` (it's done in `install-packages.el`) and then set
     
         ;; org-to-latex exporter to have nice code formatting
-          (setq org-latex-listings 'minted
-             org-latex-packages-alist '(("" "minted"))
-             org-latex-pdf-process
-             '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-               "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-               "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+        (setq org-latex-src-block-backend 'engraved)
 
-10. CDLatex installed in order to ease working with LaTeX in org-mode
+14. How to properly deal with picture/figure size attributes when picture is produced by org-babel block
+
+    -   <https://emacs.stackexchange.com/a/59902/30035>
+    
+    1.  Making asynchronous exporter deals easily with `minted` source code colorization
+    
+            ;; org-to-latex exporter to have nice code formatting
+            (setq org-latex-listings 'minted
+                  org-export-with-sub-superscripts 'nil
+                  org-latex-minted-options '(("bgcolor=lightgray") ("frame" "lines"))
+                  org-latex-packages-alist '(("" "minted"))
+                  org-latex-pdf-process
+                  '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+            	"pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+            	"pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+    
+    2.  TODO Problems with passing "Local variables:" to asynchronous exporter
+
+15. CDLatex installed in order to ease working with LaTeX in org-mode
 
     The special mode `org-cdlatex-mode` is included in `org` package.
     In order to have it working properly we need to install `cdlatex`
     itself. This can be done in
-    [1.3.2](#orge477fba).
+    [1.3.2](#orga6daf0d).
     
     Link to `org-cdlatex-mode` description:
     <http://doc.endlessparentheses.com/Fun/org-cdlatex-mode.html>.
@@ -1178,7 +1545,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
     
         C-c {
 
-11. Reftex for managing references
+16. Reftex for managing references
 
     [`Reftex`](https://www.gnu.org/software/emacs/manual/html_mono/reftex.html)
     is preinstalled since Emacs 20.2, however in order to
@@ -1205,7 +1572,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
     return to this package. As for now I'm going to work with `reftex`
     and LaTeX tags.
 
-12. Listing name tags of environments
+17. Listing name tags of environments
 
     Based on [this page](https://emacs.stackexchange.com/questions/77326/how-to-display-the-list-of-all-name-tags-is-org-mode-document).
     
@@ -1221,10 +1588,6 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
             (message (format "%S" (my/latex-environment-names))))
         
           (define-key org-mode-map (kbd "C-z z") #'my/report-latex-environment-names)
-
-13. Fix for Octave/Matlab org-babel
-
-    (require 'ob-octave-fix nil t)
 
 
 ### TODO Flyspell (TODO: dive deeper into the package and its capabilities)
@@ -1270,6 +1633,59 @@ when rendering the .pdf:
     (add-hook 'pdf-view-mode-hook (lambda() (linum-mode -1)))
 
 
+### ChatGPT
+
+In order to get some help from AI I decided to give it a try inside
+Emacs.
+There are tons of pages about it.
+[Here](https://notes.alexkehayias.com/using-chatgpt-with-emacs/) you have a list of Emacs libraries that handle this issue.
+
+1.  org-ai
+
+    At first, I decided on [org-ai](https://github.com/rksm/org-ai). It looks promising, mature, and
+    seems to have a quite a lot of features.
+    To use it, you also need to have `websocket` package.
+    
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        ;;;; AI - ChatGPT, Dall-E, Stable Diffusion and ...
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        ;; (require 'org-ai)
+        (add-hook 'org-mode-hook #'org-ai-mode)
+        (org-ai-global-mode)
+        ;; (setq org-ai-default-chat-model "gpt-4") ; if you are on the gpt-4 beta:
+        ;; (org-ai-install-yasnippets) ; if you are using yasnippet and want `ai` snippets
+    
+    Now, in order to keep my secrets off my `init.el` instead of
+    storing api key directly in my `init.el`, I'll load it here
+    from another file, which is located outside this repository.
+    In order to have this file properly loaded when running emacs daemon
+    we need to explicitely use `user-emacs-directory` variable
+    when refering to the file.
+    The content of the file looks like:
+    
+        (load-file (concat user-emacs-directory "../.mysecrets/openaiapi.el"))
+    
+    where the content of the `openaiapi.el` looks like:
+    
+        (setq org-ai-openai-api-token "<ENTER YOUR API TOKEN HERE>")
+
+2.  gptel
+
+    I also tried with `gptel`. Unfortunately I wasn't able to succeed in
+    installing it.
+
+3.  chatgpt-shell
+
+    Also tried with this:
+    <https://github.com/xenodium/chatgpt-shell>
+    (But I've got too old version of curl (7.76 while I have 7.74 on Debian)
+
+4.  Interesting/funny links:
+
+    -   <https://github.com/f/awesome-chatgpt-prompts>
+    -   <https://www.engraved.blog/building-a-virtual-machine-inside/>
+
+
 ### TRAMP
 
 <https://emacs.stackexchange.com/questions/57919/preview-images-and-pdfs-inside-a-ssh-terminal-session-or-inside-emacsclient-ses>
@@ -1284,9 +1700,9 @@ loading properly.
 
 ### General global shortcuts not restricted to specific package/mode
 
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ;;;; Useful global shortcuts (text operations)
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     (global-set-key (kbd "C-d") 'delete-forward-char)    ; Backspace/Insert remapping
     (global-set-key (kbd "C-S-d") 'delete-backward-char) 
     ; (global-set-key (kbd "M-S-d") 'backward-kill-word)
@@ -1295,7 +1711,25 @@ loading properly.
     (global-set-key (kbd "C-C C-e C-w C-w") 'eww-list-bookmarks) ; Open eww bookmarks
     (defun mynet ()  (interactive) (eww-list-bookmarks))
 
-1.  Useful fast line-copying shortcut
+1.  Defining own prefix key to ease finding free keybindings
+
+    <https://stackoverflow.com/a/1025257/4649238>
+    
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        ;;;; my own prefix keymap
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        (define-prefix-command 'mb-map)
+        (global-set-key (kbd "C-z") 'mb-map)
+        ; (define-key mb-map (kbd "C-k") "\C-a\C- \C-e\M-w\M-;\C-e\C-m\C-y")
+        ; (define-key mb-map (kbd "C-l")  "\M-w\M-;\C-e\C-m\C-y")
+    
+    Now you can create your own shortcut with the command
+    
+        (define-key mb-map (kbd "C-k") "\C-a\C- \C-e\M-w\M-;\C-e\C-m\C-y")
+    
+    which will be triggered by `C-z C-k`.
+
+2.  Useful fast line-copying shortcut
 
     1.  Solution
     
@@ -1306,16 +1740,30 @@ loading properly.
         in the sequence.
         
             ;; fast copy-line-comment-it-and-paste-below
-            (global-set-key "\C-c\C-k"        "\C-a\C- \C-e\M-w\M-;\C-e\C-m\C-y")
+            ;(global-set-key "\C-c\C-k"        "\C-a\C- \C-e\M-w\M-;\C-e\C-m\C-y")
+            (define-key mb-map (kbd "C-k") "\C-a\C- \C-e\M-w\M-;\C-e\C-m\C-y")
         
         The code below is not fully doing what it is meant to do. I don't have a time now
         to correct it.
         
             ;; copy-selection-comment-it-and-paste-below (works ok provided selection is
             ;; performed from left to right....
-            (global-set-key "\C-c\C-l" "\M-w\M-;\C-e\C-m\C-y")
+            ; (global-set-key "\C-c\C-l" "\M-w\M-;\C-e\C-m\C-y")
+             (define-key mb-map (kbd "C-l")  "\M-w\M-;\C-e\C-m\C-y")
+        
+        Aside notes:
+        
+        -   I used to use `C-c C-k` and `C-c C-l` keybindings, respectively, for
+        
+        the above commands. However, they are overwriten when working in 
+        org-mode. That's why I needed to change them 
+        
+        -   Then I used `C-p` shortcut for invoking `mb-map`,
+        
+        but at some point I realized that it overwrittens default 
+        keybinding for `previous-line`.
     
-    2.  OLD: Solution 1 (NOT FULLY WORKING)
+    2.  ABANDONED OLD: Solution 1 (NOT FULLY WORKING)
     
         <https://www.emacswiki.org/emacs/CopyingWholeLines>
         
@@ -1346,7 +1794,7 @@ loading properly.
             
             (global-set-key "\C-c\C-k" 'copy-line)  
     
-    3.  OLD: Solution 2 (NOT FULLY WORKING)
+    3.  ABANDONED OLD: Solution 2 (NOT FULLY WORKING)
     
         And even better solution because it also comments out the line and yanks
         (pastes) copied text the line below. [Based on the post](https://stackoverflow.com/a/23588908).
@@ -1364,14 +1812,210 @@ loading properly.
             
             (global-set-key "\C-c\C-v\C-k" 'copy-and-comment-region)
     
-    4.  Solution 3 (NOT WORKING)
+    4.  ABANDONED Solution 3 (NOT WORKING)
     
         <https://www.emacswiki.org/emacs/CopyWithoutSelection>
+
+3.  Open the directory of the current file/buffer in the external file manager
+
+    Based on this link:
+    <https://www.reddit.com/r/emacs/comments/4zmly1/how_to_open_the_directory_of_a_file/>
+    in KDE with `dolphin` installed we can do like below.
+    
+    So we need to use =call-process". However in order to pass
+    a parameter to it you need 
+    
+    Warning 1:
+    The original solution uses `shell-command` which is not
+    asynchronous operation and it blocks emacs until I close the external 
+    window.
+    <https://emacs.stackexchange.com/questions/65090/how-to-start-a-persistent-asynchronous-process-trough-emacs>
+    
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        ;;;; Useful global shortcuts (system-wide operations)
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        (defun mb/browse-file-directory()
+          (interactive)
+          (shell-command "dolphin ."))
+        
+        (define-key global-map (kbd "<s-f12>") 'mb/browse-file-directory)
+    
+    So, in order to ''spawn'' a new process we need to use `call-process`
+    function. However, in this case, calling the function with parameter
+    is a bit more complicated than for `shell-command`
+    (<https://stackoverflow.com/questions/4858975/in-emacs-lisp-what-is-the-correct-way-to-use-call-process-on-an-ls-command>)
+    
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        ;;;; Useful global shortcuts (system-wide operations)
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        (defun mb/browse-file-directory()
+          (interactive)
+          (call-process "dolphin" nil 0 nil "."))
+        
+        (define-key global-map (kbd "<s-f12>") 'mb/browse-file-directory)
+    
+    Warning: NickD's solution contains: `#'ndk/desktop-open-link-at-point`.
+    I had to delete `#` from it to have properly working keybinding!
+    
+    Similar solution is given [here](https://emacs.stackexchange.com/questions/7742/what-is-the-easiest-way-to-open-the-folder-containing-the-current-file-by-the-de) (actually, I did not test it).
+
+
+### ABANDONED Emailing in Emacs
+
+As a temporary workaround I decided to try [1.4.18](#orgc1310e4).
+
+Basing on  [this post](https://www.reddit.com/r/emacs/comments/4rl0a9/email_in_emacs_i_want_to_but_wow_its_overwhelming/) I decided to perform configuration of email service 
+within Emacs in three steps. Each of them takes care of one of the 
+following problems
+
+-   fetching emails
+-   sending emails
+-   viewing emails.
+
+1.  Links that can be useful:
+
+    -   <https://www.reddit.com/r/emacs/comments/4rl0a9/email_in_emacs_i_want_to_but_wow_its_overwhelming/>
+    -   <https://www.emacswiki.org/emacs/GettingMail>
+    -   <https://www.jonatkinson.co.uk/posts/syncing-gmail-with-mbsync/>
+    -   <https://isync.sourceforge.io>
+    -   <https://brian-thompson.medium.com/setting-up-isync-mbsync-on-linux-e9fe10c692c0>
+    -   <https://wiki.archlinux.org/title/isync>
+    -   <https://www.maketecheasier.com/use-email-within-emacs/>
+
+2.  ABANDONED Another approach: External Editor Revived -- a Thunderbird extension
+
+    External Editor Revived is a Thunderbird extension that allows 
+    using external editor (vim/emacs/...) to edit your mails.
+    
+    I had problems with installing necessary binary 
+    (<https://github.com/Frederick888/external-editor-revived/releases/download/v0.6.0/ubuntu-latest-gnu-native-messaging-host-v0.6.0.zip>)
+    due to lacking dependencies:
+    
+        ./external-editor-revived: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.33' not found (required by ./external-editor-revived)
+        ./external-editor-revived: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.32' not found (required by ./external-editor-revived)
+        ./external-editor-revived: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.34' not found (required by ./external-editor-revived)
+    
+    so I abandoned this idea at this stage.
+
+
+### Emacs-everywhere
+
+<a id="orgc1310e4"></a>
+
+Repository of the package and some basic information can be found
+[here](https://github.com/tecosaur/emacs-everywhere/).
+
+1.  Install package `emacs-everywhere` from melpa ([1.3.2](#orga61264e))
+2.  Add system-wide shortcut for the command 
+    
+        #!/bin/bash
+        # https://github.com/tecosaur/emacs-everywhere/
+        
+        emacsclient --eval "(emacs-everywhere)"
+    
+    (I added `Ctrl+Alt+E` in custom shortcuts of KDE)
+3.  Run emacs daemon in the system (for example after hitting `Alt+F2`)  with:
+    
+        emacs --daemon 
+    
+    Warning!: In order not to restore files from previous session 
+    (and avoid being asked for confirmation of loading some commands
+    when files are restored) additional if statement is added to
+    embrace `(desktop-save-mode 1)` at the beginning of the `init.el`.
+
+4.  Now you can invoke Emacs anywhere in the system with `Ctrl+Alt+E`.
+    (If a piece of code is highlighted, it will be copied into Emacs
+    buffer). After editing Emacs buffer press `C-c C-c` or `C-x 5 0` 
+    to go back to the original programme. If you do not wish to paste 
+    the buffer content into the original window, `C-c C-k` still
+    copies the content to the clipboard, but never pastes.
+
+5.  The buffer opened within Emacs deamon instance has small fonts 
+    despite the fact that font is set somewhere at the beginning of the 
+    `init.el`. It is well-known problem:
+    
+    1.  <https://www.google.com/search?q=emacs+default+font+emacs+daemon>
+    2.  <https://emacs.stackexchange.com/questions/52063/emacsclient-gui-has-small-fonts>
+    3.  <https://github.com/doomemacs/doomemacs/issues/1223>
+    4.  <https://www.reddit.com/r/emacs/comments/pc189c/fonts_in_emacs_daemon_mode/>
+    5.  <https://www.reddit.com/r/emacs/comments/dwy299/how_to_set_fonts_in_daemon_mode_windows/>
+    
+    I used the solution based on the one presented in the last link above,
+    however the one presented in the second link seems to be simpler... 
+    
+        ;; setting up configuration for emacs-everywhere:
+        ;; 1. font size
+        ;(if (daemonp)
+        ;(
+        (defun my-after-frame (frame)
+          (if (display-graphic-p frame)
+              (progn
+        	 (set-frame-font "liberation mono 11" nil t) )))
+        
+        (mapc 'my-after-frame (frame-list))
+        (add-hook 'after-make-frame-functions 'my-after-frame)
+        ;)
+        ;)
+
+
+### Diary
+
+[information in emacs manual](https://www.gnu.org/software/emacs/manual/html_node/emacs/Diary.html)
+
+By default, emacs expects diary file to be located in ~/.emacs.d/diary
+
+Tutorial by [Protesilaos Stavrou](https://www.youtube.com/watch?v=NkhgIB64zgc).
+
+1.  Changing date format to iso and some other configurations
+
+    Some variables need to be set in order to have calendar/diary
+    looking working fancy. You can see those settings in Stavrou's
+    init.el in the movie linked above.
+    
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        ;;;; Diary
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        
+        ; 'american’ - month/day/year
+        ; ‘european’ - day/month/year
+        ; ‘iso’      - year/month/day
+        
+        (setq calendar-date-style "iso")
+        (setq diary-date-forms diary-iso-date-forms)
+        (setq diary-comment-start ";;")
+        (setq diary-comment-end "")
+        (setq diary-nonmarking-symbol "!")
+        ; (setq diary-show-holidays-flag t)
+    
+    In order to include diary entries in calendar you need to set:
+    
+        (setq calendar-mark-diary-entries-flag t)
+    
+    Stavrou mentions that he does not use org-agenda's features (and
+    org-mode syntax) with calendar/diary, as he does not need to
+    makes things so complex.
+    And that's the way how I'm gonna use it for a moment.
+    
+    A nice thing to have in the future is
+
+2.  TODO Sending emails with calendar events
+
+    To be done in some free time.
+
+3.  Links that I found useful setting up this package:
+
+    -   <https://wikemacs.org/wiki/Command-line_startup_options>
+    -   <https://ftp.gnu.org/old-gnu/Manuals/emacs-20.7/html_chapter/emacs_37.html>
+    
+    <https://emacs.stackexchange.com/questions/3035/how-to-know-if-emacs-is-running-as-a-daemon>
+    
+    -   <https://stackoverflow.com/questions/45332003/how-can-i-detect-if-emacs-was-started-with-q>
+    -   <http://xahlee.info/emacs/emacs/elisp_command_line_argv.html>
 
 
 ### Load Emacs theme of your preference
 
-1.  Modus themes by Protesilaos Stavrou <a id="org29767b1"></a>
+1.  Modus themes by Protesilaos Stavrou <a id="org57b666c"></a>
 
     -   [Author's page](https://protesilaos.com/codelog/2021-01-11-modus-themes-review-select-faint-colours/)
     -   [Youtube's tutorial](https://www.youtube.com/watch?v=JJPokfFxyFo)
@@ -1393,7 +2037,10 @@ loading properly.
               modus-themes-region '(bg-only no-extend))
         
         ;; Load the theme of your choice:
-        (load-theme 'modus-vivendi :noconfirm) ;; OR (load-theme 'modus-operandi)
+        ; (load-theme 'modus-operandi) ;; bright 
+        ; (load-theme 'modus-vivendi) ;; dark
+        
+        
         
         (setq modus-themes-headings ; this is an alist: read the manual or its doc string
               '((1 . (rainbow overline background 1.4))
@@ -1403,6 +2050,28 @@ loading properly.
         
         (setq modus-themes-scale-headings t)
         (setq modus-themes-org-blocks 'tinted-background)
+    
+    There are two types of modus themes: `modus-operandi` which is bright
+    and `modus-vivendi` which is dark one.
+    In order to ease switching between them it is convenient to define
+    custom keybinding [(details](https://emacs.stackexchange.com/a/48627)).
+    
+        ;; Auxiliary function to toggle betwen bright and dark theme
+        (defun toggle-theme ()
+          (interactive)
+          (if (eq (car custom-enabled-themes) 'modus-vivendi)
+              (disable-theme 'modus-vivendi)
+            (load-theme 'modus-vivendi :noconfirm)))
+        (global-set-key [f6] 'toggle-theme)
+    
+    Load theme **after** defining all necessary definitions
+    (otherwise different font sizes
+    won't work after running `init.el` at the startup and
+    you'll need to eval it once again
+    or manually invoke the following command):
+    
+        ;; load theme after defining 
+        (load-theme 'modus-vivendi :noconfirm) 
 
 
 ### Manually downloaded packages
@@ -1452,6 +2121,20 @@ a global shortcut...
         (require 'sunrise-buttons)
         (require 'sunrise-modeline)
         (add-to-list 'auto-mode-alist '("\\.srvm\\'" . sr-virtual-mode))
+    
+    The thing that may be annoying in sunrise/dired mode is that is redefines
+    `C-x k` keybinding which does not kill buffer anymore, but it is
+    bounded to `sunrise-kill-pane-buffer` command which, at least to me,
+    works only for `commander-like` frame layout, which is triggered
+    after invoking `M-x sunrise`.
+    
+    In order to have `C-x k` working as usual we can apply the following
+    rebinding:
+    
+        (add-hook 'sunrise-mode-hook
+           '(lambda ()
+             (local-set-key (kbd "C-x k") 'kill-buffer)
+             (local-set-key (kbd "C-x j") 'sunrise-kill-pane-buffer)))
 
 2.  Buffer-move - swapping buffers easily
 
@@ -1474,7 +2157,19 @@ a global shortcut...
         ;; (global-set-key (kbd "<C-S-left>")   'buf-move-left)
         ;; (global-set-key (kbd "<C-S-right>")  'buf-move-right)
 
-3.  My own packages and settings
+3.  ob-octave-fix.el
+
+    <a id="orge763cc0"></a>
+    
+    The discussion on this is thread can be found in section
+    [1.4.9.7](#org110de87) so I here I just include the solution, namely
+    I load fixed library.
+    
+        ;; octave/matlab-fix
+        ;;;; (require 'ob-octave-fix nil t)    ; This is for older approach
+        (require 'ob-octave-fix)
+
+4.  My own packages and settings
 
     1.  Custom org-special-block-extras definitions used globally in org-mode files
     
@@ -1482,7 +2177,7 @@ a global shortcut...
             (add-to-list 'load-path "~/.emacs.d/myarch")
             (require 'MB-org-special-block-extras)
 
-4.  Other packages
+5.  Other packages
 
         ;; org to ipython exporter
         ;;(use-package ox-ipynb
@@ -1491,7 +2186,7 @@ a global shortcut...
 
 ### TODO The end
 
-1.  Workgroups (should be executed at the end of init.el) <a id="org6cc8126"></a>
+1.  Workgroups (should be executed at the end of init.el) <a id="orgf855351"></a>
 
     <https://tuhdo.github.io/emacs-tutor3.html>
     
@@ -1586,13 +2281,13 @@ a global shortcut...
 
 2.  Last lines
 
-3.  [DEPRECATED] Restoring previous session
+3.  DEPRECATED Restoring previous session
 
-    This section is deprecated in favour of [`workgroups2 package`](#org6cc8126).
+    This section is deprecated in favour of [`workgroups2 package`](#orgf855351).
     
     This way of restoring session throws some warnings and needs additional
     confirmations so I give it up. Simple `(desktop-save-mode 1)` which is 
-    included [in the beginning of `init.el`](#org195d2bf) works ok.
+    included [in the beginning of `init.el`](#org55bd697) works ok.
     
         ;; Restore the "desktop" - do this as late as possible
         (if first-time
@@ -1603,7 +2298,7 @@ a global shortcut...
         ;; Indicate that this file has been read at least once
         (setq first-time nil)
 
-4.  [DEPRECATED] Open some useful files in the background
+4.  DEPRECATED Open some useful files in the background
 
     I don't use this part of `init.el` anymore. I can get the similar
     functionality by using `recentf` package or prepare a session
@@ -1626,12 +2321,17 @@ a global shortcut...
         (message "All done in init.el.")
 
 
-## Dependencies of the presented Emacs configuration <a id="org7912c0f"></a>:
+## Dependencies of the presented Emacs configuration <a id="org63b6435"></a>:
 
 The list of external applications that this script is dependent on:
 
 -   git
 -   LaTeX distribution (for org to latex exporters)
+
+-   xclip ([1.4.18](#orgc1310e4))
+-   xdotool ([1.4.18](#orgc1310e4))
+-   xprop ([1.4.18](#orgc1310e4)) - this is not a package but executable
+-   xwininfo ([1.4.18](#orgc1310e4)) - this is not a package but executable
 
 
 ## Some useful information and links:

@@ -1,0 +1,241 @@
+
+#+begin_src python :tangle "target2.py"
+  a=21
+#+end_src
+
+#+NAME: target1-blk
+#+begin_src python :tangle "target1.py"
+  a=11
+#+end_src
+
+#+begin_src python :tangle "target1.py"
+  b=12
+#+end_src
+
+#+begin_src python :tangle "target3.py"
+  a=31
+#+end_src
+
+#+begin_src elisp
+    (defun org-babel-tangle-with-2-prefix-args ()
+      (interactive)
+      (setq current-prefix-arg '(16)) ; 4 for C-u, 16 for C-u C-u
+      (call-interactively 'org-babel-tangle)
+     
+#+end_src
+
+
+#+begin_src elisp
+  (defun org-babel-tangle-file-with-2-prefix-args ()
+    (interactive)
+    (setq current-prefix-arg '(4)) ; 4 for C-u, 16 for C-u C-u
+    (call-interactively 'org-babel-tangle-file))
+#+end_src
+
+#+begin_src elisp
+
+    (defun my-tangle (tangle-file)
+      (interactive "P")
+      (run-hooks 'org-babel-pre-tangle-hook)
+      ;; Possibly Restrict the buffer to the current code block
+      (save-restriction
+	(save-excursion
+	  (let ((block-counter 0)
+	    (org-babel-default-header-args org-babel-default-header-args)
+	    path-collector)
+	(mapc ;; map over file-names
+	 (lambda (by-fn)
+	   (let ((file-name (car by-fn)))
+	     (when file-name
+		   (let ((lspecs (cdr by-fn))
+		 (fnd (file-name-directory file-name))
+		 modes make-dir she-banged lang)
+		 ;; drop source-blocks to file
+		 ;; We avoid append-to-file as it does not work with tramp.
+		 (with-temp-buffer
+	       (mapc
+		(lambda (lspec)
+		  (let* ((block-lang (car lspec))
+		     (spec (cdr lspec))
+		     (get-spec (lambda (name) (cdr (assq name (nth 4 spec)))))
+		     (she-bang (let ((sheb (funcall get-spec :shebang)))
+			     (when (> (length sheb) 0) sheb)))
+		     (tangle-mode (funcall get-spec :tangle-mode)))
+		    (unless (string-equal block-lang lang)
+		  (setq lang block-lang)
+		  (let ((lang-f (org-src-get-lang-mode lang)))
+		    (when (fboundp lang-f) (ignore-errors (funcall lang-f)))))
+		    ;; if file contains she-bangs, then make it executable
+		    (when she-bang
+		  (unless tangle-mode (setq tangle-mode #o755)))
+		    (when tangle-mode
+		  (add-to-list 'modes (org-babel-interpret-file-mode tangle-mode)))
+		    ;; Possibly create the parent directories for file.
+		    (let ((m (funcall get-spec :mkdirp)))
+		  (and m fnd (not (string= m "no"))
+		       (setq make-dir t)))
+		    ;; Handle :padlines unless first line in file
+		    (unless (or (string= "no" (funcall get-spec :padline))
+			(= (point) (point-min)))
+		  (insert "\n"))
+		    (when (and she-bang (not she-banged))
+		  (insert (concat she-bang "\n"))
+		  (setq she-banged t))
+		    (org-babel-spec-to-string spec)
+		    (setq block-counter (+ 1 block-counter))))
+		lspecs)
+	       (when make-dir
+		 (make-directory fnd 'parents))
+		       (unless
+			   (and (file-exists-p file-name)
+				(let ((tangle-buf (current-buffer)))
+				  (with-temp-buffer
+				    (insert-file-contents file-name)
+				    (and
+				     (equal (buffer-size)
+					    (buffer-size tangle-buf))
+				     (= 0
+					(let (case-fold-search)
+					  (compare-buffer-substrings
+					   nil nil nil
+					   tangle-buf nil nil)))))))
+			 ;; erase previous file
+			 (when (file-exists-p file-name)
+			   (delete-file file-name))
+		 (write-region nil nil file-name)
+		 (mapc (lambda (mode) (set-file-modes file-name mode)) modes))
+		       (push file-name path-collector))))))
+	   (org-babel-tangle-collect-blocks nil tangle-file))
+	(message "Tangled %d code block%s from %s" block-counter
+	     (if (= block-counter 1) "" "s")
+	     (file-name-nondirectory
+	      (buffer-file-name
+	       (or (buffer-base-buffer)
+			   (current-buffer)
+			   (and (org-src-edit-buffer-p)
+				(org-src-source-buffer))))))
+	;; run `org-babel-post-tangle-hook' in all tangled files
+	(when org-babel-post-tangle-hook
+	  (mapc
+	   (lambda (file)
+	     (org-babel-with-temp-filebuffer file
+	       (run-hooks 'org-babel-post-tangle-hook)))
+	   path-collector))
+	    (run-hooks 'org-babel-tangle-finished-hook)
+	path-collector))))
+
+
+    (defun my-tangle-file (file target-file)
+      (interactive "fFile to tangle: \nP")
+      (let* ((visited (find-buffer-visiting file))
+	     (buffer (or visited (find-file-noselect file))))
+	(prog1
+	    (with-current-buffer buffer
+	      (org-with-wide-buffer
+	       (mapcar #'expand-file-name
+		       (my-tangle target-file))) ) 
+	  (unless visited (kill-buffer buffer))
+	 )
+       )
+      )
+
+
+  (my-tangle-file (buffer-file-name) "target1.py")
+
+      ;; ;; 
+      ;; (my/tangle-exclusively (buffer-file-name) "target1.py")
+#+end_src
+
+#+RESULTS:
+| /home/mb/projects/cissic.github.io/mysource/public-notes-org/2024-01-27-How-to-tangle-specific-blocks-of-code/target1.py |
+
+
+#+begin_src elisp
+  (defun goto-line-with-string (file-path search-string)
+    "Go to the first line in FILE-PATH containing SEARCH-STRING."
+    (with-temp-buffer
+      (insert-file-contents file-path)
+      (goto-char (point-min))
+      (search-forward search-string nil t)
+  )))
+
+(defun goto-line-with-string (search-string)
+  "Go to the first line in the current buffer containing SEARCH-STRING."
+  (let ((line-found (re-search-forward (concat "^.*" search-string) nil t)))
+    (when line-found
+      (beginning-of-line)
+      (point))))
+  
+
+    (defun my/tangle-exclusively (source-file target-file)
+      (interactive)
+      (let* ((visited (find-buffer-visiting file))
+	   (buffer (or visited (find-file-noselect file))))
+      (prog1
+	  ;; (with-current-buffer buffer
+	      (org-babel-goto-named-src-block target-file)
+	      (org-babel-tangle) 
+	   ;; )	  	 
+	(unless visited (kill-buffer buffer))
+       )
+      )
+     )
+
+
+    ;; (my/tangle-exclusively (buffer-file-name) "target1-blk")
+ #+end_src
+
+#+RESULTS:
+: goto-line-with-string
+
+
+s
+#+begin_src  elisp
+  (goto-line-with-string (buffer-file-name) "target1.py")
+
+#+end_src
+
+#+RESULTS:
+: 118
+
+
+*** Move cursor to the line in the buffer
+
+#+begin_src elisp
+	(defun move-cursor-to-line (buffer string)
+	  "Move the cursor in BUFFER to the line containing STRING."
+	  ;(with-current-buffer buffer
+	    ;(save-excursion
+	      (goto-char (point-min))
+	      (while (search-forward string nil t)
+		(beginning-of-line)
+		(point))
+	     ; )
+	   ; )
+	  )
+
+	(move-cursor-to-line (current-buffer) "tar")
+#+end_src
+
+#+begin_ai
+write an elisp  function that moves the cursor in the current buffer to the line
+containing the given string
+
+
+[AI]: Sure! Here's an example `elisp` function that moves the cursor to the line containing a given string:
+
+```elisp
+(defun move-cursor-to-line (buffer string)
+  "Move the cursor in BUFFER to the line containing STRING."
+  (with-current-buffer buffer
+    (save-excursion
+      (goto-char (point-min))
+      (while (search-forward string nil t)
+        (beginning-of-line)
+        (point)))))
+```
+
+You can call this function by providing the desired buffer and string as arguments. For example, to move the cursor to the line containing the string "example" in the current buffer, you can use `(move-cursor-to-line (current-buffer) "example")`.
+
+[ME]: 
+#+end_ai

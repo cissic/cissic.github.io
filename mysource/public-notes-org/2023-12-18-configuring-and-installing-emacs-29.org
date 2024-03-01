@@ -1,7 +1,7 @@
 #+TITLE: Initialization files setup in Emacs
 #+DESCRIPTION: 
 #+AUTHOR: cissic
-#+DATE: <2022-12-27 Tue>
+#+DATE: <2023-12-18 Mon>
 #+TODO: TODO ABANDONED | DONE DEPRECATED
 #+TAGS: emacs packages
 #+OPTIONS: toc:nil
@@ -12,10 +12,10 @@
 * {{{title}}
 :PROPERTIES:
 :PRJ-DIR: ~/.emacs.d/     
+:TEST-DIR: ./2023-12-18-init-and-setup-Emacs-29/
 :END:
-# :PROPERTIES:
-# :PRJ-DIR: ./2022-12-27-init-and-setup-Emacs/
-# :END:
+
+
 
 
 ** TL;DR
@@ -80,6 +80,61 @@ In the post I'm going to implement the following rules:
 https://karthinks.com/software/latex-input-for-impatient-scholars/
 
 
+** Emacs on Windows
+Deploying this system on Windows comes down to:
+
+*** migrating =~/.emacs.d=
+The proper place for =.emacs.d= in the newest Windows (11)
+is =C:\Users\<UserName>\AppData\Roaming\=.
+Don't forget about =~/.mysecrets= if you want to have ChaptGPT sessions running.
+
+Before copying it is wise to zip .emacs.d to save some time.
+
+#+begin_src sh
+  zip -r ~/emacs.zip ~/.emacs.d
+#+end_src
+
+*** installing/configuring LaTeX distribution
+I used to use existing MiKTeX standalone distribution, however
+this solution is troublesome. You need to: 
+- update windows =PATH= environment to point to tex bin directory
+- probably also add:
+#+begin_src elisp
+  (setenv "PATH" (concat "D:\Programs\Latex\miktex-portable\texmfs\install\miktex\bin\x64" (getenv "PATH")))
+  (add-to-list 'exec-path "D:\Programs\Latex\miktex-portable\texmfs\install\miktex\bin\x64")
+#+end_src
+  somewhere in =init.el=.
+
+In the end I kept getting error when exporting to latex, and export
+process complained something about 
+lack of perl for Windows when exporting via =latexmk=.
+(New MikTeX is supposedly distributed without perl).
+
+**** Solution
+1. Install MikTeX with installer
+2. Install Perl distribution ([[https://strawberryperl.com][Strawberry Perl]]).
+
+
+*** The things that need to be adjusted in init.el
+
+**** Adjust =org-cite-csl-styles-dir= to point to appropriate directory
+=(setq org-cite-csl-styles-dir "~/Zotero/styles")=
+
+**** DEPRECATED Python paths
+python3 path was an artifact from some old debian distribution.
+In newer Debian releases =python= stands for =python3=, so I corrected
+two occurances of python3 in =init.el=.
+
+***** DEPRECATED Solution
+You need to amend paths to python executable in two places:
+[[sec:python-org-babel]]
+[[sec:python-mode]]
+
+
+**** Liberation mono font
+That part of code is in =init.el= only for [[emacs-everywhere]], so
+if one does not use it, they won't miss it.
+
 ** Installation/upgrade script
 
 This script is meant to (re-)install/prepare/upgrade Emacs packages in order
@@ -113,7 +168,7 @@ in a convenient time.
 First, there is a configuration line. The user needs to set the directory where Emacs initialization files are located (I know in new Emacs there exist some 
 variable for this but a bit of redundancy won't do much harm).
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "install-packages2023-12.el") :mkdirp yes :exports none
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "install-packages.el") :mkdirp yes :exports none
 
     ;; ____________________________________________________________________________78
     ;; install-mb-packages.el
@@ -143,7 +198,7 @@ in a convenient time.
 
 In order to make a git commit from within elisp script I followed [[https://emacs.stackexchange.com/questions/48954/the-elisp-function-to-run-the-shell-command-in-specific-file-path][this post]].
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "install-packages2023-12.el") :mkdirp yes
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "install-packages.el") :mkdirp yes
 ;; Make a git commit of your repository.
 ;; 
 (let ((default-directory my-emacs-dir)) ; run command `git add -u` in the context of my-emacs-dir
@@ -157,7 +212,7 @@ Perform [[https://emacs.stackexchange.com/questions/44266/require-vs-package-ini
 ~package-initialize~ is executed automatically, before
 loading the init file ([[https://www.masteringemacs.org/article/whats-new-in-emacs-27-1][see here]]).
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "install-packages2023-12.el") :mkdirp yes
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "install-packages.el") :mkdirp yes
 
 (when (< emacs-major-version 27)
   (package-initialize)) ;  set up the load-paths and autoloads for installed packages
@@ -214,7 +269,7 @@ let =melpa= be before =melpa-stable=.
 
 Now my list of repositories looks as follows: 
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "install-packages2023-12.el")
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "install-packages.el")
 
   ;;first, declare repositories
   (setq package-archives
@@ -231,7 +286,7 @@ Now, synchronize your data: download descriptions of ELPA packages
 and update the cache with current versions of
 packages kept in remote repositories:
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "install-packages2023-12.el")
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "install-packages.el")
 ;; Refresh the repositories to have the newest versions of the packages
 (package-refresh-contents)
 
@@ -240,7 +295,7 @@ packages kept in remote repositories:
 In Emacs 27.1 it [[https://emacs.stackexchange.com/a/44287][shouldn't be necessary to use]]
 ~(require 'packagename)~, so I can leave out the following code:
 
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "install-packages2023-12.el")
+# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "install-packages.el")
 
 #+begin_src emacs-lisp 
 ;; ;; Comment out if you've already loaded this package...
@@ -261,12 +316,12 @@ expected way of reevaluating of the ~package-install.el~.
 
 
 The main point of the file. Set the list of packages to be installed
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "install-packages2023-12.el")
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "install-packages.el")
 (setq my-packages
   '(
 #+end_src
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "install-packages2023-12.el")
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "install-packages.el")
     auctex ; in order to have reftex working
     bash-completion  
     ; counsel ; for ivy
@@ -335,7 +390,7 @@ The main point of the file. Set the list of packages to be installed
 And finally, perform the installation/upgrade of packages and 
 print an information message.
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "install-packages2023-12.el")
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "install-packages.el")
 
 (defun my-packages-installed-p ()
   (cl-loop for p in my-packages
@@ -372,7 +427,7 @@ for now. An interesting discussion about this can be found [[https://www.reddit.
 [[https://stackoverflow.com/questions/12224575/emacs-init-el-file-doesnt-load][When Emacs ~init.el~ does not load at startup]].
 
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") :mkdirp yes :exports none
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") :mkdirp yes :exports none
 ;; ____________________________________________________________________________78
 ;; init.el
 ;; The full description of what is done in this file is included in 
@@ -400,7 +455,7 @@ without invoking Emacs
 window (Post with demonstration makefile should be published soon).
 
  
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
 (require 'package)
 (package-initialize)
 #+end_src
@@ -414,7 +469,7 @@ for you.
 # ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 # ;;;; Do not use `init.el` for `custom-*` code - use `custom-file.el`.
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
 (setq custom-file "~/.emacs.d/custom-file.el")
 #+end_src
 
@@ -422,7 +477,7 @@ Assuming that the code in custom-file is execute before the code
 ahead of this line is not a safe assumption. So load this file
 proactively.
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
 (load-file custom-file)
 #+end_src
 
@@ -430,7 +485,7 @@ proactively.
 
 *** Global emacs customization
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") :exports none
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") :exports none
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; *** Global emacs customization
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -453,7 +508,7 @@ From two possible alternatives at the time:
  ~nlinum-mode~ and ~display-line-numbers-mode~
 I decided on the latter because it was built-in Emacs.
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
   (auto-revert-mode 1)       ; Automatically reload file from a disk after change
   (global-auto-revert-mode 1) 
 
@@ -485,12 +540,13 @@ I decided on the latter because it was built-in Emacs.
   (save-place-mode t)        ; When re-entering a file, return to the place, 
 			     ; where I was when I left it the last time.
 
+  (setq list-command-history-max 500) ; no of available commands in  =command-history=
 #+end_src
 
 **** Emacs shell history from previous sessions
 [[https://www.emacswiki.org/emacs/SaveHist][Emacs wiki page]]
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 (savehist-mode 1)          ; Save history for future sessions
 #+end_src
 
@@ -500,7 +556,7 @@ I decided on the latter because it was built-in Emacs.
  : C-c left  
 - redo (undo undo)
  : C-c right 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 (winner-mode 1)            ; Toggle between previous window layouts
 #+end_src
 
@@ -517,7 +573,7 @@ or
 (setq-default global-visual-line-mode t) 
 #+end_example
 however I didn't find them pretty and finally this command is useful:
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 (global-visual-line-mode t) ; Truncate lines 
 #+end_src
 
@@ -525,7 +581,7 @@ however I didn't find them pretty and finally this command is useful:
 **** Prevent from deselecting text after M-w copying 
 [[https://www.reddit.com/r/emacs/comments/1vdumz/emacs_to_keep_selection_after_copy/][Link]]
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 ;; Do not deselect after M-w copying -> 
  (defadvice kill-ring-save (after keep-transient-mark-active ())
    "Override the deactivation of the mark."
@@ -546,7 +602,7 @@ the =...= at the end.
 The font of my choice is:
 
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
 ;; now this setting is done much lower in the code due to
 ;; problems with fonts in  emacsclient/daemonp instances -> see [[emacs-everywhere]]
 ;; (set-frame-font "liberation mono 11" nil t) ; Set default font
@@ -565,7 +621,7 @@ I found a [[https://stackoverflow.com/questions/33195122/highlight-current-activ
 Although the accepted answer is using 
 ~auto-dim-other-buffers.el~
 I prefer [[https://stackoverflow.com/a/33196798][this solution]] which does not rely on external package
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 ;;Highlight an active window/buffer or dim all other windows
   
   (defun highlight-selected-window ()
@@ -612,7 +668,7 @@ Setting names of the days of the week and months to arbitrarily language:
 
 
 The best method I found working for my purposes is:
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 (setq system-time-locale "C")         ; Force Emacs to use English timestamps
 #+end_src
 It makes Emacs use English language and not the system localization language
@@ -626,7 +682,7 @@ choosing the day and hitting ~RET~.
 The above shortcuts are listed in ~Scroll~ menu item which is visible in menu bar,
 when you're in Calendar buffer.
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 ;; Calendar ->
 (defun calendar-insert-date ()
   "Capture the date at point, exit the Calendar, insert the date."
@@ -641,7 +697,7 @@ Warning! Here, instead of using:
 #+end_example
 it's better to define the action as
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 (eval-after-load "calendar"
   `(progn
      (define-key calendar-mode-map (kbd "RET") 'calendar-insert-date)))
@@ -672,7 +728,7 @@ packages that conflict with org are [[https://orgmode.org/manual/Conflicts.html]
 That is why it's better to remap those keybindings to other 
 combination (~Super-Key-<arrow>~ in the code below). 
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 ;; windmove ->
 ;; Easy moving between windows
   
@@ -733,7 +789,7 @@ following code Emacs does not throw warnings or errors.
 
 
 **** Easy windows resize
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 ;; Easy windows resize ->
   (define-key global-map (kbd "C-s-<left>") 'shrink-window-horizontally)
   (global-set-key        (kbd "C-s-<right>") 'enlarge-window-horizontally)
@@ -774,12 +830,12 @@ with the use of the [[https://gist.github.com/davep/c16534ef91e9868aaff3d3658f88
 
 Anyway, I decided on the following approach based on [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Displaying-Boundaries.html][this page]]:
 - enable display-fill-column mode, which can be done by settings variable
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
   ;; Fill column indicator -> 
 (setq display-fill-column-indicator-column 81)
 #+end_src  
 - write general function that can be hooked into mode
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 (defun my-default-text-buffer-settings-mode-hook()
   (display-fill-column-indicator-mode 1)
   )
@@ -794,7 +850,7 @@ Anyway, I decided on the following approach based on [[https://www.gnu.org/softw
 ***** COMMENT DEPRECATED
 The vertical line for marking specific column width.
 https://www.emacswiki.org/emacs/FillColumnIndicator
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 ;; Fill column indicator -> 
 (require 'fill-column-indicator)
 (setq fci-rule-column 81)
@@ -807,7 +863,7 @@ https://www.emacswiki.org/emacs/FillColumnIndicator
 ~fci-mode~ causes problems with proper display of the buffer when buffer widht
 is less than ~fci-rule-column~ variable. [[https://emacs.stackexchange.com/questions/29113/how-to-disable-fill-column-indicator-fci-when-its-outside-the-window][Here's a stackexchange thread]]
 on this, which includes a [[https://emacs.stackexchange.com/a/29125/30035][patch]] for this bug.
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 ;; Fill column indicator patch -> 
 (defvar i42/fci-mode-suppressed nil)
 (make-variable-buffer-local 'i42/fci-mode-suppressed)
@@ -847,7 +903,7 @@ had to be some keybinding I accidentally pressed but have no idea
 what I did.
 Anyway, to disable it we must [[https://stackoverflow.com/questions/10545437/how-to-disable-the-beep-in-emacs-on-windows][do the following]]:
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
   ;; Setting alarms in Emacs -> 
 (setq-default visible-bell t) 
 (setq ring-bell-function 'ignore)
@@ -859,7 +915,7 @@ Anyway, to disable it we must [[https://stackoverflow.com/questions/10545437/how
 
 Description of the package is [[https://www.emacswiki.org/emacs/IbufferMode][here]].
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
   ;; Advanced buffer mode
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 #+end_src
@@ -871,7 +927,7 @@ Description of the package is [[https://www.emacswiki.org/emacs/IbufferMode][her
 
 https://stackoverflow.com/questions/24705984/increase-decrease-font-size-in-an-emacs-frame-not-just-buffer
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 ;; Resize the whole frame, and not only a window
 ;; Adapted from https://stackoverflow.com/a/24714383/5103881
 (defun acg/zoom-frame (&optional amt frame)
@@ -969,13 +1025,29 @@ ido/smex vs ivy/counsel/swiper vs helm
 They say that ~ido~ is a [[https://www.masteringemacs.org/article/introduction-to-ido-mode][powerful package]] and you should have it enabled...
 I'm not going to argue with that, yet I haven't studied much its capabilities.
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
   ;; ido-mode ->
     (ido-mode 1)          
     (setq ido-enable-flex-matching t)
     (setq ido-everywhere t)  ; ido-mode for file searching
   ;; <- ido-mode
 #+end_src
+
+For conenient opening files with =sudo= privilages we'll add an
+auxiliary command
+(https://stackoverflow.com/a/29255604/4649238):
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+  (defadvice ido-find-file (after find-file-sudo activate)
+  "Find file as root if necessary."
+  (unless (and buffer-file-name
+               (file-writable-p buffer-file-name))
+    (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
+#+end_src
+
+Now, after trying to open =sudo= file with =C-x C-f= emacs
+will automatically concatenate necessary modifier in order to
+have it open...
+
 
 **** smex
 # Temporarily deselected in order to test [[ivy-package]].
@@ -984,7 +1056,7 @@ This package is installed because I was inspired by some post.
 Just for tests.
 https://github.com/nonsequitur/smex/
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
   ;; smex ->
   (global-set-key (kbd "M-x") 'smex)
   (global-set-key (kbd "M-X") 'smex-major-mode-commands)
@@ -997,7 +1069,7 @@ https://github.com/nonsequitur/smex/
 Furthermore, according to [[https://ruzkuku.com/emacs.d.html#org804158b][some other users]]
 "Ivy is simpler (and faster) than Helm but more powerful than Ido".
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") :exports none
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") :exports none
   ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; ;; *** Ivy
   ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1036,7 +1108,7 @@ aren't substitute modes. [[https://emacs.stackexchange.com/questions/42556/best-
 - [[http://xahlee.info/emacs/emacs/emacs_abbrev_mode_tutorial.html][Xah page about abbrev]]
   
 Emacs abbreviations are
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
   ;; ;; abbrev-mode ->
   ;;   (setq-default abbrev-mode t)          
   ;;   ; (read-abbrev-file "~/.emacs.d/abbrev_defs")
@@ -1060,7 +1132,7 @@ Emacs abbreviations are
 *** Autocomplete
 ~auto-complete~ vs ~company~
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ;; *** Auto-completing
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1068,11 +1140,11 @@ Emacs abbreviations are
 #+end_src
 
 **** Recently opened files
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 ;; Recently opened files ->
   (recentf-mode 1)
-  (setq recentf-max-menu-items 100)
-  (setq recentf-max-saved-items 100)
+  (setq recentf-max-menu-items 200)
+  (setq recentf-max-saved-items 200)
   ;; in original emacs this binding is for "Find file read-only"
   (global-set-key "\C-x\ \C-r" 'recentf-open-files)
 ;; <- Recently opened files
@@ -1109,7 +1181,7 @@ other shortcut
 you need to rebind it ([[https://stackoverflow.com/questions/1024374/how-can-i-make-c-p-an-emacs-prefix-key-for-develperlysense][1]], [[https://stackoverflow.com/questions/9462111/emacs-error-key-sequence-m-x-g-starts-with-non-prefix-key-m-x][2]], [[https://emacs.stackexchange.com/questions/68328/general-el-error-key-sequence-starts-with-non-prefix-key][3]]).
    
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ;; *** Minor mode settings and keybindings
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1118,7 +1190,7 @@ you need to rebind it ([[https://stackoverflow.com/questions/1024374/how-can-i-m
 **** Emacs-Lisp mode
 Be sure to set ~emacs-lisp-mode~ maps/hooks etc, not just ~lisp-mode-...~  otherwise
 the shortcuts won't work.
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
 ;; Emacs-Lisp mode...
 (defun my-emacs-lisp-mode-hook ()
 (define-key emacs-lisp-mode-map (kbd "C-e b") 'eval-buffer)
@@ -1134,7 +1206,7 @@ Three files mentioned in the link must be already installed somewhere within
 my ~Emacs 26.1~, because ~octve-mode~ command is available.
 The only thing to do is to add ~octave-mode-hook~:
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
 ;; Octave mode...
 (defun my-octave-mode-hook()
   (define-key octave-mode-map (kbd "C-c C-s") 'octave-send-buffer)
@@ -1157,7 +1229,7 @@ Now =C-c TAB a= should invoke octave and run a buffer in it
 
 Define your own custom shortcuts to run specific script in matlab shell.
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
 ; Matlab mode...
 (defun my-matlab-mode-hook()
   (define-key matlab-mode-map (kbd "<f8>")
@@ -1168,11 +1240,14 @@ Define your own custom shortcuts to run specific script in matlab shell.
 #+end_src
 
 **** Python mode
+<<sec:python-mode>>
 
 The below code does not work as expected. Probably it'd be better to
 apply the configuration given [[https://realpython.com/emacs-the-best-python-editor/#integration-with-jupyter-and-ipython][here]].
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
+
+The old versions have explicitely pointed to python3 binary like this
+#+begin_src emacs-lisp 
   ;; Python mode...
 
   (defun my-python-mode-hook()
@@ -1180,10 +1255,21 @@ apply the configuration given [[https://realpython.com/emacs-the-best-python-edi
                (setq python-shell-interpreter "python3") ))
 
 #+end_src
+but it's outdated now and now it's enough to have:
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
+  ;; Python mode...
+
+  (defun my-python-mode-hook()
+             (lambda ()
+               (setq python-shell-interpreter "python") ))
+#+end_src
+
+
 
 **** Org mode
 # Old approach 
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
+# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
 #   ;; Org mode...
 
 #   (defun my-org-mode-hook()
@@ -1207,7 +1293,7 @@ that can be enabled by pressin =C-a=. It is rather cumbersome.
 To have this option toggled after launching emacs put the line below in your
 init file.
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
   ;; Org mode...
   (setq org-export-in-background t)
 #+end_src
@@ -1218,7 +1304,7 @@ setting is not taken into account. Fortunately, this function has
 optional parameter that can be set to obtain async behaviour.
 All in all, the (almost) working solution can be written as a custom hook like this:
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
   (defun my-org-mode-hook()
     (define-key org-mode-map (kbd "<f9>")
       '(lambda () (interactive)
@@ -1262,7 +1348,7 @@ following content (note setting ~org-export-allow-bind-keywords~
 
 and set the variable ~org-export-async-init-file~.
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
   (setq org-export-async-init-file (expand-file-name "~/.emacs.d/myarch/async_init.el"))
   (setq org-export-async-debug nil) ;; when set to 't' it stores all "*Org Export Process*" buffers, when set to 'nil' it leaves only the last one in the buffer list, but already killed
 #+end_src
@@ -1275,7 +1361,7 @@ The important line is =(require 'ox-beamer)= !!! ([[https://lists.gnu.org/archiv
 
 **** Updating all of the hooks to make them aware of your mode settings
 Now we need to update the hooks to 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
 ;; Add all of the hooks...
 ;(add-hook 'c++-mode-hook 'my-c++-mode-hook)
 ;(add-hook 'c-mode-hook 'my-c-mode-hook)
@@ -1297,7 +1383,7 @@ https://stackoverflow.com/questions/7398216/how-can-i-apply-a-hook-to-multiple-e
 In order to add a hook to more than one modes we need to use a function (taken from
 [[https://stackoverflow.com/a/7400476/4649238][here]].
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
   ;; Add a hook to the list of modes
   (defun my-add-to-multiple-hooks (function hooks)
     (mapc (lambda (hook)
@@ -1323,7 +1409,7 @@ In order to add a hook to more than one modes we need to use a function (taken f
 **** Change font color for specific mode (eww)
 Based on [[https://stackoverflow.com/questions/27973721/how-set-colors-for-a-specific-mode][this]].
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
 ;; Change font color for eww
 (defun my-eww-mode-faces ()
   (face-remap-add-relative 'default '(:foreground "#BD8700")))
@@ -1332,14 +1418,41 @@ Based on [[https://stackoverflow.com/questions/27973721/how-set-colors-for-a-spe
 #+end_src
 
 *** Bibliography - citations
-**** oc [org-citations]
-***** Bibliography <<org-citations>>
+<<org-citations>>
+
+**** Useful links for Emacs 29
+https://orgmode.org/manual/Citations.html
+https://www.reddit.com/r/orgmode/comments/vchefn/guide_to_citations_in_orgmode/
+https://kristofferbalintona.me/posts/202206141852/
+https://blog.tecosaur.com/tmio/2021-07-31-citations.html#more-exporting
+
+**** 
+In Emacs 29 the only thing you need to have citations working
+is to:
+- add =#+BIBLIOGRAPHY: path/to/your/bib/file.bib= at the beginning
+  of the org file (or you could do it here in =init.el=)
+- add =#+PRINT_BIBLIOGRAPHY:= at the place where you want to have
+  references to be included
+- do something about the style of the references and citations:
+
+  - set the directory with csl styles for the easy use of them in Emacs
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
+;; BIBLIOGRAPHY 
+(setq org-cite-csl-styles-dir "~/Zotero/styles")
+#+end_src
+  - add =#+CITE_EXPORT: csl apa.csl= at the beginning of the file
+    (provided =apa.csl= is inside =~/Zotero/styles=)
+
+
+**** DEPRECATED OLD Version                                        :noexport:
+***** oc [org-citations]
+****** Bibliography 
 # ____________________________________________________________________________78
 
 In Org 9.6 we do not need explicitely load ~oc~ libraries.
 Everything is covered in my post concerning bibliography and org-mode.
 
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
   # ;; org citations
   # ;; (require 'oc)    ; probably not needed 
   # ;; (require 'oc-basic)
@@ -1360,12 +1473,12 @@ Useful links:
 
 
 
-
-**** citar (to check?)
+***** ABANDONED citar (to check?)
      https://github.com/emacs-citar/citar
 
+
 *** Org customization: org-mode, org-babel ...
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") :exports none
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") :exports none
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; *** Org customization
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1375,7 +1488,7 @@ Useful links:
 https://emacs.stackexchange.com/questions/31466/all-todos-how-to-set-different-colors-for-different-categories
 
 https://orgmode.org/manual/TODO-Extensions.html
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 ;; customized todo-done sequence
 (setq org-todo-keywords
   '(
@@ -1386,10 +1499,13 @@ https://orgmode.org/manual/TODO-Extensions.html
 
 (setq org-todo-keyword-faces
 '(
-("????" . (:foreground "red" :weight bold))
-("POSTPONED" . (:foreground "blue" :weight bold))
-("ABANDONED" . (:foreground "orange" :weight bold))
-("DEPRECATED" . (:foreground "green" :weight bold))
+("????"         . (:foreground "red" :weight bold))
+("POSTPONED"    . (:foreground "orange" :weight bold))
+("DONE"         . (:foreground "purple" :weight bold))
+("ABANDONED"    . (:foreground "blue" :weight bold))
+("DEPRECATED"   . (:foreground "blue" :weight bold))
+("[OPTIONALLY]" . (:foreground "violet" :weight bold))
+("[OPCJONALNIE]" . (:foreground "violet" :weight bold))
 )
 )
 #+end_src
@@ -1406,7 +1522,7 @@ individual file (=#+TODO:=) ([[https://orgmode.org/manual/Per_002dfile-keywords.
 https://stackoverflow.com/questions/36197545/org-mode-latex-export-making-todos-red
 
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 ;; customized todo-done keywords in latex documents
 (defun org-latex-format-headline-colored-keywords-function
     (todo _todo-type priority text tags _info)
@@ -1434,7 +1550,7 @@ See `org-latex-format-headline-function' for details."
 Based on:
 https://emacs.stackexchange.com/questions/52492/change-todo-keywords-of-all-nodes-in-an-orgmode-subtree-in-elisp
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 (defun mb/org-toggle-org-keywords-right ()
     "Toggle between todo-done keywords for all subnodes of the current node."
     (interactive)
@@ -1450,7 +1566,7 @@ https://emacs.stackexchange.com/questions/52492/change-todo-keywords-of-all-node
 # **** Adding custom keywords to org-mode headline of the of the node and its subnodes
 # -> Moved to RDITITcode.org
 
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 # (defun mb/org-add-keyword ()
 #     "Add '{{{opt}}}' string to the headline of the node and all of its subnodes."
 #     (interactive)
@@ -1467,7 +1583,7 @@ https://emacs.stackexchange.com/questions/52492/change-todo-keywords-of-all-node
 **** Org-agenda activation
  https://orgmode.org/manual/Activation.html#Activation
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 ;; org-agenda activation
 (global-set-key (kbd "C-c l") #'org-store-link)
 (global-set-key (kbd "C-c a") #'org-agenda)
@@ -1477,7 +1593,7 @@ https://emacs.stackexchange.com/questions/52492/change-todo-keywords-of-all-node
 **** Org-special-block-extras
 [[http://alhassy.com/org-special-block-extras/][Author's page]]
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 ;; **** org-special-block-extras -> 
 (add-hook #'org-mode-hook #'org-special-block-extras-mode)
 ;; <- **** org-special-block-extras 
@@ -1486,7 +1602,7 @@ https://emacs.stackexchange.com/questions/52492/change-todo-keywords-of-all-node
 **** Org-babel and tangling
 To have org-babel enabled (execution of portions of code):
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 
 ;; enabling org-babel
 (org-babel-do-load-languages
@@ -1509,7 +1625,7 @@ To have org-babel enabled (execution of portions of code):
 ***** Tangling the specific/named block of code and other useful functions to work with source blocks
 
 ****** Tangle the specific (pointed) block of code
-#+begin_src elisp :results silent :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src elisp :results silent :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 (defun mb/org-babel-tangle-block()
   (interactive)
   (let ((current-prefix-arg '(4)))
@@ -1517,14 +1633,148 @@ To have org-babel enabled (execution of portions of code):
 ))
 #+end_src
 
-****** tangle the block of code given by the name
-#+begin_src elisp :results silent :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+****** Tangle the block of code given by the name
+#+begin_src elisp :results silent :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 (defun mb/org-babel-tangle-named-block(block-name)
   (interactive)
   (save-excursion 
    (org-babel-goto-named-src-block block-name)
     (mb/org-babel-tangle-block)) 
 )
+#+end_src
+
+****** Tangle all (and only those) source code blocks that belong to a specific target file
+
+https://emacs.stackexchange.com/questions/80174/how-to-tangle-only-source-code-blocks-that-belong-to-a-specific-target-file
+
+
+Auxiliary function: 
+#+begin_src elisp :results silent :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+(defun mb/tangle-file (tangle-file)
+  (interactive "P")
+  (run-hooks 'org-babel-pre-tangle-hook)
+  ;; Possibly Restrict the buffer to the current code block
+  (save-restriction
+    (save-excursion
+      (let ((block-counter 0)
+        (org-babel-default-header-args org-babel-default-header-args)
+        path-collector)
+    (mapc ;; map over file-names
+     (lambda (by-fn)
+       (let ((file-name (car by-fn)))
+         (when file-name
+               (let ((lspecs (cdr by-fn))
+             (fnd (file-name-directory file-name))
+             modes make-dir she-banged lang)
+             ;; drop source-blocks to file
+             ;; We avoid append-to-file as it does not work with tramp.
+             (with-temp-buffer
+           (mapc
+            (lambda (lspec)
+              (let* ((block-lang (car lspec))
+                 (spec (cdr lspec))
+                 (get-spec (lambda (name) (cdr (assq name (nth 4 spec)))))
+                 (she-bang (let ((sheb (funcall get-spec :shebang)))
+                         (when (> (length sheb) 0) sheb)))
+                 (tangle-mode (funcall get-spec :tangle-mode)))
+                (unless (string-equal block-lang lang)
+              (setq lang block-lang)
+              (let ((lang-f (org-src-get-lang-mode lang)))
+                (when (fboundp lang-f) (ignore-errors (funcall lang-f)))))
+                ;; if file contains she-bangs, then make it executable
+                (when she-bang
+              (unless tangle-mode (setq tangle-mode #o755)))
+                (when tangle-mode
+              (add-to-list 'modes (org-babel-interpret-file-mode tangle-mode)))
+                ;; Possibly create the parent directories for file.
+                (let ((m (funcall get-spec :mkdirp)))
+              (and m fnd (not (string= m "no"))
+                   (setq make-dir t)))
+                ;; Handle :padlines unless first line in file
+                (unless (or (string= "no" (funcall get-spec :padline))
+                    (= (point) (point-min)))
+              (insert "\n"))
+                (when (and she-bang (not she-banged))
+              (insert (concat she-bang "\n"))
+              (setq she-banged t))
+                (org-babel-spec-to-string spec)
+                (setq block-counter (+ 1 block-counter))))
+            lspecs)
+           (when make-dir
+             (make-directory fnd 'parents))
+                   (unless
+                       (and (file-exists-p file-name)
+                            (let ((tangle-buf (current-buffer)))
+                              (with-temp-buffer
+                                (insert-file-contents file-name)
+                                (and
+                                 (equal (buffer-size)
+                                        (buffer-size tangle-buf))
+                                 (= 0
+                                    (let (case-fold-search)
+                                      (compare-buffer-substrings
+                                       nil nil nil
+                                       tangle-buf nil nil)))))))
+                     ;; erase previous file
+                     (when (file-exists-p file-name)
+                       (delete-file file-name))
+             (write-region nil nil file-name)
+             (mapc (lambda (mode) (set-file-modes file-name mode)) modes))
+                   (push file-name path-collector))))))
+       (org-babel-tangle-collect-blocks nil tangle-file))
+    (message "Tangled %d code block%s from %s" block-counter
+         (if (= block-counter 1) "" "s")
+         (file-name-nondirectory
+          (buffer-file-name
+           (or (buffer-base-buffer)
+                       (current-buffer)
+                       (and (org-src-edit-buffer-p)
+                            (org-src-source-buffer))))))
+    ;; run `org-babel-post-tangle-hook' in all tangled files
+    (when org-babel-post-tangle-hook
+      (mapc
+       (lambda (file)
+         (org-babel-with-temp-filebuffer file
+           (run-hooks 'org-babel-post-tangle-hook)))
+       path-collector))
+        (run-hooks 'org-babel-tangle-finished-hook)
+    path-collector))))
+#+end_src
+
+#+begin_src elisp :results silent :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+  (defun mb/org-babel-tangle-to-target-file-from-the-file (file target-file)
+    (interactive "fFile to tangle: \nP")
+      (let* ((visited (find-buffer-visiting file))
+	     (buffer (or visited (find-file-noselect file))))
+	(prog1
+	    (with-current-buffer buffer
+	      (org-with-wide-buffer
+	       (mapcar #'expand-file-name
+		       (my-tangle target-file))))
+	  (unless visited (kill-buffer buffer)))))
+#+end_src
+
+****** Export given org-file to pdf (latex)
+#+begin_src elisp :results silent :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+  (defun mb/org-babel-export-org-file-to-latex (filename)
+    (interactive "fFile to export: \nP")
+      (let* ((visited (find-buffer-visiting filename))
+	     (buffer (or visited (find-file-noselect filename))))
+	(prog1
+	    (with-current-buffer buffer
+	       (org-latex-export-to-pdf nil) )
+	  (unless visited (kill-buffer buffer)))))
+#+end_src
+
+
+****** Tangle AND export org-file to pdf
+#+begin_src elisp :results silent :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+  (defun mb/org-babel-tangle-and-export (file target-file)
+    (interactive)
+    (mb/org-babel-tangle-to-target-file-from-the-file file target-file)
+    (sleep-for 0.5)
+    (mb/org-babel-export-org-file-to-latex target-file)
+    )
 #+end_src
 
 
@@ -1542,7 +1792,7 @@ On debian machine I'll just execute:
 #+end_src
 and add the following line to tell emacs to use system installed
 plantuml:
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 ;; enabling plantuml
 
 (setq plantuml-executable-path "plantuml")
@@ -1555,7 +1805,7 @@ plantuml:
 <<matlab-in-org-babel>>
 http://gewhere.github.io/blog/2017/12/19/setup-matlab-in-emacs-and-babel-orgmode/
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 
 ;; setup matlab in babel
 (setq org-babel-default-header-args:matlab
@@ -1642,6 +1892,8 @@ in generated pdf.
 
 
 **** Set path to Python executable to work in org-babel code block
+<<sec:python-org-babel>>
+
 Pythonic org-babel code blocks like the one below:
 
 #+begin_src python :results output
@@ -1654,10 +1906,27 @@ In order to fix the problem you need to
 explicitely set the path to your
 Python interpreter. 
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp
+; :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+;; Python in org-babel
+(setq org-babel-python-command "python")
+#+end_src
+
+The old versions have explicitely pointed to python3 binary like this
+#+begin_src emacs-lisp 
 ;; Python in org-babel
 (setq org-babel-python-command "/bin/python3")
 #+end_src
+but it's
+outdated in newer versions of Debian...
+
+Unfortunately, it seems that you need this =python3= not =python=...
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+;; Python in org-babel
+(setq org-babel-python-command "python3")
+#+end_src
+
 
 Two observations:
 - ~python script.py~ executed in command line works ok
@@ -1681,7 +1950,7 @@ the preamble of .md file.
 [[https://emacs.stackexchange.com/questions/74505/how-can-i-add-specific-text-to-the-content-generated-by-org-mode-export-to-mark#74513][How to do that is described here.]]
 
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
   ;; **** org-to-markdown exporter customization  -> 
 
   (defun org-export-md-format-front-matter ()
@@ -1717,7 +1986,7 @@ added twice in exported ~md~ file. So I comment out the line below,
 however in the free time I should supplement all the older posts with this line.
 (TODO!)
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")   
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")   
   ;; This hook should be added per file in my org posts. Unfortunately, so far I don't know
   ;; how to do this.
   ;; (add-hook 'org-export-before-processing-hook #'my/org-export-markdown-hook-function)
@@ -1727,7 +1996,7 @@ Besides, in order to have markdown exporter options in menu appearing after
 ~C-c C-e~ you need to add 
 ([[https://stackoverflow.com/questions/22988092/emacs-org-mode-export-markdown/22990257#22990257][Link 1]], [[https://emacs.stackexchange.com/questions/4279/exporting-from-org-mode-to-markdown][Link 2]]):
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 
 (require 'ox-md nil t)
 
@@ -1742,7 +2011,7 @@ I guess it's overwritten by =minted= or =engraved=
 exporting backends, isn't it?
 
 Taken from [[https://emacs.stackexchange.com/questions/58993/how-color-code-on-export-from-org-mode-to-latex-pdf][here]]:
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
   ;; colorting ~code~ on org to latex export
   (defun tmp-latex-code-filter (text backend info)
     "red inline code"
@@ -1754,7 +2023,7 @@ Taken from [[https://emacs.stackexchange.com/questions/58993/how-color-code-on-e
 
 
 **** Miscellaneous oneliners
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 ;; alphabetical ordered lists
 (setq org-list-allow-alphabetical t)
 #+end_src
@@ -1785,7 +2054,7 @@ Nice tutorial is [[https://orgmode.org/worg/org-tutorials/org-latex-export.html]
 2. In org file preamble you need the line: ~#+LaTeX_HEADER: \usepackage{minted}~.
 
 3. In init.el:
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
 ;; org-to-latex exporter to have nice code formatting
 (setq org-latex-listings 'minted
       org-export-with-sub-superscripts 'nil
@@ -1801,16 +2070,239 @@ Nice tutorial is [[https://orgmode.org/worg/org-tutorials/org-latex-export.html]
 to have colored syntax working during asynchronous export!
 
 
-**** Engraved - the better (?) way of having nice source code formatting
+**** Engraved - the better (?) way of having nice source code formatting <<sec:engraved>>
+
 Following some internet posts about =Engraved= package I decided to give it a try. We'll if it works better than minted (which has obvious flaws, such as dependency on external code or slowing down
 overall compilation process)
 
 The installation process is easier than with minted. All you need to do is to install package =engrave-faces= (it's done in =install-packages.el=) and then set
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
 ;; org-to-latex exporter to have nice code formatting
 (setq org-latex-src-block-backend 'engraved)
+;; ;; (setq org-latex-packages-alist '((""))) ; there's no need to add minted package anymore here, we're using engraved, special options for engraved are passed in org-latex-engraved-preamble
 #+end_src
+
+The customization of the styles can be performed by
+editing two variables:
+=org-latex-engraved-preamble= and
+=org-latex-engraved-options=
+
+Please do note that =engraved= includes =fvextra= package
+and =tcolorbox= package with options =breakable= and =xparse=.
+This should be taken into account when using =org-special-blocks-package=
+since it also depends on =tcolorbox= package.
+*This potentially may lead to package clash! And there may be a need*
+*to come back here to configure the usage of tcolorbox once again.* 
+(Note the options for =tcolorbox= mentioned in
+[[https://texdoc.org/serve/tcolorbox.pdf/0][package manual]] (Sec. 1.3 Libraries, page 10, -> ~/tcb/library/most~ vs
+~/tcb/library/all~ vs ~/tcb/library/minted~).
+
+
+Their default values are written below (taken from documentation):
+#+begin_src emacs-lisp
+      (setq org-latex-engraved-preamble
+	"\\usepackage{fvextra}
+
+	[FVEXTRA-SETUP]
+
+	% Make line numbers smaller and grey.
+	\\renewcommand\\theFancyVerbLine{\\footnotesize\\color{black!40!white}\\arabic{FancyVerbLine}}
+
+	\\usepackage{xcolor}
+
+	% In case engrave-faces-latex-gen-preamble has not been run.
+	\\providecolor{EfD}{HTML}{f7f7f7}
+	\\providecolor{EFD}{HTML}{28292e}
+
+	% Define a Code environment to prettily wrap the fontified code.
+	\\usepackage[breakable,xparse]{tcolorbox}
+	\\DeclareTColorBox[]{Code}{o}%
+	{colback=EfD!98!EFD, colframe=EfD!95!EFD,
+	  fontupper=\\footnotesize\\setlength{\\fboxsep}{0pt},
+	  colupper=EFD,
+	  IfNoValueTF={#1}%
+	  {boxsep=2pt, arc=2.5pt, outer arc=2.5pt,
+	    boxrule=0.5pt, left=2pt}%
+	  {boxsep=2.5pt, arc=0pt, outer arc=0pt,
+	    boxrule=0pt, leftrule=1.5pt, left=0.5pt},
+	  right=2pt, top=1pt, bottom=0.5pt,
+	  breakable}
+
+	[LISTINGS-SETUP]"
+      )
+#+end_src
+
+In order to flawlessly export ChatGPT sessions [[sec:chatgpt-engraved]]
+placed inside =#+begin_ai #+end_ai=
+we need to define =ai= environement in latex.
+Concatenation of variable =org-latex-engraved-preamble=
+and new lines has no effect, so I decided to set explicitely here:
+
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+      (setq org-latex-engraved-preamble
+	"\\usepackage{fvextra}
+
+	[FVEXTRA-SETUP]
+
+	% Make line numbers smaller and grey.
+	\\renewcommand\\theFancyVerbLine{\\footnotesize\\color{black!40!white}\\arabic{FancyVerbLine}}
+
+	\\usepackage{xcolor}
+
+	% In case engrave-faces-latex-gen-preamble has not been run.
+	\\providecolor{EfD}{HTML}{f7f7f7}
+	\\providecolor{EFD}{HTML}{28292e}
+
+	% Define a Code environment to prettily wrap the fontified code.
+	\\usepackage[breakable,xparse]{tcolorbox}
+	\\DeclareTColorBox[]{Code}{o}%
+	{colback=EfD!98!EFD, colframe=EfD!95!EFD,
+	  fontupper=\\footnotesize\\setlength{\\fboxsep}{0pt},
+	  colupper=EFD,
+	  IfNoValueTF={#1}%
+	  {boxsep=2pt, arc=2.5pt, outer arc=2.5pt,
+	    boxrule=0.5pt, left=2pt}%
+	  {boxsep=2.5pt, arc=0pt, outer arc=0pt,
+	    boxrule=0pt, leftrule=1.5pt, left=0.5pt},
+	  right=2pt, top=1pt, bottom=0.5pt,
+	  breakable}
+
+	[LISTINGS-SETUP]
+
+        \\newenvironment{ai}
+        {
+        \\begin{Code}
+        }
+        {
+        \\end{Code}
+        }"
+      )
+#+end_src
+
+The default value of =org-latex-engraved-options= is:
+#+begin_src emacs-lisp
+; :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
+    (setq org-latex-engraved-options
+	  '(
+	    ("commandchars" . "\\\\\\{\\}")
+	    ("highlightcolor" . "white!95!black!80!blue")
+	    ("breaklines" . "true")
+	    ("breaksymbol" . "\\color{white!60!black}\\tiny\\ensuremath{\\hookrightarrow}")
+	   ))
+#+end_src
+
+Other example of usage taken from help of =org-latex-engraved-options= variable.
+
+#+begin_src emacs-lisp  :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
+  (setq org-latex-engraved-options
+    '(
+      ("commandchars" . "\\\\\\{\\}")
+      ("highlightcolor" . "white!95!black!80!blue")
+      ("breaklines" . "true")
+      ("breaksymbol" . "\\color{white!60!black}\\tiny\\ensuremath{\\hookrightarrow}")
+      ("highlightcolor" . "lightgray")
+      ("frame" . "single")
+      ("numbers" . "left")
+      )
+    )
+#+end_src
+
+
+
+
+Engraved options can also be set per block.
+If you need block-specific options, you may use the following syntax:
+#+begin_src org 
+  ,#+ATTR_LATEX: :options key1=value1,key2=value2
+  ,#+BEGIN_SRC <LANG>
+  ...
+  ,#+END_SRC  
+#+end_src
+
+
+
+Here's a simple org file that shows some of the capabilities of
+=engraved=:
+
+#+begin_src org :tangle (concat (org-entry-get nil "TEST-DIR" t) "engraved-example.org") :mkdirp yes
+  ,#+title: Engraving source blocks
+  ,#+latex_engraved_theme: modus-operandi
+
+  ,#+begin_src python :results output :exports both
+    print("look ma, some text")
+  ,#+end_src
+
+  ,#+RESULTS:
+  : look ma, some text
+
+  ,#+ATTR_LATEX: :options highlightlines=2
+  ,#+begin_src python :results output :exports both 
+
+    print("look, another text")
+
+  ,#+end_src
+
+  ,#+RESULTS:
+  : look ma, some text
+
+  ,#+attr_latex: :engraved-theme modus-vivendi
+  ,#+begin_src sh
+
+    echo "This is shell code"
+
+  ,#+end_src
+
+
+  ,#+ATTR_LATEX: :options highlightcolor=green,frame=lines,highlightlines=2,numbers=left
+  ,#+begin_src sh :exports both
+
+    echo "First"
+    echo "This is shell code"
+
+  ,#+end_src
+
+  ,#+RESULTS:
+  : This is shell code
+
+  ,#+ATTR_LATEX: :options highlightcolor=green,frame=lines,highlightlines=2,numbers=left
+  ,#+begin_src elisp :exports both
+
+    (message "AAA elisp")
+
+  ,#+end_src
+
+  ,#+RESULTS:
+  : AAA elisp
+
+  ,#+ATTR_LATEX: :options highlightcolor=green,frame=lines,highlightlines=2,numbers=left
+  ,#+begin_src elisp :exports both
+
+    (message "AAA elisp")
+
+  ,#+end_src
+
+  ,#+RESULTS:
+  : AAA elisp
+
+  ,#+ATTR_LATEX: :options highlightcolor=green,frame=single,highlightlines=2,numbers=left
+  ,#+begin_src elisp :exports both
+    (message "AAA elisp")
+  ,#+end_src
+
+  ,#+ATTR_LATEX: :options highlightcolor=green,frame=lines,highlightlines=2,numbers=left
+  ,#+begin_src elisp :exports both
+    (message "AAA elisp")
+  ,#+end_src
+#+end_src
+
+***** Where to find the options that can be passed to engraved blocks of code?
+In =fvextra= documentation (-> Section 3 General options)
+https://sunsite.icm.edu.pl/pub/CTAN/macros/latex/contrib/fvextra/fvextra.pdf
+
+***** TODO PROBLEM: bash output aligned to center with =engraved=
+
 
 **** How to properly deal with picture/figure size attributes when picture is produced by org-babel block
 - https://emacs.stackexchange.com/a/59902/30035
@@ -1859,7 +2351,44 @@ by typing:
  : C-c {
 
 
+**** =org-ref= for references
+Enabling =org-ref= in all modes. 
+
+*TODO*: do it only for org-mode and latex mode...
+
+#+begin_src emacs-lisp  :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;; *** Reftex default bibliography - though it's easier to use org-cite
+  ;;     This is left in case org-ref doesn't work at all without it....
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  (require 'org-ref)
+#+end_src
+ 
 **** Reftex for managing references
+Use =org-cite= for citations and bibliography. And =org-ref= for
+references.
+
+# #+begin_src emacs-lisp  :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
+#   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#   ;; *** Reftex default bibliography - though it's easier to use org-cite
+#   ;;     This is left in case org-ref doesn't work at all without it....
+#   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#   ; (require reftex)
+#   ;;;; (setq reftex-default-bibliography '("~/texmf/bibtex/bib/myBibliography/cissic.bib"))  
+# #+end_src
+
+
+# You need to set default bibliography to have citing enabled Emacs-wide.
+# #+begin_src emacs-lisp  :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
+#   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#   ;; *** Reftex default bibliography - though it's easier to use org-cite
+#   ;;     This is left in case org-ref doesn't work at all without it....
+#   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  
+#     (setq reftex-default-bibliography '("~/texmf/bibtex/bib/myBibliography/cissic.bib"))
+# #+end_src
+
+
+***** OLDER COMMENTS
 [[https://www.gnu.org/software/emacs/manual/html_mono/reftex.html][~Reftex~]]
 is preinstalled since Emacs 20.2, however in order to
 have it working you need to [[https://emacs.stackexchange.com/questions/35179/reftex-complete-failed-with-wrong-type-argument-stringp-nil][install ~auctex~ package]]! 
@@ -1885,12 +2414,13 @@ and LaTeX tags.
 
 
 
+
 **** Listing name tags of environments
 Based on [[https://emacs.stackexchange.com/questions/77326/how-to-display-the-list-of-all-name-tags-is-org-mode-document][this page]].
 
 
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
   ;; Managing org-mode #+NAME properties like in reftex-mode
   (defun my/get-name (e)
 	(org-element-property :name e))
@@ -1917,14 +2447,14 @@ Based on [[https://emacs.stackexchange.com/questions/77326/how-to-display-the-li
 https://ruzkuku.com/emacs.d.html#org804158b
 https://www.emacswiki.org/emacs/FlySpell
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; *** Flyspell 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+end_src
 
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") :exports none
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") :exports none
 (flyspell-mode t)
 
     (defun flyspell-on-for-buffer-type ()
@@ -1973,7 +2503,7 @@ https://www.masteringemacs.org/article/spotlight-flycheck-a-flymake-replacement
 In Emacs 27.1 ~flymake~ is said to be competitive with ~flycheck~ again.
 It is built-in in Emacs. As for now, I'm gonna use ~flymake~.
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") :exports none
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") :exports none
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; *** Flymake
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1981,10 +2511,11 @@ It is built-in in Emacs. As for now, I'm gonna use ~flymake~.
 (flymake-mode t)
 #+end_src
 
-*** Bash completions
+*** Bash completions :notForWindows:
+
 Bash has usually very good command completion facilities, which aren't accessible by default from Emacs (except by running ~M-x term~). This package integrates them into regular commands such as ~shell-command~ and ~shell~.
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") :exports none
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") :exports none
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; *** Bash completions
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1993,7 +2524,7 @@ Bash has usually very good command completion facilities, which aren't accessibl
 #+end_src
 
 # *** YASnippet
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") :exports none
+# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") :exports none
 # ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 # ;; *** YASnippet
 # ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2016,7 +2547,7 @@ Something important is that this library doesn't play well with Emacs
 =linum-mode=. The following lines of code will deactivate this mode
 when rendering the .pdf:
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; Add this hook in order to run pdf-tools without a warning message.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2024,7 +2555,7 @@ when rendering the .pdf:
 #+end_src
 
 
-*** ChatGPT
+*** ChatGPT <<sec:chatgpt>>
 In order to get some help from AI I decided to give it a try inside
 Emacs.
 There are tons of pages about it.
@@ -2035,7 +2566,7 @@ At first, I decided on [[https://github.com/rksm/org-ai][org-ai]]. It looks prom
 seems to have a quite a lot of features.
 To use it, you also need to have =websocket= package.
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;;;; AI - ChatGPT, Dall-E, Stable Diffusion and ...
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2053,7 +2584,7 @@ In order to have this file properly loaded when running emacs daemon
 we need to explicitely use =user-emacs-directory= variable
 when refering to the file.
 The content of the file looks like:
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
   (load-file (concat user-emacs-directory "../.mysecrets/openaiapi.el"))
 #+end_src
 where the content of the =openaiapi.el= looks like:
@@ -2061,6 +2592,8 @@ where the content of the =openaiapi.el= looks like:
 (setq org-ai-openai-api-token "<ENTER YOUR API TOKEN HERE>")
 #+end_example
 
+In case you have more openai accounts/keys you may
+replicate the above line inserting another API keys.
 
 ***** Useful commands/shortcuts:
 
@@ -2073,7 +2606,40 @@ its results.
 ~C-c DEL~ does not work in my case, see =org-ai.el= to view other
 keybindings...)
 
+***** ChatGPT session blocks export with =engraved=
+<<sec:chatgpt-engraved>>
 
+In order to flawlessly export ChatGPT sessions
+placed inside =#+begin_ai #+end_ai=
+we need to define =ai= environement in latex for
+engraved exports
+(see [[sec:engraved]])
+That is why we need to update
+=org-latex-engraved-preamble=
+introduction in section [[sec:engraved]].
+
+# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+# (setq org-latex-engraved-preamble (concat org-latex-engraved-preamble
+# "
+# \\newenvironment{ai}
+# {}
+# {}
+
+# \\renewenvironment{ai}
+# {
+# \\begin{Code}
+# }
+# {
+# \\end{Code}
+# }
+# ") )
+# #+end_src
+
+In fact, updating this variable (as in the code commented out above)
+has no effect on the variable, so I decided to move this piece
+of code to [[sec:engraved]], where I repeated default
+setting of =org-latex-engraved-preamble= with necessary lines
+added at the end of the string.
 
 **** gptel
 I also tried with =gptel=. Unfortunately I wasn't able to succeed in
@@ -2101,7 +2667,7 @@ https://emacs.stackexchange.com/questions/42252/run-local-command-on-remote-file
 Something is wrong with this part of code and ~init.el~ is not
 loading properly. 
 
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 # ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 # ;;;; TRAMP
 # ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2121,7 +2687,7 @@ loading properly.
 
 
 *** General global shortcuts not restricted to specific package/mode
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; Useful global shortcuts (text operations)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2138,7 +2704,7 @@ loading properly.
 **** Defining own prefix key to ease finding free keybindings
 https://stackoverflow.com/a/1025257/4649238
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; my own prefix keymap
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2164,7 +2730,7 @@ You only need to remember that it may break down at any momement,
 if you encounter a mode that rebinds one of the default keybindings used
 in the sequence.
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 ;; fast copy-line-comment-it-and-paste-below
 ;(global-set-key "\C-c\C-k"        "\C-a\C- \C-e\M-w\M-;\C-e\C-m\C-y")
 (define-key mb-map (kbd "C-k") "\C-a\C- \C-e\M-w\M-;\C-e\C-m\C-y")
@@ -2172,7 +2738,7 @@ in the sequence.
 
 The code below is not fully doing what it is meant to do. I don't have a time now
 to correct it.
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 ;; copy-selection-comment-it-and-paste-below (works ok provided selection is
 ;; performed from left to right....
 ; (global-set-key "\C-c\C-l" "\M-w\M-;\C-e\C-m\C-y")
@@ -2194,7 +2760,7 @@ https://www.emacswiki.org/emacs/CopyingWholeLines
 
 This solution only copies active line and moves the pointer to the next line
 
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
+# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
 #+begin_src emacs-lisp 
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; fast copy-line shortcut
@@ -2226,7 +2792,7 @@ This solution only copies active line and moves the pointer to the next line
 And even better solution because it also comments out the line and yanks
 (pastes) copied text the line below. [[https://stackoverflow.com/a/23588908][Based on the post]].
 
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
+# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
 #+begin_src emacs-lisp 
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; fast copy-line-comment-and-paste-below
@@ -2277,7 +2843,7 @@ function. However, in this case, calling the function with parameter
 is a bit more complicated than for =shell-command=
 (https://stackoverflow.com/questions/4858975/in-emacs-lisp-what-is-the-correct-way-to-use-call-process-on-an-ls-command)
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; Useful global shortcuts (system-wide operations)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2293,7 +2859,41 @@ I had to delete =#= from it to have properly working keybinding!
 
 Similar solution is given [[https://emacs.stackexchange.com/questions/7742/what-is-the-easiest-way-to-open-the-folder-containing-the-current-file-by-the-de][here]] (actually, I did not test it).
 
-*** ABANDONED Emailing in Emacs 
+*** Emailing in Emacs
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; Email configuration >>>>>>>>>>>>
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+end_src
+
+https://www.gnu.org/software/emacs/manual/html_mono/smtpmail.html
+
+
+Snippet for sending email from inside emacs:
+#+begin_src elisp
+  (progn
+    (mail)
+    (mail-to) (insert "address@sth.com")
+    (mail-subject) (insert "Subject ")
+    (mail-text) (insert "body of mail")
+    (mail-send))
+#+end_src
+
+
+# Settings for SMTP email client:
+# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+#   (setq smtpmail-smtp-server "smtp.prz.edu.pl")
+#   (setq smtpmail-smtp-service 587)
+#   (setq smtpmail-stream-type "starttls")
+# #+end_src
+
+
+
+
+
+
+
+**** DEPRECATED OLD Approaches
 As a temporary workaround I decided to try [[emacs-everywhere]].
 
 Basing on  [[https://www.reddit.com/r/emacs/comments/4rl0a9/email_in_emacs_i_want_to_but_wow_its_overwhelming/][this post]] I decided to perform configuration of email service 
@@ -2303,7 +2903,7 @@ following problems
 - sending emails
 - viewing emails.
 
-**** Links that can be useful:
+***** Links that can be useful:
 - https://www.reddit.com/r/emacs/comments/4rl0a9/email_in_emacs_i_want_to_but_wow_its_overwhelming/
 - https://www.emacswiki.org/emacs/GettingMail
 - [[https://www.jonatkinson.co.uk/posts/syncing-gmail-with-mbsync/]]
@@ -2313,7 +2913,7 @@ following problems
 - https://www.maketecheasier.com/use-email-within-emacs/
 
 
-**** ABANDONED Another approach: External Editor Revived -- a Thunderbird extension 
+***** ABANDONED Another approach: External Editor Revived -- a Thunderbird extension 
 External Editor Revived is a Thunderbird extension that allows 
 using external editor (vim/emacs/...) to edit your mails.
 
@@ -2326,6 +2926,14 @@ due to lacking dependencies:
 ./external-editor-revived: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.34' not found (required by ./external-editor-revived)
 #+end_example
 so I abandoned this idea at this stage.
+
+
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; <<<<<<<<<<<<<< Email configuration 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+end_src
 
 *** Emacs-everywhere 
 <<emacs-everywhere>>
@@ -2370,7 +2978,7 @@ Repository of the package and some basic information can be found
    I used the solution based on the one presented in the last link above,
    however the one presented in the second link seems to be simpler... 
 
-   #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+   #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
    ;; setting up configuration for emacs-everywhere:
    ;; 1. font size
    ;(if (daemonp)
@@ -2400,7 +3008,7 @@ Some variables need to be set in order to have calendar/diary
 looking working fancy. You can see those settings in Stavrou's
 init.el in the movie linked above.
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;;;; Diary
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2419,7 +3027,7 @@ init.el in the movie linked above.
 
 In order to include diary entries in calendar you need to set:
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
   (setq calendar-mark-diary-entries-flag t)
 #+end_src
 
@@ -2431,7 +3039,7 @@ And that's the way how I'm gonna use it for a moment.
 # In order to include entries from the Emacs diary into Org mode’s agenda,
 # you only need to customize the variable.
 
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 #   (setq org-agenda-include-diary t)
 # #+end_src
 # After that, everything happens automatically.
@@ -2452,7 +3060,7 @@ https://emacs.stackexchange.com/questions/3035/how-to-know-if-emacs-is-running-a
 - http://xahlee.info/emacs/emacs/elisp_command_line_argv.html
 
 *** Load Emacs theme of your preference
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") :exports none
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") :exports none
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; *** Emacs theme
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2460,7 +3068,7 @@ https://emacs.stackexchange.com/questions/3035/how-to-know-if-emacs-is-running-a
 
 
 **** Modus themes by Protesilaos Stavrou <<modus-theme>>
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") :exports none
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") :exports none
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; **** Modus theme by Protesilaos Stavrou
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2482,7 +3090,7 @@ second reason).
 #+end_src
 
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 
 ;; Add all your customizations prior to loading the themes
 (setq modus-themes-italic-constructs t
@@ -2510,7 +3118,7 @@ and ~modus-vivendi~ which is dark one.
 In order to ease switching between them it is convenient to define
 custom keybinding [[https://emacs.stackexchange.com/a/48627][(details]]).
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 ;; Auxiliary function to toggle betwen bright and dark theme
 (defun toggle-theme ()
   (interactive)
@@ -2525,20 +3133,20 @@ Load theme *after* defining all necessary definitions
 won't work after running =init.el= at the startup and
 you'll need to eval it once again
 or manually invoke the following command):
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 ;; load theme after defining 
 (load-theme 'modus-vivendi :noconfirm) 
 #+end_src
 
 *** Manually downloaded packages
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") :exports none
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") :exports none
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; *** Manually downloaded packages
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+end_src
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
 
 ;; Set location for external packages.
 (add-to-list 'load-path "~/.emacs.d/manual-download/")
@@ -2560,14 +3168,14 @@ or manually invoke the following command):
 Adding custom useful keybindings for doconce. As for now, this is added as
 a global shortcut...
 
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
+# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
 # ;; Doconce mode...
 # (defun my-doconce-mode-hook ()
 # (define-key doconce-mode-map (kbd "\C-c\C-j") (kbd "\C-c\C-j" "\C-k ====="))
 # )
 # #+end_src
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
 (global-set-key "\C-c\C-j" "\C-k =====")
 #+end_src
 
@@ -2589,7 +3197,7 @@ https://enzuru.medium.com/sunrise-commander-an-orthodox-file-manager-for-emacs-2
 
 https://pragmaticemacs.wordpress.com/2015/10/29/double-dired-with-sunrise-commander/
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 ;; sunrise
 (add-to-list 'load-path "~/.emacs.d/manual-download/sunrise")
 (require 'sunrise)
@@ -2606,7 +3214,7 @@ after invoking ~M-x sunrise~.
 
 In order to have ~C-x k~ working as usual we can apply the following
 rebinding:
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 (add-hook 'sunrise-mode-hook
    '(lambda ()
      (local-set-key (kbd "C-x k") 'kill-buffer)
@@ -2617,7 +3225,7 @@ rebinding:
 **** Buffer-move - swapping buffers easily
 https://www.emacswiki.org/emacs/buffer-move.el
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 ;; buffer-move - swap buffers easily
 (require 'buffer-move)
 #+end_src
@@ -2648,7 +3256,7 @@ The discussion on this is thread can be found in section
 [[matlab-in-org-babel]] so I here I just include the solution, namely
 I load fixed library.
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
   ;; octave/matlab-fix
   ;;;; (require 'ob-octave-fix nil t)    ; This is for older approach
   (require 'ob-octave-fix)
@@ -2659,7 +3267,7 @@ I load fixed library.
 
 ***** Custom org-special-block-extras definitions used globally in org-mode files
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 ;; custom org-special-block-extras blocks
 (add-to-list 'load-path "~/.emacs.d/myarch")
 (require 'MB-org-special-block-extras)
@@ -2667,22 +3275,139 @@ I load fixed library.
 
 
 
+**** ox-extra for =:ignore:= tag
+=ignore= tag functionality is very useful. It is implemented in
+[[https://github.com/Fuco1/org-mode/blob/master/contrib/lisp/ox-extra.el][=ox-extra.el=]] library. Unfortunately I couldn't find a way how to
+install it via emacs repositories...
+
+
+So, in order to have them enabled emacs-wide
+I have downloaded it and here it is loaded.
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+;; sunrise
+(add-to-list 'load-path "~/.emacs.d/manual-download/ox-extra")
+(require 'ox-extra)
+(ox-extras-activate '(ignore-headlines))
+#+end_src
+
+
 **** Other packages
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") :exports none
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") :exports none
 ;; [DEPRECATED] - use sunrise instead of this
 ;; midnight-commander emulation
 ;; (require 'mc)
 #+end_src
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 ;; org to ipython exporter
 ;;(use-package ox-ipynb
 ;  :load-path "~/.emacs.d/manual-download/ox-ipynb")
 #+end_src
 
 
+*** Blogging
+**** Blog stencil
+Auxiliary function that generates predefined stencil for blog posts
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+ (defun cissic-blog-stencil  (title )
+  "Create and open a file with the given stencil."
+  (interactive "sEnter the title: ")
+  (let* ((date (format-time-string "%Y-%m-%d"))
+	 (dateDay (format-time-string "%Y-%m-%d %a"))
+	 (titleUnspaced (replace-regexp-in-string " " "-" title))
+	 (file-name (concat date "-" (downcase titleUnspaced) ".org"))
+	 (file-path (concat "~/projects/cissic.github.io/mysource/public-notes-org/" file-name))
+
+	 (stencil (concat "#+TITLE: " title "\n"
+			  "#+DESCRIPTION: \n"
+			  "#+AUTHOR: cissic \n"
+			  "#+DATE: <" dateDay ">\n"
+			  "#+TAGS: \n"
+			  "#+OPTIONS: -:nil\n"
+			  "\n"
+			  "* TODO " title "\n"
+			  ":PROPERTIES:\n"
+			  ":PRJ-DIR: ./" date "-" (car (split-string titleUnspaced)) "/\n"
+			  ":END:\n"
+			  "\n"
+			  "** Problem description\n"
+			  "#+begin_src org :tangle (concat (org-entry-get nil \"PRJ-DIR\" t) \"script.org\") :mkdirp yes :exports none :results none\n"
+			  "\n"
+			  "#+end_src\n"
+			  ))) 
+    (with-temp-file file-path
+      (insert stencil))
+    (find-file file-path)))
+#+end_src
+
+#+RESULTS:
+: cissic-blog-stencil
+
+**** org entries
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+  (defun mb/org-entry-stencil  (title )
+   "Create and open a file with the given stencil."
+   (interactive "sEnter the title: ")
+   (let* ((date (format-time-string "%Y.%m.%d"))
+	  (dateDay (format-time-string "%Y-%m-%d %a"))
+	  (titleUnspaced (replace-regexp-in-string " " "-" title))
+	  (file-name (concat date "-" (downcase titleUnspaced) ".org"))
+	  (file-path (concat "~/org/" file-name))
+
+	  (stencil (concat "#+TITLE: " title "\n"
+			   "#+DESCRIPTION: \n"
+			   "#+AUTHOR: \n"
+			   "#+DATE: <" dateDay ">\n"
+			   "#+TAGS: \n"
+			   "#+OPTIONS: -:nil\n"
+			   "\n"
+			   ))) 
+     (with-temp-file file-path
+       (insert stencil))
+     (find-file file-path)
+     (goto-char (point-max))
+     ))
+#+end_src
+
+#+RESULTS:
+: mb/org-entry-stencil
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+  (defun mb/orgpriv-entry-stencil  (title )
+   "Create and open a file with the given stencil."
+   (interactive "sEnter the title: ")
+   (let* ((date (format-time-string "%Y.%m.%d"))
+	  (dateDay (format-time-string "%Y-%m-%d %a"))
+	  (titleUnspaced (replace-regexp-in-string " " "-" title))
+	  (file-name (concat date "-" (downcase titleUnspaced) ".org"))
+	  (file-path (concat "~/orgpriv/" file-name))
+
+	  (stencil (concat "#+TITLE: " title "\n"
+			   "#+DESCRIPTION: \n"
+			   "#+AUTHOR: \n"
+			   "#+DATE: <" dateDay ">\n"
+			   "#+TAGS: \n"
+			   "#+OPTIONS: -:nil\n"
+			   "\n"
+			   ))) 
+     (with-temp-file file-path
+       (insert stencil))
+     (find-file file-path)
+     (goto-char (point-max))
+     ))
+#+end_src
+
+#+RESULTS:
+: mb/orgpriv-entry-stencil
+
+
+
+
 *** TODO The end
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") :exports none
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") :exports none
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; *** The ending
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2693,7 +3418,7 @@ https://tuhdo.github.io/emacs-tutor3.html
 ~workgroups2~ is a fine package for managing session. To enable it and 
 set the filepath for keeping sessions (default is ~/.emacs_workgroups~)
  put this in your ~init.el~:
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
 (workgroups-mode 1)    ; session manager for emacs
 (setq wg-session-file "~/.emacs.d/.emacs_workgroups") ; 
 #+end_src
@@ -2767,7 +3492,7 @@ The problem was the lack of a special keyword ~progn~ as I found
 [[https://stackoverflow.com/questions/912355/how-can-you-write-multiple-statements-in-elisp-if-statement][here]] ([[https://www.gnu.org/software/emacs/manual/html_node/elisp/Sequencing.html][Part of the manual about it]]). All in all, now everything seems
 to be ok with the following lines:
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
   (if (not noninteractive)
       ( ; if Emacs is started in graphical environment
         progn
@@ -2786,7 +3511,7 @@ to be ok with the following lines:
 
 
 **** Last lines
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") :exports none
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") :exports none
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; *** Finishing touches
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2816,7 +3541,7 @@ I don't use this part of ~init.el~ anymore. I can get the similar
 functionality by using ~recentf~ package or prepare a session
 with required files opened in it.
 
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
+# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
 #+begin_src emacs-lisp
   ;;; Always have several files opened at startup
   ;; hint: https://stackoverflow.com/a/19284395/4649238
@@ -2834,7 +3559,7 @@ second: it is not present in Emacs 27.1 anyway.
 
 
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
   ;; All done
   (message "All done in init.el.")
 #+end_src

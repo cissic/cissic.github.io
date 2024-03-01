@@ -54,7 +54,7 @@ For example for the document given below:
 
 #+begin_example
 "Section about J.S. Bach"
-"Section about W.A. Moz [[file:///home/mb/org/RDITiT/PrzewodyDoktorskie/Sidor_Kamil (2023)/2. Lista-obecnosci-na-obronie-publicznej.org]] art"
+"Section about W.A. Mozart"
 #+end_example
 
 Now the results are:

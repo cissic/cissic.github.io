@@ -1,0 +1,1203 @@
+#+TITLE: Debian on Dell
+#+DESCRIPTION: 
+#+AUTHOR: cissic
+#+DATE: <2023-12-14 Thu>
+#+TAGS: debian dell 
+# #+OPTIONS: toc:nil
+#+OPTIONS: -:nil
+#+TODO: TODO PENDING ???? ABANDONED POSTPONED | DEPRECATED SOLVED DONE
+
+* {{{title}}}
+:PROPERTIES:
+:PRJ-DIR: ./2023-12-14-debian-installation-on-dell/
+:END:
+
+
+** Preparation
+
+*** Debian live default login/password
+user: user
+pass: live
+
+*** TODO Warnings
+**** ,,Keymap changes do not work in Plasma on Wayland. Please use systemsettings5 instead.'' ?
+
+*** Disk partitioning
+https://morfikov.github.io/post/jak-przygotowac-dysk-pod-instalacje-debian-linux-z-efi-uefi/
+**** Binary multiples of kilo 
+|      MB |       GB |
+|---------+----------|
+|    1024 |          |
+|    2048 |          |
+|    4096 |          |
+|    8192 |          |
+|   16384 |          |
+|   32768 |       32 |
+|   65536 |       64 |
+|   81920 |       80 |
+|  131072 |      128 |
+|  262144 |      256 |
+|  524288 |      512 |
+| 1048576 |     1024 |
+|---------+----------|
+|   81920 | 80=64+16 |
+|---------+----------|
+|  442368 |      432 |
+| 1367056 |     1300 |
+|         |          |
+
+
+
+***** / - 80 GB
+
+***** /home - (512-80)= 432 GB
+
+***** arch - 1383440-16384
+
+***** NTFSTrash - 16 GB
+
+***** no SWAP
+
+
+
+
+**** GPT / MBR
+After using gparted from live Debian (Bookworm) which created
+new partitions
+I ran the command
+#+begin_src sh 
+  sudo parted -l
+#+end_src
+to check what was the type of partition table. The answer was: gpt.
+For GPT partition table there can exist as many as
+[[https://www.google.com/search?q=how+many+primary+partitions+on+gpt&sca_esv=591149029&ei=Wxd8ZZrAJpSrxc8PxLCwYA&ved=0ahUKEwja2afbi5GDAxWUVfEDHUQYDAwQ4dUDCBA&uact=5&oq=how+many+primary+partitions+on+gpt&gs_lp=Egxnd3Mtd2l6LXNlcnAiImhvdyBtYW55IHByaW1hcnkgcGFydGl0aW9ucyBvbiBncHQyBhAAGBYYHjILEAAYgAQYigUYhgNIhEhQAFjmRnAEeAGQAQCYAZcBoAGmHaoBBTE2LjIwuAEDyAEA-AEBwgILEAAYgAQYigUYkQLCAgsQLhiABBjHARjRA8ICBRAAGIAEwgIOEC4YgAQYxwEY0QMY1ALCAgUQLhiABMICCBAuGIAEGNQCwgIKEAAYgAQYigUYQ8ICCxAuGIAEGIoFGJECwgImEC4YgAQYigUYkQIYlwUY3AQY3gQY4AQY9AMY8QMY9QMY9gPYAQHCAggQABgWGB4YCsICCBAAGBYYHhgPwgIFECEYoAHCAggQIRgWGB4YHcICBBAhGBXiAwQYACBBiAYBugYGCAEQARgU&sclient=gws-wiz-serp][128 primary partitions on the disk]].
+
+
+**** Partitioning via parted and fdisk
+:PROPERTIES:
+:FNAME: disk_partitioning.el
+:END:
+
+I abandoned this section because of the fact that partitions in
+=parted= didn't have the same size as the ones created by =gparted=
+although I calculated the numbers to correspond to each other.
+In the end I created the partitions in =gparted=. .
+
+
+According to https://phoenixnap.com/kb/linux-create-partition.
+
+List disks available for the system:
+#+begin_src sh  :tangle (concat (org-entry-get nil "PRJ-DIR" t) (org-entry-get nil "FNAME" t)) :mkdirp yes
+  sudo parted -l
+#+end_src
+
+Select the disk you want to partition:
+#+begin_src sh :tangle (concat (org-entry-get nil "PRJ-DIR" t) (org-entry-get nil "FNAME" t)) 
+  sudo parted /dev/nvme0n1
+#+end_src
+Now parted opens the disk for being partitioned.
+
+***** In =(parted)= command line
+Inside =parted= command line create a partition table before partitioning the disk:
+#+begin_src sh :tangle (concat (org-entry-get nil "PRJ-DIR" t) (org-entry-get nil "FNAME" t)) 
+  mklabel gpt
+#+end_src
+
+Now, you can check if the partition table was created:
+#+begin_src sh :tangle (concat (org-entry-get nil "PRJ-DIR" t) (org-entry-get nil "FNAME" t)) 
+  print
+#+end_src
+
+
+Let's create partitions. The assigned disk start for the first partition *shall be 1MB*. We want to create disks of the following
+sizes:
+- root: 81920 MB (80 GB)
+- home: 442368 MB (432 GB)
+- 
+
+*WARNING!* The disk sizes given below in =parted= do not match the sizes given in graphical =gparted=. 
+
+#+begin_src sh :tangle (concat (org-entry-get nil "PRJ-DIR" t) (org-entry-get nil "FNAME" t)) 
+  mkpart primary ext4 1MB 81921MB
+  mkpart primary ext4 81922MB 524290MB
+#+end_src
+
+
+
+
+
+** Installation
+During the installation I obtained the error mentioned here:
+https://askubuntu.com/questions/502307/the-attempt-to-mount-a-file-system-with-type-vfat-in-ssi10-0-0-partition1sda
+
+How to circumvent it?
+- I disabled in BIOS:
+  - =SecureBoot=
+  - =Microsoft UEFI CA=
+  - =Secure Boot Mode= set to =Audit Mode=
+
+  - =Storage= -> =SATA/NVMe Operation= -> (RAID On) changed to =AHCI/NVMe=
+
+I don't know whether the above steps were needed. I think the most
+important was creating FAT32 EFI partition at the beginning of the
+disk. I didn't have it after cleaning all partitions from the disk.
+
+The easiest approach to the problem was to use Calamares installator
+launched from inside Debian Live.
+It suggested proper partitioning of the disk:
+- 300 MB for FAT32 (EFI partition) flagged as boot and mount point /boot/efi
+- 68,74 GB for swap
+- and the rest for ext4.
+
+# I let it do it that way and then 
+
+Following this clue and basing on the following threads (550 MB per efi partition):
+- https://askubuntu.com/questions/1313154/how-to-know-the-proper-amount-of-needed-disk-space-for-efi-partition
+- https://askubuntu.com/questions/1011821/what-is-the-correct-and-reliable-way-to-freshly-install-ubuntu-gnome-in-an-nvme?newreg=52d1fba44a84418fbb0e15cc74e25b30
+
+I have created the following partitions:
+- 2MB unallocated     (this is probably needed by all this new uefi stuff)
+- 550 MB fat32 flagged as boot, esp   (this is for /boot/efi)
+- 80 GB ext4 (root)
+- 432 GB ext4 (home)
+- 1,30 TB ext4 (arch)
+- rest: 15,46 GB ntfs (NTFSTrash)
+
+
+*** General notes
+Moving to testing branch was problematic. In the end, after several
+attempt I succeded. However I stumbled upon some problems: 
+
+- problems with installing NVIDIA drivers 
+- problems with login to KDE session after upgrade to testing
+- cannot run Vivaldi (and chromium neither) after upgrade to
+  testing (some problems with =kwallet=)
+
+After all, it seems to me that crucial steps of the installation
+process are:
+1. Install debian =bookworm= from =net-inst= image! When installing
+   from =live-cd= I had a problems with login to KDE session after
+   system upgrade. It wasn't impossible after =net-inst= installation
+   (still I cannot login to Wayland session, only X11 is available).
+   This needs some more investigation.
+   
+2. Add =contrib= and =non-free= (=non-free-firmware= already is) to
+   appropriate lines in =sources.list=.
+   =non-free= is necessary for easy installation of NVIDIA drivers.
+   (=update= and =upgrade= system then)
+
+3. Now you are able to install NVIDIA drivers from debian repositories.
+
+4. In the end you can edit =sources.list= and change =bookworm= to
+   testing to perform =apt full-upgrade=.
+
+Keeping this order of steps I had no problems with =kwallet= and =vivaldi=.
+
+*** System configuration
+
+**** Moving to =testing= branch
+After =bookworm= installation the content of =/etc/apt/sources.list= was:
+#+begin_src sh
+# See https://wiki.debian.org/SourcesList for more information.
+deb http://deb.debian.org/debian bookworm main non-free-firmware
+deb-src http://deb.debian.org/debian bookworm main non-free-firmware
+
+deb http://deb.debian.org/debian bookworm-updates main non-free-firmware
+deb-src http://deb.debian.org/debian bookworm-updates main non-free-firmware
+
+deb http://security.debian.org/debian-security/ bookworm-security main non-free-firmware
+deb-src http://security.debian.org/debian-security/ bookworm-security main non-free-firmware
+
+# Backports allow you to install newer versions of software made available for this release
+deb http://deb.debian.org/debian bookworm-backports main non-free-firmware
+deb-src http://deb.debian.org/debian bookworm-backports main non-free-firmware
+
+#+end_src
+
+#+RESULTS:
+
+This is what I did according to this page:
+https://linuxiac.com/how-to-switch-from-debian-stable-to-testing/
+
+***** Update Debian Stable 
+#+begin_src sh
+sudo apt update 
+sudo apt upgrade
+#+end_src
+
+***** Edit =sources.list= file
+Make a =sources.list= backup
+#+begin_src sh
+sudo cp /etc/apt/sources.list /etc/apt/sources.list.BKP
+#+end_src
+and replace the strings found in lines starting with “deb” or “deb-src,” 
+referencing the distribution’s codename with the word “testing.”
+
+Comment out or remove all the lines containing =-backports=.
+
+=contrib= also needs to be added (for example =matlab-support= package
+resides there), and do not forget about =non-free= (!), where
+=nvidia-detect= is located!
+
+Now my =sources.list= looks like:
+
+#+begin_src sh
+#deb cdrom:[Debian GNU/Linux 12.4.0 _Bookworm_ - Official amd64 NETINST with firmware 20231210-17:56]/ bookworm main non-free-firmware
+
+deb http://ftp.pl.debian.org/debian/ testing main non-free-firmware contrib non-free
+deb-src http://ftp.pl.debian.org/debian/ testing main non-free-firmware contrib non-free
+
+deb http://security.debian.org/debian-security testing-security main non-free-firmware contrib non-free
+deb-src http://security.debian.org/debian-security testing-security main non-free-firmware contrib non-free
+
+# bookworm-updates, to get updates before a point release is made;
+# see https://www.debian.org/doc/manuals/debian-reference/ch02.en.html#_updates_and_backports
+deb http://ftp.pl.debian.org/debian/ testing-updates main non-free-firmware contrib non-free
+deb-src http://ftp.pl.debian.org/debian/ testing-updates main non-free-firmware contrib non-free
+
+# This system was installed using small removable media
+# (e.g. netinst, live or single CD). The matching "deb cdrom"
+# entries were disabled at the end of the installation process.
+# For information about how to configure apt package sources,
+# see the sources.list(5) manual.
+#+end_src
+
+#+RESULTS:
+
+
+
+
+Now again update and upgrade system:
+#+begin_src sh :dir /sudo:: :results output
+  sudo apt update
+  sudo apt upgrade
+#+end_src
+Here, I stumbled upon an error.
+In my case the above commands triggered an error with unmet dependencies:
+#+RESULTS:
+#+begin_example
+ gnustep-base-runtime : Wymaga: gnustep-base-common (= 1.29.0-7) ale 1.28.1+really1.28.0-5 ma zostać zainstalowany
+ libgnustep-base1.29 : Wymaga: gnustep-base-common (= 1.29.0-7) ale 1.28.1+really1.28.0-5 ma zostać zainstalowany
+#+end_example
+
+
+***** Performing full upgrade 
+Basing on [[https://unix.stackexchange.com/questions/594257/debian-bullseye-no-upgrade-due-to-gnustep-base-runtime-unmet-dependencies][this]] thread I decided on doing full-upgrade:
+#+begin_src sh :dir /sudo:: :results output
+  sudo apt full-upgrade
+#+end_src
+which resulted in doing upgrade without any problems but
+
+#+begin_example
+/bin/bash: warning: setlocale: LC_ALL: cannot change locale (en_GB.UTF-8)
+W: Possible missing firmware /lib/firmware/i915/mtl_huc_gsc.bin for module i915
+W: Possible missing firmware /lib/firmware/i915/mtl_guc_70.bin for module i915
+W: Possible missing firmware /lib/firmware/nvidia/ga107/acr/ucode_ahesasc.bin for module nouveau
+W: Possible missing firmware /lib/firmware/nvidia/ga106/acr/ucode_ahesasc.bin for module nouveau
+W: Possible missing firmware /lib/firmware/nvidia/ga104/acr/ucode_ahesasc.bin for module nouveau
+W: Possible missing firmware /lib/firmware/nvidia/ga103/acr/ucode_ahesasc.bin for module nouveau
+W: Possible missing firmware /lib/firmware/nvidia/ga107/acr/ucode_asb.bin for module nouveau
+W: Possible missing firmware /lib/firmware/nvidia/ga106/acr/ucode_asb.bin for module nouveau
+W: Possible missing firmware /lib/firmware/nvidia/ga104/acr/ucode_asb.bin for module nouveau
+W: Possible missing firmware /lib/firmware/nvidia/ga103/acr/ucode_asb.bin for module nouveau
+W: Possible missing firmware /lib/firmware/nvidia/ga107/acr/ucode_unload.bin for module nouveau
+W: Possible missing firmware /lib/firmware/nvidia/ga106/acr/ucode_unload.bin for module nouveau
+W: Possible missing firmware /lib/firmware/nvidia/ga104/acr/ucode_unload.bin for module nouveau
+W: Possible missing firmware /lib/firmware/nvidia/ga103/acr/ucode_unload.bin for module nouveau
+W: Possible missing firmware /lib/firmware/nvidia/ga107/nvdec/scrubber.bin for module nouveau
+W: Possible missing firmware /lib/firmware/nvidia/ga106/nvdec/scrubber.bin for module nouveau
+W: Possible missing firmware /lib/firmware/nvidia/ga104/nvdec/scrubber.bin for module nouveau
+W: Possible missing firmware /lib/firmware/nvidia/ga103/nvdec/scrubber.bin for module nouveau
+W: Possible missing firmware /lib/firmware/nvidia/ga107/sec2/hs_bl_sig.bin for module nouveau
+W: Possible missing firmware /lib/firmware/nvidia/ga107/sec2/sig.bin for module nouveau
+W: Possible missing firmware /lib/firmware/nvidia/ga107/sec2/image.bin for module nouveau
+W: Possible missing firmware /lib/firmware/nvidia/ga107/sec2/desc.bin for module nouveau
+W: Possible missing firmware /lib/firmware/nvidia/ga106/sec2/hs_bl_sig.bin for module nouveau
+W: Possible missing firmware /lib/firmware/nvidia/ga106/sec2/sig.bin for module nouveau
+W: Possible missing firmware /lib/firmware/nvidia/ga106/sec2/image.bin for module nouveau
+W: Possible missing firmware /lib/firmware/nvidia/ga106/sec2/desc.bin for module nouveau
+W: Possible missing firmware /lib/firmware/nvidia/ga104/sec2/hs_bl_sig.bin for module nouveau
+W: Possible missing firmware /lib/firmware/nvidia/ga104/sec2/sig.bin for module nouveau
+W: Possible missing firmware /lib/firmware/nvidia/ga104/sec2/image.bin for module nouveau
+W: Possible missing firmware /lib/firmware/nvidia/ga104/sec2/desc.bin for module nouveau
+W: Possible missing firmware /lib/firmware/nvidia/ga103/sec2/hs_bl_sig.bin for module nouveau
+W: Possible missing firmware /lib/firmware/nvidia/ga103/sec2/sig.bin for module nouveau
+W: Possible missing firmware /lib/firmware/nvidia/ga103/sec2/image.bin for module nouveau
+W: Possible missing firmware /lib/firmware/nvidia/ga103/sec2/desc.bin for module nouveau
+#+end_example
+
+****** Problems
+
+******* Generating locale
+My =~/.bashrc= is set to British English and during installation
+I set my locale to my native language which was the only available
+on my system.
+In order to get rid of the warning
+~/bin/bash: warning: setlocale: LC_ALL: cannot change locale (en_GB.UTF-8)~
+you need to (according to [[https://serverfault.com/questions/54591/how-to-install-change-locale-on-debian][this thread]]):
+
+- open =/etc/locale.gen=
+  # =/etc/default/locale=
+- uncomment the line with =en_GB.UTF-8=
+- run ~sudo locale-gen~
+
+Then the warning about locale disappears.
+
+******* PROBLEM: Native language as default language of bash
+In order to change for a session the output language of bash
+one may change the =LANGUAGE= variable:
+
+Check the current =locale= settings with =locale=.
+Run the command =LANGUAGE=en_GB= (provided you generated =en_GB=
+locale earlier). This should change the language in the session.
+
+[[https://askubuntu.com/questions/264283/switch-command-output-language-from-native-language-to-english][Thread worth reading about locale]].
+
+
+
+******* POSTPONED Cannot login via Wayland session to KDE
+After =full-upgrade= of the system to =testing=
+I couldn't log in into KDE.
+My first installation was via Debian Live and I thought
+that maybe saomething was wrong with this image, so I reinstalled
+=/= partition with the use of =net-inst= image.
+It occured that again I was not able to log in to KDE session
+after doing the procedure of full-upgrading.
+Then I was illuminated and decided to change 
+
+
+
+
+
+
+
+
+***** Edit =fstab= so it can mount other disks not indicated during installation
+
+***** Other useful links:
+- https://itsfoss.com/switch-debian-stable-testing/
+- https://wiki.debian.org/DebianTesting
+
+
+
+**** Installing firmware, software and other ware
+
+***** Firmware NVIDIA
+Information: This step was performed on =bookworm=, before moving
+to =testing=.
+
+When trying to install drivers for nvidia I stumbled upon information
+on =nvidia-detect= package. The problem was I couldn't find it via
+=apt=. The solution was that =nvidia-detect= is located in
+=non-free= repository! (From =bookworm= on new repository
+=non-free-firmware= is introduced, but =nvidia-detect= is not there).
+So the solution was to update my ~sources.list~ to have =non-free=
+in every appropriate line (and then =sudo apt update= of course...).
+
+In fact some internet sources do contain the above information
+(https://phoenixnap.com/kb/nvidia-drivers-debian)
+but I ignored them being sure that =non-free= was just renamed
+to =non-free-firmware=.
+
+#+begin_src sh :dir /sudo:: :results output
+  sudo apt install nvidia-detect
+#+end_src
+
+
+Detect the drivers
+#+begin_src sh :dir /sudo:: :results output
+  sudo nvidia-detect
+#+end_src
+
+#+RESULTS:
+: Detected NVIDIA GPUs:
+: 01:00.0 3D controller [0302]: NVIDIA Corporation GA107GLM [RTX A500 Laptop GPU] [10de:25bd] (rev a1)
+: 
+: Checking card:  NVIDIA Corporation GA107GLM [RTX A500 Laptop GPU] (rev a1)
+: Your card is supported by the default drivers and the Tesla driver series.
+: Your card is also supported by the Tesla drivers series.
+: It is recommended to install the
+:     nvidia-driver
+: package.
+
+
+and according to the message above install =nvidia-driver=
+#+begin_src sh :dir /sudo:: :results output
+  sudo apt install nvidia-driver -y
+#+end_src
+and reboot
+
+#+begin_src sh :dir /sudo:: :results output
+  sudo systemctl reboot
+#+end_src
+
+****** Notes:
+- It seems that nvidia packages are available only for xorg
+  not for wayland ( x11 in 
+  https://packages.debian.org/search?keywords=nvidia-detect
+
+
+****** DEPRECATED OLD APPROACH
+
+The link I was following:
+https://phoenixnap.com/kb/nvidia-drivers-debian
+
+#+begin_src sh :dir /sudo:: :results output
+sudo apt install software-properties-common -y
+#+end_src
+
+You need to check your system. It is 64 bit of course
+#+begin_src sh :results output
+lscpu | grep CPU
+#+end_src
+
+#+RESULTS:
+: Tryb(y) pracy CPU:              32-bit, 64-bit
+: CPU:                            20
+: Lista aktywnych CPU:            0-19
+: Rodzina CPU:                    6
+: Skalowanie MHz CPU:             19%
+: CPU max MHz:                    5000,0000
+: CPU min MHz:                    400,0000
+
+So now install apropriate headers
+
+#+begin_src sh :dir /sudo:: :results output
+  sudo apt install linux-headers-amd64
+  sudo apt -y install linux-headers-$(uname -r) build-essential libglvnd-dev pkg-config
+  nano /etc/modprobe.d/blacklist-nouveau.conf
+#+end_src
+edit the file by adding the lines:
+#+begin_example
+blacklist nouveau
+options nouveau modeset=0
+#+end_example
+
+
+
+
+Install Nvidia Drivers via Debian’s Default Repository
+
+
+#+begin_src sh
+wget https://us.download.nvidia.com/XFree86/Linux-x86_64/470.129.06/NVIDIA-Linux-x86_64-470.129.06.run
+#+end_src 
+
+Change the permission to run the file and do
+#+begin_src sh
+ sudo ./NVIDIA-Linux-x86_64-470.129.06.run
+#+end_src
+
+This was the output:
+#+begin_example
+  One or more modprobe configuration files to disable Nouveau have been written.  For some distributions, this may be sufficient to disable Nouveau; other distributions may require modification  
+  of the initial ramdisk.  Please reboot your system and attempt NVIDIA driver installation again.  Note if you later wish to re-enable Nouveau, you will need to delete these files:
+  /usr/lib/modprobe.d/nvidia-installer-disable-nouveau.conf, /etc/modprobe.d/nvidia-installer-disable-nouveau.conf
+#+end_example
+
+****** Useful links
+https://www.linuxcapable.com/install-nvidia-drivers-on-debian/
+
+***** Emacs
+#+begin_src sh :dir /sudo:: :results output
+  sudo apt install bash-completion auto-complete-el -y
+  sudo apt install emacs -y
+#+end_src
+
+***** Vivaldi
+In the newer debian releases (from =bullseye= on)
+you can do the following (taken from
+[[https://itsfoss.com/install-vivaldi-ubuntu-linux/][here]])
+(probably you also need the first line from the old method i.e.:
+=sudo apt install software-properties-common apt-transport-https wget ca-certificates gnupg2 -y=):
+
+#+begin_src sh :dir /sudo:: :results output
+wget -qO- https://repo.vivaldi.com/archive/linux_signing_key.pub | gpg --dearmor | sudo dd of=/usr/share/keyrings/vivaldi-browser.gpg
+echo "deb [signed-by=/usr/share/keyrings/vivaldi-browser.gpg arch=$(dpkg --print-architecture)] https://repo.vivaldi.com/archive/deb/ stable main" | sudo dd of=/etc/apt/sources.list.d/vivaldi-archive.list
+sudo apt update
+sudo apt install vivaldi-stable -y
+#+end_src
+
+****** DEPRECATED Problem:
+After moving my home files from the on machine I got an error
+with a message saying about
+blocking Vivaldi profile to prevent its damage.
+Something like:
+#+begin_example
+[21991:21991:1217/184949.211853:ERROR:process_singleton_posix.cc(353)] The profile appears to be in use by another Vivaldi process (2153709) on another computer (debi). Vivaldi has locked the profile so that it doesn't get corrupted. If you are sure no other processes are using this profile, you can unlock the profile and relaunch Vivaldi.
+[21991:21991:1217/184949.211893:ERROR:message_box_dialog.cc(146)] Unable to show a dialog outside the UI thread message loop: Vivaldi - The profile appears to be in use by another Vivaldi process (2153709) on another computer (debi). Vivaldi has locked the profile so that it doesn't get corrupted. If you are sure no other processes are using this profile, you can unlock the profile and relaunch Vivaldi.
+#+end_example
+
+I found sth similar
+[[https://forum.vivaldi.net/topic/61741/unlock-profile-and-relaunch/4][here]] and tried to use the same remedy:
+
+Deleted ~/.config/vivaldi
+
+The same happens with chromium.
+
+Deleted ./config/chromium.
+
+No success.
+
+
+*SOLUTION*:
+
+At some point a deleted =~/.cache= and moved =~/.config/vivaldi= to 
+=~/.config/vivaldiBKP=, ran ~vivaldi-stable~ which worked creating
+new =~/.config/vivaldi= with new profile, deleted =~/.config/vivaldi=,
+and moved back =~/.config/vivaldiBKP= to =~/.config/vivaldi=.
+Now my profiles are back!
+
+
+****** DEPRECATED Old method of dealing with vivaldi repositories
+This method was good until =bullseye=.
+Explanation why this does not work is
+[[https://mauriziosiagri.wordpress.com/tag/gpg-dearmor/][here]] (probably because I didn't care to read it carefully).
+
+#+begin_src sh :dir /sudo:: :results output
+# vivaldi 
+sudo apt install software-properties-common apt-transport-https wget ca-certificates gnupg2 -y
+sudo wget -O- https://repo.vivaldi.com/archive/linux_signing_key.pub | gpg --dearmor | sudo tee /usr/share/keyrings/vivaldi.gpg
+sudo echo deb [arch=amd64 signed-by=/usr/share/keyrings/vivaldi.gpg] https://repo.vivaldi.com/archive/deb/ stable main | sudo tee /etc/apt/sources.list.d/vivaldi.list
+sudo apt update
+sudo apt install vivaldi-stable -y
+#+end_src
+
+
+***** Others
+#+begin_src sh :dir /sudo:: :results output
+  sudo apt install thunderbird octave pandoc texstudio -y
+  sudo apt install wine winetricks winbind -y
+  # for launching 32bit application
+  sudo dpkg --add-architecture i386 && sudo apt update && sudo apt install wine32 
+  sudo apt install default-jdk docker.io gitk -y
+
+  sudo apt install audacity chromium okular okular-extra-backends -y
+
+  sudo apt install ffmpeg filezilla gparted imagemagick kdiff3 keepassxc ktorrent -y
+
+  sudo apt install torbrowser-launcher vlc xournal ncdu -y
+
+  # 
+  sudo apt install goldendict clementine -y
+
+  sudo apt install net-tools curl wget -y   # ifconfig
+  
+  # packages needed by useful  ~/binmb scripts
+  sudo apt install xdotool xcalib -y
+
+  # gcal used in my conky 
+  sudo apt install gcal conky -y # TODO? automatic launch after booting....
+
+  # configuring Python for Emacs
+  sudo apt install python3-pip
+  # pip3 install jedi autopep8 flake8 ipython importmagic yapf
+  sudo apt install python3-jedi python3-autopep8 python3-flake8 python3-ipython python3-importmagic python3-yapf -y
+
+
+
+
+  # Old (not needed now?)
+  # sudo apt install python3-pip spyder -y
+  # sudo apt install autokey-gtk proftpd gadmin-proftpd kazam khotkeys
+  # sudo apt install gmsh tetgen dolfin julia lsb-release ncal
+
+#+end_src
+
+***** Cups (already installed)
+
+#+begin_src sh :dir /sudo:: :results output
+  # cups
+  sudo apt install cups cups-browsed
+  sudo systemctl start cups-browsed
+#+end_src
+
+
+
+
+***** SOLVED Problem with conky disappearing
+=gcal= was missing. After installing everything worked fine.
+
+***** Matlab
+Install matlab and *then* =matlab-support= package(when installing
+=matlab-support= you need to pass matlab path as a parameter to the
+installator of the package.
+#+begin_src sh :dir /sudo:: :results output
+  sudo apt install matlab-support
+#+end_src
+
+***** Miktex 
+According to
+[[https://miktex.org/download][official Miktex page]] you need to:
+
+- Register GPG key
+#+begin_src sh :results output
+  curl -fsSL https://miktex.org/download/key | sudo tee /usr/share/keyrings/miktex-keyring.asc > /dev/null
+#+end_src
+
+#+RESULTS:
+
+- Register installation source
+
+#+begin_src sh :dir /sudo:: :results output
+  echo "deb [signed-by=/usr/share/keyrings/miktex-keyring.asc] https://miktex.org/download/debian bookworm universe" | sudo tee /etc/apt/sources.list.d/miktex.list
+#+end_src
+
+There is not available neither =trixie= nor =testing= branch so all you
+can do is to add =bookworm= branch.
+
+- Install MikTeX
+#+begin_src sh :dir /sudo:: :results output
+  sudo apt-get update
+  sudo apt-get install miktex
+#+end_src
+
+- Finish the setup
+#+begin_src sh :results output
+  miktexsetup finish
+#+end_src
+
+and set automatic package installation
+#+begin_src sh :results output
+initexmf --set-config-value [MPM]AutoInstall=1
+#+end_src
+
+
+
+** Configuration
+*** TODO Battery drainage/Moderm Standby/Power management - sleep modes/hibernation
+The problem is as follows:
+Once upon a time there were sleeping modes which worked perfectly.
+S3 mode was a deep sleep. 
+
+https://askubuntu.com/questions/1398674/battery-drain-during-suspend-mode-when-lid-is-closed-20-in-8-hours
+
+
+- Hacks for Windows registry to enable S3 sleep mode.
+https://www.dell.com/community/en/conversations/xps/dell-s3-sleep-mode-again/647f865bf4ccf8a8de560264
+
+- Quite a long thread:
+https://www.dell.com/community/en/conversations/xps/xps-13-9310-ubuntu-deep-sleep-missing/647f8daff4ccf8a8dee4f308?page=5
+
+- Another forum thread:
+  https://discussion.fedoraproject.org/t/please-improve-the-s0ix-experience-under-linux/79113/37
+
+
+
+
+**** TODO How to properly configure hibernation/sleep in Linux? ?
+Useful pages:
+https://news.ycombinator.com/item?id=30166802
+https://wiki.archlinux.org/title/Power_management#Suspend_and_hibernate
+https://wiki.archlinux.org/title/Power_management/Suspend_and_hibernate
+https://www.howtogeek.com/885752/is-hibernating-your-pc-bad-for-your-ssd/
+
+1. First, you need to have swap partition or swap file!
+   -> https://superuser.com/questions/21020/can-i-hibernate-linux-without-a-swap-partition
+   How to create swapfile?
+   https://ubuntuforums.org/showthread.php?t=1042946 (example for ubuntu)
+
+
+
+**** POSTPONED Configuring s0ix - Approach 1
+
+I used this script
+https://github.com/intel/S0ixSelftestTool
+to check S0ix feature of my laptop.
+First, you need to install
+#+begin_src sh
+  sudo apt install acpica-tools
+#+end_src
+Now, get the script from github
+
+#+begin_src sh
+wget https://github.com/intel/S0ixSelftestTool/blob/main/s0ix-selftest-tool.sh
+#+end_src
+and run it (as root):
+
+#+begin_src sh
+sudo bash s0ix-selftest-tool.sh
+#+end_src
+
+
+#+begin_example
+Intel ACPI Component Architecture
+ASL+ Optimizing Compiler/Disassembler version 20230628
+Copyright (c) 2000 - 2023 Intel Corporation
+
+File appears to be binary: found 424 non-ASCII characters, disassembling
+Binary file appears to be a valid ACPI table, disassembling
+Input file apic.dat, Length 0x1DC (476) bytes
+ACPI: APIC 0x0000000000000000 0001DC (v05 DELL   Dell Inc 00000002      01000013)
+Acpi Data Table [APIC] decoded
+Formatted output:  apic.dsl - 25542 bytes
+File appears to be binary: found 30 non-ASCII characters, disassembling
+Binary file appears to be a valid ACPI table, disassembling
+Input file bgrt.dat, Length 0x38 (56) bytes
+ACPI: BGRT 0x0000000000000000 000038 (v01 DELL   Dell Inc 00000002      01000013)
+Acpi Data Table [BGRT] decoded
+Formatted output:  bgrt.dsl - 1615 bytes
+File appears to be binary: found 17 non-ASCII characters, disassembling
+Binary file appears to be a valid ACPI table, disassembling
+Input file boot.dat, Length 0x28 (40) bytes
+ACPI: BOOT 0x0000000000000000 000028 (v01 DELL   CBX3     00000002      01000013)
+Acpi Data Table [BOOT] decoded
+Formatted output:  boot.dsl - 1207 bytes
+File appears to be binary: found 54 non-ASCII characters, disassembling
+Binary file appears to be a valid ACPI table, disassembling
+Input file dbg2.dat, Length 0x54 (84) bytes
+ACPI: DBG2 0x0000000000000000 000054 (v00 DELL   Dell Inc 00000002      01000013)
+Acpi Data Table [DBG2] decoded
+Formatted output:  dbg2.dsl - 2608 bytes
+File appears to be binary: found 29 non-ASCII characters, disassembling
+Binary file appears to be a valid ACPI table, disassembling
+Input file dbgp.dat, Length 0x34 (52) bytes
+ACPI: DBGP 0x0000000000000000 000034 (v01 DELL   Dell Inc 00000002      01000013)
+Acpi Data Table [DBGP] decoded
+Formatted output:  dbgp.dsl - 1648 bytes
+File appears to be binary: found 108 non-ASCII characters, disassembling
+Binary file appears to be a valid ACPI table, disassembling
+Input file dmar.dat, Length 0x88 (136) bytes
+ACPI: DMAR 0x0000000000000000 000088 (v02 INTEL  Dell Inc 00000002      01000013)
+Acpi Data Table [DMAR] decoded
+Formatted output:  dmar.dsl - 4136 bytes
+File appears to be binary: found 202909 non-ASCII characters, disassembling
+Binary file appears to be a valid ACPI table, disassembling
+Input file dsdt.dat, Length 0x93AA6 (604838) bytes
+ACPI: DSDT 0x0000000000000000 093AA6 (v02 DELL   Dell Inc 00000002      01000013)
+Pass 1 parse of [DSDT]
+Pass 2 parse of [DSDT]
+Parsing Deferred Opcodes (Methods/Buffers/Packages/Regions)
+
+Parsing completed
+Disassembly completed
+ASL Output:    dsdt.dsl - 4294749 bytes
+File appears to be binary: found 235 non-ASCII characters, disassembling
+Binary file appears to be a valid ACPI table, disassembling
+Input file facp.dat, Length 0x114 (276) bytes
+ACPI: FACP 0x0000000000000000 000114 (v06 DELL   Dell Inc 00000002      01000013)
+Acpi Data Table [FACP] decoded
+Formatted output:  facp.dsl - 10167 bytes
+File appears to be binary: found 59 non-ASCII characters, disassembling
+ACPI Warning: Table header for [FACS] has invalid ASCII character(s) (20230628/acfileio-600)
+Binary file appears to be a valid ACPI table, disassembling
+Input file facs.dat, Length 0x40 (64) bytes
+ACPI Warning: Table header for [FACS] has invalid ASCII character(s) (20230628/acfileio-600)
+ACPI: FACS 0x0000000000000000 000040
+ACPI Warning: Table header for [FACS] has invalid ASCII character(s) (20230628/acfileio-600)
+Acpi Data Table [FACS] decoded
+Formatted output:  facs.dsl - 1377 bytes
+File appears to be binary: found 26 non-ASCII characters, disassembling
+Binary file appears to be a valid ACPI table, disassembling
+Input file fpdt.dat, Length 0x34 (52) bytes
+ACPI: FPDT 0x0000000000000000 000034 (v01 DELL   Dell Inc 00000002      01000013)
+Acpi Data Table [FPDT] decoded
+Formatted output:  fpdt.dsl - 1461 bytes
+File appears to be binary: found 32 non-ASCII characters, disassembling
+Binary file appears to be a valid ACPI table, disassembling
+Input file hpet.dat, Length 0x38 (56) bytes
+ACPI: HPET 0x0000000000000000 000038 (v01 DELL   Dell Inc 00000002      01000013)
+Acpi Data Table [HPET] decoded
+Formatted output:  hpet.dsl - 1874 bytes
+File appears to be binary: found 160 non-ASCII characters, disassembling
+Binary file appears to be a valid ACPI table, disassembling
+Input file lpit.dat, Length 0xCC (204) bytes
+ACPI: LPIT 0x0000000000000000 0000CC (v01 DELL   Dell Inc 00000002      01000013)
+Acpi Data Table [LPIT] decoded
+Formatted output:  lpit.dsl - 5899 bytes
+File appears to be binary: found 36 non-ASCII characters, disassembling
+Binary file appears to be a valid ACPI table, disassembling
+Input file mcfg.dat, Length 0x3C (60) bytes
+ACPI: MCFG 0x0000000000000000 00003C (v01 DELL   Dell Inc 00000002      01000013)
+Acpi Data Table [MCFG] decoded
+Formatted output:  mcfg.dsl - 1535 bytes
+File appears to be binary: found 32 non-ASCII characters, disassembling
+Binary file appears to be a valid ACPI table, disassembling
+Input file msdm.dat, Length 0x55 (85) bytes
+ACPI: MSDM 0x0000000000000000 000055 (v03 DELL   CBX3     06222004 AMI  00010013)
+Acpi Data Table [MSDM] decoded
+Formatted output:  msdm.dsl - 1808 bytes
+File appears to be binary: found 691 non-ASCII characters, disassembling
+Binary file appears to be a valid ACPI table, disassembling
+Input file nhlt.dat, Length 0x2F1 (753) bytes
+ACPI: NHLT 0x0000000000000000 0002F1 (v00 DELL   Dell Inc 00000002      01000013)
+Acpi Data Table [NHLT] decoded
+Formatted output:  nhlt.dsl - 13925 bytes
+File appears to be binary: found 781 non-ASCII characters, disassembling
+Binary file appears to be a valid ACPI table, disassembling
+Input file phat.dat, Length 0x506 (1286) bytes
+ACPI: PHAT 0x0000000000000000 000506 (v01 DELL   Dell Inc 00000005 MSFT 0100000D)
+Acpi Data Table [PHAT] decoded
+Formatted output:  phat.dsl - 17365 bytes
+File appears to be binary: found 9383 non-ASCII characters, disassembling
+Binary file appears to be a valid ACPI table, disassembling
+Input file ssdt10.dat, Length 0x8885 (34949) bytes
+ACPI: SSDT 0x0000000000000000 008885 (v02 DELL   NvdTable 00001000 INTL 20200717)
+Pass 1 parse of [SSDT]
+Pass 2 parse of [SSDT]
+Parsing Deferred Opcodes (Methods/Buffers/Packages/Regions)
+
+Parsing completed
+Disassembly completed
+ASL Output:    ssdt10.dsl - 206968 bytes
+File appears to be binary: found 1132 non-ASCII characters, disassembling
+Binary file appears to be a valid ACPI table, disassembling
+Input file ssdt11.dat, Length 0xF7D (3965) bytes
+ACPI: SSDT 0x0000000000000000 000F7D (v02 DELL   xh_Dell_ 00000000 INTL 20200717)
+Pass 1 parse of [SSDT]
+Firmware Error (ACPI): Failure creating named object [\_SB.PC00.XHCI.RHUB.HS10.SADX], AE_ALREADY_EXISTS (20230628/dswload-387)
+ACPI Error: AE_ALREADY_EXISTS, During name lookup/catalog (20230628/psobject-264)
+Could not parse ACPI tables, AE_ALREADY_EXISTS
+File appears to be binary: found 2496 non-ASCII characters, disassembling
+Binary file appears to be a valid ACPI table, disassembling
+Input file ssdt12.dat, Length 0x3AEA (15082) bytes
+ACPI: SSDT 0x0000000000000000 003AEA (v02 SocGpe SocGpe   00003000 INTL 20200717)
+Pass 1 parse of [SSDT]
+Pass 2 parse of [SSDT]
+Parsing Deferred Opcodes (Methods/Buffers/Packages/Regions)
+
+Parsing completed
+Disassembly completed
+ASL Output:    ssdt12.dsl - 50421 bytes
+File appears to be binary: found 3114 non-ASCII characters, disassembling
+Binary file appears to be a valid ACPI table, disassembling
+Input file ssdt13.dat, Length 0x39DA (14810) bytes
+ACPI: SSDT 0x0000000000000000 0039DA (v02 SocCmn SocCmn   00003000 INTL 20200717)
+Pass 1 parse of [SSDT]
+Pass 2 parse of [SSDT]
+Parsing Deferred Opcodes (Methods/Buffers/Packages/Regions)
+
+Parsing completed
+Disassembly completed
+ASL Output:    ssdt13.dsl - 46426 bytes
+File appears to be binary: found 72 non-ASCII characters, disassembling
+Binary file appears to be a valid ACPI table, disassembling
+Input file ssdt14.dat, Length 0x144 (324) bytes
+ACPI: SSDT 0x0000000000000000 000144 (v02 Intel  ADebTabl 00001000 INTL 20200717)
+Pass 1 parse of [SSDT]
+Pass 2 parse of [SSDT]
+Parsing Deferred Opcodes (Methods/Buffers/Packages/Regions)
+
+Parsing completed
+Disassembly completed
+ASL Output:    ssdt14.dsl - 2349 bytes
+File appears to be binary: found 172 non-ASCII characters, disassembling
+Binary file appears to be a valid ACPI table, disassembling
+Input file ssdt15.dat, Length 0x1AB (427) bytes
+ACPI: SSDT 0x0000000000000000 0001AB (v02 PmRef  Cpu0Psd  00003000 INTL 20200717)
+Pass 1 parse of [SSDT]
+Pass 2 parse of [SSDT]
+Parsing Deferred Opcodes (Methods/Buffers/Packages/Regions)
+
+Parsing completed
+Disassembly completed
+ASL Output:    ssdt15.dsl - 2775 bytes
+File appears to be binary: found 437 non-ASCII characters, disassembling
+Binary file appears to be a valid ACPI table, disassembling
+Input file ssdt16.dat, Length 0x540 (1344) bytes
+ACPI: SSDT 0x0000000000000000 000540 (v02 PmRef  Cpu0Cst  00003001 INTL 20200717)
+Pass 1 parse of [SSDT]
+Pass 2 parse of [SSDT]
+Parsing Deferred Opcodes (Methods/Buffers/Packages/Regions)
+
+Parsing completed
+Disassembly completed
+ASL Output:    ssdt16.dsl - 7427 bytes
+File appears to be binary: found 1035 non-ASCII characters, disassembling
+Binary file appears to be a valid ACPI table, disassembling
+Input file ssdt17.dat, Length 0x668 (1640) bytes
+ACPI: SSDT 0x0000000000000000 000668 (v02 PmRef  Cpu0Ist  00003000 INTL 20200717)
+Pass 1 parse of [SSDT]
+Pass 2 parse of [SSDT]
+Parsing Deferred Opcodes (Methods/Buffers/Packages/Regions)
+
+Parsing completed
+Disassembly completed
+ASL Output:    ssdt17.dsl - 11965 bytes
+File appears to be binary: found 726 non-ASCII characters, disassembling
+Binary file appears to be a valid ACPI table, disassembling
+Input file ssdt18.dat, Length 0x4CF (1231) bytes
+ACPI: SSDT 0x0000000000000000 0004CF (v02 PmRef  Cpu0Hwp  00003000 INTL 20200717)
+Pass 1 parse of [SSDT]
+Pass 2 parse of [SSDT]
+Parsing Deferred Opcodes (Methods/Buffers/Packages/Regions)
+
+Parsing completed
+Disassembly completed
+ASL Output:    ssdt18.dsl - 13907 bytes
+File appears to be binary: found 1541 non-ASCII characters, disassembling
+Binary file appears to be a valid ACPI table, disassembling
+Input file ssdt19.dat, Length 0x1BAF (7087) bytes
+ACPI: SSDT 0x0000000000000000 001BAF (v02 PmRef  ApIst    00003000 INTL 20200717)
+Pass 1 parse of [SSDT]
+Pass 2 parse of [SSDT]
+Parsing Deferred Opcodes (Methods/Buffers/Packages/Regions)
+
+Parsing completed
+Disassembly completed
+ASL Output:    ssdt19.dsl - 37700 bytes
+File appears to be binary: found 490 non-ASCII characters, disassembling
+Binary file appears to be a valid ACPI table, disassembling
+Input file ssdt1.dat, Length 0x38C (908) bytes
+ACPI: SSDT 0x0000000000000000 00038C (v02 PmaxDv Pmax_Dev 00000001 INTL 20200717)
+Pass 1 parse of [SSDT]
+Pass 2 parse of [SSDT]
+Parsing Deferred Opcodes (Methods/Buffers/Packages/Regions)
+
+Parsing completed
+Disassembly completed
+ASL Output:    ssdt1.dsl - 9989 bytes
+File appears to be binary: found 801 non-ASCII characters, disassembling
+Binary file appears to be a valid ACPI table, disassembling
+Input file ssdt20.dat, Length 0x1038 (4152) bytes
+ACPI: SSDT 0x0000000000000000 001038 (v02 PmRef  ApHwp    00003000 INTL 20200717)
+Pass 1 parse of [SSDT]
+Pass 2 parse of [SSDT]
+Parsing Deferred Opcodes (Methods/Buffers/Packages/Regions)
+
+Parsing completed
+Disassembly completed
+ASL Output:    ssdt20.dsl - 18744 bytes
+File appears to be binary: found 1000 non-ASCII characters, disassembling
+Binary file appears to be a valid ACPI table, disassembling
+Input file ssdt21.dat, Length 0x1349 (4937) bytes
+ACPI: SSDT 0x0000000000000000 001349 (v02 PmRef  ApPsd    00003000 INTL 20200717)
+Pass 1 parse of [SSDT]
+Pass 2 parse of [SSDT]
+Parsing Deferred Opcodes (Methods/Buffers/Packages/Regions)
+
+Parsing completed
+Disassembly completed
+ASL Output:    ssdt21.dsl - 20861 bytes
+File appears to be binary: found 777 non-ASCII characters, disassembling
+Binary file appears to be a valid ACPI table, disassembling
+Input file ssdt22.dat, Length 0xFBB (4027) bytes
+ACPI: SSDT 0x0000000000000000 000FBB (v02 PmRef  ApCst    00003000 INTL 20200717)
+Pass 1 parse of [SSDT]
+Pass 2 parse of [SSDT]
+Parsing Deferred Opcodes (Methods/Buffers/Packages/Regions)
+
+Parsing completed
+Disassembly completed
+ASL Output:    ssdt22.dsl - 18476 bytes
+File appears to be binary: found 4991 non-ASCII characters, disassembling
+Binary file appears to be a valid ACPI table, disassembling
+Input file ssdt2.dat, Length 0x5C55 (23637) bytes
+ACPI: SSDT 0x0000000000000000 005C55 (v02 CpuRef CpuSsdt  00003000 INTL 20200717)
+Pass 1 parse of [SSDT]
+Pass 2 parse of [SSDT]
+Parsing Deferred Opcodes (Methods/Buffers/Packages/Regions)
+
+Parsing completed
+Disassembly completed
+ASL Output:    ssdt2.dsl - 116040 bytes
+File appears to be binary: found 7813 non-ASCII characters, disassembling
+Binary file appears to be a valid ACPI table, disassembling
+Input file ssdt3.dat, Length 0x554F (21839) bytes
+ACPI: SSDT 0x0000000000000000 00554F (v02 DptfTb DptfTabl 00001000 INTL 20200717)
+Pass 1 parse of [SSDT]
+Pass 2 parse of [SSDT]
+Parsing Deferred Opcodes (Methods/Buffers/Packages/Regions)
+
+Parsing completed
+Disassembly completed
+ASL Output:    ssdt3.dsl - 146467 bytes
+File appears to be binary: found 1213 non-ASCII characters, disassembling
+Binary file appears to be a valid ACPI table, disassembling
+Input file ssdt4.dat, Length 0x1697 (5783) bytes
+ACPI: SSDT 0x0000000000000000 001697 (v02 DELL   DellRtd3 00001000 INTL 20200717)
+Pass 1 parse of [SSDT]
+Pass 2 parse of [SSDT]
+Parsing Deferred Opcodes (Methods/Buffers/Packages/Regions)
+
+Parsing completed
+Disassembly completed
+ASL Output:    ssdt4.dsl - 15929 bytes
+File appears to be binary: found 1330 non-ASCII characters, disassembling
+Binary file appears to be a valid ACPI table, disassembling
+Input file ssdt5.dat, Length 0x1343 (4931) bytes
+ACPI: SSDT 0x0000000000000000 001343 (v02 INTEL  IgfxSsdt 00003000 INTL 20200717)
+Pass 1 parse of [SSDT]
+Pass 2 parse of [SSDT]
+Parsing Deferred Opcodes (Methods/Buffers/Packages/Regions)
+
+Parsing completed
+Disassembly completed
+ASL Output:    ssdt5.dsl - 31084 bytes
+File appears to be binary: found 13315 non-ASCII characters, disassembling
+Binary file appears to be a valid ACPI table, disassembling
+Input file ssdt6.dat, Length 0xD487 (54407) bytes
+ACPI: SSDT 0x0000000000000000 00D487 (v02 INTEL  TcssSsdt 00001000 INTL 20200717)
+Pass 1 parse of [SSDT]
+Pass 2 parse of [SSDT]
+Parsing Deferred Opcodes (Methods/Buffers/Packages/Regions)
+
+Parsing completed
+
+Found 2 external control methods, reparsing with new information
+Pass 1 parse of [SSDT]
+Pass 2 parse of [SSDT]
+Parsing Deferred Opcodes (Methods/Buffers/Packages/Regions)
+
+Parsing completed
+Disassembly completed
+ASL Output:    ssdt6.dsl - 345674 bytes
+File appears to be binary: found 1129 non-ASCII characters, disassembling
+Binary file appears to be a valid ACPI table, disassembling
+Input file ssdt7.dat, Length 0x107C (4220) bytes
+ACPI: SSDT 0x0000000000000000 00107C (v02 DELL   UsbCTabl 00001000 INTL 20200717)
+Pass 1 parse of [SSDT]
+Pass 2 parse of [SSDT]
+Parsing Deferred Opcodes (Methods/Buffers/Packages/Regions)
+
+Parsing completed
+Disassembly completed
+ASL Output:    ssdt7.dsl - 26241 bytes
+File appears to be binary: found 605 non-ASCII characters, disassembling
+Binary file appears to be a valid ACPI table, disassembling
+Input file ssdt8.dat, Length 0xB44 (2884) bytes
+ACPI: SSDT 0x0000000000000000 000B44 (v02 DELL   PtidDevc 00001000 INTL 20200717)
+Pass 1 parse of [SSDT]
+Pass 2 parse of [SSDT]
+Parsing Deferred Opcodes (Methods/Buffers/Packages/Regions)
+
+Parsing completed
+Disassembly completed
+ASL Output:    ssdt8.dsl - 12282 bytes
+File appears to be binary: found 3135 non-ASCII characters, disassembling
+Binary file appears to be a valid ACPI table, disassembling
+Input file ssdt9.dat, Length 0x2357 (9047) bytes
+ACPI: SSDT 0x0000000000000000 002357 (v02 DELL   TbtTypeC 00000000 INTL 20200717)
+Pass 1 parse of [SSDT]
+Pass 2 parse of [SSDT]
+Parsing Deferred Opcodes (Methods/Buffers/Packages/Regions)
+
+Parsing completed
+Disassembly completed
+ASL Output:    ssdt9.dsl - 86922 bytes
+Low Power S0 Idle is 1
+The system supports S0ix!
+#+end_example
+
+
+
+
+
+***** COMMENT Dell forum post                                      :noexport:
+https://www.dell.com/community/en/conversations/precision-mobile-workstations/dell-precision-3581-and-deep-sleep-mode/658d859fe7c00d20f2ced9e6
+
+****** First
+I bought Dell Precision 3581 and installed Linux on it.
+I wanted to have deep sleep mode enabled, which, in my opinion, is a great convenience when using laptop. With my last Thinkpad I restarted
+system once a month or two using sleep mode all the time.
+
+The problem with Dell is massive battery drainage when using sleep
+mode. There are chances
+that my laptop survives night in a sleep mode when it is almost fully charged,
+but it will run out of the battery otherwise!!! 
+
+I'm aware of some threads like:
+- https://www.reddit.com/r/Dell/comments/hla8yk/how_to_enable_s3_deep_sleep_on_xps_17_9700_in/
+- https://www.dell.com/community/en/conversations/xps/xps-13-9310-ubuntu-deep-sleep-missing/647f8daff4ccf8a8dee4f308?page=5
+- https://www.dell.com/community/en/conversations/xps/dell-s3-sleep-mode-again/647f865bf4ccf8a8de560264
+- https://askubuntu.com/questions/1398674/battery-drain-during-suspend-mode-when-lid-is-closed-20-in-8-hours
+- https://www.dell.com/community/en/conversations/xps/suspend-and-hibernate-issues-on-xps-15-9500-on-linux/647f8a3ef4ccf8a8dea103d5
+- https://learn.microsoft.com/en-us/windows-hardware/drivers/kernel/system-sleeping-states
+- https://onlinehelp.ncr.com/Retail/Workstations/7613/HTML/Topics/UserGuide/5.%20Power%20Management/3-ACPI%20Sleep%20States%20(S0%20-%20S5).htm
+
+I tried some BIOS 'hacks'
+like mentioned in the first of the above links to have S3 Deep Sleep
+Mode enabled, however with no success.
+The first question is:
+- Is it possible to configure my model to force it to Deep Sleep (I found somewhere that it's not possible at all for some Dell models),
+If so, then the second question is:
+- How can I achieve that?
+
+
+****** Second
+Thank you ejn63. I held back my response because I was hoping someone else would speak up. As I infer from the linked material and other sources I've scoured on the internet (like this: https://news.ycombinator.com/item?id=28641254), it seems that issues with Modern Standby are present on most new laptops, which somewhat reduces my disappointment with my machine.
+
+However, it appears that some manufacturers (Lenovo?) have included switches in the BIOS to restore the old S3 functionality. I was hoping that something similar would be available for my model as well.
+
+I'm still considering trying hibernation, but I have concerns about the SSD wear due to my 64 GB of RAM.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+***** NVidia support for S0ix
+https://download.nvidia.com/XFree86/Linux-x86_64/460.32.03/README/powermanagement.html
+
+*** Okular and buttons
+- Invert colours, turn to black and white
+
+*** Dell Thunderbolt Dock WD22TB4
+Software (ubuntu) for firmware update 
+https://www.dell.com/support/home/pl-pl/product-support/product/wd22tb4-dock/drivers
+
+
+**** Configuring LAN through docking station.
+All you need to do is to
+use MAC address of your laptop for MAC address of the connection
+destined for DockingStation connection. Taken from here:
+https://www.dell.com/community/en/conversations/networking-internet-bluetooth/ethernet-does-not-work-when-connected-to-docking-station-e-port/647f58e8f4ccf8a8de3327ab
+
+In KDE you need to go to:
+
+System Settings -> Connections -> Cable -> Cloned MAC address
+
+write down you laptop MAC and you are good to go! :)
+
+
+
+*** Lenovo keyboard
+Swapping between FN and Ctrl can be impossible. Info on that topic
+can be found here:
+https://superuser.com/questions/65/remap-fn-to-another-key
+https://askubuntu.com/questions/1403447/mapping-left-ctrl-and-fn-keys-in-ubuntu-20-04-4-lts
+https://superuser.com/questions/1643156/state-of-fn-key-under-linux
+https://askubuntu.com/questions/193529/how-to-swap-between-fn-and-ctrl-keys
+https://bbs.archlinux.org/viewtopic.php?id=125932
+https://bbs.archlinux.org/viewtopic.php?id=235995
+https://forums.opensuse.org/t/is-it-possible-in-kde-to-switch-the-fn-and-left-ctrl-keys/120000
+
+
+*** TODO Controlling Intel Turbo Boost in Linux
+https://forums.linuxmint.com/viewtopic.php?t=399482
+https://github.com/AdnanHodzic/auto-cpufreq
+
+
+*** ZRAM - tool for optimizing RAM usage
+https://www.reddit.com/r/openSUSE/comments/qco74z/64_gb_ram_any_need_for_swap/
+https://youtube.com/watch?v=RGVt16xiERc
+
+*** Do I need SWAP?
+https://www.reddit.com/r/openSUSE/comments/qco74z/64_gb_ram_any_need_for_swap/
+
+
+
+
+**** TODO 2D
+- register MAC adresses of laptop and docking station
+*** Useful links:
+
+
+* COMMENT Local Variables
+
+# Local Variables:
+# eval: (setq org-latex-pdf-process
+#  '("pdflatex -shell-escape -synctex=1 -interaction=nonstopmode -output-directory %o %f"
+#    "pdflatex -shell-escape -synctex=1 -interaction=nonstopmode -output-directory %o %f"
+#    "pdflatex -shell-escape -synctex=1 -interaction=nonstopmode -output-directory %o %f"))
+# End:
+ 

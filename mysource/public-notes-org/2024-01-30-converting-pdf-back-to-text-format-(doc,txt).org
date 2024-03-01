@@ -1,0 +1,31 @@
+#+TITLE: Converting pdf back to text format (doc,txt)
+#+DESCRIPTION: 
+#+AUTHOR: cissic 
+#+DATE: <2024-01-30 Tue>
+#+TAGS: 
+#+OPTIONS: -:nil
+
+* TODO Converting pdf back to text format (doc,txt)
+:PROPERTIES:
+:PRJ-DIR: ./2024-01-30-Converting-pdf-back-to-text-format-(doc,txt)/
+:END:
+
+** Problem description
+
+
+*** Text
+#+begin_src sh 
+  sudo apt install poppler-utils
+#+end_src
+Now you can use
+#+begin_src sh 
+  pdftotext file.pdf
+#+end_src
+
+There are many options for the programme. You can see them with
+=pdftotext -h=
+
+
+** Useful links
+https://www.linuxadictos.com/en/go-from-pdf-to-word.html
+https://www.linuxuprising.com/2019/05/how-to-convert-pdf-to-text-on-linux-gui.html?m=1

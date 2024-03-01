@@ -36,7 +36,7 @@ other way round (mirroring remote to local = download from remote to local)
   # # pwd   # do this only when you're alone at the keyboard!!!!
             # it will show your password in the command line!!!!    
   ls 
-  cd to/the/directory/you/wan
+  cd to/the/directory/you/want
   put ../some/local_file  # to your current directory on ftp    # if you want to copy a file
   mirror -R local/dir path/to/some/ftp/dir              # if you want to copy a directory
   bye

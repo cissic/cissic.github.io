@@ -1,0 +1,15 @@
+#+TITLE: On the difference between ~code~ and =verbatim= in org-mode
+#+DESCRIPTION: 
+#+AUTHOR: cissic 
+#+DATE: <2024-01-27 Sat>
+#+TAGS: 
+#+OPTIONS: -:nil
+
+* On the difference between ~code~ and =verbatim= in org-mode
+:PROPERTIES:
+:PRJ-DIR: ./2024-01-27-On-the-difference-between-~code~-and-=verbatim=-in-org-mode/
+:END:
+
+https://emacs.stackexchange.com/questions/21869/whats-the-relationship-between-foo-and-foo-in-org-mode
+
+https://stackoverflow.com/questions/18991981/difference-between-code-and-verbatim-in-org-mode

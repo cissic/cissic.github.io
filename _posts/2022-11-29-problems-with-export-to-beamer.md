@@ -2,17 +2,11 @@
 author: cissic
 date: 2022-11-29 Tue
 tags: 'org-mode beamer export'
-title: 'Beamer exporter not working'
----
----
-author: cissic
-date: 2022-11-29 Tue
-tags: 'org-mode beamer export'
-title: 'Beamer exporter not working'
+title: 'Beamer exporter not working (EDITED: 2023.05.29)'
 ---
 
 
-# Beamer exporter not working
+# Beamer exporter not working (EDITED: 2023.05.29)
 
 
 ## Problem and solution
@@ -30,4 +24,11 @@ to be embedded into emacs I finally found solution in the
 To solve the problem I needed to do:
 
     C-u M-x org-reload
+
+
+## Another solution
+
+It appears that beamer exporter can be enabled by
+
+    M-x org-beamer-mode
 
