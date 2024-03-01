@@ -1632,15 +1632,15 @@ image does not appear when followed by automatically generated
 keyword =#+RESULTS:=. When this keyword is deleted the image appears
 in generated pdf.
 
-#+begin_example 
-, #+BEGIN_SRC matlab :session *MATLAB* :results graphics file :file plot.png 
-,  plot([1 2],[1 2])
-,  print -dpng ./images/plot.png ;
-, #+END_SRC
+#+begin_verbatim
+  #+BEGIN_SRC matlab :session *MATLAB* :results graphics file :file plot.png 
+    plot([1 2],[1 2])
+    print -dpng ./images/plot.png ;
+  #+END_SRC
 
-, #+RESULTS:
-, [[file:./images/plot.png]]
-#+end_example
+  #+RESULTS:
+  [[file:./images/plot.png]]
+#+end_verbatim
 
 
 
