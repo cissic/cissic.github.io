@@ -1,0 +1,215 @@
+#+TITLE: Examples of C/C++ code blocks in noweb
+#+DESCRIPTION: 
+#+AUTHOR: cissic
+#+DATE: <2023-10-02 Mon>
+#+TODO: TODO ABANDONED | DONE DEPRECATED
+#+TAGS: debian lenovo trackpoint scroll
+#+OPTIONS: toc:nil
+#+OPTIONS: -:nil
+
+
+
+* {{{title}}
+:PROPERTIES:
+:PRJ-DIR: ./2023-10-05-noweb-C/:
+
+** Examples
+*** Simple example
+
+#+NAME:Header
+#+BEGIN_SRC C++ :exports none
+#include <iostream>
+#+END_SRC
+
+
+Blah blah
+
+
+#+BEGIN_SRC C++ :tangle test.cpp :noweb yes
+<<Header>>
+int main (void)
+{
+   std::cout << "Hello World" << std::endl;
+}
+#+END_SRC
+
+#+RESULTS:
+: Hello World
+
+
+
+*** Using variables
+
+#+BEGIN_SRC C++ :tangle test.cpp :noweb yes :var a = 3 :var b=2.5 
+<<Header>>
+int main (void)
+{
+   std::cout << a+b << std::endl;
+}
+#+END_SRC
+
+#+RESULTS:
+: 5.5
+
+*** Using array variables
+
+#+BEGIN_SRC C++ :tangle test.cpp :noweb yes :var a = 3 :var b=[11.1 12.2 13.3]
+<<Header>>
+int main (void)
+{
+   std::cout << a+b[1] << std::endl;
+}
+#+END_SRC
+
+#+RESULTS:
+: 15.2
+
+
+
+*** Using noweb parameters in another noweb block
+**** Elisp example
+#+NAME: f1
+#+BEGIN_SRC emacs-lisp :var x=7 :results value
+(+ x x)
+#+END_SRC
+
+#+RESULTS: f1
+: 5
+
+#+NAME: f2
+#+BEGIN_SRC emacs-lisp :var x=7 :results value
+(+ x 2)
+#+END_SRC
+
+#+RESULTS: f2
+: 9
+
+#+name: intermediate
+#+BEGIN_SRC emacs-lisp :noweb yes :results value
+<<f1(x=5)>>
+#+END_SRC
+
+#+RESULTS: intermediate
+: 10
+
+#+BEGIN_SRC emacs-lisp :noweb yes :results value
+<<f2(x=intermediate)>>
+#+END_SRC
+
+#+RESULTS:
+: 12
+
+
+**** ABANDONED C/C++ example
+
+***** A
+
+#+NAME: ff1
+#+BEGIN_SRC C++ :var x=6 :var y=3 :results value
+  #include <iostream>
+
+  int fun1(int a, int b)
+  {  
+    return a+b ;
+  }
+
+  int main(){
+    int a = fun1(x,y) ;
+    std::cout <<a<<std::endl ;
+    return  a;
+  }
+#+END_SRC
+
+#+RESULTS: ff1
+: 9
+
+
+***** B
+#+NAME: ff2
+#+BEGIN_SRC C++ :var a=1 :var b=2  :results value
+  int fun1(int a, int b)
+  {  
+    return a+b ;
+  }
+#+END_SRC
+
+
+#+BEGIN_SRC C++ :var x=1 :var y=3 :noweb yes :results value
+  #include <iostream>
+
+  <<ff2>>
+
+  int main(){
+    int a = fun1(x,y) ;
+    std::cout <<a<<std::endl ;
+    return  a;
+  }  
+#+END_SRC
+
+#+RESULTS:
+: 4
+
+
+
+#+BEGIN_SRC C++ :noweb yes :results value
+<<f2(x=intermediate)>>
+#+END_SRC
+
+#+RESULTS:
+
+
+#+NAME: f2
+#+BEGIN_SRC emacs-lisp :var x=7 :results value
+(+ x 2)
+#+END_SRC
+
+#+RESULTS: f2
+: 9
+
+#+name: intermediate
+#+BEGIN_SRC emacs-lisp :noweb yes :results value
+<<f1(x=5)>>
+#+END_SRC
+
+#+RESULTS: intermediate
+: 10
+
+#+BEGIN_SRC emacs-lisp :noweb yes :results value
+<<f2(x=intermediate)>>
+#+END_SRC
+
+#+RESULTS:
+: 12
+
+
+
+
+
+
+
+
+**** Some test
+
+#+NAME:AuxOutputYes2
+#+BEGIN_SRC C++ :exports none
+  #include <stdio.h>
+
+  int main() {
+  char fuj = '_' ;
+  printf("%d %c %d\n", 1, fuj, 6) ;
+  return 0 ;
+  }
+
+#+END_SRC
+
+#+RESULTS: AuxOutputYes2
+: 1 _ 6
+
+
+
+* COMMENT Local Variables
+
+# Local Variables:
+# eval: (add-hook 'org-export-before-processing-hook 
+# 'my/org-export-markdown-hook-function nil t)
+# End:

@@ -1,0 +1,53 @@
+#+TITLE: 2fa for github accout
+#+DESCRIPTION: 
+#+AUTHOR: cissic
+#+DATE: <2023-09-26 Thu>
+#+TAGS: github 2fa keepassxc
+# #+OPTIONS: toc:nil
+#+OPTIONS: -:nil
+
+
+
+* TODO {{{title}}}
+:PROPERTIES:
+:PRJ-DIR: ./2023-09-26-2fa+github/
+:END:
+
+** How to set two factor authentication for github accout with the use of KeePassXC
+- https://docs.github.com/en/authentication/securing-your-account-with-two-factor-authentication-2fa/configuring-two-factor-authentication#configuring-two-factor-authentication-using-a-security-key
+- https://keepassxc.org/docs/KeePassXC_UserGuide#_adding_totp_to_an_entry
+
+
+*** Getting Github account's secret
+**** Go to your github account
+
+**** In the upper-right corner of any github  page, click your profile photo, then click Settings.
+
+**** In the "Access" section of the sidebar, click  Password and authentication.
+
+**** In the "Two-factor authentication" section of the page, click Enable two-factor authentication.
+
+**** Under "Setup authenticator app" click *setup key* (link below QR code) to see a code, the TOTP secret, that you can manually enter in your TOTP app instead.
+
+*** Configuring KeepassXC entry linked to Github's account
+
+**** Once obtained setup key, right-click the desired entry (1), choose TOTP → Set up TOTP…​ (2), and the setup dialog will appear. In that dialog, paste the secret code from the website (3), setup any custom settings (rare) (4), then press OK to save the settings.
+
+**** The TOTP application saves your account on GitHub.com and generates a new authentication code every few seconds. Get the code in KeePassXc by right-click on entry -> TOTP -> Copy TOTP (or just Ctrl+T), then on GitHub type the code into the field under "Verify the code from the app".
+
+**** Under "Save your recovery codes", click Download to download your recovery codes to your device. Save them to a secure location because your recovery codes can help you get back into your account if you lose access.
+
+**** After saving your two-factor recovery codes, click I have saved my recovery codes to enable two-factor authentication for your account.
+
+
+* COMMENT Local Variables
+
+# Local Variables:
+# eval: (add-hook 'org-export-before-processing-hook 
+# 'my/org-export-markdown-hook-function nil t)
+# eval: (setq org-latex-pdf-process
+#  '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+#    "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+#    "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+# End:
+
