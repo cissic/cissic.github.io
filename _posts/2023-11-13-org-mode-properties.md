@@ -1,6 +1,7 @@
 
 # Table of Contents
 
+<<<<<<< HEAD
 1.  [Properties in org-mode](#org1fd49b8)
     1.  [Properties in org-mode](#org1978a5c)
         1.  [Problem - the beggining](#orga494130)
@@ -11,16 +12,36 @@
 
 
 <a id="org1fd49b8"></a>
+=======
+1.  [Properties in org-mode](#orgd456098)
+    1.  [Properties in org-mode](#orgfa35a3b)
+        1.  [Problem - the beggining](#org1cffda4)
+        2.  [Problem extension](#orgb0f9672)
+    2.  [Solution](#orga1fe3f4)
+    3.  [Useful links:](#org33ac5af)
+
+
+
+<a id="orgd456098"></a>
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
 
 # TODO Properties in org-mode
 
 
+<<<<<<< HEAD
 <a id="org1978a5c"></a>
+=======
+<a id="orgfa35a3b"></a>
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
 
 ## Properties in org-mode
 
 
+<<<<<<< HEAD
 <a id="orga494130"></a>
+=======
+<a id="org1cffda4"></a>
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
 
 ### Problem - the beggining
 
@@ -55,7 +76,11 @@ the usage of `'selective` flag - without it the example wouldn't work!):
     -   See here: <https://emacs.stackexchange.com/questions/62423/forcing-inheritance-of-specific-properties-in-orgmode>
 
 
+<<<<<<< HEAD
 <a id="orgca070c6"></a>
+=======
+<a id="orgb0f9672"></a>
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
 
 ### Problem extension
 
@@ -74,7 +99,11 @@ treat it as some kind of database
 
 1.  Approach 1
 
+<<<<<<< HEAD
     <a id="org86a4b40"></a>
+=======
+    <a id="orga917f90"></a>
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
     This won't work:
     
         # -*- mode: Org; org-use-property-inheritance: t -*- 
@@ -95,11 +124,19 @@ treat it as some kind of database
         #+INCLUDE: ./properties.txt
 
 
+<<<<<<< HEAD
 <a id="org8be1422"></a>
 
 ## Solution
 
 It seems that [1.1.2.1](#org7b19d5e) does not work because Subheadline has no content.
+=======
+<a id="orga1fe3f4"></a>
+
+## Solution
+
+It seems that [1.1.2.1](#orga5a26fc) does not work because Subheadline has no content.
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
 If we add any latex white space or subsubheadline inside subheadline
 everything works ok.
 
@@ -119,7 +156,11 @@ everything works ok.
         #** SubHeadline  
 
 
+<<<<<<< HEAD
 <a id="org4582762"></a>
+=======
+<a id="org33ac5af"></a>
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
 
 ## Useful links:
 

@@ -1,6 +1,7 @@
 
 # Table of Contents
 
+<<<<<<< HEAD
 1.  [Properties in org-mode](#org04ce16a)
     1.  [Approach 1](#org1607c21)
     2.  [Useful links:](#org44f9ecc)
@@ -8,11 +9,24 @@
 
 
 <a id="org04ce16a"></a>
+=======
+1.  [Properties in org-mode](#orgc3a8e7a)
+    1.  [Approach 1](#orgd2f6562)
+    2.  [Useful links:](#org2a4eef1)
+
+
+
+<a id="orgc3a8e7a"></a>
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
 
 # TODO Properties in org-mode
 
 
+<<<<<<< HEAD
 <a id="org1607c21"></a>
+=======
+<a id="orgd2f6562"></a>
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
 
 ## Approach 1
 
@@ -61,7 +75,11 @@ Now the results are:
     "Section about "
 
 
+<<<<<<< HEAD
 <a id="org44f9ecc"></a>
+=======
+<a id="org2a4eef1"></a>
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
 
 ## Useful links:
 

@@ -1,6 +1,7 @@
 
 # Table of Contents
 
+<<<<<<< HEAD
 1.  [Properties in org-mode](#org12a98fd)
     1.  [Approach 1](#orgc5e5ca8)
     2.  [Approach 2:](#org850f7fb)
@@ -17,11 +18,33 @@
 
 
 <a id="org12a98fd"></a>
+=======
+1.  [Properties in org-mode](#org3b44b3f)
+    1.  [Approach 1](#orgcf5528b)
+    2.  [Approach 2:](#org9d441be)
+    3.  [Approach 3:](#org1d04f3a)
+    4.  [Approach 4:](#org35fe446)
+    5.  [Approach 5:](#org9d07107)
+    6.  [Approach 6](#orgf11712b)
+    7.  [Idea 7](#orgc237c51)
+    8.  [Idea 8](#orgb40a225)
+    9.  [Idea 9](#org6749fde)
+    10. [Idea 10](#org3324ffc)
+    11. [Useful links:](#orgfd0e082)
+
+
+
+<a id="org3b44b3f"></a>
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
 
 # TODO Properties in org-mode
 
 
+<<<<<<< HEAD
 <a id="orgc5e5ca8"></a>
+=======
+<a id="orgcf5528b"></a>
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
 
 ## Approach 1
 
@@ -70,7 +93,11 @@ Now the results are:
     "Section about "
 
 
+<<<<<<< HEAD
 <a id="org850f7fb"></a>
+=======
+<a id="org9d441be"></a>
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
 
 ## Approach 2:
 
@@ -105,7 +132,11 @@ Now the results are:
     #+end_src
 
 
+<<<<<<< HEAD
 <a id="org932ba98"></a>
+=======
+<a id="org1d04f3a"></a>
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
 
 ## Approach 3:
 
@@ -152,7 +183,11 @@ Now the results are:
     #+end_src
 
 
+<<<<<<< HEAD
 <a id="orgfe01d85"></a>
+=======
+<a id="org35fe446"></a>
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
 
 ## Approach 4:
 
@@ -196,7 +231,11 @@ Now the results are:
     #+end_src
 
 
+<<<<<<< HEAD
 <a id="org90d76e1"></a>
+=======
+<a id="org9d07107"></a>
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
 
 ## Approach 5:
 
@@ -259,7 +298,11 @@ Now the results are:
     #+end_src
 
 
+<<<<<<< HEAD
 <a id="org764e75d"></a>
+=======
+<a id="orgf11712b"></a>
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
 
 ## Approach 6
 
@@ -372,7 +415,11 @@ Now the results are:
     #+end_src
 
 
+<<<<<<< HEAD
 <a id="org19739d3"></a>
+=======
+<a id="orgc237c51"></a>
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
 
 ## Idea 7
 
@@ -390,7 +437,11 @@ Now the results are:
     #+end_src
 
 
+<<<<<<< HEAD
 <a id="orga99b9b8"></a>
+=======
+<a id="orgb40a225"></a>
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
 
 ## Idea 8
 
@@ -413,7 +464,11 @@ org-mode exporting macros
       #+end_src
 
 
+<<<<<<< HEAD
 <a id="orgdc1da6c"></a>
+=======
+<a id="org6749fde"></a>
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
 
 ## Idea 9
 
@@ -467,7 +522,11 @@ Działa!!!!
     #+end_src
 
 
+<<<<<<< HEAD
 <a id="org73ba5a2"></a>
+=======
+<a id="org3324ffc"></a>
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
 
 ## Idea 10
 
@@ -551,7 +610,11 @@ Globalne wlasnosci
     src_elisp[:noweb yes]{(print "<<get_property("AnotherComposer")>>")} 
 
 
+<<<<<<< HEAD
 <a id="org5d7b49f"></a>
+=======
+<a id="orgfd0e082"></a>
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
 
 ## Useful links:
 

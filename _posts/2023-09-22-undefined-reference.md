@@ -1,9 +1,15 @@
 
 # Table of Contents
 
+<<<<<<< HEAD
 1.  [undefined reference warning](#orgca3c144)
     1.  [An example](#org8d43653)
     2.  [Solution - explanation:](#org23a21ad)
+=======
+1.  [undefined reference warning](#orgc189ac7)
+    1.  [An example](#orga6e0815)
+    2.  [Solution - explanation:](#org447825a)
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
 
 ---
 author: cissic
@@ -13,12 +19,20 @@ title: 'undefined reference warning'
 ---
 
 
+<<<<<<< HEAD
 <a id="orgca3c144"></a>
+=======
+<a id="orgc189ac7"></a>
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
 
 # TODO undefined reference warning
 
 
+<<<<<<< HEAD
 <a id="org8d43653"></a>
+=======
+<a id="orga6e0815"></a>
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
 
 ## An example
 
@@ -32,7 +46,11 @@ This is formula (\ref{Eq:refA}).
 message is displayed, although everything is fine in the output.
 
 
+<<<<<<< HEAD
 <a id="org23a21ad"></a>
+=======
+<a id="org447825a"></a>
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
 
 ## Solution - explanation:
 

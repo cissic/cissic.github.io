@@ -114,7 +114,11 @@ it's better to keep whole .emacs.d directory as a git repository and
 make a commit before executing this script. Then, in case any problems
 you can go back to restore properly working emacs installation.
 Before running this script you should have a git repository initialized in emacs
+<<<<<<< HEAD
 directory and git itself installed in the system (see Sec. [1.5](#org63b6435)).
+=======
+directory and git itself installed in the system (see Sec. [1.5](#orgbe0fe3e)).
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
 Synchronization of the local repository with the remote one is not
 performed in this script. It should be performed explicitely by the user
 in a convenient time.
@@ -210,7 +214,11 @@ In Emacs 27.1 it [shouldn't be necessary to use](https://emacs.stackexchange.com
 
 ### The main part of the installation script - list of the packages
 
+<<<<<<< HEAD
 <a id="orga61264e"></a>
+=======
+<a id="org8886135"></a>
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
 
 I used to have `(defvar my-packages ...` instead of `(setq my-packages ...` 
 below but... **Do not** use `defvar` for declaring a list of packages to be installed!
@@ -327,7 +335,11 @@ for now. An interesting discussion about this can be found [here](https://www.re
 
 1.  DEPRECATED Setting an auxiliary variable
 
+<<<<<<< HEAD
     This section is deprecated in favour of [`workgroups2 package`](#orgf855351).
+=======
+    This section is deprecated in favour of [`workgroups2 package`](#org9a605b8).
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
     
         ;; This file is designed to be re-evaled; use the variable first-time
         ;; to avoid any problems with this.
@@ -368,7 +380,11 @@ proactively.
 Here are global Emacs customization. 
 If necessary some useful infomation or link is added to the customization.
 
+<<<<<<< HEAD
 1.  Self-descriptive oneliners <a id="org55bd697"></a>
+=======
+1.  Self-descriptive oneliners <a id="orgfce8741"></a>
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
 
     Remarks:
     At around May 2023 I stopped using `global-linum-mode` because
@@ -473,14 +489,22 @@ If necessary some useful infomation or link is added to the customization.
         ;; (set-frame-font "liberation mono 11" nil t) ; Set default font
     
     Due to  due to the  problems with fonts in `emacsclient/daemonp`
+<<<<<<< HEAD
     instances font is set now in the section [1.4.18](#orgc1310e4).
+=======
+    instances font is set now in the section [1.4.18](#org85a2342).
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
 
 7.  Highlight on an active window/buffer
 
     Although the active window can be recognized
     by the cursor which blinking in it, sometimes it is hard to
     find in on the screen (especially if you use a colourful theme
+<<<<<<< HEAD
     like [1.4.20.1](#org57b666c).
+=======
+    like [1.4.20.1](#org1428fb0).
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
     
     I found a [post](https://stackoverflow.com/questions/33195122/highlight-current-active-window) adressing this issue.
     Although the accepted answer is using 
@@ -722,7 +746,11 @@ If necessary some useful infomation or link is added to the customization.
           )
           ;; <- Fill column indicator
     
+<<<<<<< HEAD
     -   and add this hook per each required mode (this is done in [1.4.7](#org452cb6b) section
+=======
+    -   and add this hook per each required mode (this is done in [1.4.7](#orgebaa1b1) section
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
         of this document
 
 12. Turning on/off beeping
@@ -738,7 +766,11 @@ If necessary some useful infomation or link is added to the customization.
 
 13. Ibuffer - an advanced replacement for BufferMenu
 
+<<<<<<< HEAD
     <a id="org4f9c2ec"></a>
+=======
+    <a id="org537bf6a"></a>
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
     
     Description of the package is [here](https://www.emacswiki.org/emacs/IbufferMode).
     
@@ -797,7 +829,11 @@ If necessary some useful infomation or link is added to the customization.
     
     2.  Ibuffer interactive way
     
+<<<<<<< HEAD
         In [1.4.3.13](#org4f9c2ec) there a nice shortcut to do this. You can select all
+=======
+        In [1.4.3.13](#org537bf6a) there a nice shortcut to do this. You can select all
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
         the files of the given mode with:
         
             * M
@@ -882,7 +918,11 @@ ido/smex vs ivy/counsel/swiper vs helm
         (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command) 
         ;; <- smex
 
+<<<<<<< HEAD
 3.  TODO Ivy (for testing) <a id="orge70da9f"></a>
+=======
+3.  TODO Ivy (for testing) <a id="orgd52f839"></a>
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
 
     Furthermore, according to [some other users](https://ruzkuku.com/emacs.d.html#org804158b)
     "Ivy is simpler (and faster) than Helm but more powerful than Ido".
@@ -1076,11 +1116,19 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
     files to Beamer. In order one needs to create appropriate
     init file with settings for async export and
     set `org-export-async-init-file` variable as path to this file (see 
+<<<<<<< HEAD
     [1.4.7.4.1](#orgfae5cd2)).
     
     1.  Setting `org-export-async-init-file` to avoid failure while exporting to Beamer
     
         <a id="orgfae5cd2"></a>
+=======
+    [1.4.7.4.1](#orgb667029)).
+    
+    1.  Setting `org-export-async-init-file` to avoid failure while exporting to Beamer
+    
+        <a id="orgb667029"></a>
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
         
         Org-beamer **async** exporter may fail because of lacking
         `org-export-async-init-file` 
@@ -1168,7 +1216,11 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
 
 1.  oc [org-citations]
 
+<<<<<<< HEAD
     1.  Bibliography <a id="org7dfa2ff"></a>
+=======
+    1.  Bibliography <a id="orgcc8ece7"></a>
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
     
         In Org 9.6 we do not need explicitely load `oc` libraries.
         Everything is covered in my post concerning bibliography and org-mode.
@@ -1278,7 +1330,11 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
         (add-hook #'org-mode-hook #'org-special-block-extras-mode)
         ;; <- **** org-special-block-extras 
 
+<<<<<<< HEAD
 6.  Org-babel
+=======
+6.  Org-babel and tangling
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
 
     To have org-babel enabled (execution of portions of code):
     
@@ -1299,7 +1355,30 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
         ;; no question about confirmation of evaluating babel code block
         (setq org-confirm-babel-evaluate nil)
     
+<<<<<<< HEAD
     1.  `plantuml`
+=======
+    1.  Tangling the specific/named block of code and other useful functions to work with source blocks
+    
+        1.  Tangle the specific (pointed) block of code
+        
+                (defun mb/org-babel-tangle-block()
+                  (interactive)
+                  (let ((current-prefix-arg '(4)))
+                     (call-interactively 'org-babel-tangle)
+                ))
+        
+        2.  tangle the block of code given by the name
+        
+                (defun mb/org-babel-tangle-named-block(block-name)
+                  (interactive)
+                  (save-excursion 
+                   (org-babel-goto-named-src-block block-name)
+                    (mb/org-babel-tangle-block)) 
+                )
+    
+    2.  `plantuml`
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
     
         -   <https://orgmode.org/worg/org-contrib/babel/languages/ob-doc-plantuml.html>
         -   <https://medium.com/@shibucite/emacs-and-plantuml-for-uml-diagrams-academic-tools-6c34bc07fd2>
@@ -1321,7 +1400,11 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
 
 7.  Fix for Octave/Matlab org-babel - problems with matlab in org-babel
 
+<<<<<<< HEAD
     <a id="org110de87"></a>
+=======
+    <a id="org7e4dcef"></a>
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
     <http://gewhere.github.io/blog/2017/12/19/setup-matlab-in-emacs-and-babel-orgmode/>
     
         
@@ -1347,7 +1430,11 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
     <https://github.com/karthink/.emacs.d/blob/master/plugins/ob-octave-fix.el>
     
     In the end I just downloaded the file and the inclusion of this package is
+<<<<<<< HEAD
     done in section [1.4.21.3](#orge763cc0).
+=======
+    done in section [1.4.21.3](#org524c6ca).
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
     
     Remark: There exist at least two versions of the fix (I renamed
     the one I already had to `ob-octave-fixOLDER.el`). Previous version
@@ -1535,7 +1622,11 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
     The special mode `org-cdlatex-mode` is included in `org` package.
     In order to have it working properly we need to install `cdlatex`
     itself. This can be done in
+<<<<<<< HEAD
     [1.3.2](#orga6daf0d).
+=======
+    [1.3.2](#org0fcdf6e).
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
     
     Link to `org-cdlatex-mode` description:
     <http://doc.endlessparentheses.com/Fun/org-cdlatex-mode.html>.
@@ -1668,6 +1759,20 @@ There are tons of pages about it.
     where the content of the `openaiapi.el` looks like:
     
         (setq org-ai-openai-api-token "<ENTER YOUR API TOKEN HERE>")
+<<<<<<< HEAD
+=======
+    
+    1.  Useful commands/shortcuts:
+    
+        `org-ai-mark-block-contents` - marks the contents of the current
+        block between `#+begin_ai` and `#+end_ai`. Useful for clearing the
+        buffer after the session is finished and you don't want to store
+        its results.
+        
+        `C-c Backspace` - kills the ai region where the cursor is located (
+        `C-c DEL` does not work in my case, see `org-ai.el` to view other
+        keybindings...)
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
 
 2.  gptel
 
@@ -1862,7 +1967,11 @@ loading properly.
 
 ### ABANDONED Emailing in Emacs
 
+<<<<<<< HEAD
 As a temporary workaround I decided to try [1.4.18](#orgc1310e4).
+=======
+As a temporary workaround I decided to try [1.4.18](#org85a2342).
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
 
 Basing on  [this post](https://www.reddit.com/r/emacs/comments/4rl0a9/email_in_emacs_i_want_to_but_wow_its_overwhelming/) I decided to perform configuration of email service 
 within Emacs in three steps. Each of them takes care of one of the 
@@ -1900,12 +2009,20 @@ following problems
 
 ### Emacs-everywhere
 
+<<<<<<< HEAD
 <a id="orgc1310e4"></a>
+=======
+<a id="org85a2342"></a>
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
 
 Repository of the package and some basic information can be found
 [here](https://github.com/tecosaur/emacs-everywhere/).
 
+<<<<<<< HEAD
 1.  Install package `emacs-everywhere` from melpa ([1.3.2](#orga61264e))
+=======
+1.  Install package `emacs-everywhere` from melpa ([1.3.2](#org8886135))
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
 2.  Add system-wide shortcut for the command 
     
         #!/bin/bash
@@ -2015,7 +2132,11 @@ Tutorial by [Protesilaos Stavrou](https://www.youtube.com/watch?v=NkhgIB64zgc).
 
 ### Load Emacs theme of your preference
 
+<<<<<<< HEAD
 1.  Modus themes by Protesilaos Stavrou <a id="org57b666c"></a>
+=======
+1.  Modus themes by Protesilaos Stavrou <a id="org1428fb0"></a>
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
 
     -   [Author's page](https://protesilaos.com/codelog/2021-01-11-modus-themes-review-select-faint-colours/)
     -   [Youtube's tutorial](https://www.youtube.com/watch?v=JJPokfFxyFo)
@@ -2159,10 +2280,17 @@ a global shortcut...
 
 3.  ob-octave-fix.el
 
+<<<<<<< HEAD
     <a id="orge763cc0"></a>
     
     The discussion on this is thread can be found in section
     [1.4.9.7](#org110de87) so I here I just include the solution, namely
+=======
+    <a id="org524c6ca"></a>
+    
+    The discussion on this is thread can be found in section
+    [1.4.9.7](#org7e4dcef) so I here I just include the solution, namely
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
     I load fixed library.
     
         ;; octave/matlab-fix
@@ -2186,7 +2314,11 @@ a global shortcut...
 
 ### TODO The end
 
+<<<<<<< HEAD
 1.  Workgroups (should be executed at the end of init.el) <a id="orgf855351"></a>
+=======
+1.  Workgroups (should be executed at the end of init.el) <a id="org9a605b8"></a>
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
 
     <https://tuhdo.github.io/emacs-tutor3.html>
     
@@ -2283,11 +2415,19 @@ a global shortcut...
 
 3.  DEPRECATED Restoring previous session
 
+<<<<<<< HEAD
     This section is deprecated in favour of [`workgroups2 package`](#orgf855351).
     
     This way of restoring session throws some warnings and needs additional
     confirmations so I give it up. Simple `(desktop-save-mode 1)` which is 
     included [in the beginning of `init.el`](#org55bd697) works ok.
+=======
+    This section is deprecated in favour of [`workgroups2 package`](#org9a605b8).
+    
+    This way of restoring session throws some warnings and needs additional
+    confirmations so I give it up. Simple `(desktop-save-mode 1)` which is 
+    included [in the beginning of `init.el`](#orgfce8741) works ok.
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
     
         ;; Restore the "desktop" - do this as late as possible
         (if first-time
@@ -2321,17 +2461,28 @@ a global shortcut...
         (message "All done in init.el.")
 
 
+<<<<<<< HEAD
 ## Dependencies of the presented Emacs configuration <a id="org63b6435"></a>:
+=======
+## Dependencies of the presented Emacs configuration <a id="orgbe0fe3e"></a>:
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
 
 The list of external applications that this script is dependent on:
 
 -   git
 -   LaTeX distribution (for org to latex exporters)
 
+<<<<<<< HEAD
 -   xclip ([1.4.18](#orgc1310e4))
 -   xdotool ([1.4.18](#orgc1310e4))
 -   xprop ([1.4.18](#orgc1310e4)) - this is not a package but executable
 -   xwininfo ([1.4.18](#orgc1310e4)) - this is not a package but executable
+=======
+-   xclip ([1.4.18](#org85a2342))
+-   xdotool ([1.4.18](#org85a2342))
+-   xprop ([1.4.18](#org85a2342)) - this is not a package but executable
+-   xwininfo ([1.4.18](#org85a2342)) - this is not a package but executable
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
 
 
 ## Some useful information and links:

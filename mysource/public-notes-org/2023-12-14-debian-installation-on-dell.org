@@ -5,7 +5,11 @@
 #+TAGS: debian dell 
 # #+OPTIONS: toc:nil
 #+OPTIONS: -:nil
+<<<<<<< HEAD
 #+TODO: TODO PENDING ???? ABANDONED POSTPONED | DEPRECATED SOLVED DONE
+=======
+
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
 
 * {{{title}}}
 :PROPERTIES:
@@ -15,7 +19,11 @@
 
 ** Preparation
 
+<<<<<<< HEAD
 *** Debian live default login/password
+=======
+*** Debian live
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
 user: user
 pass: live
 
@@ -23,8 +31,13 @@ pass: live
 **** ,,Keymap changes do not work in Plasma on Wayland. Please use systemsettings5 instead.'' ?
 
 *** Disk partitioning
+<<<<<<< HEAD
 https://morfikov.github.io/post/jak-przygotowac-dysk-pod-instalacje-debian-linux-z-efi-uefi/
 **** Binary multiples of kilo 
+=======
+
+**** Partitioning
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
 |      MB |       GB |
 |---------+----------|
 |    1024 |          |
@@ -73,7 +86,11 @@ For GPT partition table there can exist as many as
 [[https://www.google.com/search?q=how+many+primary+partitions+on+gpt&sca_esv=591149029&ei=Wxd8ZZrAJpSrxc8PxLCwYA&ved=0ahUKEwja2afbi5GDAxWUVfEDHUQYDAwQ4dUDCBA&uact=5&oq=how+many+primary+partitions+on+gpt&gs_lp=Egxnd3Mtd2l6LXNlcnAiImhvdyBtYW55IHByaW1hcnkgcGFydGl0aW9ucyBvbiBncHQyBhAAGBYYHjILEAAYgAQYigUYhgNIhEhQAFjmRnAEeAGQAQCYAZcBoAGmHaoBBTE2LjIwuAEDyAEA-AEBwgILEAAYgAQYigUYkQLCAgsQLhiABBjHARjRA8ICBRAAGIAEwgIOEC4YgAQYxwEY0QMY1ALCAgUQLhiABMICCBAuGIAEGNQCwgIKEAAYgAQYigUYQ8ICCxAuGIAEGIoFGJECwgImEC4YgAQYigUYkQIYlwUY3AQY3gQY4AQY9AMY8QMY9QMY9gPYAQHCAggQABgWGB4YCsICCBAAGBYYHhgPwgIFECEYoAHCAggQIRgWGB4YHcICBBAhGBXiAwQYACBBiAYBugYGCAEQARgU&sclient=gws-wiz-serp][128 primary partitions on the disk]].
 
 
+<<<<<<< HEAD
 **** Partitioning via parted and fdisk
+=======
+**** POSTPONED Partitioning via parted and fdisk
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
 :PROPERTIES:
 :FNAME: disk_partitioning.el
 :END:
@@ -155,12 +172,17 @@ Following this clue and basing on the following threads (550 MB per efi partitio
 - https://askubuntu.com/questions/1313154/how-to-know-the-proper-amount-of-needed-disk-space-for-efi-partition
 - https://askubuntu.com/questions/1011821/what-is-the-correct-and-reliable-way-to-freshly-install-ubuntu-gnome-in-an-nvme?newreg=52d1fba44a84418fbb0e15cc74e25b30
 
+<<<<<<< HEAD
 I have created the following partitions:
+=======
+I have created the following partition:
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
 - 2MB unallocated     (this is probably needed by all this new uefi stuff)
 - 550 MB fat32 flagged as boot, esp   (this is for /boot/efi)
 - 80 GB ext4 (root)
 - 432 GB ext4 (home)
 - 1,30 TB ext4 (arch)
+<<<<<<< HEAD
 - rest: 15,46 GB ntfs (NTFSTrash)
 
 
@@ -1189,6 +1211,11 @@ https://www.reddit.com/r/openSUSE/comments/qco74z/64_gb_ram_any_need_for_swap/
 
 **** TODO 2D
 - register MAC adresses of laptop and docking station
+=======
+- rest: 15,46 GB ntfs 
+
+
+>>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
 *** Useful links:
 
 
