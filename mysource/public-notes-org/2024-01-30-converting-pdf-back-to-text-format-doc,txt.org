@@ -7,7 +7,7 @@
 
 * TODO Converting pdf back to text format (doc,txt)
 :PROPERTIES:
-:PRJ-DIR: ./2024-01-30-Converting-pdf-back-to-text-format-(doc,txt)/
+:PRJ-DIR: ./2024-01-30-Converting-pdf-back-to-text-format-doc,txt/
 :END:
 
 ** Problem description
