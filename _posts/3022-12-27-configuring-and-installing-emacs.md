@@ -114,7 +114,7 @@ it's better to keep whole .emacs.d directory as a git repository and
 make a commit before executing this script. Then, in case any problems
 you can go back to restore properly working emacs installation.
 Before running this script you should have a git repository initialized in emacs
-directory and git itself installed in the system (see Sec. [1.4](#org8a7d622)).
+directory and git itself installed in the system (see Sec. [1.5](#org9c9ad8c)).
 Synchronization of the local repository with the remote one is not
 performed in this script. It should be performed explicitely by the user
 in a convenient time.
@@ -210,7 +210,7 @@ In Emacs 27.1 it [shouldn't be necessary to use](https://emacs.stackexchange.com
 
 ### The main part of the installation script - list of the packages
 
-<a id="org04a46a4"></a>
+<a id="orgc679c74"></a>
 
 I used to have `(defvar my-packages ...` instead of `(setq my-packages ...` 
 below but... **Do not** use `defvar` for declaring a list of packages to be installed!
@@ -314,12 +314,443 @@ print an information message.
 No problems so far...
 
 
-## Dependencies of the presented Emacs configuration: <a id="org8a7d622"></a>
+## My init.el
+
+There's something like `early-init.el` in modern versions of Emacs that is intended
+to speed up the launching process, however I'm not going to use this approach as
+for now. An interesting discussion about this can be found [here](https://www.reddit.com/r/emacs/comments/enmbv4/earlyinitel_reduce_init_time_about_02_sec_and/).
+
+
+### A note:
+
+[When Emacs `init.el` does not load at startup](https://stackoverflow.com/questions/12224575/emacs-init-el-file-doesnt-load).
+
+1.  DEPRECATED Setting an auxiliary variable
+
+    This section is deprecated in favour of [`workgroups2 package`](#org29902c1).
+    
+        ;; This file is designed to be re-evaled; use the variable first-time
+        ;; to avoid any problems with this.
+        (defvar first-time t
+          "Flag signifying this is the first time that .emacs has been evaled")
+
+2.  Package `package`  initialization
+
+    In theory, in new Emacs two following lines shouldn't be required to have 
+    everything working fine.
+    However, it seems that some packages (`modus-themes`, `workgroups2`?) cannot 
+    run without it when emacs commands are to be executed from command line 
+    without invoking Emacs 
+    window (Post with demonstration makefile should be published soon).
+    
+        (require 'package)
+        (package-initialize)
+
+
+### Setting separate file for emacs custom entries
+
+If you don't set the separate for custom entries, Emacs appends its code
+directly into `init.el`. To prevent this we need to define other file. 
+Remember to create `custom-file.el` file by hand! Emacs won't create it 
+for you.
+
+    (setq custom-file "~/.emacs.d/custom-file.el")
+
+Assuming that the code in custom-file is execute before the code
+ahead of this line is not a safe assumption. So load this file
+proactively.
+
+    (load-file custom-file)
+
+
+### Global emacs customization
+
+Here are global Emacs customization. 
+If necessary some useful infomation or link is added to the customization.
+
+1.  Self-descriptive oneliners <a id="org94ee8a6"></a>
+
+    Remarks:
+    At around May 2023 I stopped using `global-linum-mode` because
+    of the annoying lags while typing in a buffer that occured quite
+    frequently, Links:
+    
+    -   <https://github.com/jrblevin/markdown-mode/issues/181>
+    -   <https://www.reddit.com/r/orgmode/comments/e7pq7k/linummode_very_slow_for_large_org_files/>
+    -   <https://emacs.stackexchange.com/questions/49032/line-numbering-stick-with-linum-or-nlinum>
+    
+    From two possible alternatives at the time:
+     `nlinum-mode` and `display-line-numbers-mode`
+    I decided on the latter because it was built-in Emacs.
+    
+        (auto-revert-mode 1)       ; Automatically reload file from a disk after change
+        (global-auto-revert-mode 1) 
+        
+        (delete-selection-mode 1)  ; Replace selected text
+        
+        (show-paren-mode 1)        ; Highlight matching parenthesis
+        
+        ; Enable line numbering
+        ;; DEPRECATED, CAUSES LAGS WHEN TYPING: (global-linum-mode 1)			
+        (global-display-line-numbers-mode 1) 
+        
+        (scroll-bar-mode 1)        ; Enable scrollbar
+        (menu-bar-mode 1)          ; Enable menubar
+        (tool-bar-mode -1)         ; Disable toolbar since it's rather useless
+        
+        (setq line-number-mode t)  ; Show line number
+        
+        (setq column-number-mode t); Show column number
+        
+        (define-key global-map (kbd "RET") 'newline-and-indent) ; Auto-indent new lines
+        
+        (if (not (daemonp))           ; if this is not a --daemon session -> see: [[emacs-everywhere]] section
+           (desktop-save-mode 1)      ; Save buffers on closing and restore them at startup
+        )
+        (setq desktop-load-locked-desktop t) ; and don't ask for confirmation when 
+                                   ; opening locked desktop
+        (setq desktop-save t)
+        
+        (save-place-mode t)        ; When re-entering a file, return to the place, 
+                                   ; where I was when I left it the last time.
+
+2.  Emacs shell history from previous sessions
+
+    [Emacs wiki page](https://www.emacswiki.org/emacs/SaveHist)
+    
+        (savehist-mode 1)          ; Save history for future sessions
+
+3.  Easily restore previous/next window layout
+
+    -   undo = previous window view
+        
+            C-c left
+    -   redo (undo undo)
+        
+            C-c right
+    
+        (winner-mode 1)            ; Toggle between previous window layouts
+
+4.  Line truncation
+
+    There are some other ways of [truncating](https://stackoverflow.com/questions/7577614/emacs-truncate-lines-in-all-buffers):
+    
+        (setq-default truncate-lines t) ; ugly way of truncating
+    
+    or
+    
+        ; fancier way of truncating (word truncating) THIS DOES NOT WORK!!!
+        (setq-default global-visual-line-mode t) 
+    
+    however I didn't find them pretty and finally this command is useful:
+    
+        (global-visual-line-mode t) ; Truncate lines 
+
+5.  Prevent from deselecting text after M-w copying
+
+    [Link](https://www.reddit.com/r/emacs/comments/1vdumz/emacs_to_keep_selection_after_copy/)
+    
+        ;; Do not deselect after M-w copying -> 
+         (defadvice kill-ring-save (after keep-transient-mark-active ())
+           "Override the deactivation of the mark."
+           (setq deactivate-mark nil))
+         (ad-activate 'kill-ring-save)
+        ;; <- Do not deselect after M-w copying
+
+6.  Setting default font
+
+    To get the list of available fonts:
+    Type the following in the **scratch** buffer, and press `C-j` at the end of it:
+       `(font-family-list)`
+    You may need to expand the result to see all of them, by hitting enter on 
+    the `...` at the end.
+    ([Source](https://stackoverflow.com/questions/13747749/font-families-for-emacs)).
+    
+    The font of my choice is:
+    
+        ;; now this setting is done much lower in the code due to
+        ;; problems with fonts in  emacsclient/daemonp instances -> see [[emacs-everywhere]]
+        ;; (set-frame-font "liberation mono 11" nil t) ; Set default font
+    
+    Due to  due to the  problems with fonts in `emacsclient/daemonp`
+    instances font is set now in the section [1.4.5](#orge4d0dba).
+
+7.  Highlight on an active window/buffer
+
+    Although the active window can be recognized
+    by the cursor which blinking in it, sometimes it is hard to
+    find in on the screen (especially if you use a colourful theme
+    like [1.4.5.1](#orgfdaf2a1).
+    
+    I found a [post](https://stackoverflow.com/questions/33195122/highlight-current-active-window) adressing this issue.
+    Although the accepted answer is using 
+    `auto-dim-other-buffers.el`
+    I prefer [this solution](https://stackoverflow.com/a/33196798) which does not rely on external package
+    
+        ;;Highlight an active window/buffer or dim all other windows
+        
+          (defun highlight-selected-window ()
+            "Highlight selected window with a different background color."
+            (walk-windows (lambda (w)
+              (unless (eq w (selected-window)) 
+                (with-current-buffer (window-buffer w)
+                  (buffer-face-set '(:background "#111"))))))
+            (buffer-face-set 'default))
+        
+            (add-hook 'buffer-list-update-hook 'highlight-selected-window)
+        ;;
+
+8.  Time and calendar
+
+    1.  DONE Locale for names of days of the week in org-mode
+    
+        Setting names of the days of the week and months to arbitrarily language:
+        [Link 1](https://emacs.stackexchange.com/questions/50543/insert-date-using-a-calendar-where-other-language-rather-than-english-is-desir),
+        [Link 2](https://emacs.stackexchange.com/questions/19602/org-calendar-change-date-language/19611#19611)
+        
+        [Link 1](https://emacs.stackexchange.com/questions/50543/insert-date-using-a-calendar-where-other-language-rather-than-english-is-desir)
+        
+        [Link 3](https://stackoverflow.com/questions/28913294/emacs-org-mode-language-of-time-stamps)
+        
+        The best method I found working for my purposes is:
+        
+            (setq system-time-locale "C")         ; Force Emacs to use English timestamps
+        
+        It makes Emacs use English language and not the system localization language
+        when inserting weekdays abreviations in org-mode timestamps and in org-agenda.
+    
+    2.  DONE Calendar
+    
+        Inserting the date from the calendar. 
+        Here's the way how one can insert date in org-mode by hitting `C-c .`
+        choosing the day and hitting `RET`.
+        
+        The above shortcuts are listed in `Scroll` menu item which is visible in menu bar,
+        when you're in Calendar buffer.
+        
+            ;; Calendar ->
+            (defun calendar-insert-date ()
+              "Capture the date at point, exit the Calendar, insert the date."
+              (interactive)
+              (seq-let (month day year) (save-match-data (calendar-cursor-to-date))
+                (calendar-exit)
+                (insert (format "%d-%02d-%02d" year month day))))
+        
+        Warning! Here, instead of using:
+        
+            (define-key calendar-mode-map (kbd "RET") 'calendar-insert-date)
+        
+        it's better to define the action as
+        
+            (eval-after-load "calendar"
+              `(progn
+                 (define-key calendar-mode-map (kbd "RET") 'calendar-insert-date)))
+            ;; <- Calendar
+        
+        Otherwise, you may get `calendar-mode-map is void` error, 
+        if `calendar-mode-map` it's not loaded at the moment of executing the command ([Link](https://emacs.stackexchange.com/questions/3548/how-to-change-key-bindings-for-calendar-mode)).
+        
+        Moving in calendar buffer is like follows:
+        
+        <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+        
+        
+        <colgroup>
+        <col  class="org-left" />
+        
+        <col  class="org-left" />
+        
+        <col  class="org-left" />
+        </colgroup>
+        <thead>
+        <tr>
+        <th scope="col" class="org-left">Move by</th>
+        <th scope="col" class="org-left">Backward</th>
+        <th scope="col" class="org-left">Forward</th>
+        </tr>
+        </thead>
+        
+        <tbody>
+        <tr>
+        <td class="org-left">a day</td>
+        <td class="org-left">S-&lt;left&gt;</td>
+        <td class="org-left">S-&lt;right&gt;</td>
+        </tr>
+        
+        
+        <tr>
+        <td class="org-left">a week</td>
+        <td class="org-left">S-&lt;up&gt;</td>
+        <td class="org-left">S-&lt;down&gt;</td>
+        </tr>
+        
+        
+        <tr>
+        <td class="org-left">a month</td>
+        <td class="org-left">&gt;</td>
+        <td class="org-left">&lt;</td>
+        </tr>
+        
+        
+        <tr>
+        <td class="org-left">3 months</td>
+        <td class="org-left">M-v</td>
+        <td class="org-left">C-v</td>
+        </tr>
+        
+        
+        <tr>
+        <td class="org-left">a year</td>
+        <td class="org-left">4 M-v</td>
+        <td class="org-left">4 C-v</td>
+        </tr>
+        </tbody>
+        </table>
+
+9.  Easy moving between windows
+
+    It is managed by [WindMove package](https://www.emacswiki.org/emacs/WindMove) that is built-in in Emacs.
+    The default keybindings of this package is `Shift arrow`, which sometimes
+    may be inconvenient (there are conflicts for example in org-mode, other 
+    packages that conflict with org are [listed here](https://orgmode.org/manual/Conflicts.html)).
+    That is why it's better to remap those keybindings to other 
+    combination (`Super-Key-<arrow>` in the code below). 
+    
+        ;; windmove ->
+        ;; Easy moving between windows
+        
+          ;; setting windmove-default-keybindings to super-<arrow> in order
+          ;; to avoid org-mode conflicts
+          (global-set-key (kbd "s-<left>")  'windmove-left)
+          (global-set-key (kbd "s-<right>") 'windmove-right)
+          (global-set-key (kbd "s-<up>")    'windmove-up)
+          (global-set-key (kbd "s-<down>")  'windmove-down)
+        ;; <- windmove
+    
+    1.  DEPRECATED Useful For Emacs < 27.1
+    
+        (This section is deprecated. In Emacs 27.1 the package works ok without
+        the need of application of `ignore-error-wrapper` function.)
+        
+        According to [package's wikipage](https://www.emacswiki.org/emacs/WindMove) there exist some problem with the package,
+        namely:
+        "When you run for instance windmove-left and there is no window on the left,
+         windmove will throw exception (and if you have debug-on-error enabled) 
+        you will see Debugger complaining."
+        
+        Proposed workaround requires `cl` package, which unfortunately is
+        [deprecated in Emacs 27.1](https://github.com/kiwanami/emacs-epc/issues/35) (The workaround worked in Emacs < 27).
+        With the use of 
+        [this post](https://emacs.stackexchange.com/questions/15189/alternative-to-lexical-let) and 
+        [this part of emacs manual](https://www.gnu.org/software/emacs/manual/html_node/elisp/Using-Lexical-Binding.html) I sort of solved the problem and with the 
+        following code Emacs does not throw warnings or errors.
+        
+            ;; windmove ->
+            ;; Easy moving between windows
+              (when (fboundp 'windmove-default-keybindings)
+                (windmove-default-keybindings))
+            
+              (eval-when-compile (require 'cl))
+              (setq lexical-binding t)
+            
+              (defun ignore-error-wrapper (fn)
+                "Funtion return new function that ignore errors.
+                 The function wraps a function with `ignore-errors' macro."
+                (lexical-let ((fn fn))
+                  (lambda ()
+                    (interactive)
+                    (ignore-errors
+                      (funcall fn)))))
+            
+              ;; setting windmove-default-keybindings to super-<arrow> in order
+              ;; to avoid org-mode conflicts
+              (global-set-key (kbd "M-s-<left>") (ignore-error-wrapper 'windmove-left))
+              (global-set-key (kbd "M-s-<right>") (ignore-error-wrapper 'windmove-right))
+              (global-set-key (kbd "M-s-<up>") (ignore-error-wrapper 'windmove-up))
+              (global-set-key (kbd "M-s-<down>") (ignore-error-wrapper 'windmove-down))
+            ;; <- windmove
+
+10. Easy windows resize
+
+        ;; Easy windows resize ->
+          (define-key global-map (kbd "C-s-<left>") 'shrink-window-horizontally)
+          (global-set-key        (kbd "C-s-<right>") 'enlarge-window-horizontally)
+          (global-set-key        (kbd "C-s-<down>") 'shrink-window)
+          (global-set-key        (kbd "C-s-<up>") 'enlarge-window)
+        ;; <- Easy windows resize 
+
+11. Column marker
+
+    In Emacs 27.1 in only needs to add the following lines in
+    your `init.el` to have properly working fill-column indicator in all buffers.
+    (<https://www.gnu.org/software/emacs/manual/html_node/emacs/Displaying-Boundaries.html>)
+    
+          ;; Fill column indicator -> 
+        (global-display-fill-column-indicator-mode)
+          ;; <- Fill column indicator
+    
+    This behaviour, however, may not be wanted in some buffers
+    (for example ipython command line
+    bufffer or octave command line buffer). In order to have fill-column-indicator
+    only for buffers of some type (code files, text files (org, doconce etc.) we
+    could add a hook for [`prog-mode`](https://www.emacswiki.org/emacs/ProgMode) and two relative modes `text-mode` and `special-mode`.
+    Unfortunately, these modes do not contain all required modes
+    (`DocOnce-mode` or `org-mode` are absent on the list of modes).
+    (The list of modes inherited after `prog-mode` and two other modes  can be viewed
+    with the use of the [following function](https://gist.github.com/davep/c16534ef91e9868aaff3d3658f880e4a):
+    
+        (defun list-prog-modes ()
+          "List all programming modes known to this Emacs."
+          (interactive)
+          (with-help-window "*Programming Major Modes*"
+            (mapatoms (lambda (f)
+                        (when (provided-mode-derived-p f 'prog-mode) ;; prog-mode or text-mode or special-mode
+                          (princ f)
+                          (princ "\n"))))))
+    
+    Anyway, I decided on the following approach based on [this page](https://www.gnu.org/software/emacs/manual/html_node/emacs/Displaying-Boundaries.html):
+    
+    -   enable display-fill-column mode, which can be done by settings variable
+    
+          ;; Fill column indicator -> 
+        (setq display-fill-column-indicator-column 81)
+    
+    -   write general function that can be hooked into mode
+    
+        (defun my-default-text-buffer-settings-mode-hook()
+          (display-fill-column-indicator-mode 1)
+          )
+          ;; <- Fill column indicator
+    
+    -   and add this hook per each required mode (this is done in [1.4.4](#org41fba2e) section
+        of this document
+
+12. Turning on/off beeping
+
+13. Ibuffer - an advanced replacement for BufferMenu <a id="org7fcf22f"></a>
+
+
+### Settings for modes
+
+
+### Emacs-everywhere <a id="orge4d0dba"></a>
+
+1.  Modus themes by Protesilaos Stavrou <a id="orgfdaf2a1"></a>
+
+2.  Workgroups (should be executed at the end of init.el) <a id="org29902c1"></a>
+
+
+## Dependencies of the presented Emacs configuration: <a id="org9c9ad8c"></a>
 
 The list of external applications that this script is dependent on:
 
 -   git
 -   LaTeX distribution (for org to latex exporters)
+
+-   xclip ([1.4.5](#orge4d0dba))
+-   xdotool ([1.4.5](#orge4d0dba))
+-   xprop ([1.4.5](#orge4d0dba)) - this is not a package but executable
+-   xwininfo ([1.4.5](#orge4d0dba)) - this is not a package but executable
 
 
 ## Some useful information and links:
