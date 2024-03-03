@@ -1,6 +1,6 @@
 ---
 author: cissic
-date: 2023-12-18 Mon
+date: 2022-12-27 Tue
 tags: 'emacs packages'
 title: 'Initialization files setup in Emacs'
 ---
@@ -72,70 +72,6 @@ In the post I'm going to implement the following rules:
     <https://karthinks.com/software/latex-input-for-impatient-scholars/>
 
 
-## Emacs on Windows
-
-Deploying this system on Windows comes down to:
-
-
-### migrating `~/.emacs.d`
-
-The proper place for `.emacs.d` in the newest Windows (11)
-is `C:\Users\<UserName>\AppData\Roaming\`.
-Don't forget about `~/.mysecrets` if you want to have ChaptGPT sessions running.
-
-Before copying it is wise to zip .emacs.d to save some time.
-
-    zip -r ~/emacs.zip ~/.emacs.d
-
-
-### installing/configuring LaTeX distribution
-
-I used to use existing MiKTeX standalone distribution, however
-this solution is troublesome. You need to: 
-
--   update windows `PATH` environment to point to tex bin directory
--   probably also add:
-
-    (setenv "PATH" (concat "D:\Programs\Latex\miktex-portable\texmfs\install\miktex\bin\x64" (getenv "PATH")))
-    (add-to-list 'exec-path "D:\Programs\Latex\miktex-portable\texmfs\install\miktex\bin\x64")
-
-somewhere in `init.el`.
-
-In the end I kept getting error when exporting to latex, and export
-process complained something about 
-lack of perl for Windows when exporting via `latexmk`.
-(New MikTeX is supposedly distributed without perl).
-
-1.  Solution
-
-    1.  Install MikTeX with installer
-    2.  Install Perl distribution ([Strawberry Perl](https://strawberryperl.com)).
-
-
-### The things that need to be adjusted in init.el
-
-1.  Adjust `org-cite-csl-styles-dir` to point to appropriate directory
-
-    `(setq org-cite-csl-styles-dir "~/Zotero/styles")`
-
-2.  DEPRECATED Python paths
-
-    python3 path was an artifact from some old debian distribution.
-    In newer Debian releases `python` stands for `python3`, so I corrected
-    two occurances of python3 in `init.el`.
-    
-    1.  DEPRECATED Solution
-    
-        You need to amend paths to python executable in two places:
-        [1.5.9.8](#orgf573f70)
-        [1.5.7.3](#org782ee4f)
-
-3.  Liberation mono font
-
-    That part of code is in `init.el` only for [1.5.18](#orgab0a325), so
-    if one does not use it, they won't miss it.
-
-
 ## Installation/upgrade script
 
 This script is meant to (re-)install/prepare/upgrade Emacs packages in order
@@ -178,7 +114,7 @@ it's better to keep whole .emacs.d directory as a git repository and
 make a commit before executing this script. Then, in case any problems
 you can go back to restore properly working emacs installation.
 Before running this script you should have a git repository initialized in emacs
-directory and git itself installed in the system (see Sec. [1.6](#org68174f9)).
+directory and git itself installed in the system (see Sec. [1.5](#org66639f1)).
 Synchronization of the local repository with the remote one is not
 performed in this script. It should be performed explicitely by the user
 in a convenient time.
@@ -274,7 +210,7 @@ In Emacs 27.1 it [shouldn't be necessary to use](https://emacs.stackexchange.com
 
 ### The main part of the installation script - list of the packages
 
-<a id="orgadd0263"></a>
+<a id="orgdc57bf1"></a>
 
 I used to have `(defvar my-packages ...` instead of `(setq my-packages ...` 
 below but... **Do not** use `defvar` for declaring a list of packages to be installed!
@@ -391,7 +327,7 @@ for now. An interesting discussion about this can be found [here](https://www.re
 
 1.  DEPRECATED Setting an auxiliary variable
 
-    This section is deprecated in favour of [`workgroups2 package`](#org0e55d7c).
+    This section is deprecated in favour of [`workgroups2 package`](#orge7c7884).
     
         ;; This file is designed to be re-evaled; use the variable first-time
         ;; to avoid any problems with this.
@@ -432,7 +368,7 @@ proactively.
 Here are global Emacs customization. 
 If necessary some useful infomation or link is added to the customization.
 
-1.  Self-descriptive oneliners <a id="org7e2ed94"></a>
+1.  Self-descriptive oneliners <a id="org8b92d9e"></a>
 
     Remarks:
     At around May 2023 I stopped using `global-linum-mode` because
@@ -477,8 +413,6 @@ If necessary some useful infomation or link is added to the customization.
         
         (save-place-mode t)        ; When re-entering a file, return to the place, 
                                    ; where I was when I left it the last time.
-        
-        (setq list-command-history-max 500) ; no of available commands in  =command-history=
 
 2.  Emacs shell history from previous sessions
 
@@ -539,14 +473,14 @@ If necessary some useful infomation or link is added to the customization.
         ;; (set-frame-font "liberation mono 11" nil t) ; Set default font
     
     Due to  due to the  problems with fonts in `emacsclient/daemonp`
-    instances font is set now in the section [1.5.18](#orgab0a325).
+    instances font is set now in the section [1.4.18](#org077f9b3).
 
 7.  Highlight on an active window/buffer
 
     Although the active window can be recognized
     by the cursor which blinking in it, sometimes it is hard to
     find in on the screen (especially if you use a colourful theme
-    like [1.5.20.1](#org0e9e27e).
+    like [1.4.20.1](#org9b1be9b).
     
     I found a [post](https://stackoverflow.com/questions/33195122/highlight-current-active-window) adressing this issue.
     Although the accepted answer is using 
@@ -788,7 +722,7 @@ If necessary some useful infomation or link is added to the customization.
           )
           ;; <- Fill column indicator
     
-    -   and add this hook per each required mode (this is done in [1.5.7](#orga611c68) section
+    -   and add this hook per each required mode (this is done in [1.4.7](#orgcb77af1) section
         of this document
 
 12. Turning on/off beeping
@@ -802,10 +736,8 @@ If necessary some useful infomation or link is added to the customization.
         (setq-default visible-bell t) 
         (setq ring-bell-function 'ignore)
 
-13. Ibuffer - an advanced replacement for BufferMenu
+13. Ibuffer - an advanced replacement for BufferMenu <a id="orgce6e2d5"></a>
 
-    <a id="org36c1350"></a>
-    
     Description of the package is [here](https://www.emacswiki.org/emacs/IbufferMode).
     
           ;; Advanced buffer mode
@@ -863,7 +795,7 @@ If necessary some useful infomation or link is added to the customization.
     
     2.  Ibuffer interactive way
     
-        In [1.5.3.13](#org36c1350) there a nice shortcut to do this. You can select all
+        In [1.4.3.13](#orgce6e2d5) there a nice shortcut to do this. You can select all
         the files of the given mode with:
         
             * M
@@ -934,20 +866,6 @@ ido/smex vs ivy/counsel/swiper vs helm
           (setq ido-enable-flex-matching t)
           (setq ido-everywhere t)  ; ido-mode for file searching
         ;; <- ido-mode
-    
-    For conenient opening files with `sudo` privilages we'll add an
-    auxiliary command
-    (<https://stackoverflow.com/a/29255604/4649238>):
-    
-        (defadvice ido-find-file (after find-file-sudo activate)
-        "Find file as root if necessary."
-        (unless (and buffer-file-name
-                     (file-writable-p buffer-file-name))
-          (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
-    
-    Now, after trying to open `sudo` file with `C-x C-f` emacs
-    will automatically concatenate necessary modifier in order to
-    have it open...
 
 2.  smex
 
@@ -962,7 +880,7 @@ ido/smex vs ivy/counsel/swiper vs helm
         (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command) 
         ;; <- smex
 
-3.  TODO Ivy (for testing) <a id="org6477eb8"></a>
+3.  TODO Ivy (for testing) <a id="org4546275"></a>
 
     Furthermore, according to [some other users](https://ruzkuku.com/emacs.d.html#org804158b)
     "Ivy is simpler (and faster) than Helm but more powerful than Ido".
@@ -1021,8 +939,8 @@ ido/smex vs ivy/counsel/swiper vs helm
 
         ;; Recently opened files ->
           (recentf-mode 1)
-          (setq recentf-max-menu-items 200)
-          (setq recentf-max-saved-items 200)
+          (setq recentf-max-menu-items 100)
+          (setq recentf-max-saved-items 100)
           ;; in original emacs this binding is for "Find file read-only"
           (global-set-key "\C-x\ \C-r" 'recentf-open-files)
         ;; <- Recently opened files
@@ -1109,26 +1027,14 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
 
 3.  Python mode
 
-    <a id="org782ee4f"></a>
-    
     The below code does not work as expected. Probably it'd be better to
     apply the configuration given [here](https://realpython.com/emacs-the-best-python-editor/#integration-with-jupyter-and-ipython).
-    
-    The old versions have explicitely pointed to python3 binary like this
     
         ;; Python mode...
         
         (defun my-python-mode-hook()
                    (lambda ()
                      (setq python-shell-interpreter "python3") ))
-    
-    but it's outdated now and now it's enough to have:
-    
-        ;; Python mode...
-        
-        (defun my-python-mode-hook()
-                   (lambda ()
-                     (setq python-shell-interpreter "python") ))
 
 4.  Org mode
 
@@ -1168,11 +1074,11 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
     files to Beamer. In order one needs to create appropriate
     init file with settings for async export and
     set `org-export-async-init-file` variable as path to this file (see 
-    [1.5.7.4.1](#org91d4b02)).
+    [1.4.7.4.1](#org73d1bd9)).
     
     1.  Setting `org-export-async-init-file` to avoid failure while exporting to Beamer
     
-        <a id="org91d4b02"></a>
+        <a id="org73d1bd9"></a>
         
         Org-beamer **async** exporter may fail because of lacking
         `org-export-async-init-file` 
@@ -1258,32 +1164,26 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
 
 ### Bibliography - citations
 
-<a id="org01205e5"></a>
+1.  oc [org-citations]
 
-1.  Useful links for Emacs 29
-
-    <https://orgmode.org/manual/Citations.html>
-    <https://www.reddit.com/r/orgmode/comments/vchefn/guide_to_citations_in_orgmode/>
-    <https://kristofferbalintona.me/posts/202206141852/>
-    <https://blog.tecosaur.com/tmio/2021-07-31-citations.html#more-exporting>
-
-2.  
-
-    In Emacs 29 the only thing you need to have citations working
-    is to:
+    1.  Bibliography <a id="orgbbb2e06"></a>
     
-    -   add `#+BIBLIOGRAPHY: path/to/your/bib/file.bib` at the beginning
-        of the org file (or you could do it here in `init.el`)
-    -   add `#+PRINT_BIBLIOGRAPHY:` at the place where you want to have
-        references to be included
-    -   do something about the style of the references and citations:
-        -   set the directory with csl styles for the easy use of them in Emacs
-    
-        ;; BIBLIOGRAPHY 
-        (setq org-cite-csl-styles-dir "~/Zotero/styles")
-    
-    -   add `#+CITE_EXPORT: csl apa.csl` at the beginning of the file
-        (provided `apa.csl` is inside `~/Zotero/styles`)
+        In Org 9.6 we do not need explicitely load `oc` libraries.
+        Everything is covered in my post concerning bibliography and org-mode.
+        
+        Useful links:
+        
+        -   <https://orgmode.org/manual/Citations.html>
+        -   <https://kristofferbalintona.me/posts/202206141852/>
+        -   <https://github.com/jkitchin/org-ref>
+        -   <https://blog.tecosaur.com/tmio/2021-07-31-citations.html#fn.3>
+        -   <https://emacs.stackexchange.com/questions/71817/how-to-export-bibliographies-with-org-mode>
+        -   <https://www.reddit.com/r/emacs/comments/q4wa40/issues_with_new_orgcite_for_citations/>
+        -   <https://nickgeorge.net/science/org-ref-setup/>
+
+2.  citar (to check?)
+
+    <https://github.com/emacs-citar/citar>
 
 
 ### Org customization: org-mode, org-babel ...
@@ -1304,13 +1204,10 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
         
         (setq org-todo-keyword-faces
         '(
-        ("????"         . (:foreground "red" :weight bold))
-        ("POSTPONED"    . (:foreground "orange" :weight bold))
-        ("DONE"         . (:foreground "purple" :weight bold))
-        ("ABANDONED"    . (:foreground "blue" :weight bold))
-        ("DEPRECATED"   . (:foreground "blue" :weight bold))
-        ("[OPTIONALLY]" . (:foreground "violet" :weight bold))
-        ("[OPCJONALNIE]" . (:foreground "violet" :weight bold))
+        ("????" . (:foreground "red" :weight bold))
+        ("POSTPONED" . (:foreground "blue" :weight bold))
+        ("ABANDONED" . (:foreground "orange" :weight bold))
+        ("DEPRECATED" . (:foreground "green" :weight bold))
         )
         )
     
@@ -1339,8 +1236,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
         ;; customized todo-done keywords in latex documents
         (defun org-latex-format-headline-colored-keywords-function
             (todo _todo-type priority text tags _info)
-          "Default format function for a headline.
-        See `org-latex-format-headline-function' for details."
+          "Default format function for a headline. See =org-latex-format-headline-function= for details."
           (concat
            ;; (and todo (format "{\\bfseries\\sffamily %s} " todo))
           (cond
@@ -1351,7 +1247,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
            )
            (and priority (format "\\framebox{\\#%c} " priority))
            text
-           (and tags
+           (and tags 
                 (format "\\hfill{}\\textsc{ %s}"
                         (mapconcat #'org-latex--protect-text tags ":")))))
         
@@ -1421,7 +1317,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
                      (call-interactively 'org-babel-tangle)
                 ))
         
-        2.  Tangle the block of code given by the name
+        2.  tangle the block of code given by the name
         
                 (defun mb/org-babel-tangle-named-block(block-name)
                   (interactive)
@@ -1429,133 +1325,6 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
                    (org-babel-goto-named-src-block block-name)
                     (mb/org-babel-tangle-block)) 
                 )
-        
-        3.  Tangle all (and only those) source code blocks that belong to a specific target file
-        
-            <https://emacs.stackexchange.com/questions/80174/how-to-tangle-only-source-code-blocks-that-belong-to-a-specific-target-file>
-            
-            Auxiliary function: 
-            
-                (defun mb/tangle-file (tangle-file)
-                  (interactive "P")
-                  (run-hooks 'org-babel-pre-tangle-hook)
-                  ;; Possibly Restrict the buffer to the current code block
-                  (save-restriction
-                    (save-excursion
-                      (let ((block-counter 0)
-                        (org-babel-default-header-args org-babel-default-header-args)
-                        path-collector)
-                    (mapc ;; map over file-names
-                     (lambda (by-fn)
-                       (let ((file-name (car by-fn)))
-                         (when file-name
-                               (let ((lspecs (cdr by-fn))
-                             (fnd (file-name-directory file-name))
-                             modes make-dir she-banged lang)
-                             ;; drop source-blocks to file
-                             ;; We avoid append-to-file as it does not work with tramp.
-                             (with-temp-buffer
-                           (mapc
-                            (lambda (lspec)
-                              (let* ((block-lang (car lspec))
-                                 (spec (cdr lspec))
-                                 (get-spec (lambda (name) (cdr (assq name (nth 4 spec)))))
-                                 (she-bang (let ((sheb (funcall get-spec :shebang)))
-                                         (when (> (length sheb) 0) sheb)))
-                                 (tangle-mode (funcall get-spec :tangle-mode)))
-                                (unless (string-equal block-lang lang)
-                              (setq lang block-lang)
-                              (let ((lang-f (org-src-get-lang-mode lang)))
-                                (when (fboundp lang-f) (ignore-errors (funcall lang-f)))))
-                                ;; if file contains she-bangs, then make it executable
-                                (when she-bang
-                              (unless tangle-mode (setq tangle-mode #o755)))
-                                (when tangle-mode
-                              (add-to-list 'modes (org-babel-interpret-file-mode tangle-mode)))
-                                ;; Possibly create the parent directories for file.
-                                (let ((m (funcall get-spec :mkdirp)))
-                              (and m fnd (not (string= m "no"))
-                                   (setq make-dir t)))
-                                ;; Handle :padlines unless first line in file
-                                (unless (or (string= "no" (funcall get-spec :padline))
-                                    (= (point) (point-min)))
-                              (insert "\n"))
-                                (when (and she-bang (not she-banged))
-                              (insert (concat she-bang "\n"))
-                              (setq she-banged t))
-                                (org-babel-spec-to-string spec)
-                                (setq block-counter (+ 1 block-counter))))
-                            lspecs)
-                           (when make-dir
-                             (make-directory fnd 'parents))
-                                   (unless
-                                       (and (file-exists-p file-name)
-                                            (let ((tangle-buf (current-buffer)))
-                                              (with-temp-buffer
-                                                (insert-file-contents file-name)
-                                                (and
-                                                 (equal (buffer-size)
-                                                        (buffer-size tangle-buf))
-                                                 (= 0
-                                                    (let (case-fold-search)
-                                                      (compare-buffer-substrings
-                                                       nil nil nil
-                                                       tangle-buf nil nil)))))))
-                                     ;; erase previous file
-                                     (when (file-exists-p file-name)
-                                       (delete-file file-name))
-                             (write-region nil nil file-name)
-                             (mapc (lambda (mode) (set-file-modes file-name mode)) modes))
-                                   (push file-name path-collector))))))
-                       (org-babel-tangle-collect-blocks nil tangle-file))
-                    (message "Tangled %d code block%s from %s" block-counter
-                         (if (= block-counter 1) "" "s")
-                         (file-name-nondirectory
-                          (buffer-file-name
-                           (or (buffer-base-buffer)
-                                       (current-buffer)
-                                       (and (org-src-edit-buffer-p)
-                                            (org-src-source-buffer))))))
-                    ;; run `org-babel-post-tangle-hook' in all tangled files
-                    (when org-babel-post-tangle-hook
-                      (mapc
-                       (lambda (file)
-                         (org-babel-with-temp-filebuffer file
-                           (run-hooks 'org-babel-post-tangle-hook)))
-                       path-collector))
-                        (run-hooks 'org-babel-tangle-finished-hook)
-                    path-collector))))
-            
-                (defun mb/org-babel-tangle-to-target-file-from-the-file (file target-file)
-                  (interactive "fFile to tangle: \nP")
-                    (let* ((visited (find-buffer-visiting file))
-                           (buffer (or visited (find-file-noselect file))))
-                      (prog1
-                          (with-current-buffer buffer
-                            (org-with-wide-buffer
-                             (mapcar #'expand-file-name
-                                     (my-tangle target-file))))
-                        (unless visited (kill-buffer buffer)))))
-        
-        4.  Export given org-file to pdf (latex)
-        
-                (defun mb/org-babel-export-org-file-to-latex (filename)
-                  (interactive "fFile to export: \nP")
-                    (let* ((visited (find-buffer-visiting filename))
-                           (buffer (or visited (find-file-noselect filename))))
-                      (prog1
-                          (with-current-buffer buffer
-                             (org-latex-export-to-pdf nil) )
-                        (unless visited (kill-buffer buffer)))))
-        
-        5.  Tangle AND export org-file to pdf
-        
-                (defun mb/org-babel-tangle-and-export (file target-file)
-                  (interactive)
-                  (mb/org-babel-tangle-to-target-file-from-the-file file target-file)
-                  (sleep-for 0.5)
-                  (mb/org-babel-export-org-file-to-latex target-file)
-                  )
     
     2.  `plantuml`
     
@@ -1579,7 +1348,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
 
 7.  Fix for Octave/Matlab org-babel - problems with matlab in org-babel
 
-    <a id="orge8c1913"></a>
+    <a id="orgb49ba2f"></a>
     <http://gewhere.github.io/blog/2017/12/19/setup-matlab-in-emacs-and-babel-orgmode/>
     
         
@@ -1605,9 +1374,8 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
     <https://github.com/karthink/.emacs.d/blob/master/plugins/ob-octave-fix.el>
     
     In the end I just downloaded the file and the inclusion of this package is
-    done in section [1.5.21.3](#org745fd82).
+    done in section [1.4.21.3](#org87b07b3).
     
-    Remark: There exist at least two versions of the fix (I renamed
     the one I already had to `ob-octave-fixOLDER.el`). Previous version
     of the file didn't seem to resolve the problem.
     
@@ -1651,8 +1419,6 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
 
 8.  Set path to Python executable to work in org-babel code block
 
-    <a id="orgf573f70"></a>
-    
     Pythonic org-babel code blocks like the one below:
     
         print("Hello world")
@@ -1664,22 +1430,8 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
     explicitely set the path to your
     Python interpreter. 
     
-        ; :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
-        ;; Python in org-babel
-        (setq org-babel-python-command "python")
-    
-    The old versions have explicitely pointed to python3 binary like this
-    
         ;; Python in org-babel
         (setq org-babel-python-command "/bin/python3")
-    
-    but it's
-    outdated in newer versions of Debian...
-    
-    Unfortunately, it seems that you need this `python3` not `python`...
-    
-        ;; Python in org-babel
-        (setq org-babel-python-command "python3")
     
     Two observations:
     
@@ -1766,7 +1518,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
     
     Another hints can be found [here](https://lucidmanager.org/productivity/ricing-org-mode/).
 
-13. Engraved - the better (?) way of having nice source code formatting <a id="orga6a4dca"></a>
+13. Engraved - the better (?) way of having nice source code formatting
 
     Following some internet posts about `Engraved` package I decided to give it a try. We'll if it works better than minted (which has obvious flaws, such as dependency on external code or slowing down
     overall compilation process)
@@ -1775,212 +1527,6 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
     
         ;; org-to-latex exporter to have nice code formatting
         (setq org-latex-src-block-backend 'engraved)
-        ;; ;; (setq org-latex-packages-alist '((""))) ; there's no need to add minted package anymore here, we're using engraved, special options for engraved are passed in org-latex-engraved-preamble
-    
-    The customization of the styles can be performed by
-    editing two variables:
-    `org-latex-engraved-preamble` and
-    `org-latex-engraved-options`
-    
-    Please do note that `engraved` includes `fvextra` package
-    and `tcolorbox` package with options `breakable` and `xparse`.
-    This should be taken into account when using `org-special-blocks-package`
-    since it also depends on `tcolorbox` package.
-    **This potentially may lead to package clash! And there may be a need**
-    **to come back here to configure the usage of tcolorbox once again.** 
-    (Note the options for `tcolorbox` mentioned in
-    [package manual](https://texdoc.org/serve/tcolorbox.pdf/0) (Sec. 1.3 Libraries, page 10, -> `/tcb/library/most` vs
-    `/tcb/library/all` vs `/tcb/library/minted`).
-    
-    Their default values are written below (taken from documentation):
-    
-        (setq org-latex-engraved-preamble
-          "\\usepackage{fvextra}
-        
-          [FVEXTRA-SETUP]
-        
-          % Make line numbers smaller and grey.
-          \\renewcommand\\theFancyVerbLine{\\footnotesize\\color{black!40!white}\\arabic{FancyVerbLine}}
-        
-          \\usepackage{xcolor}
-        
-          % In case engrave-faces-latex-gen-preamble has not been run.
-          \\providecolor{EfD}{HTML}{f7f7f7}
-          \\providecolor{EFD}{HTML}{28292e}
-        
-          % Define a Code environment to prettily wrap the fontified code.
-          \\usepackage[breakable,xparse]{tcolorbox}
-          \\DeclareTColorBox[]{Code}{o}%
-          {colback=EfD!98!EFD, colframe=EfD!95!EFD,
-            fontupper=\\footnotesize\\setlength{\\fboxsep}{0pt},
-            colupper=EFD,
-            IfNoValueTF={#1}%
-            {boxsep=2pt, arc=2.5pt, outer arc=2.5pt,
-              boxrule=0.5pt, left=2pt}%
-            {boxsep=2.5pt, arc=0pt, outer arc=0pt,
-              boxrule=0pt, leftrule=1.5pt, left=0.5pt},
-            right=2pt, top=1pt, bottom=0.5pt,
-            breakable}
-        
-          [LISTINGS-SETUP]"
-        )
-    
-    In order to flawlessly export ChatGPT sessions [1.5.14.1.2](#org5f7065b)
-    placed inside `#+begin_ai #+end_ai`
-    we need to define `ai` environement in latex.
-    Concatenation of variable `org-latex-engraved-preamble`
-    and new lines has no effect, so I decided to set explicitely here:
-    
-        (setq org-latex-engraved-preamble
-          "\\usepackage{fvextra}
-        
-          [FVEXTRA-SETUP]
-        
-          % Make line numbers smaller and grey.
-          \\renewcommand\\theFancyVerbLine{\\footnotesize\\color{black!40!white}\\arabic{FancyVerbLine}}
-        
-          \\usepackage{xcolor}
-        
-          % In case engrave-faces-latex-gen-preamble has not been run.
-          \\providecolor{EfD}{HTML}{f7f7f7}
-          \\providecolor{EFD}{HTML}{28292e}
-        
-          % Define a Code environment to prettily wrap the fontified code.
-          \\usepackage[breakable,xparse]{tcolorbox}
-          \\DeclareTColorBox[]{Code}{o}%
-          {colback=EfD!98!EFD, colframe=EfD!95!EFD,
-            fontupper=\\footnotesize\\setlength{\\fboxsep}{0pt},
-            colupper=EFD,
-            IfNoValueTF={#1}%
-            {boxsep=2pt, arc=2.5pt, outer arc=2.5pt,
-              boxrule=0.5pt, left=2pt}%
-            {boxsep=2.5pt, arc=0pt, outer arc=0pt,
-              boxrule=0pt, leftrule=1.5pt, left=0.5pt},
-            right=2pt, top=1pt, bottom=0.5pt,
-            breakable}
-        
-          [LISTINGS-SETUP]
-        
-          \\newenvironment{ai}
-          {
-          \\begin{Code}
-          }
-          {
-          \\end{Code}
-          }"
-        )
-    
-    The default value of `org-latex-engraved-options` is:
-    
-        ; :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
-            (setq org-latex-engraved-options
-                  '(
-                    ("commandchars" . "\\\\\\{\\}")
-                    ("highlightcolor" . "white!95!black!80!blue")
-                    ("breaklines" . "true")
-                    ("breaksymbol" . "\\color{white!60!black}\\tiny\\ensuremath{\\hookrightarrow}")
-                   ))
-    
-    Other example of usage taken from help of `org-latex-engraved-options` variable.
-    
-        (setq org-latex-engraved-options
-          '(
-            ("commandchars" . "\\\\\\{\\}")
-            ("highlightcolor" . "white!95!black!80!blue")
-            ("breaklines" . "true")
-            ("breaksymbol" . "\\color{white!60!black}\\tiny\\ensuremath{\\hookrightarrow}")
-            ("highlightcolor" . "lightgray")
-            ("frame" . "single")
-            ("numbers" . "left")
-            )
-          )
-    
-    Engraved options can also be set per block.
-    If you need block-specific options, you may use the following syntax:
-    
-        #+ATTR_LATEX: :options key1=value1,key2=value2
-        #+BEGIN_SRC <LANG>
-        ...
-        #+END_SRC  
-    
-    Here's a simple org file that shows some of the capabilities of
-    `engraved`:
-    
-        #+title: Engraving source blocks
-        #+latex_engraved_theme: modus-operandi
-        
-        #+begin_src python :results output :exports both
-          print("look ma, some text")
-        #+end_src
-        
-        #+RESULTS:
-        : look ma, some text
-        
-        #+ATTR_LATEX: :options highlightlines=2
-        #+begin_src python :results output :exports both 
-        
-          print("look, another text")
-        
-        #+end_src
-        
-        #+RESULTS:
-        : look ma, some text
-        
-        #+attr_latex: :engraved-theme modus-vivendi
-        #+begin_src sh
-        
-          echo "This is shell code"
-        
-        #+end_src
-        
-        
-        #+ATTR_LATEX: :options highlightcolor=green,frame=lines,highlightlines=2,numbers=left
-        #+begin_src sh :exports both
-        
-          echo "First"
-          echo "This is shell code"
-        
-        #+end_src
-        
-        #+RESULTS:
-        : This is shell code
-        
-        #+ATTR_LATEX: :options highlightcolor=green,frame=lines,highlightlines=2,numbers=left
-        #+begin_src elisp :exports both
-        
-          (message "AAA elisp")
-        
-        #+end_src
-        
-        #+RESULTS:
-        : AAA elisp
-        
-        #+ATTR_LATEX: :options highlightcolor=green,frame=lines,highlightlines=2,numbers=left
-        #+begin_src elisp :exports both
-        
-          (message "AAA elisp")
-        
-        #+end_src
-        
-        #+RESULTS:
-        : AAA elisp
-        
-        #+ATTR_LATEX: :options highlightcolor=green,frame=single,highlightlines=2,numbers=left
-        #+begin_src elisp :exports both
-          (message "AAA elisp")
-        #+end_src
-        
-        #+ATTR_LATEX: :options highlightcolor=green,frame=lines,highlightlines=2,numbers=left
-        #+begin_src elisp :exports both
-          (message "AAA elisp")
-        #+end_src
-    
-    1.  Where to find the options that can be passed to engraved blocks of code?
-    
-        In `fvextra` documentation (-> Section 3 General options)
-        <https://sunsite.icm.edu.pl/pub/CTAN/macros/latex/contrib/fvextra/fvextra.pdf>
-    
-    2.  TODO PROBLEM: bash output aligned to center with `engraved`
 
 14. How to properly deal with picture/figure size attributes when picture is produced by org-babel block
 
@@ -2005,7 +1551,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
     The special mode `org-cdlatex-mode` is included in `org` package.
     In order to have it working properly we need to install `cdlatex`
     itself. This can be done in
-    [1.4.2](#orgb84ebe7).
+    [1.3.2](#org383cd88).
     
     Link to `org-cdlatex-mode` description:
     <http://doc.endlessparentheses.com/Fun/org-cdlatex-mode.html>.
@@ -2015,51 +1561,34 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
     
         C-c {
 
-16. `org-ref` for references
+16. Reftex for managing references
 
-    Enabling `org-ref` in all modes. 
+    [`Reftex`](https://www.gnu.org/software/emacs/manual/html_mono/reftex.html)
+    is preinstalled since Emacs 20.2, however in order to
+    have it working you need to [install `auctex` package](https://emacs.stackexchange.com/questions/35179/reftex-complete-failed-with-wrong-type-argument-stringp-nil)! 
     
-    **TODO**: do it only for org-mode and latex mode...
+    Then you can turn on `reftex` per a buffer via:
+    `reftex-mode`.
     
-        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-        ;; *** Reftex default bibliography - though it's easier to use org-cite
-        ;;     This is left in case org-ref doesn't work at all without it....
-        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-        (require 'org-ref)
+    At the beginning type:
+    
+        C-c = (reftex-toc)
+    
+    and choose `r` to generate a list of all labels, references in the
+    document.
+    
+    From now on, every time you type `C-c =` `reftex` menu appears
+    on the top of the current buffer prompting the actions you can
+    take.
+    
+    The problem with `reftex` is that it does not recognize
+    org-mode references added by `#+NAME:` `#+LABEL:` etc.
+    
+    `org-ref` [is said to handle this](https://emacs.stackexchange.com/questions/9767/can-reftex-be-used-with-org-label), so maybe in the future I will
+    return to this package. As for now I'm going to work with `reftex`
+    and LaTeX tags.
 
-17. Reftex for managing references
-
-    Use `org-cite` for citations and bibliography. And `org-ref` for
-    references.
-    
-    1.  OLDER COMMENTS
-    
-        [`Reftex`](https://www.gnu.org/software/emacs/manual/html_mono/reftex.html)
-        is preinstalled since Emacs 20.2, however in order to
-        have it working you need to [install `auctex` package](https://emacs.stackexchange.com/questions/35179/reftex-complete-failed-with-wrong-type-argument-stringp-nil)! 
-        
-        Then you can turn on `reftex` per a buffer via:
-        `reftex-mode`.
-        
-        At the beginning type:
-        
-            C-c = (reftex-toc)
-        
-        and choose `r` to generate a list of all labels, references in the
-        document.
-        
-        From now on, every time you type `C-c =` `reftex` menu appears
-        on the top of the current buffer prompting the actions you can
-        take.
-        
-        The problem with `reftex` is that it does not recognize
-        org-mode references added by `#+NAME:` `#+LABEL:` etc.
-        
-        `org-ref` [is said to handle this](https://emacs.stackexchange.com/questions/9767/can-reftex-be-used-with-org-label), so maybe in the future I will
-        return to this package. As for now I'm going to work with `reftex`
-        and LaTeX tags.
-
-18. Listing name tags of environments
+17. Listing name tags of environments
 
     Based on [this page](https://emacs.stackexchange.com/questions/77326/how-to-display-the-list-of-all-name-tags-is-org-mode-document).
     
@@ -2095,7 +1624,7 @@ In Emacs 27.1 `flymake` is said to be competitive with `flycheck` again.
 It is built-in in Emacs. As for now, I'm gonna use `flymake`.
 
 
-### Bash completions     :notForWindows:
+### Bash completions
 
 Bash has usually very good command completion facilities, which aren't accessible by default from Emacs (except by running `M-x term`). This package integrates them into regular commands such as `shell-command` and `shell`.
 
@@ -2120,7 +1649,7 @@ when rendering the .pdf:
     (add-hook 'pdf-view-mode-hook (lambda() (linum-mode -1)))
 
 
-### ChatGPT <a id="org1ac14c6"></a>
+### ChatGPT
 
 In order to get some help from AI I decided to give it a try inside
 Emacs.
@@ -2156,9 +1685,6 @@ There are tons of pages about it.
     
         (setq org-ai-openai-api-token "<ENTER YOUR API TOKEN HERE>")
     
-    In case you have more openai accounts/keys you may
-    replicate the above line inserting another API keys.
-    
     1.  Useful commands/shortcuts:
     
         `org-ai-mark-block-contents` - marks the contents of the current
@@ -2169,25 +1695,6 @@ There are tons of pages about it.
         `C-c Backspace` - kills the ai region where the cursor is located (
         `C-c DEL` does not work in my case, see `org-ai.el` to view other
         keybindings...)
-    
-    2.  ChatGPT session blocks export with `engraved`
-    
-        <a id="org5f7065b"></a>
-        
-        In order to flawlessly export ChatGPT sessions
-        placed inside `#+begin_ai #+end_ai`
-        we need to define `ai` environement in latex for
-        engraved exports
-        (see [1.5.9.13](#orga6a4dca))
-        That is why we need to update
-        `org-latex-engraved-preamble`
-        introduction in section [1.5.9.13](#orga6a4dca).
-        
-        In fact, updating this variable (as in the code commented out above)
-        has no effect on the variable, so I decided to move this piece
-        of code to [1.5.9.13](#orga6a4dca), where I repeated default
-        setting of `org-latex-engraved-preamble` with necessary lines
-        added at the end of the string.
 
 2.  gptel
 
@@ -2380,73 +1887,50 @@ loading properly.
     Similar solution is given [here](https://emacs.stackexchange.com/questions/7742/what-is-the-easiest-way-to-open-the-folder-containing-the-current-file-by-the-de) (actually, I did not test it).
 
 
-### Emailing in Emacs
+### ABANDONED Emailing in Emacs
 
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    ;;;; Email configuration >>>>>>>>>>>>
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+As a temporary workaround I decided to try [1.4.18](#org077f9b3).
 
-<https://www.gnu.org/software/emacs/manual/html_mono/smtpmail.html>
+Basing on  [this post](https://www.reddit.com/r/emacs/comments/4rl0a9/email_in_emacs_i_want_to_but_wow_its_overwhelming/) I decided to perform configuration of email service 
+within Emacs in three steps. Each of them takes care of one of the 
+following problems
 
-Snippet for sending email from inside emacs:
+-   fetching emails
+-   sending emails
+-   viewing emails.
 
-    (progn
-      (mail)
-      (mail-to) (insert "address@sth.com")
-      (mail-subject) (insert "Subject ")
-      (mail-text) (insert "body of mail")
-      (mail-send))
+1.  Links that can be useful:
 
-1.  DEPRECATED OLD Approaches
+    -   <https://www.reddit.com/r/emacs/comments/4rl0a9/email_in_emacs_i_want_to_but_wow_its_overwhelming/>
+    -   <https://www.emacswiki.org/emacs/GettingMail>
+    -   <https://www.jonatkinson.co.uk/posts/syncing-gmail-with-mbsync/>
+    -   <https://isync.sourceforge.io>
+    -   <https://brian-thompson.medium.com/setting-up-isync-mbsync-on-linux-e9fe10c692c0>
+    -   <https://wiki.archlinux.org/title/isync>
+    -   <https://www.maketecheasier.com/use-email-within-emacs/>
 
-    As a temporary workaround I decided to try [1.5.18](#orgab0a325).
+2.  ABANDONED Another approach: External Editor Revived -- a Thunderbird extension
+
+    External Editor Revived is a Thunderbird extension that allows 
+    using external editor (vim/emacs/...) to edit your mails.
     
-    Basing on  [this post](https://www.reddit.com/r/emacs/comments/4rl0a9/email_in_emacs_i_want_to_but_wow_its_overwhelming/) I decided to perform configuration of email service 
-    within Emacs in three steps. Each of them takes care of one of the 
-    following problems
+    I had problems with installing necessary binary 
+    (<https://github.com/Frederick888/external-editor-revived/releases/download/v0.6.0/ubuntu-latest-gnu-native-messaging-host-v0.6.0.zip>)
+    due to lacking dependencies:
     
-    -   fetching emails
-    -   sending emails
-    -   viewing emails.
+        ./external-editor-revived: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.33' not found (required by ./external-editor-revived)
+        ./external-editor-revived: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.32' not found (required by ./external-editor-revived)
+        ./external-editor-revived: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.34' not found (required by ./external-editor-revived)
     
-    1.  Links that can be useful:
-    
-        -   <https://www.reddit.com/r/emacs/comments/4rl0a9/email_in_emacs_i_want_to_but_wow_its_overwhelming/>
-        -   <https://www.emacswiki.org/emacs/GettingMail>
-        -   <https://www.jonatkinson.co.uk/posts/syncing-gmail-with-mbsync/>
-        -   <https://isync.sourceforge.io>
-        -   <https://brian-thompson.medium.com/setting-up-isync-mbsync-on-linux-e9fe10c692c0>
-        -   <https://wiki.archlinux.org/title/isync>
-        -   <https://www.maketecheasier.com/use-email-within-emacs/>
-    
-    2.  ABANDONED Another approach: External Editor Revived -- a Thunderbird extension
-    
-        External Editor Revived is a Thunderbird extension that allows 
-        using external editor (vim/emacs/...) to edit your mails.
-        
-        I had problems with installing necessary binary 
-        (<https://github.com/Frederick888/external-editor-revived/releases/download/v0.6.0/ubuntu-latest-gnu-native-messaging-host-v0.6.0.zip>)
-        due to lacking dependencies:
-        
-            ./external-editor-revived: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.33' not found (required by ./external-editor-revived)
-            ./external-editor-revived: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.32' not found (required by ./external-editor-revived)
-            ./external-editor-revived: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.34' not found (required by ./external-editor-revived)
-        
-        so I abandoned this idea at this stage.
-        
-            ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-            ;;;; <<<<<<<<<<<<<< Email configuration 
-            ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    so I abandoned this idea at this stage.
 
 
-### Emacs-everywhere
-
-<a id="orgab0a325"></a>
+### Emacs-everywhere <a id="org077f9b3"></a>
 
 Repository of the package and some basic information can be found
 [here](https://github.com/tecosaur/emacs-everywhere/).
 
-1.  Install package `emacs-everywhere` from melpa ([1.4.2](#orgadd0263))
+1.  Install package `emacs-everywhere` from melpa ([1.3.2](#orgdc57bf1))
 2.  Add system-wide shortcut for the command 
     
         #!/bin/bash
@@ -2556,7 +2040,7 @@ Tutorial by [Protesilaos Stavrou](https://www.youtube.com/watch?v=NkhgIB64zgc).
 
 ### Load Emacs theme of your preference
 
-1.  Modus themes by Protesilaos Stavrou <a id="org0e9e27e"></a>
+1.  Modus themes by Protesilaos Stavrou <a id="org9b1be9b"></a>
 
     -   [Author's page](https://protesilaos.com/codelog/2021-01-11-modus-themes-review-select-faint-colours/)
     -   [Youtube's tutorial](https://www.youtube.com/watch?v=JJPokfFxyFo)
@@ -2700,10 +2184,10 @@ a global shortcut...
 
 3.  ob-octave-fix.el
 
-    <a id="org745fd82"></a>
+    <a id="org87b07b3"></a>
     
     The discussion on this is thread can be found in section
-    [1.5.9.7](#orge8c1913) so I here I just include the solution, namely
+    [1.4.9.7](#orgb49ba2f) so I here I just include the solution, namely
     I load fixed library.
     
         ;; octave/matlab-fix
@@ -2718,115 +2202,16 @@ a global shortcut...
             (add-to-list 'load-path "~/.emacs.d/myarch")
             (require 'MB-org-special-block-extras)
 
-5.  ox-extra for `:ignore:` tag
-
-    `ignore` tag functionality is very useful. It is implemented in
-    [`ox-extra.el`](https://github.com/Fuco1/org-mode/blob/master/contrib/lisp/ox-extra.el) library. Unfortunately I couldn't find a way how to
-    install it via emacs repositories...
-    
-    So, in order to have them enabled emacs-wide
-    I have downloaded it and here it is loaded.
-    
-        ;; sunrise
-        (add-to-list 'load-path "~/.emacs.d/manual-download/ox-extra")
-        (require 'ox-extra)
-        (ox-extras-activate '(ignore-headlines))
-
-6.  Other packages
+5.  Other packages
 
         ;; org to ipython exporter
         ;;(use-package ox-ipynb
         ;  :load-path "~/.emacs.d/manual-download/ox-ipynb")
 
 
-### Blogging
-
-1.  Blog stencil
-
-    Auxiliary function that generates predefined stencil for blog posts
-    
-        (defun cissic-blog-stencil  (title )
-         "Create and open a file with the given stencil."
-         (interactive "sEnter the title: ")
-         (let* ((date (format-time-string "%Y-%m-%d"))
-                (dateDay (format-time-string "%Y-%m-%d %a"))
-                (titleUnspaced (replace-regexp-in-string " " "-" title))
-                (file-name (concat date "-" (downcase titleUnspaced) ".org"))
-                (file-path (concat "~/projects/cissic.github.io/mysource/public-notes-org/" file-name))
-        
-                (stencil (concat "#+TITLE: " title "\n"
-                                 "#+DESCRIPTION: \n"
-                                 "#+AUTHOR: cissic \n"
-                                 "#+DATE: <" dateDay ">\n"
-                                 "#+TAGS: \n"
-                                 "#+OPTIONS: -:nil\n"
-                                 "\n"
-                                 "* TODO " title "\n"
-                                 ":PROPERTIES:\n"
-                                 ":PRJ-DIR: ./" date "-" (car (split-string titleUnspaced)) "/\n"
-                                 ":END:\n"
-                                 "\n"
-                                 "** Problem description\n"
-                                 "#+begin_src org :tangle (concat (org-entry-get nil \"PRJ-DIR\" t) \"script.org\") :mkdirp yes :exports none :results none\n"
-                                 "\n"
-                                 "#+end_src\n"
-                                 ))) 
-           (with-temp-file file-path
-             (insert stencil))
-           (find-file file-path)))
-
-2.  org entries
-
-        (defun mb/org-entry-stencil  (title )
-         "Create and open a file with the given stencil."
-         (interactive "sEnter the title: ")
-         (let* ((date (format-time-string "%Y.%m.%d"))
-                (dateDay (format-time-string "%Y-%m-%d %a"))
-                (titleUnspaced (replace-regexp-in-string " " "-" title))
-                (file-name (concat date "-" (downcase titleUnspaced) ".org"))
-                (file-path (concat "~/org/" file-name))
-        
-                (stencil (concat "#+TITLE: " title "\n"
-                                 "#+DESCRIPTION: \n"
-                                 "#+AUTHOR: \n"
-                                 "#+DATE: <" dateDay ">\n"
-                                 "#+TAGS: \n"
-                                 "#+OPTIONS: -:nil\n"
-                                 "\n"
-                                 ))) 
-           (with-temp-file file-path
-             (insert stencil))
-           (find-file file-path)
-           (goto-char (point-max))
-           ))
-    
-        (defun mb/orgpriv-entry-stencil  (title )
-         "Create and open a file with the given stencil."
-         (interactive "sEnter the title: ")
-         (let* ((date (format-time-string "%Y.%m.%d"))
-                (dateDay (format-time-string "%Y-%m-%d %a"))
-                (titleUnspaced (replace-regexp-in-string " " "-" title))
-                (file-name (concat date "-" (downcase titleUnspaced) ".org"))
-                (file-path (concat "~/orgpriv/" file-name))
-        
-                (stencil (concat "#+TITLE: " title "\n"
-                                 "#+DESCRIPTION: \n"
-                                 "#+AUTHOR: \n"
-                                 "#+DATE: <" dateDay ">\n"
-                                 "#+TAGS: \n"
-                                 "#+OPTIONS: -:nil\n"
-                                 "\n"
-                                 ))) 
-           (with-temp-file file-path
-             (insert stencil))
-           (find-file file-path)
-           (goto-char (point-max))
-           ))
-
-
 ### TODO The end
 
-1.  Workgroups (should be executed at the end of init.el) <a id="org0e55d7c"></a>
+1.  Workgroups (should be executed at the end of init.el) <a id="orge7c7884"></a>
 
     <https://tuhdo.github.io/emacs-tutor3.html>
     
@@ -2923,11 +2308,11 @@ a global shortcut...
 
 3.  DEPRECATED Restoring previous session
 
-    This section is deprecated in favour of [`workgroups2 package`](#org0e55d7c).
+    This section is deprecated in favour of [`workgroups2 package`](#orge7c7884).
     
     This way of restoring session throws some warnings and needs additional
     confirmations so I give it up. Simple `(desktop-save-mode 1)` which is 
-    included [in the beginning of `init.el`](#org7e2ed94) works ok.
+    included [in the beginning of `init.el`](#org8b92d9e) works ok.
     
         ;; Restore the "desktop" - do this as late as possible
         (if first-time
@@ -2961,17 +2346,17 @@ a global shortcut...
         (message "All done in init.el.")
 
 
-## Dependencies of the presented Emacs configuration <a id="org68174f9"></a>:
+## Dependencies of the presented Emacs configuration: <a id="org66639f1"></a>
 
 The list of external applications that this script is dependent on:
 
 -   git
 -   LaTeX distribution (for org to latex exporters)
 
--   xclip ([1.5.18](#orgab0a325))
--   xdotool ([1.5.18](#orgab0a325))
--   xprop ([1.5.18](#orgab0a325)) - this is not a package but executable
--   xwininfo ([1.5.18](#orgab0a325)) - this is not a package but executable
+-   xclip ([1.4.18](#org077f9b3))
+-   xdotool ([1.4.18](#org077f9b3))
+-   xprop ([1.4.18](#org077f9b3)) - this is not a package but executable
+-   xwininfo ([1.4.18](#org077f9b3)) - this is not a package but executable
 
 
 ## Some useful information and links:
