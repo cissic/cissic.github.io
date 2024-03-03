@@ -114,7 +114,7 @@ it's better to keep whole .emacs.d directory as a git repository and
 make a commit before executing this script. Then, in case any problems
 you can go back to restore properly working emacs installation.
 Before running this script you should have a git repository initialized in emacs
-directory and git itself installed in the system (see Sec. [1.5](#org9fa1aa1)).
+directory and git itself installed in the system (see Sec. [1.5](#org4c05194)).
 Synchronization of the local repository with the remote one is not
 performed in this script. It should be performed explicitely by the user
 in a convenient time.
@@ -210,7 +210,7 @@ In Emacs 27.1 it [shouldn't be necessary to use](https://emacs.stackexchange.com
 
 ### The main part of the installation script - list of the packages
 
-<a id="orgc78fcab"></a>
+<a id="orgd4dca7d"></a>
 
 I used to have `(defvar my-packages ...` instead of `(setq my-packages ...` 
 below but... **Do not** use `defvar` for declaring a list of packages to be installed!
@@ -327,7 +327,7 @@ for now. An interesting discussion about this can be found [here](https://www.re
 
 1.  DEPRECATED Setting an auxiliary variable
 
-    This section is deprecated in favour of [`workgroups2 package`](#org4f053bb).
+    This section is deprecated in favour of [`workgroups2 package`](#orgdd27f99).
     
         ;; This file is designed to be re-evaled; use the variable first-time
         ;; to avoid any problems with this.
@@ -368,7 +368,7 @@ proactively.
 Here are global Emacs customization. 
 If necessary some useful infomation or link is added to the customization.
 
-1.  Self-descriptive oneliners <a id="orgc6b0c72"></a>
+1.  Self-descriptive oneliners <a id="org3a8ef7d"></a>
 
     Remarks:
     At around May 2023 I stopped using `global-linum-mode` because
@@ -473,14 +473,14 @@ If necessary some useful infomation or link is added to the customization.
         ;; (set-frame-font "liberation mono 11" nil t) ; Set default font
     
     Due to  due to the  problems with fonts in `emacsclient/daemonp`
-    instances font is set now in the section [1.4.10](#orgb9bffa1).
+    instances font is set now in the section [1.4.13](#orge77abd7).
 
 7.  Highlight on an active window/buffer
 
     Although the active window can be recognized
     by the cursor which blinking in it, sometimes it is hard to
     find in on the screen (especially if you use a colourful theme
-    like [1.4.10.1](#org3123408).
+    like [1.4.13.1](#orga9c0769).
     
     I found a [post](https://stackoverflow.com/questions/33195122/highlight-current-active-window) adressing this issue.
     Although the accepted answer is using 
@@ -722,7 +722,7 @@ If necessary some useful infomation or link is added to the customization.
           )
           ;; <- Fill column indicator
     
-    -   and add this hook per each required mode (this is done in [1.4.7](#org3c02fa2) section
+    -   and add this hook per each required mode (this is done in [1.4.7](#org25504aa) section
         of this document
 
 12. Turning on/off beeping
@@ -736,7 +736,7 @@ If necessary some useful infomation or link is added to the customization.
         (setq-default visible-bell t) 
         (setq ring-bell-function 'ignore)
 
-13. Ibuffer - an advanced replacement for BufferMenu <a id="org0928c68"></a>
+13. Ibuffer - an advanced replacement for BufferMenu <a id="org6a4262a"></a>
 
     Description of the package is [here](https://www.emacswiki.org/emacs/IbufferMode).
     
@@ -795,7 +795,7 @@ If necessary some useful infomation or link is added to the customization.
     
     2.  Ibuffer interactive way
     
-        In [1.4.3.13](#org0928c68) there a nice shortcut to do this. You can select all
+        In [1.4.3.13](#org6a4262a) there a nice shortcut to do this. You can select all
         the files of the given mode with:
         
             * M
@@ -880,7 +880,7 @@ ido/smex vs ivy/counsel/swiper vs helm
         (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command) 
         ;; <- smex
 
-3.  TODO Ivy (for testing) <a id="org9fb8679"></a>
+3.  TODO Ivy (for testing) <a id="orgd340f2b"></a>
 
     Furthermore, according to [some other users](https://ruzkuku.com/emacs.d.html#org804158b)
     "Ivy is simpler (and faster) than Helm but more powerful than Ido".
@@ -1074,11 +1074,11 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
     files to Beamer. In order one needs to create appropriate
     init file with settings for async export and
     set `org-export-async-init-file` variable as path to this file (see 
-    [1.4.7.4.1](#org08ef1ba)).
+    [1.4.7.4.1](#org1dfc560)).
     
     1.  Setting `org-export-async-init-file` to avoid failure while exporting to Beamer
     
-        <a id="org08ef1ba"></a>
+        <a id="org1dfc560"></a>
         
         Org-beamer **async** exporter may fail because of lacking
         `org-export-async-init-file` 
@@ -1166,7 +1166,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
 
 1.  oc [org-citations]
 
-    1.  Bibliography <a id="org96aa36c"></a>
+    1.  Bibliography <a id="orgdb0795c"></a>
     
         In Org 9.6 we do not need explicitely load `oc` libraries.
         Everything is covered in my post concerning bibliography and org-mode.
@@ -1348,7 +1348,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
 
 7.  Fix for Octave/Matlab org-babel - problems with matlab in org-babel
 
-    <a id="orge2e17c2"></a>
+    <a id="orgbf5e73e"></a>
     <http://gewhere.github.io/blog/2017/12/19/setup-matlab-in-emacs-and-babel-orgmode/>
     
         
@@ -1374,7 +1374,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
     <https://github.com/karthink/.emacs.d/blob/master/plugins/ob-octave-fix.el>
     
     In the end I just downloaded the file and the inclusion of this package is
-    done in section [1.4.10.2](#orgeb87c9b).
+    done in section [1.4.13.2](#orga7e2985).
     
     the one I already had to `ob-octave-fixOLDER.el`). Previous version
     of the file didn't seem to resolve the problem.
@@ -1417,29 +1417,240 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
             plot([1 2],[1 2])
             print -dpng ./images/plot.png ;
 
+8.  Set path to Python executable to work in org-babel code block
 
-### Emacs-everywhere <a id="orgb9bffa1"></a>
+    Pythonic org-babel code blocks like the one below:
+    
+        print("Hello world")
+    
+    don't work out-of-the-box.
+    The similar problem for `R` can be found [here](https://stackoverflow.com/questions/54007309/problem-org-babel-code-does-not-work-with-r).
+    
+    In order to fix the problem you need to
+    explicitely set the path to your
+    Python interpreter. 
+    
+        ;; Python in org-babel
+        (setq org-babel-python-command "/bin/python3")
+    
+    Two observations:
+    
+    -   `python script.py` executed in command line works ok
+    -   there is no `python` comannd in `/bin/` directory.
+    
+    An interesting discussion on python/python2/python3 related issues can be found [here](https://stackoverflow.com/questions/6908143/should-i-put-shebang-in-python-scripts-and-what-form-should-it-take).
+    
+    Another interesting remark about python in org-babel is available [here](https://emacs.stackexchange.com/a/41290). The following code block
+    
+        #+begin_src python
+        ,print("Hello world")
+        #+end_src
+    
+    won't work as expected. You need to add `results output` to get string printed
+    by python in results block in org.
 
-1.  Modus themes by Protesilaos Stavrou <a id="org3123408"></a>
+9.  Tailoring org-mode to markdown export
+
+    When exporting to markdown I want to add some keywords in a special format to
+    the preamble of .md file.
+    [How to do that is described here.](https://emacs.stackexchange.com/questions/74505/how-can-i-add-specific-text-to-the-content-generated-by-org-mode-export-to-mark#74513)
+    
+        ;; **** org-to-markdown exporter customization  -> 
+        
+        (defun org-export-md-format-front-matter ()
+          (let* ((kv-alist (org-element-map (org-element-parse-buffer 'greater-element)
+                               'keyword
+                             (lambda (keyword)
+                               (cons (intern (downcase (org-element-property :key keyword)))
+                                     (org-element-property :value keyword)))))
+                 (lines (mapcar (lambda (kw)
+                                  (let ((val (alist-get kw kv-alist)))
+                                    (format (pcase kw
+                                              ('author "%s: %s")
+                                              ((or 'tags 'title) "%s: '%s'")
+                                              (_ "%s: %s"))
+                                            (downcase (symbol-name kw))
+                                            (pcase kw
+                                              ('date (substring val 1 -1))
+                                              (_ val)))))
+                                '(author date tags title))))
+            (concat "---\n" (concat (mapconcat #'identity lines "\n")) "\n---")))
+        
+        (defun my/org-export-markdown-hook-function (backend)
+            (if (eq backend 'md)
+                (insert (org-export-md-format-front-matter) "\n")))
+    
+    In the beginning the line below where hook is added was uncommented because
+    of my unawareness of how Emacs works.
+    Now I add the hook below per each org-file and this line is the cause
+    of unwanted behaviour that the required information (title, tags, etc.) is
+    added twice in exported `md` file. So I comment out the line below,
+    however in the free time I should supplement all the older posts with this line.
+    (TODO!)
+    
+        ;; This hook should be added per file in my org posts. Unfortunately, so far I don't know
+        ;; how to do this.
+        ;; (add-hook 'org-export-before-processing-hook #'my/org-export-markdown-hook-function)
+    
+    Besides, in order to have markdown exporter options in menu appearing after
+    `C-c C-e` you need to add 
+    ([Link 1](https://stackoverflow.com/questions/22988092/emacs-org-mode-export-markdown/22990257#22990257), [Link 2](https://emacs.stackexchange.com/questions/4279/exporting-from-org-mode-to-markdown)):
+    
+        
+        (require 'ox-md nil t)
+        
+        ;; <- **** org-to-markdown exporter customization
+
+10. Miscellaneous oneliners
+
+        ;; alphabetical ordered lists
+        (setq org-list-allow-alphabetical t)
+
+11. TODO Asynchronous babel sessions
+
+    ob-comint.el
+
+12. LaTeX fragments in org-mode source code
+
+    To have nice-coloured latex syntax in <span class="underline">Emacs<sub>editor</sub></span> while writing
+    in org-mode you need to embrace it with
+    `#+begin_export latex` and `#+end_export` keywords ([source](https://emacs.stackexchange.com/questions/27866/syntax-highlighting-in-org-mode-begin-latex-block)).
+    
+    Another hints can be found [here](https://lucidmanager.org/productivity/ricing-org-mode/).
+
+13. Engraved - the better (?) way of having nice source code formatting
+
+    Following some internet posts about `Engraved` package I decided to give it a try. We'll if it works better than minted (which has obvious flaws, such as dependency on external code or slowing down
+    overall compilation process)
+    
+    The installation process is easier than with minted. All you need to do is to install package `engrave-faces` (it's done in `install-packages.el`) and then set
+    
+        ;; org-to-latex exporter to have nice code formatting
+        (setq org-latex-src-block-backend 'engraved)
+
+14. How to properly deal with picture/figure size attributes when picture is produced by org-babel block
+
+    -   <https://emacs.stackexchange.com/a/59902/30035>
+    
+    1.  Making asynchronous exporter deals easily with `minted` source code colorization
+    
+            ;; org-to-latex exporter to have nice code formatting
+            (setq org-latex-listings 'minted
+                  org-export-with-sub-superscripts 'nil
+                  org-latex-minted-options '(("bgcolor=lightgray") ("frame" "lines"))
+                  org-latex-packages-alist '(("" "minted"))
+                  org-latex-pdf-process
+                  '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+                    "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+                    "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+    
+    2.  TODO Problems with passing "Local variables:" to asynchronous exporter
+
+15. CDLatex installed in order to ease working with LaTeX in org-mode
+
+    The special mode `org-cdlatex-mode` is included in `org` package.
+    In order to have it working properly we need to install `cdlatex`
+    itself. This can be done in
+    [1.3.2](#org1098bd0).
+    
+    Link to `org-cdlatex-mode` description:
+    <http://doc.endlessparentheses.com/Fun/org-cdlatex-mode.html>.
+    
+    After launching `org-cdlatex-mode` you can insert latex environments
+    by typing:
+    
+        C-c {
+
+16. Reftex for managing references
+
+    [`Reftex`](https://www.gnu.org/software/emacs/manual/html_mono/reftex.html)
+    is preinstalled since Emacs 20.2, however in order to
+    have it working you need to [install `auctex` package](https://emacs.stackexchange.com/questions/35179/reftex-complete-failed-with-wrong-type-argument-stringp-nil)! 
+    
+    Then you can turn on `reftex` per a buffer via:
+    `reftex-mode`.
+    
+    At the beginning type:
+    
+        C-c = (reftex-toc)
+    
+    and choose `r` to generate a list of all labels, references in the
+    document.
+    
+    From now on, every time you type `C-c =` `reftex` menu appears
+    on the top of the current buffer prompting the actions you can
+    take.
+    
+    The problem with `reftex` is that it does not recognize
+    org-mode references added by `#+NAME:` `#+LABEL:` etc.
+    
+    `org-ref` [is said to handle this](https://emacs.stackexchange.com/questions/9767/can-reftex-be-used-with-org-label), so maybe in the future I will
+    return to this package. As for now I'm going to work with `reftex`
+    and LaTeX tags.
+
+17. Listing name tags of environments
+
+    Based on [this page](https://emacs.stackexchange.com/questions/77326/how-to-display-the-list-of-all-name-tags-is-org-mode-document).
+    
+        ;; Managing org-mode #+NAME properties like in reftex-mode
+        (defun my/get-name (e)
+              (org-element-property :name e))
+        
+        (defun my/latex-environment-names ()
+              (org-element-map (org-element-parse-buffer) 'latex-environment #'my/get-name))
+        
+        (defun my/report-latex-environment-names ()
+            (interactive)
+            (message (format "%S" (my/latex-environment-names))))
+        
+          (define-key org-mode-map (kbd "C-z z") #'my/report-latex-environment-names)
+
+
+### TODO Flyspell (TODO: dive deeper into the package and its capabilities)
+
+<https://ruzkuku.com/emacs.d.html#org804158b>
+<https://www.emacswiki.org/emacs/FlySpell>
+
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;; *** Flyspell 
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+### Flymake/Flycheck
+
+<https://www.masteringemacs.org/article/spotlight-flycheck-a-flymake-replacement>
+
+In Emacs 27.1 `flymake` is said to be competitive with `flycheck` again.
+It is built-in in Emacs. As for now, I'm gonna use `flymake`.
+
+
+### Bash completions
+
+Bash has usually very good command completion facilities, which aren't accessible by default from Emacs (except by running `M-x term`). This package integrates them into regular commands such as `shell-command` and `shell`.
+
+
+### Emacs-everywhere <a id="orge77abd7"></a>
+
+1.  Modus themes by Protesilaos Stavrou <a id="orga9c0769"></a>
 
 2.  ob-octave-fix.el
 
-    <a id="orgeb87c9b"></a>
+    <a id="orga7e2985"></a>
 
-3.  Workgroups (should be executed at the end of init.el) <a id="org4f053bb"></a>
+3.  Workgroups (should be executed at the end of init.el) <a id="orgdd27f99"></a>
 
 
-## Dependencies of the presented Emacs configuration: <a id="org9fa1aa1"></a>
+## Dependencies of the presented Emacs configuration: <a id="org4c05194"></a>
 
 The list of external applications that this script is dependent on:
 
 -   git
 -   LaTeX distribution (for org to latex exporters)
 
--   xclip ([1.4.10](#orgb9bffa1))
--   xdotool ([1.4.10](#orgb9bffa1))
--   xprop ([1.4.10](#orgb9bffa1)) - this is not a package but executable
--   xwininfo ([1.4.10](#orgb9bffa1)) - this is not a package but executable
+-   xclip ([1.4.13](#orge77abd7))
+-   xdotool ([1.4.13](#orge77abd7))
+-   xprop ([1.4.13](#orge77abd7)) - this is not a package but executable
+-   xwininfo ([1.4.13](#orge77abd7)) - this is not a package but executable
 
 
 ## Some useful information and links:

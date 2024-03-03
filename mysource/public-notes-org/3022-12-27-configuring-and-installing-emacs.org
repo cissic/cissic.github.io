@@ -1650,271 +1650,269 @@ in generated pdf.
 [[file:./images/plot.png]]
 
 
-# **** Set path to Python executable to work in org-babel code block
-# Pythonic org-babel code blocks like the one below:
+**** Set path to Python executable to work in org-babel code block
+Pythonic org-babel code blocks like the one below:
 
-# #+begin_src python :results output
-# print("Hello world")
-# #+end_src
-# don't work out-of-the-box.
-# The similar problem for ~R~ can be found [[https://stackoverflow.com/questions/54007309/problem-org-babel-code-does-not-work-with-r][here]].
+#+begin_src python :results output
+print("Hello world")
+#+end_src
+don't work out-of-the-box.
+The similar problem for ~R~ can be found [[https://stackoverflow.com/questions/54007309/problem-org-babel-code-does-not-work-with-r][here]].
 
-# In order to fix the problem you need to
-# explicitely set the path to your
-# Python interpreter. 
+In order to fix the problem you need to
+explicitely set the path to your
+Python interpreter. 
 
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
-# ;; Python in org-babel
-# (setq org-babel-python-command "/bin/python3")
-# #+end_src
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+;; Python in org-babel
+(setq org-babel-python-command "/bin/python3")
+#+end_src
 
-# Two observations:
-# - ~python script.py~ executed in command line works ok
-# - there is no ~python~ comannd in ~/bin/~ directory.
+Two observations:
+- ~python script.py~ executed in command line works ok
+- there is no ~python~ comannd in ~/bin/~ directory.
 
-# An interesting discussion on python/python2/python3 related issues can be found [[https://stackoverflow.com/questions/6908143/should-i-put-shebang-in-python-scripts-and-what-form-should-it-take][here]].
+An interesting discussion on python/python2/python3 related issues can be found [[https://stackoverflow.com/questions/6908143/should-i-put-shebang-in-python-scripts-and-what-form-should-it-take][here]].
 
-# Another interesting remark about python in org-babel is available [[https://emacs.stackexchange.com/a/41290][here]]. The following code block
-# #+begin_src org
-#   ,#+begin_src python
-#   ,print("Hello world")
-#   ,#+end_src
-# #+end_src
+Another interesting remark about python in org-babel is available [[https://emacs.stackexchange.com/a/41290][here]]. The following code block
+#+begin_src org
+  ,#+begin_src python
+  ,print("Hello world")
+  ,#+end_src
+#+end_src
 
-# won't work as expected. You need to add ~results output~ to get string printed
-# by python in results block in org.
+won't work as expected. You need to add ~results output~ to get string printed
+by python in results block in org.
 
-# **** Tailoring org-mode to markdown export
-# When exporting to markdown I want to add some keywords in a special format to
-# the preamble of .md file.
-# [[https://emacs.stackexchange.com/questions/74505/how-can-i-add-specific-text-to-the-content-generated-by-org-mode-export-to-mark#74513][How to do that is described here.]]
-
-
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
-#   ;; **** org-to-markdown exporter customization  -> 
-
-#   (defun org-export-md-format-front-matter ()
-#     (let* ((kv-alist (org-element-map (org-element-parse-buffer 'greater-element)
-# 			 'keyword
-# 		       (lambda (keyword)
-# 			 (cons (intern (downcase (org-element-property :key keyword)))
-# 			       (org-element-property :value keyword)))))
-# 	   (lines (mapcar (lambda (kw)
-# 			    (let ((val (alist-get kw kv-alist)))
-# 			      (format (pcase kw
-# 					('author "%s: %s")
-# 					((or 'tags 'title) "%s: '%s'")
-# 					(_ "%s: %s"))
-# 				      (downcase (symbol-name kw))
-# 				      (pcase kw
-# 					('date (substring val 1 -1))
-# 					(_ val)))))
-# 			  '(author date tags title))))
-#       (concat "---\n" (concat (mapconcat #'identity lines "\n")) "\n---")))
-
-#   (defun my/org-export-markdown-hook-function (backend)
-#       (if (eq backend 'md)
-# 	  (insert (org-export-md-format-front-matter) "\n")))
-
-# #+end_src  
-
-# In the beginning the line below where hook is added was uncommented because
-# of my unawareness of how Emacs works.
-# Now I add the hook below per each org-file and this line is the cause
-# of unwanted behaviour that the required information (title, tags, etc.) is
-# added twice in exported ~md~ file. So I comment out the line below,
-# however in the free time I should supplement all the older posts with this line.
-# (TODO!)
-
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")   
-#   ;; This hook should be added per file in my org posts. Unfortunately, so far I don't know
-#   ;; how to do this.
-#   ;; (add-hook 'org-export-before-processing-hook #'my/org-export-markdown-hook-function)
-# #+end_src
-
-# Besides, in order to have markdown exporter options in menu appearing after
-# ~C-c C-e~ you need to add 
-# ([[https://stackoverflow.com/questions/22988092/emacs-org-mode-export-markdown/22990257#22990257][Link 1]], [[https://emacs.stackexchange.com/questions/4279/exporting-from-org-mode-to-markdown][Link 2]]):
-
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
-
-# (require 'ox-md nil t)
-
-# ;; <- **** org-to-markdown exporter customization
-# #+end_src
+**** Tailoring org-mode to markdown export
+When exporting to markdown I want to add some keywords in a special format to
+the preamble of .md file.
+[[https://emacs.stackexchange.com/questions/74505/how-can-i-add-specific-text-to-the-content-generated-by-org-mode-export-to-mark#74513][How to do that is described here.]]
 
 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+  ;; **** org-to-markdown exporter customization  -> 
 
-# **** DEPRECATED COMMENT Coloring ~code parts~ on export from org-mode to latex
-# NOTE (2023.12.01): I cannot remember why I needed this functionality... 
-# I guess it's overwritten by =minted= or =engraved=
-# exporting backends, isn't it?
+  (defun org-export-md-format-front-matter ()
+    (let* ((kv-alist (org-element-map (org-element-parse-buffer 'greater-element)
+			 'keyword
+		       (lambda (keyword)
+			 (cons (intern (downcase (org-element-property :key keyword)))
+			       (org-element-property :value keyword)))))
+	   (lines (mapcar (lambda (kw)
+			    (let ((val (alist-get kw kv-alist)))
+			      (format (pcase kw
+					('author "%s: %s")
+					((or 'tags 'title) "%s: '%s'")
+					(_ "%s: %s"))
+				      (downcase (symbol-name kw))
+				      (pcase kw
+					('date (substring val 1 -1))
+					(_ val)))))
+			  '(author date tags title))))
+      (concat "---\n" (concat (mapconcat #'identity lines "\n")) "\n---")))
 
-# Taken from [[https://emacs.stackexchange.com/questions/58993/how-color-code-on-export-from-org-mode-to-latex-pdf][here]]:
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
-#   ;; colorting ~code~ on org to latex export
-#   (defun tmp-latex-code-filter (text backend info)
-#     "red inline code"
-#     (when (org-export-derived-backend-p backend 'latex) 
-#       (format "{\\color{red} %s }" text)))
+  (defun my/org-export-markdown-hook-function (backend)
+      (if (eq backend 'md)
+	  (insert (org-export-md-format-front-matter) "\n")))
 
-#   (defun tmp-f-strike-through (s backend info) "")
-# #+end_src
+#+end_src  
 
+In the beginning the line below where hook is added was uncommented because
+of my unawareness of how Emacs works.
+Now I add the hook below per each org-file and this line is the cause
+of unwanted behaviour that the required information (title, tags, etc.) is
+added twice in exported ~md~ file. So I comment out the line below,
+however in the free time I should supplement all the older posts with this line.
+(TODO!)
 
-# **** Miscellaneous oneliners
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
-# ;; alphabetical ordered lists
-# (setq org-list-allow-alphabetical t)
-# #+end_src
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")   
+  ;; This hook should be added per file in my org posts. Unfortunately, so far I don't know
+  ;; how to do this.
+  ;; (add-hook 'org-export-before-processing-hook #'my/org-export-markdown-hook-function)
+#+end_src
 
-# **** TODO Asynchronous babel sessions
-# ob-comint.el
+Besides, in order to have markdown exporter options in menu appearing after
+~C-c C-e~ you need to add 
+([[https://stackoverflow.com/questions/22988092/emacs-org-mode-export-markdown/22990257#22990257][Link 1]], [[https://emacs.stackexchange.com/questions/4279/exporting-from-org-mode-to-markdown][Link 2]]):
 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
 
-# **** LaTeX fragments in org-mode source code
-# To have nice-coloured latex syntax in _Emacs_editor_ while writing
-# in org-mode you need to embrace it with
-# ~#+begin_export latex~ and ~#+end_export~ keywords ([[https://emacs.stackexchange.com/questions/27866/syntax-highlighting-in-org-mode-begin-latex-block][source]]).
+(require 'ox-md nil t)
 
-# Another hints can be found [[https://lucidmanager.org/productivity/ricing-org-mode/][here]].
-
-# **** DEPRECATED COMMENT Org to latex nice org-babel source code formatting
-# # exporting command
-# The following instructions are based on
-# [[https://stackoverflow.com/questions/46438516/how-to-encapsualte-code-blocks-into-a-frame-when-exporting-to-pdf][this post]].
-# Nice tutorial is [[https://orgmode.org/worg/org-tutorials/org-latex-export.html][here]].
+;; <- **** org-to-markdown exporter customization
+#+end_src
 
 
-# 1. We need to have Python installed and ~Pygments~ package.
-# #+begin_src
-#   pip install Pygments
-# #+end_src
+
+**** DEPRECATED COMMENT Coloring ~code parts~ on export from org-mode to latex
+NOTE (2023.12.01): I cannot remember why I needed this functionality... 
+I guess it's overwritten by =minted= or =engraved=
+exporting backends, isn't it?
+
+Taken from [[https://emacs.stackexchange.com/questions/58993/how-color-code-on-export-from-org-mode-to-latex-pdf][here]]:
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+  ;; colorting ~code~ on org to latex export
+  (defun tmp-latex-code-filter (text backend info)
+    "red inline code"
+    (when (org-export-derived-backend-p backend 'latex) 
+      (format "{\\color{red} %s }" text)))
+
+  (defun tmp-f-strike-through (s backend info) "")
+#+end_src
+
+
+**** Miscellaneous oneliners
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+;; alphabetical ordered lists
+(setq org-list-allow-alphabetical t)
+#+end_src
+
+**** TODO Asynchronous babel sessions
+ob-comint.el
+
+
+**** LaTeX fragments in org-mode source code
+To have nice-coloured latex syntax in _Emacs_editor_ while writing
+in org-mode you need to embrace it with
+~#+begin_export latex~ and ~#+end_export~ keywords ([[https://emacs.stackexchange.com/questions/27866/syntax-highlighting-in-org-mode-begin-latex-block][source]]).
+
+Another hints can be found [[https://lucidmanager.org/productivity/ricing-org-mode/][here]].
+
+**** DEPRECATED COMMENT Org to latex nice org-babel source code formatting
+# exporting command
+The following instructions are based on
+[[https://stackoverflow.com/questions/46438516/how-to-encapsualte-code-blocks-into-a-frame-when-exporting-to-pdf][this post]].
+Nice tutorial is [[https://orgmode.org/worg/org-tutorials/org-latex-export.html][here]].
+
+
+1. We need to have Python installed and ~Pygments~ package.
+#+begin_src
+  pip install Pygments
+#+end_src
    
-# 2. In org file preamble you need the line: ~#+LaTeX_HEADER: \usepackage{minted}~.
+2. In org file preamble you need the line: ~#+LaTeX_HEADER: \usepackage{minted}~.
 
-# 3. In init.el:
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
-# ;; org-to-latex exporter to have nice code formatting
-# (setq org-latex-listings 'minted
-#       org-export-with-sub-superscripts 'nil
-#       org-latex-minted-options '(("bgcolor=lightgray") ("frame" "lines"))
-#       org-latex-packages-alist '(("" "minted"))
-#       org-latex-pdf-process
-#       '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-#         "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-#         "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
-# #+end_src
+3. In init.el:
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
+;; org-to-latex exporter to have nice code formatting
+(setq org-latex-listings 'minted
+      org-export-with-sub-superscripts 'nil
+      org-latex-minted-options '(("bgcolor=lightgray") ("frame" "lines"))
+      org-latex-packages-alist '(("" "minted"))
+      org-latex-pdf-process
+      '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+        "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+        "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+#+end_src
 
-# *COMMENT*: The lines above should be also included in ~async-init.el~
-# to have colored syntax working during asynchronous export!
-
-
-# **** Engraved - the better (?) way of having nice source code formatting
-# Following some internet posts about =Engraved= package I decided to give it a try. We'll if it works better than minted (which has obvious flaws, such as dependency on external code or slowing down
-# overall compilation process)
-
-# The installation process is easier than with minted. All you need to do is to install package =engrave-faces= (it's done in =install-packages.el=) and then set
-
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
-# ;; org-to-latex exporter to have nice code formatting
-# (setq org-latex-src-block-backend 'engraved)
-# #+end_src
-
-# **** How to properly deal with picture/figure size attributes when picture is produced by org-babel block
-# - https://emacs.stackexchange.com/a/59902/30035
-
-# ***** Making asynchronous exporter deals easily with ~minted~ source code colorization
-
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "myarch/async_init.el")
-# ;; org-to-latex exporter to have nice code formatting
-# (setq org-latex-listings 'minted
-#       org-export-with-sub-superscripts 'nil
-#       org-latex-minted-options '(("bgcolor=lightgray") ("frame" "lines"))
-#       org-latex-packages-alist '(("" "minted"))
-#       org-latex-pdf-process
-#       '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-#         "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-#         "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
-# #+end_src
+*COMMENT*: The lines above should be also included in ~async-init.el~
+to have colored syntax working during asynchronous export!
 
 
-# # ;; # Local Variables:
-# # ;; # org-latex-listings: minted
-# # ;; # eval: (setq org-export-with-sub-superscripts nil)
-# # ;; # eval: (setq org-latex-packages-alist '(("" "minted")))
-# # ;; # eval: (setq org-latex-minted-options '(("bgcolor=lightgray") ("frame" "lines")))
-# # ;; # eval: (setq org-latex-pdf-process
-# # ;; #  '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-# # ;; #    "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-# # ;; #    "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
-# # ;; # org-src-preserve-indentation: t
-# # ;; # org-babel-min-lines-for-block-output: 0
-# # ;; # End:
+**** Engraved - the better (?) way of having nice source code formatting
+Following some internet posts about =Engraved= package I decided to give it a try. We'll if it works better than minted (which has obvious flaws, such as dependency on external code or slowing down
+overall compilation process)
 
-# ***** TODO Problems with passing "Local variables:" to asynchronous exporter
+The installation process is easier than with minted. All you need to do is to install package =engrave-faces= (it's done in =install-packages.el=) and then set
 
-# **** CDLatex installed in order to ease working with LaTeX in org-mode
-# The special mode ~org-cdlatex-mode~ is included in ~org~ package.
-# In order to have it working properly we need to install ~cdlatex~
-# itself. This can be done in
-# [[The main part of the installation script - list of the packages]].
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
+;; org-to-latex exporter to have nice code formatting
+(setq org-latex-src-block-backend 'engraved)
+#+end_src
 
-# Link to ~org-cdlatex-mode~ description:
-# http://doc.endlessparentheses.com/Fun/org-cdlatex-mode.html.
+**** How to properly deal with picture/figure size attributes when picture is produced by org-babel block
+- https://emacs.stackexchange.com/a/59902/30035
 
-# After launching ~org-cdlatex-mode~ you can insert latex environments
-# by typing:
-#  : C-c {
+***** Making asynchronous exporter deals easily with ~minted~ source code colorization
 
-
-# **** Reftex for managing references
-# [[https://www.gnu.org/software/emacs/manual/html_mono/reftex.html][~Reftex~]]
-# is preinstalled since Emacs 20.2, however in order to
-# have it working you need to [[https://emacs.stackexchange.com/questions/35179/reftex-complete-failed-with-wrong-type-argument-stringp-nil][install ~auctex~ package]]! 
-
-# Then you can turn on ~reftex~ per a buffer via:
-# ~reftex-mode~.
-
-# At the beginning type:
-#  : C-c = (reftex-toc)
-# and choose ~r~ to generate a list of all labels, references in the
-# document.
-
-# From now on, every time you type ~C-c =~ ~reftex~ menu appears
-# on the top of the current buffer prompting the actions you can
-# take.
-
-# The problem with ~reftex~ is that it does not recognize
-# org-mode references added by =#+NAME:= =#+LABEL:= etc.
-
-# ~org-ref~ [[https://emacs.stackexchange.com/questions/9767/can-reftex-be-used-with-org-label][is said to handle this]], so maybe in the future I will
-# return to this package. As for now I'm going to work with ~reftex~
-# and LaTeX tags.
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "myarch/async_init.el")
+;; org-to-latex exporter to have nice code formatting
+(setq org-latex-listings 'minted
+      org-export-with-sub-superscripts 'nil
+      org-latex-minted-options '(("bgcolor=lightgray") ("frame" "lines"))
+      org-latex-packages-alist '(("" "minted"))
+      org-latex-pdf-process
+      '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+        "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+        "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+#+end_src
 
 
+# ;; # Local Variables:
+# ;; # org-latex-listings: minted
+# ;; # eval: (setq org-export-with-sub-superscripts nil)
+# ;; # eval: (setq org-latex-packages-alist '(("" "minted")))
+# ;; # eval: (setq org-latex-minted-options '(("bgcolor=lightgray") ("frame" "lines")))
+# ;; # eval: (setq org-latex-pdf-process
+# ;; #  '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+# ;; #    "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+# ;; #    "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+# ;; # org-src-preserve-indentation: t
+# ;; # org-babel-min-lines-for-block-output: 0
+# ;; # End:
 
-# **** Listing name tags of environments
-# Based on [[https://emacs.stackexchange.com/questions/77326/how-to-display-the-list-of-all-name-tags-is-org-mode-document][this page]].
+***** TODO Problems with passing "Local variables:" to asynchronous exporter
+
+**** CDLatex installed in order to ease working with LaTeX in org-mode
+The special mode ~org-cdlatex-mode~ is included in ~org~ package.
+In order to have it working properly we need to install ~cdlatex~
+itself. This can be done in
+[[The main part of the installation script - list of the packages]].
+
+Link to ~org-cdlatex-mode~ description:
+http://doc.endlessparentheses.com/Fun/org-cdlatex-mode.html.
+
+After launching ~org-cdlatex-mode~ you can insert latex environments
+by typing:
+ : C-c {
+
+
+**** Reftex for managing references
+[[https://www.gnu.org/software/emacs/manual/html_mono/reftex.html][~Reftex~]]
+is preinstalled since Emacs 20.2, however in order to
+have it working you need to [[https://emacs.stackexchange.com/questions/35179/reftex-complete-failed-with-wrong-type-argument-stringp-nil][install ~auctex~ package]]! 
+
+Then you can turn on ~reftex~ per a buffer via:
+~reftex-mode~.
+
+At the beginning type:
+ : C-c = (reftex-toc)
+and choose ~r~ to generate a list of all labels, references in the
+document.
+
+From now on, every time you type ~C-c =~ ~reftex~ menu appears
+on the top of the current buffer prompting the actions you can
+take.
+
+The problem with ~reftex~ is that it does not recognize
+org-mode references added by =#+NAME:= =#+LABEL:= etc.
+
+~org-ref~ [[https://emacs.stackexchange.com/questions/9767/can-reftex-be-used-with-org-label][is said to handle this]], so maybe in the future I will
+return to this package. As for now I'm going to work with ~reftex~
+and LaTeX tags.
 
 
 
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
-#   ;; Managing org-mode #+NAME properties like in reftex-mode
-#   (defun my/get-name (e)
-# 	(org-element-property :name e))
-
-#   (defun my/latex-environment-names ()
-# 	(org-element-map (org-element-parse-buffer) 'latex-environment #'my/get-name))
-
-#   (defun my/report-latex-environment-names ()
-#       (interactive)
-#       (message (format "%S" (my/latex-environment-names))))
-
-#     (define-key org-mode-map (kbd "C-z z") #'my/report-latex-environment-names)
-# #+end_src
+**** Listing name tags of environments
+Based on [[https://emacs.stackexchange.com/questions/77326/how-to-display-the-list-of-all-name-tags-is-org-mode-document][this page]].
 
 
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
+  ;; Managing org-mode #+NAME properties like in reftex-mode
+  (defun my/get-name (e)
+	(org-element-property :name e))
+
+  (defun my/latex-environment-names ()
+	(org-element-map (org-element-parse-buffer) 'latex-environment #'my/get-name))
+
+  (defun my/report-latex-environment-names ()
+      (interactive)
+      (message (format "%S" (my/latex-environment-names))))
+
+    (define-key org-mode-map (kbd "C-z z") #'my/report-latex-environment-names)
+#+end_src
 
 
 
@@ -1922,94 +1920,96 @@ in generated pdf.
 
 
 
-# *** TODO Flyspell (TODO: dive deeper into the package and its capabilities)
-# https://ruzkuku.com/emacs.d.html#org804158b
-# https://www.emacswiki.org/emacs/FlySpell
-
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
-# ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-# ;; *** Flyspell 
-# ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-# #+end_src
 
 
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") :exports none
-# (flyspell-mode t)
+*** TODO Flyspell (TODO: dive deeper into the package and its capabilities)
+https://ruzkuku.com/emacs.d.html#org804158b
+https://www.emacswiki.org/emacs/FlySpell
 
-#     (defun flyspell-on-for-buffer-type ()
-#       "Enable Flyspell appropriately for the major mode of the current buffer.  Uses `flyspell-prog-mode' for modes derived from `prog-mode', so only strings and comments get checked.  All other buffers get `flyspell-mode' to check all text.  If flyspell is already enabled, does nothing."
-#       (interactive)
-#       (if (not (symbol-value flyspell-mode)) ; if not already on
-# 	(progn
-# 	  (if (derived-mode-p 'prog-mode)
-# 	    (progn
-# 	      (message "Flyspell on (code)")
-# 	      (flyspell-prog-mode))
-# 	    ;; else
-# 	    (progn
-# 	      (message "Flyspell on (text)")
-# 	      (flyspell-mode 1)))
-# 	  ;; I tried putting (flyspell-buffer) here but it didn't seem to work
-# 	  )))
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; *** Flyspell 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+end_src
+
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") :exports none
+(flyspell-mode t)
+
+    (defun flyspell-on-for-buffer-type ()
+      "Enable Flyspell appropriately for the major mode of the current buffer.  Uses `flyspell-prog-mode' for modes derived from `prog-mode', so only strings and comments get checked.  All other buffers get `flyspell-mode' to check all text.  If flyspell is already enabled, does nothing."
+      (interactive)
+      (if (not (symbol-value flyspell-mode)) ; if not already on
+	(progn
+	  (if (derived-mode-p 'prog-mode)
+	    (progn
+	      (message "Flyspell on (code)")
+	      (flyspell-prog-mode))
+	    ;; else
+	    (progn
+	      (message "Flyspell on (text)")
+	      (flyspell-mode 1)))
+	  ;; I tried putting (flyspell-buffer) here but it didn't seem to work
+	  )))
     
-#     (defun flyspell-toggle ()
-#       "Turn Flyspell on if it is off, or off if it is on.  When turning on, it uses `flyspell-on-for-buffer-type' so code-vs-text is handled appropriately."
-#       (interactive)
-#       (if (symbol-value flyspell-mode)
-# 	  (progn ; flyspell is on, turn it off
-# 	    (message "Flyspell off")
-# 	    (flyspell-mode -1))
-# 	  ; else - flyspell is off, turn it on
-# 	  (flyspell-on-for-buffer-type)))
+    (defun flyspell-toggle ()
+      "Turn Flyspell on if it is off, or off if it is on.  When turning on, it uses `flyspell-on-for-buffer-type' so code-vs-text is handled appropriately."
+      (interactive)
+      (if (symbol-value flyspell-mode)
+	  (progn ; flyspell is on, turn it off
+	    (message "Flyspell off")
+	    (flyspell-mode -1))
+	  ; else - flyspell is off, turn it on
+	  (flyspell-on-for-buffer-type)))
 
-#  (global-set-key (kbd "C-c f") 'flyspell-toggle )
+ (global-set-key (kbd "C-c f") 'flyspell-toggle )
 
-# (defun fd-switch-dictionary()
-#       (interactive)
-#       (let* ((dic ispell-current-dictionary)
-#     	 (change (if (string= dic "polish") "english" "polish")))
-#         (ispell-change-dictionary change)
-#         (message "Dictionary switched from %s to %s" dic change)
-#         ))
+(defun fd-switch-dictionary()
+      (interactive)
+      (let* ((dic ispell-current-dictionary)
+    	 (change (if (string= dic "polish") "english" "polish")))
+        (ispell-change-dictionary change)
+        (message "Dictionary switched from %s to %s" dic change)
+        ))
     
-#       (global-set-key (kbd "C-c s")   'fd-switch-dictionary)
-# #+end_src
+      (global-set-key (kbd "C-c s")   'fd-switch-dictionary)
+#+end_src
 
-# *** Flymake/Flycheck
+*** Flymake/Flycheck
 
-# https://www.masteringemacs.org/article/spotlight-flycheck-a-flymake-replacement
+https://www.masteringemacs.org/article/spotlight-flycheck-a-flymake-replacement
 
-# In Emacs 27.1 ~flymake~ is said to be competitive with ~flycheck~ again.
-# It is built-in in Emacs. As for now, I'm gonna use ~flymake~.
+In Emacs 27.1 ~flymake~ is said to be competitive with ~flycheck~ again.
+It is built-in in Emacs. As for now, I'm gonna use ~flymake~.
 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") :exports none
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; *** Flymake
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(flymake-mode t)
+#+end_src
+
+*** Bash completions
+Bash has usually very good command completion facilities, which aren't accessible by default from Emacs (except by running ~M-x term~). This package integrates them into regular commands such as ~shell-command~ and ~shell~.
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") :exports none
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; *** Bash completions
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(bash-completion-setup)
+#+end_src
+
+# *** YASnippet
 # #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") :exports none
 # ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-# ;; *** Flymake
+# ;; *** YASnippet
 # ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-# (flymake-mode t)
+# (yas-global-mode t) ; activate yasnippet
+# (yas/initialize)
 # #+end_src
-
-# *** Bash completions
-# Bash has usually very good command completion facilities, which aren't accessible by default from Emacs (except by running ~M-x term~). This package integrates them into regular commands such as ~shell-command~ and ~shell~.
-
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") :exports none
-# ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-# ;; *** Bash completions
-# ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-# (bash-completion-setup)
-# #+end_src
-
-# # *** YASnippet
-# # #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") :exports none
-# # ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-# # ;; *** YASnippet
-# # ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-# # (yas-global-mode t) ; activate yasnippet
-# # (yas/initialize)
-# # #+end_src
 
 
 # *** PDF-Tools
