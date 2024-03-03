@@ -1360,15 +1360,15 @@ Useful links:
 
 
 
-# **** citar (to check?)
-#      https://github.com/emacs-citar/citar
+**** citar (to check?)
+     https://github.com/emacs-citar/citar
 
-# *** Org customization: org-mode, org-babel ...
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") :exports none
-# ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-# ;; *** Org customization
-# ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-# #+end_src
+*** Org customization: org-mode, org-babel ...
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") :exports none
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; *** Org customization
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+end_src
 
 # **** Modyfing TODO-DONE sequence in org-mode
 # https://emacs.stackexchange.com/questions/31466/all-todos-how-to-set-different-colors-for-different-categories
