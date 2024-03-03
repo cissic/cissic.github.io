@@ -1418,6 +1418,9 @@ https://stackoverflow.com/questions/36197545/org-mode-latex-export-making-todos-
    ((string= todo "POSTPONED")(and todo (format "{\\color{blue}\\bfseries\\sffamily %s} " todo)))
    ((string= todo "DONE")(and todo (format "{\\color{green}\\bfseries\\sffamily %s} " todo)))
    )
+   (and priority (format "\\framebox{\\#%c} " priority))
+   text
+   (and tags
 
 #+end_src
 
