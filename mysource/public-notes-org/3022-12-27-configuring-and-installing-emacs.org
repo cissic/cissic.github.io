@@ -1319,86 +1319,86 @@ In order to add a hook to more than one modes we need to use a function (taken f
 
 
 
-# **** Change font color for specific mode (eww)
-# Based on [[https://stackoverflow.com/questions/27973721/how-set-colors-for-a-specific-mode][this]].
+**** Change font color for specific mode (eww)
+Based on [[https://stackoverflow.com/questions/27973721/how-set-colors-for-a-specific-mode][this]].
 
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
-# ;; Change font color for eww
-# (defun my-eww-mode-faces ()
-#   (face-remap-add-relative 'default '(:foreground "#BD8700")))
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
+;; Change font color for eww
+(defun my-eww-mode-faces ()
+  (face-remap-add-relative 'default '(:foreground "#BD8700")))
 
-# (add-hook 'eww-mode-hook 'my-eww-mode-faces)
-# #+end_src
+(add-hook 'eww-mode-hook 'my-eww-mode-faces)
+#+end_src
 
-# *** Bibliography - citations
-# **** oc [org-citations]
-# ***** Bibliography <<org-citations>>
-# # ____________________________________________________________________________78
+*** Bibliography - citations
+**** oc [org-citations]
+***** Bibliography <<org-citations>>
+# ____________________________________________________________________________78
 
-# In Org 9.6 we do not need explicitely load ~oc~ libraries.
-# Everything is covered in my post concerning bibliography and org-mode.
+In Org 9.6 we do not need explicitely load ~oc~ libraries.
+Everything is covered in my post concerning bibliography and org-mode.
 
-# # #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
-#   # ;; org citations
-#   # ;; (require 'oc)    ; probably not needed 
-#   # ;; (require 'oc-basic)
-#   # ;; (require 'oc-biblatex)
-# # #+end_src
-
-# Useful links:
-# - https://orgmode.org/manual/Citations.html
-# - https://kristofferbalintona.me/posts/202206141852/
-# - https://github.com/jkitchin/org-ref
-# - https://blog.tecosaur.com/tmio/2021-07-31-citations.html#fn.3
-# - https://emacs.stackexchange.com/questions/71817/how-to-export-bibliographies-with-org-mode
-# - https://www.reddit.com/r/emacs/comments/q4wa40/issues_with_new_orgcite_for_citations/
-# - https://nickgeorge.net/science/org-ref-setup/
-
-
-
-
-
-
-
-# **** citar (to check?)
-#      https://github.com/emacs-citar/citar
-
-# *** Org customization: org-mode, org-babel ...
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") :exports none
-# ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-# ;; *** Org customization
-# ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-# #+end_src
-
-# **** Modyfing TODO-DONE sequence in org-mode
-# https://emacs.stackexchange.com/questions/31466/all-todos-how-to-set-different-colors-for-different-categories
-
-# https://orgmode.org/manual/TODO-Extensions.html
 # #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
-# ;; customized todo-done sequence
-# (setq org-todo-keywords
-#   '(
-# (sequence "TODO" "????" "POSTPONED" "|" "DONE")
-# (sequence "TODO" "ABANDONED"  "|" "DEPRECATED" "DONE")
-# (sequence "TODO" "????" "ABANDONED" "POSTPONED" "|" "DEPRECATED" "DONE")
-# ))
-
-# (setq org-todo-keyword-faces
-# '(
-# ("????" . (:foreground "red" :weight bold))
-# ("POSTPONED" . (:foreground "blue" :weight bold))
-# ("ABANDONED" . (:foreground "orange" :weight bold))
-# ("DEPRECATED" . (:foreground "green" :weight bold))
-# )
-# )
+  # ;; org citations
+  # ;; (require 'oc)    ; probably not needed 
+  # ;; (require 'oc-basic)
+  # ;; (require 'oc-biblatex)
 # #+end_src
 
-# WARNING! When changing this variables in the middle of the emacs
-# session you need to restart org-mode (=M-x org-mode-restart=) to
-# to have them enabled ([[https://lists.gnu.org/archive/html/emacs-orgmode/2010-11/msg00130.html][source]])!
+Useful links:
+- https://orgmode.org/manual/Citations.html
+- https://kristofferbalintona.me/posts/202206141852/
+- https://github.com/jkitchin/org-ref
+- https://blog.tecosaur.com/tmio/2021-07-31-citations.html#fn.3
+- https://emacs.stackexchange.com/questions/71817/how-to-export-bibliographies-with-org-mode
+- https://www.reddit.com/r/emacs/comments/q4wa40/issues_with_new_orgcite_for_citations/
+- https://nickgeorge.net/science/org-ref-setup/
 
-# Furthermore, it may be more convenient to have this tags set for
-# individual file (=#+TODO:=) ([[https://orgmode.org/manual/Per_002dfile-keywords.html][link]]).
+
+
+
+
+
+
+**** citar (to check?)
+     https://github.com/emacs-citar/citar
+
+*** Org customization: org-mode, org-babel ...
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") :exports none
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; *** Org customization
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+end_src
+
+**** Modyfing TODO-DONE sequence in org-mode
+https://emacs.stackexchange.com/questions/31466/all-todos-how-to-set-different-colors-for-different-categories
+
+https://orgmode.org/manual/TODO-Extensions.html
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+;; customized todo-done sequence
+(setq org-todo-keywords
+  '(
+(sequence "TODO" "????" "POSTPONED" "|" "DONE")
+(sequence "TODO" "ABANDONED"  "|" "DEPRECATED" "DONE")
+(sequence "TODO" "????" "ABANDONED" "POSTPONED" "|" "DEPRECATED" "DONE")
+))
+
+(setq org-todo-keyword-faces
+'(
+("????" . (:foreground "red" :weight bold))
+("POSTPONED" . (:foreground "blue" :weight bold))
+("ABANDONED" . (:foreground "orange" :weight bold))
+("DEPRECATED" . (:foreground "green" :weight bold))
+)
+)
+#+end_src
+
+WARNING! When changing this variables in the middle of the emacs
+session you need to restart org-mode (=M-x org-mode-restart=) to
+to have them enabled ([[https://lists.gnu.org/archive/html/emacs-orgmode/2010-11/msg00130.html][source]])!
+
+Furthermore, it may be more convenient to have this tags set for
+individual file (=#+TODO:=) ([[https://orgmode.org/manual/Per_002dfile-keywords.html][link]]).
 
 
 # **** Customizing font style for TODO-DONE keywords in latex export
