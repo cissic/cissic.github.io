@@ -1592,7 +1592,7 @@ https://github.com/karthink/.emacs.d/blob/master/plugins/ob-octave-fix.el
 In the end I just downloaded the file and the inclusion of this package is
 done in section [[ob-octave-fix]].
 
-Remark: There exist at least two versions of the fix (I renamed
+# Remark: There exist at least two versions of the fix (I renamed
 the one I already had to =ob-octave-fixOLDER.el=). Previous version
 of the file didn't seem to resolve the problem.
 
@@ -1620,34 +1620,34 @@ all the lines below it! (even if they end with semicolon!).
 :      2
 
 
-# ***** Export plots to png
-# https://lists.gnu.org/archive/html/emacs-orgmode/2017-08/msg00376.html
+***** Export plots to png
+https://lists.gnu.org/archive/html/emacs-orgmode/2017-08/msg00376.html
 
-# https://emacs.stackexchange.com/questions/54695/no-graphic-output-for-matlab-src-block-in-org-mode
+https://emacs.stackexchange.com/questions/54695/no-graphic-output-for-matlab-src-block-in-org-mode
 
-# ***** Wrong formatting of matlab output's in org-babel
+***** Wrong formatting of matlab output's in org-babel
 
-# https://www.reddit.com/r/emacs/comments/fy98bs/orgbabels_matlab_session_output_is_malformed/
-
-
+https://www.reddit.com/r/emacs/comments/fy98bs/orgbabels_matlab_session_output_is_malformed/
 
 
 
 
 
-# ***** TODO Erroneous behaviour when plotting
-# When exporting graphic file from matlab code-block, the resulting
-# image does not appear when followed by automatically generated
-# keyword =#+RESULTS:=. When this keyword is deleted the image appears
-# in generated pdf.
 
-# #+BEGIN_SRC matlab :session *MATLAB* :results graphics file :file plot.png 
-#   plot([1 2],[1 2])
-#   print -dpng ./images/plot.png ;
-# #+END_SRC
 
-# #+RESULTS:
-# [[file:./images/plot.png]]
+***** TODO Erroneous behaviour when plotting
+When exporting graphic file from matlab code-block, the resulting
+image does not appear when followed by automatically generated
+keyword =#+RESULTS:=. When this keyword is deleted the image appears
+in generated pdf.
+
+#+BEGIN_SRC matlab :session *MATLAB* :results graphics file :file plot.png :eval no
+  plot([1 2],[1 2])
+  print -dpng ./images/plot.png ;
+#+END_SRC
+
+#+RESULTS:
+[[file:./images/plot.png]]
 
 
 # **** Set path to Python executable to work in org-babel code block
@@ -2649,8 +2649,8 @@ all the lines below it! (even if they end with semicolon!).
 
 
 
-# **** ob-octave-fix.el
-# <<ob-octave-fix>>
+**** ob-octave-fix.el
+<<ob-octave-fix>>
 
 # The discussion on this is thread can be found in section
 # [[matlab-in-org-babel]] so I here I just include the solution, namely
