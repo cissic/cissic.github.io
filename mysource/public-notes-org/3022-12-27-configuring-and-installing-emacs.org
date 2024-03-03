@@ -1405,6 +1405,15 @@ individual file (=#+TODO:=) ([[https://orgmode.org/manual/Per_002dfile-keywords.
 https://stackoverflow.com/questions/36197545/org-mode-latex-export-making-todos-red
 
 
+ATTENTION!!! WATCH OUT!!!
+The code below contained a piece of text that was not parsed well
+by jekyll/github pages leading to irritating error while deploying on github pages.
+(see https://stackoverflow.com/questions/17720167/how-do-i-include-in-markdown-file-when-using-jekyll
+to see post that is probably related to the problem)
+
+Namely, the critical part are the charactes ={= and =%=.
+If they are written  without a space between then, this brings troubles.
+
 #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
 ;; customized todo-done keywords in latex documents
 (defun org-latex-format-headline-colored-keywords-function
