@@ -1413,6 +1413,8 @@ to see post that is probably related to the problem)
 
 Namely, the critical part are the charactes ={= and =%=.
 If they are written  without a space between then, this brings troubles.
+In the code below there is no problem to rewrite the text as =\\textsc{ %s=
+since in Latex this space would be ommitted anyway (wouldn't it???).
 
 #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
 ;; customized todo-done keywords in latex documents
@@ -1437,124 +1439,124 @@ If they are written  without a space between then, this brings troubles.
 #+end_src
 
 
-# **** Toggle between TODO-DONE keywords for all subnodes of the current node
-# Based on:
-# https://emacs.stackexchange.com/questions/52492/change-todo-keywords-of-all-nodes-in-an-orgmode-subtree-in-elisp
+**** Toggle between TODO-DONE keywords for all subnodes of the current node
+Based on:
+https://emacs.stackexchange.com/questions/52492/change-todo-keywords-of-all-nodes-in-an-orgmode-subtree-in-elisp
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+(defun mb/org-toggle-org-keywords-right ()
+    "Toggle between todo-done keywords for all subnodes of the current node."
+    (interactive)
+    (org-map-entries (lambda () (org-shiftright)) nil 'tree)
+  )
+(defun mb/org-toggle-org-keywords-left ()
+    "Toggle between todo-done keywords for all subnodes of the current node."
+    (interactive)
+    (org-map-entries (lambda () (org-shiftleft)) nil 'tree)
+  )
+#+end_src
+
+# **** Adding custom keywords to org-mode headline of the of the node and its subnodes
+# -> Moved to RDITITcode.org
 
 # #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
-# (defun mb/org-toggle-org-keywords-right ()
-#     "Toggle between todo-done keywords for all subnodes of the current node."
+# (defun mb/org-add-keyword ()
+#     "Add '{{{opt}}}' string to the headline of the node and all of its subnodes."
 #     (interactive)
-#     (org-map-entries (lambda () (org-shiftright)) nil 'tree)
+#     (org-map-entries (lambda () (concat "{{{opt}}}" (org-entry-get nil "ITEM")  )) nil 'tree)
 #   )
-# (defun mb/org-toggle-org-keywords-left ()
-#     "Toggle between todo-done keywords for all subnodes of the current node."
+# (defun mb/org-remove-keyword ()
+#     "Remove '{{{opt}}}' string to the headline of the node and all of its subnodes."
 #     (interactive)
 #     (org-map-entries (lambda () (org-shiftleft)) nil 'tree)
 #   )
 # #+end_src
 
-# # **** Adding custom keywords to org-mode headline of the of the node and its subnodes
-# # -> Moved to RDITITcode.org
 
-# # #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
-# # (defun mb/org-add-keyword ()
-# #     "Add '{{{opt}}}' string to the headline of the node and all of its subnodes."
-# #     (interactive)
-# #     (org-map-entries (lambda () (concat "{{{opt}}}" (org-entry-get nil "ITEM")  )) nil 'tree)
-# #   )
-# # (defun mb/org-remove-keyword ()
-# #     "Remove '{{{opt}}}' string to the headline of the node and all of its subnodes."
-# #     (interactive)
-# #     (org-map-entries (lambda () (org-shiftleft)) nil 'tree)
-# #   )
-# # #+end_src
+**** Org-agenda activation
+ https://orgmode.org/manual/Activation.html#Activation
 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+;; org-agenda activation
+(global-set-key (kbd "C-c l") #'org-store-link)
+(global-set-key (kbd "C-c a") #'org-agenda)
+(global-set-key (kbd "C-c c") #'org-capture)
+#+end_src
 
-# **** Org-agenda activation
-#  https://orgmode.org/manual/Activation.html#Activation
+**** Org-special-block-extras
+[[http://alhassy.com/org-special-block-extras/][Author's page]]
 
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
-# ;; org-agenda activation
-# (global-set-key (kbd "C-c l") #'org-store-link)
-# (global-set-key (kbd "C-c a") #'org-agenda)
-# (global-set-key (kbd "C-c c") #'org-capture)
-# #+end_src
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+;; **** org-special-block-extras -> 
+(add-hook #'org-mode-hook #'org-special-block-extras-mode)
+;; <- **** org-special-block-extras 
+#+end_src
 
-# **** Org-special-block-extras
-# [[http://alhassy.com/org-special-block-extras/][Author's page]]
+**** Org-babel and tangling
+To have org-babel enabled (execution of portions of code):
 
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
-# ;; **** org-special-block-extras -> 
-# (add-hook #'org-mode-hook #'org-special-block-extras-mode)
-# ;; <- **** org-special-block-extras 
-# #+end_src
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
 
-# **** Org-babel and tangling
-# To have org-babel enabled (execution of portions of code):
-
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
-
-# ;; enabling org-babel
-# (org-babel-do-load-languages
-#  'org-babel-load-languages '(
-# 			     (C . t) ; enable processing C, C++, and D source blocks
-# 			     (matlab . t)
-# 			     ;;(perl . t)
-# 			     (octave . t)
-# 			     (org . t)
-# 			     (python . t)
-#                              (plantuml . t)
-# 			     (shell . t)
-#  			     ))
+;; enabling org-babel
+(org-babel-do-load-languages
+ 'org-babel-load-languages '(
+			     (C . t) ; enable processing C, C++, and D source blocks
+			     (matlab . t)
+			     ;;(perl . t)
+			     (octave . t)
+			     (org . t)
+			     (python . t)
+                             (plantuml . t)
+			     (shell . t)
+ 			     ))
 			     
-# ;; no question about confirmation of evaluating babel code block
-# (setq org-confirm-babel-evaluate nil)
+;; no question about confirmation of evaluating babel code block
+(setq org-confirm-babel-evaluate nil)
 
-# #+end_src
+#+end_src
 
-# ***** Tangling the specific/named block of code and other useful functions to work with source blocks
+***** Tangling the specific/named block of code and other useful functions to work with source blocks
 
-# ****** Tangle the specific (pointed) block of code
-# #+begin_src elisp :results silent :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
-# (defun mb/org-babel-tangle-block()
-#   (interactive)
-#   (let ((current-prefix-arg '(4)))
-#      (call-interactively 'org-babel-tangle)
-# ))
-# #+end_src
+****** Tangle the specific (pointed) block of code
+#+begin_src elisp :results silent :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+(defun mb/org-babel-tangle-block()
+  (interactive)
+  (let ((current-prefix-arg '(4)))
+     (call-interactively 'org-babel-tangle)
+))
+#+end_src
 
-# ****** tangle the block of code given by the name
-# #+begin_src elisp :results silent :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
-# (defun mb/org-babel-tangle-named-block(block-name)
-#   (interactive)
-#   (save-excursion 
-#    (org-babel-goto-named-src-block block-name)
-#     (mb/org-babel-tangle-block)) 
-# )
-# #+end_src
+****** tangle the block of code given by the name
+#+begin_src elisp :results silent :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+(defun mb/org-babel-tangle-named-block(block-name)
+  (interactive)
+  (save-excursion 
+   (org-babel-goto-named-src-block block-name)
+    (mb/org-babel-tangle-block)) 
+)
+#+end_src
 
 
 
-# ***** =plantuml=
-# - https://orgmode.org/worg/org-contrib/babel/languages/ob-doc-plantuml.html
-# - https://medium.com/@shibucite/emacs-and-plantuml-for-uml-diagrams-academic-tools-6c34bc07fd2
-# - https://plantuml.com/activity-diagram-beta
+***** =plantuml=
+- https://orgmode.org/worg/org-contrib/babel/languages/ob-doc-plantuml.html
+- https://medium.com/@shibucite/emacs-and-plantuml-for-uml-diagrams-academic-tools-6c34bc07fd2
+- https://plantuml.com/activity-diagram-beta
   
-# In order to work with =plantuml= you need to install it (there's
-# another way which is documented in the link above, but I won't use it).
-# On debian machine I'll just execute:
-# #+begin_src bash
-#   sudo apt install plantuml
-# #+end_src
-# and add the following line to tell emacs to use system installed
-# plantuml:
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
-# ;; enabling plantuml
+In order to work with =plantuml= you need to install it (there's
+another way which is documented in the link above, but I won't use it).
+On debian machine I'll just execute:
+#+begin_src bash
+  sudo apt install plantuml
+#+end_src
+and add the following line to tell emacs to use system installed
+plantuml:
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+;; enabling plantuml
 
-# (setq plantuml-executable-path "plantuml")
-# (setq org-plantuml-exec-mode 'plantuml)
-# #+end_src
+(setq plantuml-executable-path "plantuml")
+(setq org-plantuml-exec-mode 'plantuml)
+#+end_src
 
 
 

@@ -114,7 +114,7 @@ it's better to keep whole .emacs.d directory as a git repository and
 make a commit before executing this script. Then, in case any problems
 you can go back to restore properly working emacs installation.
 Before running this script you should have a git repository initialized in emacs
-directory and git itself installed in the system (see Sec. [1.5](#orgd1526af)).
+directory and git itself installed in the system (see Sec. [1.5](#org2329924)).
 Synchronization of the local repository with the remote one is not
 performed in this script. It should be performed explicitely by the user
 in a convenient time.
@@ -210,7 +210,7 @@ In Emacs 27.1 it [shouldn't be necessary to use](https://emacs.stackexchange.com
 
 ### The main part of the installation script - list of the packages
 
-<a id="orgac4db6f"></a>
+<a id="orgb1678fe"></a>
 
 I used to have `(defvar my-packages ...` instead of `(setq my-packages ...` 
 below but... **Do not** use `defvar` for declaring a list of packages to be installed!
@@ -327,7 +327,7 @@ for now. An interesting discussion about this can be found [here](https://www.re
 
 1.  DEPRECATED Setting an auxiliary variable
 
-    This section is deprecated in favour of [`workgroups2 package`](#orgf15d753).
+    This section is deprecated in favour of [`workgroups2 package`](#orgc12c033).
     
         ;; This file is designed to be re-evaled; use the variable first-time
         ;; to avoid any problems with this.
@@ -368,7 +368,7 @@ proactively.
 Here are global Emacs customization. 
 If necessary some useful infomation or link is added to the customization.
 
-1.  Self-descriptive oneliners <a id="orgab3c696"></a>
+1.  Self-descriptive oneliners <a id="orgd282ad4"></a>
 
     Remarks:
     At around May 2023 I stopped using `global-linum-mode` because
@@ -473,14 +473,14 @@ If necessary some useful infomation or link is added to the customization.
         ;; (set-frame-font "liberation mono 11" nil t) ; Set default font
     
     Due to  due to the  problems with fonts in `emacsclient/daemonp`
-    instances font is set now in the section [1.4.10](#orge12de09).
+    instances font is set now in the section [1.4.10](#org656f2c3).
 
 7.  Highlight on an active window/buffer
 
     Although the active window can be recognized
     by the cursor which blinking in it, sometimes it is hard to
     find in on the screen (especially if you use a colourful theme
-    like [1.4.10.1](#orgbfc88a4).
+    like [1.4.10.1](#org8f9852c).
     
     I found a [post](https://stackoverflow.com/questions/33195122/highlight-current-active-window) adressing this issue.
     Although the accepted answer is using 
@@ -722,7 +722,7 @@ If necessary some useful infomation or link is added to the customization.
           )
           ;; <- Fill column indicator
     
-    -   and add this hook per each required mode (this is done in [1.4.7](#orgee7ace4) section
+    -   and add this hook per each required mode (this is done in [1.4.7](#org90a0be9) section
         of this document
 
 12. Turning on/off beeping
@@ -736,7 +736,7 @@ If necessary some useful infomation or link is added to the customization.
         (setq-default visible-bell t) 
         (setq ring-bell-function 'ignore)
 
-13. Ibuffer - an advanced replacement for BufferMenu <a id="orgfb4ba8f"></a>
+13. Ibuffer - an advanced replacement for BufferMenu <a id="org2ee3b91"></a>
 
     Description of the package is [here](https://www.emacswiki.org/emacs/IbufferMode).
     
@@ -795,7 +795,7 @@ If necessary some useful infomation or link is added to the customization.
     
     2.  Ibuffer interactive way
     
-        In [1.4.3.13](#orgfb4ba8f) there a nice shortcut to do this. You can select all
+        In [1.4.3.13](#org2ee3b91) there a nice shortcut to do this. You can select all
         the files of the given mode with:
         
             * M
@@ -880,7 +880,7 @@ ido/smex vs ivy/counsel/swiper vs helm
         (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command) 
         ;; <- smex
 
-3.  TODO Ivy (for testing) <a id="org0e78a5c"></a>
+3.  TODO Ivy (for testing) <a id="orgf222b2f"></a>
 
     Furthermore, according to [some other users](https://ruzkuku.com/emacs.d.html#org804158b)
     "Ivy is simpler (and faster) than Helm but more powerful than Ido".
@@ -1074,11 +1074,11 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
     files to Beamer. In order one needs to create appropriate
     init file with settings for async export and
     set `org-export-async-init-file` variable as path to this file (see 
-    [1.4.7.4.1](#orgd2c288d)).
+    [1.4.7.4.1](#org81f2ace)).
     
     1.  Setting `org-export-async-init-file` to avoid failure while exporting to Beamer
     
-        <a id="orgd2c288d"></a>
+        <a id="org81f2ace"></a>
         
         Org-beamer **async** exporter may fail because of lacking
         `org-export-async-init-file` 
@@ -1166,7 +1166,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
 
 1.  oc [org-citations]
 
-    1.  Bibliography <a id="org22beb3d"></a>
+    1.  Bibliography <a id="org30df570"></a>
     
         In Org 9.6 we do not need explicitely load `oc` libraries.
         Everything is covered in my post concerning bibliography and org-mode.
@@ -1230,6 +1230,8 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
     
     Namely, the critical part are the charactes `{` and `%`.
     If they are written  without a space between then, this brings troubles.
+    In the code below there is no problem to rewrite the text as `\\textsc{ %s`
+    since in Latex this space would be ommitted anyway (wouldn't it???).
     
         ;; customized todo-done keywords in latex documents
         (defun org-latex-format-headline-colored-keywords-function
@@ -1251,25 +1253,118 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
         
         (setq org-latex-format-headline-function 'org-latex-format-headline-colored-keywords-function)
 
+3.  Toggle between TODO-DONE keywords for all subnodes of the current node
 
-### Emacs-everywhere <a id="orge12de09"></a>
+    Based on:
+    <https://emacs.stackexchange.com/questions/52492/change-todo-keywords-of-all-nodes-in-an-orgmode-subtree-in-elisp>
+    
+        (defun mb/org-toggle-org-keywords-right ()
+            "Toggle between todo-done keywords for all subnodes of the current node."
+            (interactive)
+            (org-map-entries (lambda () (org-shiftright)) nil 'tree)
+          )
+        (defun mb/org-toggle-org-keywords-left ()
+            "Toggle between todo-done keywords for all subnodes of the current node."
+            (interactive)
+            (org-map-entries (lambda () (org-shiftleft)) nil 'tree)
+          )
 
-1.  Modus themes by Protesilaos Stavrou <a id="orgbfc88a4"></a>
+4.  Org-agenda activation
 
-2.  Workgroups (should be executed at the end of init.el) <a id="orgf15d753"></a>
+    <https://orgmode.org/manual/Activation.html#Activation>
+    
+        ;; org-agenda activation
+        (global-set-key (kbd "C-c l") #'org-store-link)
+        (global-set-key (kbd "C-c a") #'org-agenda)
+        (global-set-key (kbd "C-c c") #'org-capture)
+
+5.  Org-special-block-extras
+
+    [Author's page](http://alhassy.com/org-special-block-extras/)
+    
+        ;; **** org-special-block-extras -> 
+        (add-hook #'org-mode-hook #'org-special-block-extras-mode)
+        ;; <- **** org-special-block-extras 
+
+6.  Org-babel and tangling
+
+    To have org-babel enabled (execution of portions of code):
+    
+        
+        ;; enabling org-babel
+        (org-babel-do-load-languages
+         'org-babel-load-languages '(
+                                     (C . t) ; enable processing C, C++, and D source blocks
+                                     (matlab . t)
+                                     ;;(perl . t)
+                                     (octave . t)
+                                     (org . t)
+                                     (python . t)
+                                     (plantuml . t)
+                                     (shell . t)
+                                     ))
+        
+        ;; no question about confirmation of evaluating babel code block
+        (setq org-confirm-babel-evaluate nil)
+    
+    1.  Tangling the specific/named block of code and other useful functions to work with source blocks
+    
+        1.  Tangle the specific (pointed) block of code
+        
+                (defun mb/org-babel-tangle-block()
+                  (interactive)
+                  (let ((current-prefix-arg '(4)))
+                     (call-interactively 'org-babel-tangle)
+                ))
+        
+        2.  tangle the block of code given by the name
+        
+                (defun mb/org-babel-tangle-named-block(block-name)
+                  (interactive)
+                  (save-excursion 
+                   (org-babel-goto-named-src-block block-name)
+                    (mb/org-babel-tangle-block)) 
+                )
+    
+    2.  `plantuml`
+    
+        -   <https://orgmode.org/worg/org-contrib/babel/languages/ob-doc-plantuml.html>
+        -   <https://medium.com/@shibucite/emacs-and-plantuml-for-uml-diagrams-academic-tools-6c34bc07fd2>
+        -   <https://plantuml.com/activity-diagram-beta>
+        
+        In order to work with `plantuml` you need to install it (there's
+        another way which is documented in the link above, but I won't use it).
+        On debian machine I'll just execute:
+        
+            sudo apt install plantuml
+        
+        and add the following line to tell emacs to use system installed
+        plantuml:
+        
+            ;; enabling plantuml
+            
+            (setq plantuml-executable-path "plantuml")
+            (setq org-plantuml-exec-mode 'plantuml)
 
 
-## Dependencies of the presented Emacs configuration: <a id="orgd1526af"></a>
+### Emacs-everywhere <a id="org656f2c3"></a>
+
+1.  Modus themes by Protesilaos Stavrou <a id="org8f9852c"></a>
+
+2.  Workgroups (should be executed at the end of init.el) <a id="orgc12c033"></a>
+
+
+## Dependencies of the presented Emacs configuration: <a id="org2329924"></a>
 
 The list of external applications that this script is dependent on:
 
 -   git
 -   LaTeX distribution (for org to latex exporters)
 
--   xclip ([1.4.10](#orge12de09))
--   xdotool ([1.4.10](#orge12de09))
--   xprop ([1.4.10](#orge12de09)) - this is not a package but executable
--   xwininfo ([1.4.10](#orge12de09)) - this is not a package but executable
+-   xclip ([1.4.10](#org656f2c3))
+-   xdotool ([1.4.10](#org656f2c3))
+-   xprop ([1.4.10](#org656f2c3)) - this is not a package but executable
+-   xwininfo ([1.4.10](#org656f2c3)) - this is not a package but executable
 
 
 ## Some useful information and links:
