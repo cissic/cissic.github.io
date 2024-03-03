@@ -114,7 +114,7 @@ it's better to keep whole .emacs.d directory as a git repository and
 make a commit before executing this script. Then, in case any problems
 you can go back to restore properly working emacs installation.
 Before running this script you should have a git repository initialized in emacs
-directory and git itself installed in the system (see Sec. [1.5](#orgdd6eb60)).
+directory and git itself installed in the system (see Sec. [1.5](#org856ace4)).
 Synchronization of the local repository with the remote one is not
 performed in this script. It should be performed explicitely by the user
 in a convenient time.
@@ -210,7 +210,7 @@ In Emacs 27.1 it [shouldn't be necessary to use](https://emacs.stackexchange.com
 
 ### The main part of the installation script - list of the packages
 
-<a id="org7ee9073"></a>
+<a id="org440a8da"></a>
 
 I used to have `(defvar my-packages ...` instead of `(setq my-packages ...` 
 below but... **Do not** use `defvar` for declaring a list of packages to be installed!
@@ -327,7 +327,7 @@ for now. An interesting discussion about this can be found [here](https://www.re
 
 1.  DEPRECATED Setting an auxiliary variable
 
-    This section is deprecated in favour of [`workgroups2 package`](#orgcbd7201).
+    This section is deprecated in favour of [`workgroups2 package`](#org33cd907).
     
         ;; This file is designed to be re-evaled; use the variable first-time
         ;; to avoid any problems with this.
@@ -368,7 +368,7 @@ proactively.
 Here are global Emacs customization. 
 If necessary some useful infomation or link is added to the customization.
 
-1.  Self-descriptive oneliners <a id="org6658c12"></a>
+1.  Self-descriptive oneliners <a id="org11a01ce"></a>
 
     Remarks:
     At around May 2023 I stopped using `global-linum-mode` because
@@ -473,14 +473,14 @@ If necessary some useful infomation or link is added to the customization.
         ;; (set-frame-font "liberation mono 11" nil t) ; Set default font
     
     Due to  due to the  problems with fonts in `emacsclient/daemonp`
-    instances font is set now in the section [1.4.18](#org19c1573).
+    instances font is set now in the section [1.4.18](#org169583d).
 
 7.  Highlight on an active window/buffer
 
     Although the active window can be recognized
     by the cursor which blinking in it, sometimes it is hard to
     find in on the screen (especially if you use a colourful theme
-    like [1.4.20.1](#org3e00c66).
+    like [1.4.20.1](#org7c106e3).
     
     I found a [post](https://stackoverflow.com/questions/33195122/highlight-current-active-window) adressing this issue.
     Although the accepted answer is using 
@@ -722,7 +722,7 @@ If necessary some useful infomation or link is added to the customization.
           )
           ;; <- Fill column indicator
     
-    -   and add this hook per each required mode (this is done in [1.4.7](#org9935b79) section
+    -   and add this hook per each required mode (this is done in [1.4.7](#org1534689) section
         of this document
 
 12. Turning on/off beeping
@@ -736,7 +736,7 @@ If necessary some useful infomation or link is added to the customization.
         (setq-default visible-bell t) 
         (setq ring-bell-function 'ignore)
 
-13. Ibuffer - an advanced replacement for BufferMenu <a id="orge2cb043"></a>
+13. Ibuffer - an advanced replacement for BufferMenu <a id="org5ff2f5b"></a>
 
     Description of the package is [here](https://www.emacswiki.org/emacs/IbufferMode).
     
@@ -795,7 +795,7 @@ If necessary some useful infomation or link is added to the customization.
     
     2.  Ibuffer interactive way
     
-        In [1.4.3.13](#orge2cb043) there a nice shortcut to do this. You can select all
+        In [1.4.3.13](#org5ff2f5b) there a nice shortcut to do this. You can select all
         the files of the given mode with:
         
             * M
@@ -880,7 +880,7 @@ ido/smex vs ivy/counsel/swiper vs helm
         (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command) 
         ;; <- smex
 
-3.  TODO Ivy (for testing) <a id="org30f3fb0"></a>
+3.  TODO Ivy (for testing) <a id="orgc706677"></a>
 
     Furthermore, according to [some other users](https://ruzkuku.com/emacs.d.html#org804158b)
     "Ivy is simpler (and faster) than Helm but more powerful than Ido".
@@ -1074,11 +1074,11 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
     files to Beamer. In order one needs to create appropriate
     init file with settings for async export and
     set `org-export-async-init-file` variable as path to this file (see 
-    [1.4.7.4.1](#org5efeb4f)).
+    [1.4.7.4.1](#org760c490)).
     
     1.  Setting `org-export-async-init-file` to avoid failure while exporting to Beamer
     
-        <a id="org5efeb4f"></a>
+        <a id="org760c490"></a>
         
         Org-beamer **async** exporter may fail because of lacking
         `org-export-async-init-file` 
@@ -1166,7 +1166,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
 
 1.  oc [org-citations]
 
-    1.  Bibliography <a id="org115f156"></a>
+    1.  Bibliography <a id="org2a28fb5"></a>
     
         In Org 9.6 we do not need explicitely load `oc` libraries.
         Everything is covered in my post concerning bibliography and org-mode.
@@ -1348,7 +1348,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
 
 7.  Fix for Octave/Matlab org-babel - problems with matlab in org-babel
 
-    <a id="org804f845"></a>
+    <a id="org7f38fb5"></a>
     <http://gewhere.github.io/blog/2017/12/19/setup-matlab-in-emacs-and-babel-orgmode/>
     
         
@@ -1374,7 +1374,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
     <https://github.com/karthink/.emacs.d/blob/master/plugins/ob-octave-fix.el>
     
     In the end I just downloaded the file and the inclusion of this package is
-    done in section [1.4.21.3](#org933ac1a).
+    done in section [1.4.21.3](#org5ab4e72).
     
     the one I already had to `ob-octave-fixOLDER.el`). Previous version
     of the file didn't seem to resolve the problem.
@@ -1551,7 +1551,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
     The special mode `org-cdlatex-mode` is included in `org` package.
     In order to have it working properly we need to install `cdlatex`
     itself. This can be done in
-    [1.3.2](#org641135c).
+    [1.3.2](#org42a4e0c).
     
     Link to `org-cdlatex-mode` description:
     <http://doc.endlessparentheses.com/Fun/org-cdlatex-mode.html>.
@@ -1889,7 +1889,7 @@ loading properly.
 
 ### ABANDONED Emailing in Emacs
 
-As a temporary workaround I decided to try [1.4.18](#org19c1573).
+As a temporary workaround I decided to try [1.4.18](#org169583d).
 
 Basing on  [this post](https://www.reddit.com/r/emacs/comments/4rl0a9/email_in_emacs_i_want_to_but_wow_its_overwhelming/) I decided to perform configuration of email service 
 within Emacs in three steps. Each of them takes care of one of the 
@@ -1925,12 +1925,12 @@ following problems
     so I abandoned this idea at this stage.
 
 
-### Emacs-everywhere <a id="org19c1573"></a>
+### Emacs-everywhere <a id="org169583d"></a>
 
 Repository of the package and some basic information can be found
 [here](https://github.com/tecosaur/emacs-everywhere/).
 
-1.  Install package `emacs-everywhere` from melpa ([1.3.2](#org7ee9073))
+1.  Install package `emacs-everywhere` from melpa ([1.3.2](#org440a8da))
 2.  Add system-wide shortcut for the command 
     
         #!/bin/bash
@@ -2040,7 +2040,7 @@ Tutorial by [Protesilaos Stavrou](https://www.youtube.com/watch?v=NkhgIB64zgc).
 
 ### Load Emacs theme of your preference
 
-1.  Modus themes by Protesilaos Stavrou <a id="org3e00c66"></a>
+1.  Modus themes by Protesilaos Stavrou <a id="org7c106e3"></a>
 
     -   [Author's page](https://protesilaos.com/codelog/2021-01-11-modus-themes-review-select-faint-colours/)
     -   [Youtube's tutorial](https://www.youtube.com/watch?v=JJPokfFxyFo)
@@ -2184,22 +2184,179 @@ a global shortcut...
 
 3.  ob-octave-fix.el
 
-    <a id="org933ac1a"></a>
+    <a id="org5ab4e72"></a>
+    
+    The discussion on this is thread can be found in section
+    [1.4.9.7](#org7f38fb5) so I here I just include the solution, namely
+    I load fixed library.
+    
+        ;; octave/matlab-fix
+        ;;;; (require 'ob-octave-fix nil t)    ; This is for older approach
+        (require 'ob-octave-fix)
 
-4.  Workgroups (should be executed at the end of init.el) <a id="orgcbd7201"></a>
+4.  My own packages and settings
+
+    1.  Custom org-special-block-extras definitions used globally in org-mode files
+    
+            ;; custom org-special-block-extras blocks
+            (add-to-list 'load-path "~/.emacs.d/myarch")
+            (require 'MB-org-special-block-extras)
+
+5.  Other packages
+
+        ;; org to ipython exporter
+        ;;(use-package ox-ipynb
+        ;  :load-path "~/.emacs.d/manual-download/ox-ipynb")
 
 
-## Dependencies of the presented Emacs configuration: <a id="orgdd6eb60"></a>
+### TODO The end
+
+1.  Workgroups (should be executed at the end of init.el) <a id="org33cd907"></a>
+
+    <https://tuhdo.github.io/emacs-tutor3.html>
+    
+    `workgroups2` is a fine package for managing session. To enable it and 
+    set the filepath for keeping sessions (default is `/.emacs_workgroups`)
+     put this in your `init.el`:
+    
+        (workgroups-mode 1)    ; session manager for emacs
+        (setq wg-session-file "~/.emacs.d/.emacs_workgroups") ; 
+    
+    And then you can use the following commands to manage sessions:
+    
+    -   To save window&buffer layout as a work group:
+    
+    `M-x wg-create-workgroup` or
+    `C-c z C-c`
+    
+    -   To open an existing work group:
+    
+    `M-x wg-open-workgroup` or 
+    `C-c z C-v`
+    
+    -   To delete an existing work group:
+    
+    `M-x wg-kill-workgroup` or
+    `C-c z C-k`
+    
+    There is one problem with `workgroups2` packages. It does not like with 
+    `desktop-save-mode`. When `workgroups2` is enabled `desktop-save-mode` 
+    does not restore the windows layout from the previous Emacs session, which
+    sucks.
+    I decided to stick to `workgroups2` and supply the needed functionality 
+    with the use of only this package. I did it by adding hooks:
+    
+        (add-hook 'kill-emacs-hook (
+                             lambda () (wg-create-workgroup "currentsession" )))
+        
+        (setq inhibit-startup-message t)
+        
+        (add-hook 'window-setup-hook (
+                               lambda () (wg-open-workgroup "currentsession")))
+    
+    The line `(setq inhibit-startup-message t)` is added in order to prevent
+    Emacs splash screen to appear in one of the restored `"currentsession"` frames.
+    
+    There is one problem with the code above. When running Emacs in batch mode like
+    this:
+    
+    `emacs -batch -Q -load ~/.emacs.d/init.el`
+    
+    (I have such a line of code in the makefile of this blog)
+    it asks in the command line about saving the "currentsession". It sucks.
+    As a workaround we can put those hooks inside if statement, which checks
+    whether Emacs was run in batch mode or not.
+    How to write an if statements is [here](https://www.gnu.org/software/emacs/manual/html_node/elisp/Conditionals.html).
+    In the code below I also use
+    [`noninteractive` variable](https://emacs.stackexchange.com/questions/20603/how-to-know-if-emacs-is-running-in-batch-mode) which is true
+    if emacs is run in batch mode.
+    
+    The code below somehow worked for a while. Then, out of a sudden it stopped.
+    
+        (if (not noninteractive)
+            ( ; if Emacs is started in graphical environment
+              (add-hook 'kill-emacs-hook (
+                             lambda () (wg-create-workgroup "currentsession")))
+              (setq inhibit-startup-message t)
+              (add-hook 'window-setup-hook (
+                               lambda () (wg-open-workgroup "currentsession")))
+            )
+           (
+            ; if Emacs is run in batch mode - do not care about workgroups
+           )
+        )
+    
+    The problem was the lack of a special keyword `progn` as I found
+    [here](https://stackoverflow.com/questions/912355/how-can-you-write-multiple-statements-in-elisp-if-statement) ([Part of the manual about it](https://www.gnu.org/software/emacs/manual/html_node/elisp/Sequencing.html)). All in all, now everything seems
+    to be ok with the following lines:
+    
+        (if (not noninteractive)
+            ( ; if Emacs is started in graphical environment
+              progn
+              (add-hook 'kill-emacs-hook (
+                             lambda () (wg-create-workgroup "currentsession")))
+              (setq inhibit-startup-message t)
+              (add-hook 'window-setup-hook (
+                               lambda () (wg-open-workgroup "currentsession")))
+            )
+           (
+            ; if Emacs is run in batch mode - do not care about workgroups
+           )
+        )
+
+2.  Last lines
+
+3.  DEPRECATED Restoring previous session
+
+    This section is deprecated in favour of [`workgroups2 package`](#org33cd907).
+    
+    This way of restoring session throws some warnings and needs additional
+    confirmations so I give it up. Simple `(desktop-save-mode 1)` which is 
+    included [in the beginning of `init.el`](#org11a01ce) works ok.
+    
+        ;; Restore the "desktop" - do this as late as possible
+        (if first-time
+            (progn
+              ;(desktop-load-default)   ; this is for Emacs 20-21
+              (desktop-read)))
+        
+        ;; Indicate that this file has been read at least once
+        (setq first-time nil)
+
+4.  DEPRECATED Open some useful files in the background
+
+    I don't use this part of `init.el` anymore. I can get the similar
+    functionality by using `recentf` package or prepare a session
+    with required files opened in it.
+    
+        ;;; Always have several files opened at startup
+        ;; hint: https://stackoverflow.com/a/19284395/4649238
+        (find-file "~/.emacs.d/init.el")
+        (find-file "~/.emacs.d/install-packages.el")
+        (find-file "~/.emacs.d/useful-shortcuts.org")
+    
+    What's more, the commands above cause an unwanted behaviour when
+    evaluating `init.el`. The last file in the list is opened in an active buffer.
+    I'd like to have those files opened "in background".
+    I found `find-file-noselect` function have this functionality,
+    but first: it is [not recommended way](https://emacs.stackexchange.com/questions/2868/whats-wrong-with-find-file-noselect) of doing this thing;
+    second: it is not present in Emacs 27.1 anyway.
+    
+        ;; All done
+        (message "All done in init.el.")
+
+
+## Dependencies of the presented Emacs configuration: <a id="org856ace4"></a>
 
 The list of external applications that this script is dependent on:
 
 -   git
 -   LaTeX distribution (for org to latex exporters)
 
--   xclip ([1.4.18](#org19c1573))
--   xdotool ([1.4.18](#org19c1573))
--   xprop ([1.4.18](#org19c1573)) - this is not a package but executable
--   xwininfo ([1.4.18](#org19c1573)) - this is not a package but executable
+-   xclip ([1.4.18](#org169583d))
+-   xdotool ([1.4.18](#org169583d))
+-   xprop ([1.4.18](#org169583d)) - this is not a package but executable
+-   xwininfo ([1.4.18](#org169583d)) - this is not a package but executable
 
 
 ## Some useful information and links:

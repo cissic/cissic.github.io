@@ -2652,200 +2652,200 @@ or you can define keybindings as package documentation recommends
 **** ob-octave-fix.el
 <<ob-octave-fix>>
 
-# The discussion on this is thread can be found in section
-# [[matlab-in-org-babel]] so I here I just include the solution, namely
-# I load fixed library.
+The discussion on this is thread can be found in section
+[[matlab-in-org-babel]] so I here I just include the solution, namely
+I load fixed library.
 
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
-#   ;; octave/matlab-fix
-#   ;;;; (require 'ob-octave-fix nil t)    ; This is for older approach
-#   (require 'ob-octave-fix)
-# #+end_src
-
-
-# **** My own packages and settings
-
-# ***** Custom org-special-block-extras definitions used globally in org-mode files
-
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
-# ;; custom org-special-block-extras blocks
-# (add-to-list 'load-path "~/.emacs.d/myarch")
-# (require 'MB-org-special-block-extras)
-# #+end_src
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+  ;; octave/matlab-fix
+  ;;;; (require 'ob-octave-fix nil t)    ; This is for older approach
+  (require 'ob-octave-fix)
+#+end_src
 
 
+**** My own packages and settings
 
-# **** Other packages
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") :exports none
-# ;; [DEPRECATED] - use sunrise instead of this
-# ;; midnight-commander emulation
-# ;; (require 'mc)
-# #+end_src
+***** Custom org-special-block-extras definitions used globally in org-mode files
 
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
-# ;; org to ipython exporter
-# ;;(use-package ox-ipynb
-# ;  :load-path "~/.emacs.d/manual-download/ox-ipynb")
-# #+end_src
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+;; custom org-special-block-extras blocks
+(add-to-list 'load-path "~/.emacs.d/myarch")
+(require 'MB-org-special-block-extras)
+#+end_src
 
 
-# *** TODO The end
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") :exports none
-# ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-# ;; *** The ending
-# ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-# #+end_src
+
+**** Other packages
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") :exports none
+;; [DEPRECATED] - use sunrise instead of this
+;; midnight-commander emulation
+;; (require 'mc)
+#+end_src
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+;; org to ipython exporter
+;;(use-package ox-ipynb
+;  :load-path "~/.emacs.d/manual-download/ox-ipynb")
+#+end_src
+
+
+*** TODO The end
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") :exports none
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; *** The ending
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+end_src
 **** Workgroups (should be executed at the end of init.el) <<workgroups2-and-sessions>>
-# https://tuhdo.github.io/emacs-tutor3.html
+https://tuhdo.github.io/emacs-tutor3.html
 
-# ~workgroups2~ is a fine package for managing session. To enable it and 
-# set the filepath for keeping sessions (default is ~/.emacs_workgroups~)
-#  put this in your ~init.el~:
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
-# (workgroups-mode 1)    ; session manager for emacs
-# (setq wg-session-file "~/.emacs.d/.emacs_workgroups") ; 
-# #+end_src
+~workgroups2~ is a fine package for managing session. To enable it and 
+set the filepath for keeping sessions (default is ~/.emacs_workgroups~)
+ put this in your ~init.el~:
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+(workgroups-mode 1)    ; session manager for emacs
+(setq wg-session-file "~/.emacs.d/.emacs_workgroups") ; 
+#+end_src
 
-# And then you can use the following commands to manage sessions:
+And then you can use the following commands to manage sessions:
 
-# - To save window&buffer layout as a work group:
-# ~M-x wg-create-workgroup~ or
-# ~C-c z C-c~
+- To save window&buffer layout as a work group:
+~M-x wg-create-workgroup~ or
+~C-c z C-c~
 
-# - To open an existing work group:
-# ~M-x wg-open-workgroup~ or 
-# ~C-c z C-v~
+- To open an existing work group:
+~M-x wg-open-workgroup~ or 
+~C-c z C-v~
 
-# - To delete an existing work group:
-# ~M-x wg-kill-workgroup~ or
-# ~C-c z C-k~
+- To delete an existing work group:
+~M-x wg-kill-workgroup~ or
+~C-c z C-k~
 
-# There is one problem with ~workgroups2~ packages. It does not like with 
-# ~desktop-save-mode~. When ~workgroups2~ is enabled ~desktop-save-mode~ 
-# does not restore the windows layout from the previous Emacs session, which
-# sucks.
-# I decided to stick to ~workgroups2~ and supply the needed functionality 
-# with the use of only this package. I did it by adding hooks:
+There is one problem with ~workgroups2~ packages. It does not like with 
+~desktop-save-mode~. When ~workgroups2~ is enabled ~desktop-save-mode~ 
+does not restore the windows layout from the previous Emacs session, which
+sucks.
+I decided to stick to ~workgroups2~ and supply the needed functionality 
+with the use of only this package. I did it by adding hooks:
 
-# #+begin_src emacs-lisp 
-# (add-hook 'kill-emacs-hook (
-#                      lambda () (wg-create-workgroup "currentsession" )))
+#+begin_src emacs-lisp 
+(add-hook 'kill-emacs-hook (
+                     lambda () (wg-create-workgroup "currentsession" )))
 
-# (setq inhibit-startup-message t)
+(setq inhibit-startup-message t)
 
-# (add-hook 'window-setup-hook (
-#                        lambda () (wg-open-workgroup "currentsession")))
-# #+end_src
+(add-hook 'window-setup-hook (
+                       lambda () (wg-open-workgroup "currentsession")))
+#+end_src
 
-# The line ~(setq inhibit-startup-message t)~ is added in order to prevent
-# Emacs splash screen to appear in one of the restored ~"currentsession"~ frames.
+The line ~(setq inhibit-startup-message t)~ is added in order to prevent
+Emacs splash screen to appear in one of the restored ~"currentsession"~ frames.
 
-# There is one problem with the code above. When running Emacs in batch mode like
-# this:
+There is one problem with the code above. When running Emacs in batch mode like
+this:
 
-# ~emacs -batch -Q -load ~/.emacs.d/init.el~
+~emacs -batch -Q -load ~/.emacs.d/init.el~
 
-# (I have such a line of code in the makefile of this blog)
-# it asks in the command line about saving the "currentsession". It sucks.
-# As a workaround we can put those hooks inside if statement, which checks
-# whether Emacs was run in batch mode or not.
-# How to write an if statements is [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Conditionals.html][here]].
-# In the code below I also use
-# [[https://emacs.stackexchange.com/questions/20603/how-to-know-if-emacs-is-running-in-batch-mode][~noninteractive~ variable]] which is true
-# if emacs is run in batch mode.
+(I have such a line of code in the makefile of this blog)
+it asks in the command line about saving the "currentsession". It sucks.
+As a workaround we can put those hooks inside if statement, which checks
+whether Emacs was run in batch mode or not.
+How to write an if statements is [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Conditionals.html][here]].
+In the code below I also use
+[[https://emacs.stackexchange.com/questions/20603/how-to-know-if-emacs-is-running-in-batch-mode][~noninteractive~ variable]] which is true
+if emacs is run in batch mode.
 
-# The code below somehow worked for a while. Then, out of a sudden it stopped.
+The code below somehow worked for a while. Then, out of a sudden it stopped.
 
-# #+begin_src emacs-lisp 
-# (if (not noninteractive)
-#     ( ; if Emacs is started in graphical environment
-#       (add-hook 'kill-emacs-hook (
-#                      lambda () (wg-create-workgroup "currentsession")))
-#       (setq inhibit-startup-message t)
-#       (add-hook 'window-setup-hook (
-#                        lambda () (wg-open-workgroup "currentsession")))
-#     )
-#    (
-#     ; if Emacs is run in batch mode - do not care about workgroups
-#    )
-# )
-# #+end_src
+#+begin_src emacs-lisp 
+(if (not noninteractive)
+    ( ; if Emacs is started in graphical environment
+      (add-hook 'kill-emacs-hook (
+                     lambda () (wg-create-workgroup "currentsession")))
+      (setq inhibit-startup-message t)
+      (add-hook 'window-setup-hook (
+                       lambda () (wg-open-workgroup "currentsession")))
+    )
+   (
+    ; if Emacs is run in batch mode - do not care about workgroups
+   )
+)
+#+end_src
 
-# The problem was the lack of a special keyword ~progn~ as I found
-# [[https://stackoverflow.com/questions/912355/how-can-you-write-multiple-statements-in-elisp-if-statement][here]] ([[https://www.gnu.org/software/emacs/manual/html_node/elisp/Sequencing.html][Part of the manual about it]]). All in all, now everything seems
-# to be ok with the following lines:
+The problem was the lack of a special keyword ~progn~ as I found
+[[https://stackoverflow.com/questions/912355/how-can-you-write-multiple-statements-in-elisp-if-statement][here]] ([[https://www.gnu.org/software/emacs/manual/html_node/elisp/Sequencing.html][Part of the manual about it]]). All in all, now everything seems
+to be ok with the following lines:
 
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
-#   (if (not noninteractive)
-#       ( ; if Emacs is started in graphical environment
-#         progn
-# 	(add-hook 'kill-emacs-hook (
-# 		       lambda () (wg-create-workgroup "currentsession")))
-# 	(setq inhibit-startup-message t)
-# 	(add-hook 'window-setup-hook (
-# 			 lambda () (wg-open-workgroup "currentsession")))
-#       )
-#      (
-#       ; if Emacs is run in batch mode - do not care about workgroups
-#      )
-#   )
-# #+end_src
-
-
-
-# **** Last lines
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") :exports none
-# ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-# ;; *** Finishing touches
-# ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-# #+end_src
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+  (if (not noninteractive)
+      ( ; if Emacs is started in graphical environment
+        progn
+	(add-hook 'kill-emacs-hook (
+		       lambda () (wg-create-workgroup "currentsession")))
+	(setq inhibit-startup-message t)
+	(add-hook 'window-setup-hook (
+			 lambda () (wg-open-workgroup "currentsession")))
+      )
+     (
+      ; if Emacs is run in batch mode - do not care about workgroups
+     )
+  )
+#+end_src
 
 
-# **** DEPRECATED Restoring previous session
-# This section is deprecated in favour of [[workgroups2-and-sessions][~workgroups2 package~]].
 
-# This way of restoring session throws some warnings and needs additional
-# confirmations so I give it up. Simple ~(desktop-save-mode 1)~ which is 
-# included [[oneliners][in the beginning of ~init.el~]] works ok.
-
-# #+begin_src emacs-lisp 
-# ;; Restore the "desktop" - do this as late as possible
-# (if first-time
-#     (progn
-#       ;(desktop-load-default)   ; this is for Emacs 20-21
-#       (desktop-read)))
-
-# ;; Indicate that this file has been read at least once
-# (setq first-time nil)
-# #+end_src
-
-# **** DEPRECATED Open some useful files in the background
-# I don't use this part of ~init.el~ anymore. I can get the similar
-# functionality by using ~recentf~ package or prepare a session
-# with required files opened in it.
-
-# # #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
-# #+begin_src emacs-lisp
-#   ;;; Always have several files opened at startup
-#   ;; hint: https://stackoverflow.com/a/19284395/4649238
-#   (find-file "~/.emacs.d/init.el")
-#   (find-file "~/.emacs.d/install-packages.el")
-#   (find-file "~/.emacs.d/useful-shortcuts.org")
-# #+end_src
-
-# What's more, the commands above cause an unwanted behaviour when
-# evaluating ~init.el~. The last file in the list is opened in an active buffer.
-# I'd like to have those files opened "in background".
-# I found ~find-file-noselect~ function have this functionality,
-# but first: it is [[https://emacs.stackexchange.com/questions/2868/whats-wrong-with-find-file-noselect][not recommended way]] of doing this thing;
-# second: it is not present in Emacs 27.1 anyway.
+**** Last lines
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") :exports none
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; *** Finishing touches
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+end_src
 
 
+**** DEPRECATED Restoring previous session
+This section is deprecated in favour of [[workgroups2-and-sessions][~workgroups2 package~]].
+
+This way of restoring session throws some warnings and needs additional
+confirmations so I give it up. Simple ~(desktop-save-mode 1)~ which is 
+included [[oneliners][in the beginning of ~init.el~]] works ok.
+
+#+begin_src emacs-lisp 
+;; Restore the "desktop" - do this as late as possible
+(if first-time
+    (progn
+      ;(desktop-load-default)   ; this is for Emacs 20-21
+      (desktop-read)))
+
+;; Indicate that this file has been read at least once
+(setq first-time nil)
+#+end_src
+
+**** DEPRECATED Open some useful files in the background
+I don't use this part of ~init.el~ anymore. I can get the similar
+functionality by using ~recentf~ package or prepare a session
+with required files opened in it.
 
 # #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
-#   ;; All done
-#   (message "All done in init.el.")
-# #+end_src
+#+begin_src emacs-lisp
+  ;;; Always have several files opened at startup
+  ;; hint: https://stackoverflow.com/a/19284395/4649238
+  (find-file "~/.emacs.d/init.el")
+  (find-file "~/.emacs.d/install-packages.el")
+  (find-file "~/.emacs.d/useful-shortcuts.org")
+#+end_src
+
+What's more, the commands above cause an unwanted behaviour when
+evaluating ~init.el~. The last file in the list is opened in an active buffer.
+I'd like to have those files opened "in background".
+I found ~find-file-noselect~ function have this functionality,
+but first: it is [[https://emacs.stackexchange.com/questions/2868/whats-wrong-with-find-file-noselect][not recommended way]] of doing this thing;
+second: it is not present in Emacs 27.1 anyway.
+
+
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
+  ;; All done
+  (message "All done in init.el.")
+#+end_src
 
 ** Dependencies of the presented Emacs configuration: <<dependencies-section>>
 The list of external applications that this script is dependent on:
