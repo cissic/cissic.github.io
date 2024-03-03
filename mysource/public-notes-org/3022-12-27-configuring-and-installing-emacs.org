@@ -1413,6 +1413,11 @@ https://stackoverflow.com/questions/36197545/org-mode-latex-export-making-todos-
   (concat
    ;; (and todo (format "{\\bfseries\\sffamily %s} " todo))
   (cond
+   ((string= todo "TODO")(and todo (format "{\\color{red}\\bfseries\\sffamily %s} " todo)))
+   ((string= todo "????")(and todo (format "{\\color{red}\\bfseries\\sffamily %s} " todo)))
+   ((string= todo "POSTPONED")(and todo (format "{\\color{blue}\\bfseries\\sffamily %s} " todo)))
+   ((string= todo "DONE")(and todo (format "{\\color{green}\\bfseries\\sffamily %s} " todo)))
+   )
 
 #+end_src
 
