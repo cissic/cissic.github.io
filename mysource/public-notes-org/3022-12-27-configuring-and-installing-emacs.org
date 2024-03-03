@@ -1080,91 +1080,91 @@ Emacs abbreviations are
 
 *** Settings for modes 
 
-# It's good to have keybindings for the commands often used,
-# and it's good to have them enabled per specific mode.
+It's good to have keybindings for the commands often used,
+and it's good to have them enabled per specific mode.
 
-# How to define keybindings and key sequences:
-# [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Key-Sequences.html][Link 1]],
-# [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Init-Rebinding.html#Init-Rebinding][Link 2]].
+How to define keybindings and key sequences:
+[[https://www.gnu.org/software/emacs/manual/html_node/elisp/Key-Sequences.html][Link 1]],
+[[https://www.gnu.org/software/emacs/manual/html_node/emacs/Init-Rebinding.html#Init-Rebinding][Link 2]].
 
 
-# How to define shortcuts for major modes:
-# [[http://xahlee.info/emacs/emacs/reclaim_keybindings.html][Link 1]],
-# [[https://docs.freebsd.org/en/books/developers-handbook/tools/#Emacs][Link 2]].
+How to define shortcuts for major modes:
+[[http://xahlee.info/emacs/emacs/reclaim_keybindings.html][Link 1]],
+[[https://docs.freebsd.org/en/books/developers-handbook/tools/#Emacs][Link 2]].
 
-# The problem that can be encountered in this point is that
-# we choose wrong (restricted) keybinding. In that case Emacs will
-# print an error message like:
-# #+begin_src emacs-lisp 
-# Key sequence M-x g starts with non-prefix key M-x
-# #+end_src
+The problem that can be encountered in this point is that
+we choose wrong (restricted) keybinding. In that case Emacs will
+print an error message like:
+#+begin_src emacs-lisp 
+Key sequence M-x g starts with non-prefix key M-x
+#+end_src
 
-# We can check the bindings that are restricted for the specific mode:
-# In the buffer with the mode enabled press ~C-h m~. New window with
-# information on the modes enabled for the buffer appears. You can
-# find the bindings tagged as =Prefix Command=. If you'd really like to use
-# other shortcut
-# # them
-# you need to rebind it ([[https://stackoverflow.com/questions/1024374/how-can-i-make-c-p-an-emacs-prefix-key-for-develperlysense][1]], [[https://stackoverflow.com/questions/9462111/emacs-error-key-sequence-m-x-g-starts-with-non-prefix-key-m-x][2]], [[https://emacs.stackexchange.com/questions/68328/general-el-error-key-sequence-starts-with-non-prefix-key][3]]).
+We can check the bindings that are restricted for the specific mode:
+In the buffer with the mode enabled press ~C-h m~. New window with
+information on the modes enabled for the buffer appears. You can
+find the bindings tagged as =Prefix Command=. If you'd really like to use
+other shortcut
+# them
+you need to rebind it ([[https://stackoverflow.com/questions/1024374/how-can-i-make-c-p-an-emacs-prefix-key-for-develperlysense][1]], [[https://stackoverflow.com/questions/9462111/emacs-error-key-sequence-m-x-g-starts-with-non-prefix-key-m-x][2]], [[https://emacs.stackexchange.com/questions/68328/general-el-error-key-sequence-starts-with-non-prefix-key][3]]).
    
 
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
-# ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-# ;; ;; *** Minor mode settings and keybindings
-# ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-# #+end_src
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;; *** Minor mode settings and keybindings
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+end_src
 
-# **** Emacs-Lisp mode
-# Be sure to set ~emacs-lisp-mode~ maps/hooks etc, not just ~lisp-mode-...~  otherwise
-# the shortcuts won't work.
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
-# ;; Emacs-Lisp mode...
-# (defun my-emacs-lisp-mode-hook ()
-# (define-key emacs-lisp-mode-map (kbd "C-e b") 'eval-buffer)
-# (define-key emacs-lisp-mode-map (kbd "C-e e") 'eval-expression)
-# (define-key emacs-lisp-mode-map (kbd "C-e r") 'eval-region)  
-# )
-# #+end_src
+**** Emacs-Lisp mode
+Be sure to set ~emacs-lisp-mode~ maps/hooks etc, not just ~lisp-mode-...~  otherwise
+the shortcuts won't work.
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
+;; Emacs-Lisp mode...
+(defun my-emacs-lisp-mode-hook ()
+(define-key emacs-lisp-mode-map (kbd "C-e b") 'eval-buffer)
+(define-key emacs-lisp-mode-map (kbd "C-e e") 'eval-expression)
+(define-key emacs-lisp-mode-map (kbd "C-e r") 'eval-region)  
+)
+#+end_src
 
-# **** Octave/Matlab mode
-# Based on [[https://wiki.octave.org/Emacs]].
+**** Octave/Matlab mode
+Based on [[https://wiki.octave.org/Emacs]].
 
-# Three files mentioned in the link must be already installed somewhere within
-# my ~Emacs 26.1~, because ~octve-mode~ command is available.
-# The only thing to do is to add ~octave-mode-hook~:
+Three files mentioned in the link must be already installed somewhere within
+my ~Emacs 26.1~, because ~octve-mode~ command is available.
+The only thing to do is to add ~octave-mode-hook~:
 
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
-# ;; Octave mode...
-# (defun my-octave-mode-hook()
-#   (define-key octave-mode-map (kbd "C-c C-s") 'octave-send-buffer)
-#   (define-key octave-mode-map (kbd "<f8>") 'octave-send-buffer)
-#           (lambda ()
-#             (abbrev-mode 1)
-#             (auto-fill-mode 1)
-#             (if (eq window-system 'x)
-#                 (font-lock-mode 1))))
-# #+end_src
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
+;; Octave mode...
+(defun my-octave-mode-hook()
+  (define-key octave-mode-map (kbd "C-c C-s") 'octave-send-buffer)
+  (define-key octave-mode-map (kbd "<f8>") 'octave-send-buffer)
+          (lambda ()
+            (abbrev-mode 1)
+            (auto-fill-mode 1)
+            (if (eq window-system 'x)
+                (font-lock-mode 1))))
+#+end_src
 
-# This code is compiled however it throws an error while writing the code
-# and expecting function syntax hints working:
+This code is compiled however it throws an error while writing the code
+and expecting function syntax hints working:
 
-# =eldoc error: ( error Selecting deleted buffer)
+=eldoc error: ( error Selecting deleted buffer)
 
-# Now =C-c TAB a= should invoke octave and run a buffer in it
-# (run =C-h m= or visit https://wiki.octave.org/Emacs to see the keybindings)
+Now =C-c TAB a= should invoke octave and run a buffer in it
+(run =C-h m= or visit https://wiki.octave.org/Emacs to see the keybindings)
 
 
-# Define your own custom shortcuts to run specific script in matlab shell.
+Define your own custom shortcuts to run specific script in matlab shell.
 
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
-# ; Matlab mode...
-# (defun my-matlab-mode-hook()
-#   (define-key matlab-mode-map (kbd "<f8>")
-#     '(lambda () (interactive)
-#       (matlab-shell-send-command "emacsrun('/home/mb/projects/TSdistributed/srcMTLB/main')" ))
-#      )
-# )
-# #+end_src
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
+; Matlab mode...
+(defun my-matlab-mode-hook()
+  (define-key matlab-mode-map (kbd "<f8>")
+    '(lambda () (interactive)
+      (matlab-shell-send-command "emacsrun('/home/mb/projects/TSdistributed/srcMTLB/main')" ))
+     )
+)
+#+end_src
 
 # **** Python mode
 

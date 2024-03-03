@@ -114,7 +114,7 @@ it's better to keep whole .emacs.d directory as a git repository and
 make a commit before executing this script. Then, in case any problems
 you can go back to restore properly working emacs installation.
 Before running this script you should have a git repository initialized in emacs
-directory and git itself installed in the system (see Sec. [1.5](#org1f85a12)).
+directory and git itself installed in the system (see Sec. [1.5](#org4792efb)).
 Synchronization of the local repository with the remote one is not
 performed in this script. It should be performed explicitely by the user
 in a convenient time.
@@ -210,7 +210,7 @@ In Emacs 27.1 it [shouldn't be necessary to use](https://emacs.stackexchange.com
 
 ### The main part of the installation script - list of the packages
 
-<a id="org1c792c5"></a>
+<a id="orgce13847"></a>
 
 I used to have `(defvar my-packages ...` instead of `(setq my-packages ...` 
 below but... **Do not** use `defvar` for declaring a list of packages to be installed!
@@ -327,7 +327,7 @@ for now. An interesting discussion about this can be found [here](https://www.re
 
 1.  DEPRECATED Setting an auxiliary variable
 
-    This section is deprecated in favour of [`workgroups2 package`](#orgb84a34d).
+    This section is deprecated in favour of [`workgroups2 package`](#org70cc867).
     
         ;; This file is designed to be re-evaled; use the variable first-time
         ;; to avoid any problems with this.
@@ -368,7 +368,7 @@ proactively.
 Here are global Emacs customization. 
 If necessary some useful infomation or link is added to the customization.
 
-1.  Self-descriptive oneliners <a id="orgbb67a49"></a>
+1.  Self-descriptive oneliners <a id="orgc0f9f84"></a>
 
     Remarks:
     At around May 2023 I stopped using `global-linum-mode` because
@@ -473,14 +473,14 @@ If necessary some useful infomation or link is added to the customization.
         ;; (set-frame-font "liberation mono 11" nil t) ; Set default font
     
     Due to  due to the  problems with fonts in `emacsclient/daemonp`
-    instances font is set now in the section [1.4.8](#orgfb42f44).
+    instances font is set now in the section [1.4.8](#org0d831f0).
 
 7.  Highlight on an active window/buffer
 
     Although the active window can be recognized
     by the cursor which blinking in it, sometimes it is hard to
     find in on the screen (especially if you use a colourful theme
-    like [1.4.8.1](#org09ef582).
+    like [1.4.8.1](#orgdcd96bf).
     
     I found a [post](https://stackoverflow.com/questions/33195122/highlight-current-active-window) adressing this issue.
     Although the accepted answer is using 
@@ -722,7 +722,7 @@ If necessary some useful infomation or link is added to the customization.
           )
           ;; <- Fill column indicator
     
-    -   and add this hook per each required mode (this is done in [1.4.7](#orga74f9bd) section
+    -   and add this hook per each required mode (this is done in [1.4.7](#orge663366) section
         of this document
 
 12. Turning on/off beeping
@@ -736,7 +736,7 @@ If necessary some useful infomation or link is added to the customization.
         (setq-default visible-bell t) 
         (setq ring-bell-function 'ignore)
 
-13. Ibuffer - an advanced replacement for BufferMenu <a id="org750a09a"></a>
+13. Ibuffer - an advanced replacement for BufferMenu <a id="orge75d1ce"></a>
 
     Description of the package is [here](https://www.emacswiki.org/emacs/IbufferMode).
     
@@ -795,7 +795,7 @@ If necessary some useful infomation or link is added to the customization.
     
     2.  Ibuffer interactive way
     
-        In [1.4.3.13](#org750a09a) there a nice shortcut to do this. You can select all
+        In [1.4.3.13](#orge75d1ce) there a nice shortcut to do this. You can select all
         the files of the given mode with:
         
             * M
@@ -880,7 +880,7 @@ ido/smex vs ivy/counsel/swiper vs helm
         (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command) 
         ;; <- smex
 
-3.  TODO Ivy (for testing) <a id="org203566a"></a>
+3.  TODO Ivy (for testing) <a id="org3462bb6"></a>
 
     Furthermore, according to [some other users](https://ruzkuku.com/emacs.d.html#org804158b)
     "Ivy is simpler (and faster) than Helm but more powerful than Ido".
@@ -948,25 +948,102 @@ ido/smex vs ivy/counsel/swiper vs helm
 
 ### Settings for modes
 
+It's good to have keybindings for the commands often used,
+and it's good to have them enabled per specific mode.
 
-### Emacs-everywhere <a id="orgfb42f44"></a>
+How to define keybindings and key sequences:
+[Link 1](https://www.gnu.org/software/emacs/manual/html_node/elisp/Key-Sequences.html),
+[Link 2](https://www.gnu.org/software/emacs/manual/html_node/emacs/Init-Rebinding.html#Init-Rebinding).
 
-1.  Modus themes by Protesilaos Stavrou <a id="org09ef582"></a>
+How to define shortcuts for major modes:
+[Link 1](http://xahlee.info/emacs/emacs/reclaim_keybindings.html),
+[Link 2](https://docs.freebsd.org/en/books/developers-handbook/tools/#Emacs).
 
-2.  Workgroups (should be executed at the end of init.el) <a id="orgb84a34d"></a>
+The problem that can be encountered in this point is that
+we choose wrong (restricted) keybinding. In that case Emacs will
+print an error message like:
+
+    Key sequence M-x g starts with non-prefix key M-x
+
+We can check the bindings that are restricted for the specific mode:
+In the buffer with the mode enabled press `C-h m`. New window with
+information on the modes enabled for the buffer appears. You can
+find the bindings tagged as `Prefix Command`. If you'd really like to use
+other shortcut
+
+you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i-make-c-p-an-emacs-prefix-key-for-develperlysense), [2](https://stackoverflow.com/questions/9462111/emacs-error-key-sequence-m-x-g-starts-with-non-prefix-key-m-x), [3](https://emacs.stackexchange.com/questions/68328/general-el-error-key-sequence-starts-with-non-prefix-key)).
+
+    ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;; ;; *** Minor mode settings and keybindings
+    ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+1.  Emacs-Lisp mode
+
+    Be sure to set `emacs-lisp-mode` maps/hooks etc, not just `lisp-mode-...`  otherwise
+    the shortcuts won't work.
+    
+        ;; Emacs-Lisp mode...
+        (defun my-emacs-lisp-mode-hook ()
+        (define-key emacs-lisp-mode-map (kbd "C-e b") 'eval-buffer)
+        (define-key emacs-lisp-mode-map (kbd "C-e e") 'eval-expression)
+        (define-key emacs-lisp-mode-map (kbd "C-e r") 'eval-region)  
+        )
+
+2.  Octave/Matlab mode
+
+    Based on <https://wiki.octave.org/Emacs>.
+    
+    Three files mentioned in the link must be already installed somewhere within
+    my `Emacs 26.1`, because `octve-mode` command is available.
+    The only thing to do is to add `octave-mode-hook`:
+    
+        ;; Octave mode...
+        (defun my-octave-mode-hook()
+          (define-key octave-mode-map (kbd "C-c C-s") 'octave-send-buffer)
+          (define-key octave-mode-map (kbd "<f8>") 'octave-send-buffer)
+                  (lambda ()
+                    (abbrev-mode 1)
+                    (auto-fill-mode 1)
+                    (if (eq window-system 'x)
+                        (font-lock-mode 1))))
+    
+    This code is compiled however it throws an error while writing the code
+    and expecting function syntax hints working:
+    
+    =eldoc error: ( error Selecting deleted buffer)
+    
+    Now `C-c TAB a` should invoke octave and run a buffer in it
+    (run `C-h m` or visit <https://wiki.octave.org/Emacs> to see the keybindings)
+    
+    Define your own custom shortcuts to run specific script in matlab shell.
+    
+        ; Matlab mode...
+        (defun my-matlab-mode-hook()
+          (define-key matlab-mode-map (kbd "<f8>")
+            '(lambda () (interactive)
+              (matlab-shell-send-command "emacsrun('/home/mb/projects/TSdistributed/srcMTLB/main')" ))
+             )
+        )
 
 
-## Dependencies of the presented Emacs configuration: <a id="org1f85a12"></a>
+### Emacs-everywhere <a id="org0d831f0"></a>
+
+1.  Modus themes by Protesilaos Stavrou <a id="orgdcd96bf"></a>
+
+2.  Workgroups (should be executed at the end of init.el) <a id="org70cc867"></a>
+
+
+## Dependencies of the presented Emacs configuration: <a id="org4792efb"></a>
 
 The list of external applications that this script is dependent on:
 
 -   git
 -   LaTeX distribution (for org to latex exporters)
 
--   xclip ([1.4.8](#orgfb42f44))
--   xdotool ([1.4.8](#orgfb42f44))
--   xprop ([1.4.8](#orgfb42f44)) - this is not a package but executable
--   xwininfo ([1.4.8](#orgfb42f44)) - this is not a package but executable
+-   xclip ([1.4.8](#org0d831f0))
+-   xdotool ([1.4.8](#org0d831f0))
+-   xprop ([1.4.8](#org0d831f0)) - this is not a package but executable
+-   xwininfo ([1.4.8](#org0d831f0)) - this is not a package but executable
 
 
 ## Some useful information and links:
