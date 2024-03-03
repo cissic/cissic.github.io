@@ -1,0 +1,23 @@
+# #+MACRO: Town Sydney
+
+# #+BIND: org-babel-inline-result-wrap "%s%"
+# #+BIND: org-babel-inline-result-wrap "%s%"
+
+# #+BIND: ratata cos
+
+* Section about *src_elisp[:results raw]{(org-entry-get nil "Name")}* 
+:PROPERTIES:
+:Name:     J.S. Bach
+:END:
+
+*src_elisp[:results raw]{(org-entry-get nil "Name")}*
+# src_elisp{(print org-babel-inline-result-wrap)}
+
+#+begin_src elisp :exports results :results raw
+  (org-entry-get nil "Name")
+#+end_src
+
+
+# Local Variables:
+# org-babel-inline-result-wrap: "%s%"
+# End:
