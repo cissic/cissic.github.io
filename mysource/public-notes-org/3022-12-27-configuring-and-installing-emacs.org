@@ -1269,53 +1269,53 @@ and set the variable ~org-export-async-init-file~.
 The important line is =(require 'ox-beamer)= !!! ([[https://lists.gnu.org/archive/html/emacs-orgmode/2018-05/msg00253.html][link]])
 
 
-# ***** TODO async for odt documents still not working
+***** TODO async for odt documents still not working
 
 
-# **** Updating all of the hooks to make them aware of your mode settings
-# Now we need to update the hooks to 
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
-# ;; Add all of the hooks...
-# ;(add-hook 'c++-mode-hook 'my-c++-mode-hook)
-# ;(add-hook 'c-mode-hook 'my-c-mode-hook)
-# (add-hook 'emacs-lisp-mode-hook 'my-emacs-lisp-mode-hook)
-# (add-hook 'octave-mode-hook 'my-octave-mode-hook)
-# (add-hook 'matlab-mode-hook 'my-matlab-mode-hook)
-# (add-hook 'python-mode-hook 'my-python-mode-hook)
-# (add-hook 'org-mode-hook 'my-org-mode-hook)
+**** Updating all of the hooks to make them aware of your mode settings
+Now we need to update the hooks to 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
+;; Add all of the hooks...
+;(add-hook 'c++-mode-hook 'my-c++-mode-hook)
+;(add-hook 'c-mode-hook 'my-c-mode-hook)
+(add-hook 'emacs-lisp-mode-hook 'my-emacs-lisp-mode-hook)
+(add-hook 'octave-mode-hook 'my-octave-mode-hook)
+(add-hook 'matlab-mode-hook 'my-matlab-mode-hook)
+(add-hook 'python-mode-hook 'my-python-mode-hook)
+(add-hook 'org-mode-hook 'my-org-mode-hook)
 
-# ; (add-hook 'lisp-mode-hook 'my-lisp-mode-hook)
-# ;(add-hook 'perl-mode-hook 'my-perl-mode-hook)
-# #+end_src
+; (add-hook 'lisp-mode-hook 'my-lisp-mode-hook)
+;(add-hook 'perl-mode-hook 'my-perl-mode-hook)
+#+end_src
 
 
-# **** Adding a hook to more than a one mode at once
-# https://emacs.stackexchange.com/questions/501/how-do-i-group-hooks
-# https://stackoverflow.com/questions/7398216/how-can-i-apply-a-hook-to-multiple-emacs-modes-at-once
+**** Adding a hook to more than a one mode at once
+https://emacs.stackexchange.com/questions/501/how-do-i-group-hooks
+https://stackoverflow.com/questions/7398216/how-can-i-apply-a-hook-to-multiple-emacs-modes-at-once
 
-# In order to add a hook to more than one modes we need to use a function (taken from
-# [[https://stackoverflow.com/a/7400476/4649238][here]].
+In order to add a hook to more than one modes we need to use a function (taken from
+[[https://stackoverflow.com/a/7400476/4649238][here]].
 
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
-#   ;; Add a hook to the list of modes
-#   (defun my-add-to-multiple-hooks (function hooks)
-#     (mapc (lambda (hook)
-# 	    (add-hook hook function))
-# 	  hooks))
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
+  ;; Add a hook to the list of modes
+  (defun my-add-to-multiple-hooks (function hooks)
+    (mapc (lambda (hook)
+	    (add-hook hook function))
+	  hooks))
 
-#   (defun my-turn-on-auto-fill ()
-#       my-default-text-buffer-settings-mode-hook  )
+  (defun my-turn-on-auto-fill ()
+      my-default-text-buffer-settings-mode-hook  )
 
-#   (my-add-to-multiple-hooks
-#    'my-default-text-buffer-settings-mode-hook         ;; my-turn-on-auto-fill
-#    '(DocOnce-hook
-#      emacs-lisp-mode-hook
-#      matlab-mode-hook
-#      octave-mode-hook
-#      org-mode-hook
-#      python-mode-hook
-#    ))
-# #+end_src
+  (my-add-to-multiple-hooks
+   'my-default-text-buffer-settings-mode-hook         ;; my-turn-on-auto-fill
+   '(DocOnce-hook
+     emacs-lisp-mode-hook
+     matlab-mode-hook
+     octave-mode-hook
+     org-mode-hook
+     python-mode-hook
+   ))
+#+end_src
 
 
 

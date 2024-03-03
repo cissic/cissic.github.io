@@ -114,7 +114,7 @@ it's better to keep whole .emacs.d directory as a git repository and
 make a commit before executing this script. Then, in case any problems
 you can go back to restore properly working emacs installation.
 Before running this script you should have a git repository initialized in emacs
-directory and git itself installed in the system (see Sec. [1.5](#org6b7bc8f)).
+directory and git itself installed in the system (see Sec. [1.5](#org12e0ed5)).
 Synchronization of the local repository with the remote one is not
 performed in this script. It should be performed explicitely by the user
 in a convenient time.
@@ -210,7 +210,7 @@ In Emacs 27.1 it [shouldn't be necessary to use](https://emacs.stackexchange.com
 
 ### The main part of the installation script - list of the packages
 
-<a id="orgff3feb8"></a>
+<a id="orgb514bd0"></a>
 
 I used to have `(defvar my-packages ...` instead of `(setq my-packages ...` 
 below but... **Do not** use `defvar` for declaring a list of packages to be installed!
@@ -327,7 +327,7 @@ for now. An interesting discussion about this can be found [here](https://www.re
 
 1.  DEPRECATED Setting an auxiliary variable
 
-    This section is deprecated in favour of [`workgroups2 package`](#org7df99ca).
+    This section is deprecated in favour of [`workgroups2 package`](#orgc80d512).
     
         ;; This file is designed to be re-evaled; use the variable first-time
         ;; to avoid any problems with this.
@@ -368,7 +368,7 @@ proactively.
 Here are global Emacs customization. 
 If necessary some useful infomation or link is added to the customization.
 
-1.  Self-descriptive oneliners <a id="org0ff105b"></a>
+1.  Self-descriptive oneliners <a id="org6bd756b"></a>
 
     Remarks:
     At around May 2023 I stopped using `global-linum-mode` because
@@ -473,14 +473,14 @@ If necessary some useful infomation or link is added to the customization.
         ;; (set-frame-font "liberation mono 11" nil t) ; Set default font
     
     Due to  due to the  problems with fonts in `emacsclient/daemonp`
-    instances font is set now in the section [1.4.8](#org9765b53).
+    instances font is set now in the section [1.4.8](#orgaf7306b).
 
 7.  Highlight on an active window/buffer
 
     Although the active window can be recognized
     by the cursor which blinking in it, sometimes it is hard to
     find in on the screen (especially if you use a colourful theme
-    like [1.4.8.1](#org9045984).
+    like [1.4.8.1](#org4167658).
     
     I found a [post](https://stackoverflow.com/questions/33195122/highlight-current-active-window) adressing this issue.
     Although the accepted answer is using 
@@ -722,7 +722,7 @@ If necessary some useful infomation or link is added to the customization.
           )
           ;; <- Fill column indicator
     
-    -   and add this hook per each required mode (this is done in [1.4.7](#org5e4fd51) section
+    -   and add this hook per each required mode (this is done in [1.4.7](#org0ec89a1) section
         of this document
 
 12. Turning on/off beeping
@@ -736,7 +736,7 @@ If necessary some useful infomation or link is added to the customization.
         (setq-default visible-bell t) 
         (setq ring-bell-function 'ignore)
 
-13. Ibuffer - an advanced replacement for BufferMenu <a id="org946fb12"></a>
+13. Ibuffer - an advanced replacement for BufferMenu <a id="orga04a847"></a>
 
     Description of the package is [here](https://www.emacswiki.org/emacs/IbufferMode).
     
@@ -795,7 +795,7 @@ If necessary some useful infomation or link is added to the customization.
     
     2.  Ibuffer interactive way
     
-        In [1.4.3.13](#org946fb12) there a nice shortcut to do this. You can select all
+        In [1.4.3.13](#orga04a847) there a nice shortcut to do this. You can select all
         the files of the given mode with:
         
             * M
@@ -880,7 +880,7 @@ ido/smex vs ivy/counsel/swiper vs helm
         (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command) 
         ;; <- smex
 
-3.  TODO Ivy (for testing) <a id="orgc0a172c"></a>
+3.  TODO Ivy (for testing) <a id="orgf8eeb10"></a>
 
     Furthermore, according to [some other users](https://ruzkuku.com/emacs.d.html#org804158b)
     "Ivy is simpler (and faster) than Helm but more powerful than Ido".
@@ -1074,11 +1074,11 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
     files to Beamer. In order one needs to create appropriate
     init file with settings for async export and
     set `org-export-async-init-file` variable as path to this file (see 
-    [1.4.7.4.1](#org80f21b2)).
+    [1.4.7.4.1](#orgd334746)).
     
     1.  Setting `org-export-async-init-file` to avoid failure while exporting to Beamer
     
-        <a id="org80f21b2"></a>
+        <a id="orgd334746"></a>
         
         Org-beamer **async** exporter may fail because of lacking
         `org-export-async-init-file` 
@@ -1105,26 +1105,71 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
             (setq org-export-async-debug nil) ;; when set to 't' it stores all "*Org Export Process*" buffers, when set to 'nil' it leaves only the last one in the buffer list, but already killed
         
         The important line is `(require 'ox-beamer)` !!! ([link](https://lists.gnu.org/archive/html/emacs-orgmode/2018-05/msg00253.html))
+    
+    2.  TODO async for odt documents still not working
+
+5.  Updating all of the hooks to make them aware of your mode settings
+
+    Now we need to update the hooks to 
+    
+        ;; Add all of the hooks...
+        ;(add-hook 'c++-mode-hook 'my-c++-mode-hook)
+        ;(add-hook 'c-mode-hook 'my-c-mode-hook)
+        (add-hook 'emacs-lisp-mode-hook 'my-emacs-lisp-mode-hook)
+        (add-hook 'octave-mode-hook 'my-octave-mode-hook)
+        (add-hook 'matlab-mode-hook 'my-matlab-mode-hook)
+        (add-hook 'python-mode-hook 'my-python-mode-hook)
+        (add-hook 'org-mode-hook 'my-org-mode-hook)
+        
+        ; (add-hook 'lisp-mode-hook 'my-lisp-mode-hook)
+        ;(add-hook 'perl-mode-hook 'my-perl-mode-hook)
+
+6.  Adding a hook to more than a one mode at once
+
+    <https://emacs.stackexchange.com/questions/501/how-do-i-group-hooks>
+    <https://stackoverflow.com/questions/7398216/how-can-i-apply-a-hook-to-multiple-emacs-modes-at-once>
+    
+    In order to add a hook to more than one modes we need to use a function (taken from
+    [here](https://stackoverflow.com/a/7400476/4649238).
+    
+        ;; Add a hook to the list of modes
+        (defun my-add-to-multiple-hooks (function hooks)
+          (mapc (lambda (hook)
+                  (add-hook hook function))
+                hooks))
+        
+        (defun my-turn-on-auto-fill ()
+            my-default-text-buffer-settings-mode-hook  )
+        
+        (my-add-to-multiple-hooks
+         'my-default-text-buffer-settings-mode-hook         ;; my-turn-on-auto-fill
+         '(DocOnce-hook
+           emacs-lisp-mode-hook
+           matlab-mode-hook
+           octave-mode-hook
+           org-mode-hook
+           python-mode-hook
+         ))
 
 
-### Emacs-everywhere <a id="org9765b53"></a>
+### Emacs-everywhere <a id="orgaf7306b"></a>
 
-1.  Modus themes by Protesilaos Stavrou <a id="org9045984"></a>
+1.  Modus themes by Protesilaos Stavrou <a id="org4167658"></a>
 
-2.  Workgroups (should be executed at the end of init.el) <a id="org7df99ca"></a>
+2.  Workgroups (should be executed at the end of init.el) <a id="orgc80d512"></a>
 
 
-## Dependencies of the presented Emacs configuration: <a id="org6b7bc8f"></a>
+## Dependencies of the presented Emacs configuration: <a id="org12e0ed5"></a>
 
 The list of external applications that this script is dependent on:
 
 -   git
 -   LaTeX distribution (for org to latex exporters)
 
--   xclip ([1.4.8](#org9765b53))
--   xdotool ([1.4.8](#org9765b53))
--   xprop ([1.4.8](#org9765b53)) - this is not a package but executable
--   xwininfo ([1.4.8](#org9765b53)) - this is not a package but executable
+-   xclip ([1.4.8](#orgaf7306b))
+-   xdotool ([1.4.8](#orgaf7306b))
+-   xprop ([1.4.8](#orgaf7306b)) - this is not a package but executable
+-   xwininfo ([1.4.8](#orgaf7306b)) - this is not a package but executable
 
 
 ## Some useful information and links:
