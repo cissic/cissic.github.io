@@ -1421,7 +1421,7 @@ https://stackoverflow.com/questions/36197545/org-mode-latex-export-making-todos-
    (and priority (format "\\framebox{\\#%c} " priority))
    text
    (and tags 
-	(format "\\hfill{}\\textsc"
+	(format "\\hfill{}\\textsc{ %s }"
 		(mapconcat #'org-latex--protect-text tags ":")))))
 
 (setq org-latex-format-headline-function 'org-latex-format-headline-colored-keywords-function)
