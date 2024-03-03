@@ -1370,28 +1370,28 @@ Useful links:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 #+end_src
 
-# **** Modyfing TODO-DONE sequence in org-mode
-# https://emacs.stackexchange.com/questions/31466/all-todos-how-to-set-different-colors-for-different-categories
+**** Modyfing TODO-DONE sequence in org-mode
+https://emacs.stackexchange.com/questions/31466/all-todos-how-to-set-different-colors-for-different-categories
 
-# https://orgmode.org/manual/TODO-Extensions.html
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
-# ;; customized todo-done sequence
-# (setq org-todo-keywords
-#   '(
-# (sequence "TODO" "????" "POSTPONED" "|" "DONE")
-# (sequence "TODO" "ABANDONED"  "|" "DEPRECATED" "DONE")
-# (sequence "TODO" "????" "ABANDONED" "POSTPONED" "|" "DEPRECATED" "DONE")
-# ))
+https://orgmode.org/manual/TODO-Extensions.html
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+;; customized todo-done sequence
+(setq org-todo-keywords
+  '(
+(sequence "TODO" "????" "POSTPONED" "|" "DONE")
+(sequence "TODO" "ABANDONED"  "|" "DEPRECATED" "DONE")
+(sequence "TODO" "????" "ABANDONED" "POSTPONED" "|" "DEPRECATED" "DONE")
+))
 
-# (setq org-todo-keyword-faces
-# '(
-# ("????" . (:foreground "red" :weight bold))
-# ("POSTPONED" . (:foreground "blue" :weight bold))
-# ("ABANDONED" . (:foreground "orange" :weight bold))
-# ("DEPRECATED" . (:foreground "green" :weight bold))
-# )
-# )
-# #+end_src
+(setq org-todo-keyword-faces
+'(
+("????" . (:foreground "red" :weight bold))
+("POSTPONED" . (:foreground "blue" :weight bold))
+("ABANDONED" . (:foreground "orange" :weight bold))
+("DEPRECATED" . (:foreground "green" :weight bold))
+)
+)
+#+end_src
 
 # WARNING! When changing this variables in the middle of the emacs
 # session you need to restart org-mode (=M-x org-mode-restart=) to
