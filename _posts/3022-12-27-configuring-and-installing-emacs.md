@@ -114,7 +114,7 @@ it's better to keep whole .emacs.d directory as a git repository and
 make a commit before executing this script. Then, in case any problems
 you can go back to restore properly working emacs installation.
 Before running this script you should have a git repository initialized in emacs
-directory and git itself installed in the system (see Sec. [1.5](#org7dd69da)).
+directory and git itself installed in the system (see Sec. [1.5](#org6b7bc8f)).
 Synchronization of the local repository with the remote one is not
 performed in this script. It should be performed explicitely by the user
 in a convenient time.
@@ -210,7 +210,7 @@ In Emacs 27.1 it [shouldn't be necessary to use](https://emacs.stackexchange.com
 
 ### The main part of the installation script - list of the packages
 
-<a id="orgd2c3511"></a>
+<a id="orgff3feb8"></a>
 
 I used to have `(defvar my-packages ...` instead of `(setq my-packages ...` 
 below but... **Do not** use `defvar` for declaring a list of packages to be installed!
@@ -327,7 +327,7 @@ for now. An interesting discussion about this can be found [here](https://www.re
 
 1.  DEPRECATED Setting an auxiliary variable
 
-    This section is deprecated in favour of [`workgroups2 package`](#orgabdc5ca).
+    This section is deprecated in favour of [`workgroups2 package`](#org7df99ca).
     
         ;; This file is designed to be re-evaled; use the variable first-time
         ;; to avoid any problems with this.
@@ -368,7 +368,7 @@ proactively.
 Here are global Emacs customization. 
 If necessary some useful infomation or link is added to the customization.
 
-1.  Self-descriptive oneliners <a id="orgcca4908"></a>
+1.  Self-descriptive oneliners <a id="org0ff105b"></a>
 
     Remarks:
     At around May 2023 I stopped using `global-linum-mode` because
@@ -473,14 +473,14 @@ If necessary some useful infomation or link is added to the customization.
         ;; (set-frame-font "liberation mono 11" nil t) ; Set default font
     
     Due to  due to the  problems with fonts in `emacsclient/daemonp`
-    instances font is set now in the section [1.4.8](#org1e6788a).
+    instances font is set now in the section [1.4.8](#org9765b53).
 
 7.  Highlight on an active window/buffer
 
     Although the active window can be recognized
     by the cursor which blinking in it, sometimes it is hard to
     find in on the screen (especially if you use a colourful theme
-    like [1.4.8.1](#orgc3da38a).
+    like [1.4.8.1](#org9045984).
     
     I found a [post](https://stackoverflow.com/questions/33195122/highlight-current-active-window) adressing this issue.
     Although the accepted answer is using 
@@ -722,7 +722,7 @@ If necessary some useful infomation or link is added to the customization.
           )
           ;; <- Fill column indicator
     
-    -   and add this hook per each required mode (this is done in [1.4.7](#org0014d42) section
+    -   and add this hook per each required mode (this is done in [1.4.7](#org5e4fd51) section
         of this document
 
 12. Turning on/off beeping
@@ -736,7 +736,7 @@ If necessary some useful infomation or link is added to the customization.
         (setq-default visible-bell t) 
         (setq ring-bell-function 'ignore)
 
-13. Ibuffer - an advanced replacement for BufferMenu <a id="org3684ee4"></a>
+13. Ibuffer - an advanced replacement for BufferMenu <a id="org946fb12"></a>
 
     Description of the package is [here](https://www.emacswiki.org/emacs/IbufferMode).
     
@@ -795,7 +795,7 @@ If necessary some useful infomation or link is added to the customization.
     
     2.  Ibuffer interactive way
     
-        In [1.4.3.13](#org3684ee4) there a nice shortcut to do this. You can select all
+        In [1.4.3.13](#org946fb12) there a nice shortcut to do this. You can select all
         the files of the given mode with:
         
             * M
@@ -880,7 +880,7 @@ ido/smex vs ivy/counsel/swiper vs helm
         (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command) 
         ;; <- smex
 
-3.  TODO Ivy (for testing) <a id="org3e8f9da"></a>
+3.  TODO Ivy (for testing) <a id="orgc0a172c"></a>
 
     Furthermore, according to [some other users](https://ruzkuku.com/emacs.d.html#org804158b)
     "Ivy is simpler (and faster) than Helm but more powerful than Ido".
@@ -1025,25 +1025,106 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
              )
         )
 
+3.  Python mode
 
-### Emacs-everywhere <a id="org1e6788a"></a>
+    The below code does not work as expected. Probably it'd be better to
+    apply the configuration given [here](https://realpython.com/emacs-the-best-python-editor/#integration-with-jupyter-and-ipython).
+    
+        ;; Python mode...
+        
+        (defun my-python-mode-hook()
+                   (lambda ()
+                     (setq python-shell-interpreter "python3") ))
 
-1.  Modus themes by Protesilaos Stavrou <a id="orgc3da38a"></a>
+4.  Org mode
 
-2.  Workgroups (should be executed at the end of init.el) <a id="orgabdc5ca"></a>
+    By default emacs waits until all exporting processes finish. It may take quite
+    a while in some situations (for example when exporting long document to LaTeX).
+    In order to make emacs work in asyncronous mode you need to toggle this
+    ([link 1](https://orgmode.org/manual/The-Export-Dispatcher.html), [link 2](https://superuser.com/questions/483554/org-export-run-in-background-how-to-troubleshoot)).
+    
+    One way is to do it each time when exporting: after pressing `C-c C-e` you
+    get `exporting menu` and in the third line you can see  `Async export` option
+    that can be enabled by pressin `C-a`. It is rather cumbersome.
+    
+    To have this option toggled after launching emacs put the line below in your
+    init file.
+    
+        ;; Org mode...
+        (setq org-export-in-background t)
+    
+    This setting has impact only when exporting via `org exporting menu`
+    (triggered by `C-c C-e`). When calling `org-latex-export-to-pdf` this
+    setting is not taken into account. Fortunately, this function has
+    optional parameter that can be set to obtain async behaviour.
+    All in all, the (almost) working solution can be written as a custom hook like this:
+    
+        (defun my-org-mode-hook()
+          (define-key org-mode-map (kbd "<f9>")
+            '(lambda () (interactive)
+              (org-latex-export-to-pdf :async t)
+              (org-beamer-export-to-pdf :async t)
+              (org-odt-export-to-odt :async t)
+              (org-odt-export-as-pdf :async t)
+              )
+             )  
+        )
+    
+    Why "almost"? Because this solution still won't work when exporting
+    files to Beamer. In order one needs to create appropriate
+    init file with settings for async export and
+    set `org-export-async-init-file` variable as path to this file (see 
+    [1.4.7.4.1](#org80f21b2)).
+    
+    1.  Setting `org-export-async-init-file` to avoid failure while exporting to Beamer
+    
+        <a id="org80f21b2"></a>
+        
+        Org-beamer **async** exporter may fail because of lacking
+        `org-export-async-init-file` 
+        (as it is stated [here](https://superuser.com/questions/738492/org-mode-8-async-export-process-fails) and [here](https://lists.gnu.org/archive/html/emacs-orgmode/2014-09/msg00463.html)). 
+        
+        In order to avoid this problem we can create a file with the
+        following content (note setting `org-export-allow-bind-keywords`
+        [variable](https://www.mail-archive.com/emacs-orgmode@gnu.org/msg118389.html)):
+        
+            (require 'package)
+            (setq package-enable-at-startup nil)
+            (package-initialize)
+            
+            (require 'org) 
+            (require 'ox)
+            (require 'cl)
+            (require 'ox-beamer)
+            (setq org-export-async-debug nil) ;; no impact here. Do it in main init.el
+            (setq org-export-allow-bind-keywords t) ;; Important! In order to have #+BIND command working.
+        
+        and set the variable `org-export-async-init-file`.
+        
+            (setq org-export-async-init-file (expand-file-name "~/.emacs.d/myarch/async_init.el"))
+            (setq org-export-async-debug nil) ;; when set to 't' it stores all "*Org Export Process*" buffers, when set to 'nil' it leaves only the last one in the buffer list, but already killed
+        
+        The important line is `(require 'ox-beamer)` !!! ([link](https://lists.gnu.org/archive/html/emacs-orgmode/2018-05/msg00253.html))
 
 
-## Dependencies of the presented Emacs configuration: <a id="org7dd69da"></a>
+### Emacs-everywhere <a id="org9765b53"></a>
+
+1.  Modus themes by Protesilaos Stavrou <a id="org9045984"></a>
+
+2.  Workgroups (should be executed at the end of init.el) <a id="org7df99ca"></a>
+
+
+## Dependencies of the presented Emacs configuration: <a id="org6b7bc8f"></a>
 
 The list of external applications that this script is dependent on:
 
 -   git
 -   LaTeX distribution (for org to latex exporters)
 
--   xclip ([1.4.8](#org1e6788a))
--   xdotool ([1.4.8](#org1e6788a))
--   xprop ([1.4.8](#org1e6788a)) - this is not a package but executable
--   xwininfo ([1.4.8](#org1e6788a)) - this is not a package but executable
+-   xclip ([1.4.8](#org9765b53))
+-   xdotool ([1.4.8](#org9765b53))
+-   xprop ([1.4.8](#org9765b53)) - this is not a package but executable
+-   xwininfo ([1.4.8](#org9765b53)) - this is not a package but executable
 
 
 ## Some useful information and links:

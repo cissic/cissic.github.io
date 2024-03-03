@@ -1166,107 +1166,107 @@ Define your own custom shortcuts to run specific script in matlab shell.
 )
 #+end_src
 
-# **** Python mode
+**** Python mode
 
-# The below code does not work as expected. Probably it'd be better to
-# apply the configuration given [[https://realpython.com/emacs-the-best-python-editor/#integration-with-jupyter-and-ipython][here]].
+The below code does not work as expected. Probably it'd be better to
+apply the configuration given [[https://realpython.com/emacs-the-best-python-editor/#integration-with-jupyter-and-ipython][here]].
 
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
-#   ;; Python mode...
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
+  ;; Python mode...
 
-#   (defun my-python-mode-hook()
-#              (lambda ()
-#                (setq python-shell-interpreter "python3") ))
+  (defun my-python-mode-hook()
+             (lambda ()
+               (setq python-shell-interpreter "python3") ))
 
-# #+end_src
+#+end_src
 
-# **** Org mode
-# # Old approach 
-# # #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
-# #   ;; Org mode...
-
-# #   (defun my-org-mode-hook()
-# # 	     (lambda ()
-# # 		(local-set-key (kbd "<f9>") "\C-x\C-s\C-c\C-e\C-a l p")
-# # 	       ;; (define-key org-mode-map (kbd "<f9>") "\C-x\C-s\C-c\C-e l p")
-# # 	       ))
-# #   ;; (global-set-key (kbd "<f9>") "\C-x\C-s\C-c\C-e l p")
-# # #+end_src
-
-
-# By default emacs waits until all exporting processes finish. It may take quite
-# a while in some situations (for example when exporting long document to LaTeX).
-# In order to make emacs work in asyncronous mode you need to toggle this
-# ([[https://orgmode.org/manual/The-Export-Dispatcher.html][link 1]], [[https://superuser.com/questions/483554/org-export-run-in-background-how-to-troubleshoot][link 2]]).
-
-# One way is to do it each time when exporting: after pressing =C-c C-e= you
-# get =exporting menu= and in the third line you can see  =Async export= option
-# that can be enabled by pressin =C-a=. It is rather cumbersome.
-
-# To have this option toggled after launching emacs put the line below in your
-# init file.
-
+**** Org mode
+# Old approach 
 # #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
 #   ;; Org mode...
-#   (setq org-export-in-background t)
-# #+end_src
 
-# This setting has impact only when exporting via =org exporting menu=
-# (triggered by =C-c C-e=). When calling =org-latex-export-to-pdf= this
-# setting is not taken into account. Fortunately, this function has
-# optional parameter that can be set to obtain async behaviour.
-# All in all, the (almost) working solution can be written as a custom hook like this:
-
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
 #   (defun my-org-mode-hook()
-#     (define-key org-mode-map (kbd "<f9>")
-#       '(lambda () (interactive)
-# 	(org-latex-export-to-pdf :async t)
-# 	(org-beamer-export-to-pdf :async t)
-# 	(org-odt-export-to-odt :async t)
-# 	(org-odt-export-as-pdf :async t)
-# 	)
-#        )  
-#   )
+# 	     (lambda ()
+# 		(local-set-key (kbd "<f9>") "\C-x\C-s\C-c\C-e\C-a l p")
+# 	       ;; (define-key org-mode-map (kbd "<f9>") "\C-x\C-s\C-c\C-e l p")
+# 	       ))
+#   ;; (global-set-key (kbd "<f9>") "\C-x\C-s\C-c\C-e l p")
 # #+end_src
 
-# Why "almost"? Because this solution still won't work when exporting
-# files to Beamer. In order one needs to create appropriate
-# init file with settings for async export and
-# set ~org-export-async-init-file~ variable as path to this file (see 
-# [[org:export:async:beamer]]).
 
-# ***** Setting ~org-export-async-init-file~ to avoid failure while exporting to Beamer
-# <<org:export:async:beamer>>
+By default emacs waits until all exporting processes finish. It may take quite
+a while in some situations (for example when exporting long document to LaTeX).
+In order to make emacs work in asyncronous mode you need to toggle this
+([[https://orgmode.org/manual/The-Export-Dispatcher.html][link 1]], [[https://superuser.com/questions/483554/org-export-run-in-background-how-to-troubleshoot][link 2]]).
 
-# Org-beamer *async* exporter may fail because of lacking
-# =org-export-async-init-file= 
-# (as it is stated [[https://superuser.com/questions/738492/org-mode-8-async-export-process-fails][here]] and [[https://lists.gnu.org/archive/html/emacs-orgmode/2014-09/msg00463.html][here]]). 
+One way is to do it each time when exporting: after pressing =C-c C-e= you
+get =exporting menu= and in the third line you can see  =Async export= option
+that can be enabled by pressin =C-a=. It is rather cumbersome.
 
-# In order to avoid this problem we can create a file with the
-# following content (note setting ~org-export-allow-bind-keywords~
-# [[https://www.mail-archive.com/emacs-orgmode@gnu.org/msg118389.html][variable]]):
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "myarch/async_init.el")
-# (require 'package)
-# (setq package-enable-at-startup nil)
-# (package-initialize)
+To have this option toggled after launching emacs put the line below in your
+init file.
 
-# (require 'org) 
-# (require 'ox)
-# (require 'cl)
-# (require 'ox-beamer)
-# (setq org-export-async-debug nil) ;; no impact here. Do it in main init.el
-# (setq org-export-allow-bind-keywords t) ;; Important! In order to have #+BIND command working.
-# #+end_src
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
+  ;; Org mode...
+  (setq org-export-in-background t)
+#+end_src
 
-# and set the variable ~org-export-async-init-file~.
+This setting has impact only when exporting via =org exporting menu=
+(triggered by =C-c C-e=). When calling =org-latex-export-to-pdf= this
+setting is not taken into account. Fortunately, this function has
+optional parameter that can be set to obtain async behaviour.
+All in all, the (almost) working solution can be written as a custom hook like this:
 
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
-#   (setq org-export-async-init-file (expand-file-name "~/.emacs.d/myarch/async_init.el"))
-#   (setq org-export-async-debug nil) ;; when set to 't' it stores all "*Org Export Process*" buffers, when set to 'nil' it leaves only the last one in the buffer list, but already killed
-# #+end_src
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
+  (defun my-org-mode-hook()
+    (define-key org-mode-map (kbd "<f9>")
+      '(lambda () (interactive)
+	(org-latex-export-to-pdf :async t)
+	(org-beamer-export-to-pdf :async t)
+	(org-odt-export-to-odt :async t)
+	(org-odt-export-as-pdf :async t)
+	)
+       )  
+  )
+#+end_src
 
-# The important line is =(require 'ox-beamer)= !!! ([[https://lists.gnu.org/archive/html/emacs-orgmode/2018-05/msg00253.html][link]])
+Why "almost"? Because this solution still won't work when exporting
+files to Beamer. In order one needs to create appropriate
+init file with settings for async export and
+set ~org-export-async-init-file~ variable as path to this file (see 
+[[org:export:async:beamer]]).
+
+***** Setting ~org-export-async-init-file~ to avoid failure while exporting to Beamer
+<<org:export:async:beamer>>
+
+Org-beamer *async* exporter may fail because of lacking
+=org-export-async-init-file= 
+(as it is stated [[https://superuser.com/questions/738492/org-mode-8-async-export-process-fails][here]] and [[https://lists.gnu.org/archive/html/emacs-orgmode/2014-09/msg00463.html][here]]). 
+
+In order to avoid this problem we can create a file with the
+following content (note setting ~org-export-allow-bind-keywords~
+[[https://www.mail-archive.com/emacs-orgmode@gnu.org/msg118389.html][variable]]):
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "myarch/async_init.el")
+(require 'package)
+(setq package-enable-at-startup nil)
+(package-initialize)
+
+(require 'org) 
+(require 'ox)
+(require 'cl)
+(require 'ox-beamer)
+(setq org-export-async-debug nil) ;; no impact here. Do it in main init.el
+(setq org-export-allow-bind-keywords t) ;; Important! In order to have #+BIND command working.
+#+end_src
+
+and set the variable ~org-export-async-init-file~.
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
+  (setq org-export-async-init-file (expand-file-name "~/.emacs.d/myarch/async_init.el"))
+  (setq org-export-async-debug nil) ;; when set to 't' it stores all "*Org Export Process*" buffers, when set to 'nil' it leaves only the last one in the buffer list, but already killed
+#+end_src
+
+The important line is =(require 'ox-beamer)= !!! ([[https://lists.gnu.org/archive/html/emacs-orgmode/2018-05/msg00253.html][link]])
 
 
 # ***** TODO async for odt documents still not working
