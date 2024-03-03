@@ -114,7 +114,7 @@ it's better to keep whole .emacs.d directory as a git repository and
 make a commit before executing this script. Then, in case any problems
 you can go back to restore properly working emacs installation.
 Before running this script you should have a git repository initialized in emacs
-directory and git itself installed in the system (see Sec. [1.5](#orgc40cdad)).
+directory and git itself installed in the system (see Sec. [1.5](#org1f85a12)).
 Synchronization of the local repository with the remote one is not
 performed in this script. It should be performed explicitely by the user
 in a convenient time.
@@ -210,7 +210,7 @@ In Emacs 27.1 it [shouldn't be necessary to use](https://emacs.stackexchange.com
 
 ### The main part of the installation script - list of the packages
 
-<a id="orgb4553f3"></a>
+<a id="org1c792c5"></a>
 
 I used to have `(defvar my-packages ...` instead of `(setq my-packages ...` 
 below but... **Do not** use `defvar` for declaring a list of packages to be installed!
@@ -327,7 +327,7 @@ for now. An interesting discussion about this can be found [here](https://www.re
 
 1.  DEPRECATED Setting an auxiliary variable
 
-    This section is deprecated in favour of [`workgroups2 package`](#org493c216).
+    This section is deprecated in favour of [`workgroups2 package`](#orgb84a34d).
     
         ;; This file is designed to be re-evaled; use the variable first-time
         ;; to avoid any problems with this.
@@ -368,7 +368,7 @@ proactively.
 Here are global Emacs customization. 
 If necessary some useful infomation or link is added to the customization.
 
-1.  Self-descriptive oneliners <a id="orgaf6f5bb"></a>
+1.  Self-descriptive oneliners <a id="orgbb67a49"></a>
 
     Remarks:
     At around May 2023 I stopped using `global-linum-mode` because
@@ -473,14 +473,14 @@ If necessary some useful infomation or link is added to the customization.
         ;; (set-frame-font "liberation mono 11" nil t) ; Set default font
     
     Due to  due to the  problems with fonts in `emacsclient/daemonp`
-    instances font is set now in the section [1.4.7](#orgace34b8).
+    instances font is set now in the section [1.4.8](#orgfb42f44).
 
 7.  Highlight on an active window/buffer
 
     Although the active window can be recognized
     by the cursor which blinking in it, sometimes it is hard to
     find in on the screen (especially if you use a colourful theme
-    like [1.4.7.1](#orgba0677a).
+    like [1.4.8.1](#org09ef582).
     
     I found a [post](https://stackoverflow.com/questions/33195122/highlight-current-active-window) adressing this issue.
     Although the accepted answer is using 
@@ -722,7 +722,7 @@ If necessary some useful infomation or link is added to the customization.
           )
           ;; <- Fill column indicator
     
-    -   and add this hook per each required mode (this is done in [1.4.6](#org71c0389) section
+    -   and add this hook per each required mode (this is done in [1.4.7](#orga74f9bd) section
         of this document
 
 12. Turning on/off beeping
@@ -736,7 +736,7 @@ If necessary some useful infomation or link is added to the customization.
         (setq-default visible-bell t) 
         (setq ring-bell-function 'ignore)
 
-13. Ibuffer - an advanced replacement for BufferMenu <a id="org1537c46"></a>
+13. Ibuffer - an advanced replacement for BufferMenu <a id="org750a09a"></a>
 
     Description of the package is [here](https://www.emacswiki.org/emacs/IbufferMode).
     
@@ -795,7 +795,7 @@ If necessary some useful infomation or link is added to the customization.
     
     2.  Ibuffer interactive way
     
-        In [1.4.3.13](#org1537c46) there a nice shortcut to do this. You can select all
+        In [1.4.3.13](#org750a09a) there a nice shortcut to do this. You can select all
         the files of the given mode with:
         
             * M
@@ -880,28 +880,93 @@ ido/smex vs ivy/counsel/swiper vs helm
         (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command) 
         ;; <- smex
 
+3.  TODO Ivy (for testing) <a id="org203566a"></a>
+
+    Furthermore, according to [some other users](https://ruzkuku.com/emacs.d.html#org804158b)
+    "Ivy is simpler (and faster) than Helm but more powerful than Ido".
+
+4.  TODO (TEMPORARILY COMMENTED OUT) Abbreviations (abbrev-mode)
+
+    -   NOTE: This part of my init.el is temporarily commented out.
+    
+    `abbrev-mode` can be useful, however it brings some trouble when working with more than
+    one language. I would like to come back here after having prepared
+    a piece of code that would recognize the language of the current document and 
+    based on this, change the autocorrection dictionary. Until then it's better
+    to manually trigger `abbrev-mode` per a document (in English), when you
+    really need it.
+    
+    I've just discovered this mode and wanted to use it.
+    I'm not sure whether `abbrev-mode`, `yasnippet` and `company`
+    aren't substitute modes. [Well, in fact they partly are](https://emacs.stackexchange.com/questions/42556/best-pratice-advices-for-abbrev-vs-completion-vs-snippets).
+    
+    -   [Abbrev-mode movie tutorial](https://www.youtube.com/watch?v=AtdWuYImviw)
+    -   [Xah movie tutorial](https://www.youtube.com/watch?v=Holxu96YKrc&t=1s)
+    -   [Xah page about abbrev](http://xahlee.info/emacs/emacs/emacs_abbrev_mode_tutorial.html)
+    
+    Emacs abbreviations are
+    
+        ;; ;; abbrev-mode ->
+        ;;   (setq-default abbrev-mode t)          
+        ;;   ; (read-abbrev-file "~/.emacs.d/abbrev_defs")
+        ;;   (read-abbrev-file "~/.emacs.d/abbrev_defs_autocorrectionEN")
+        ;;   (read-abbrev-file "~/.emacs.d/abbrev_defs_autocorrectionPL")  
+        ;;   (read-abbrev-file "~/.emacs.d/abbrev_defs_cis")  
+        ;;   (setq save-abbrevs t)  
+        ;; ;; <- abbrev-mode
+    
+    1.  Useful commands
+    
+        -   C-x a - inverse-add-global-abbrev
+        -   C-x a i l - inverse-add-global-abbrev
+        -   C-x a i g - inverse-add-mode-abbrev
+        -   unexpand-abbrev
+        -   edit-abbrevs
+        -   list-abbrevs
+        -   kill-all-abbrevs
+
+
+### Autocomplete
+
+`auto-complete` vs `company`
+
+    ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;; ;; *** Auto-completing
+    ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    (add-hook 'after-init-hook 'global-company-mode)
+
+1.  Recently opened files
+
+        ;; Recently opened files ->
+          (recentf-mode 1)
+          (setq recentf-max-menu-items 100)
+          (setq recentf-max-saved-items 100)
+          ;; in original emacs this binding is for "Find file read-only"
+          (global-set-key "\C-x\ \C-r" 'recentf-open-files)
+        ;; <- Recently opened files
+
 
 ### Settings for modes
 
 
-### Emacs-everywhere <a id="orgace34b8"></a>
+### Emacs-everywhere <a id="orgfb42f44"></a>
 
-1.  Modus themes by Protesilaos Stavrou <a id="orgba0677a"></a>
+1.  Modus themes by Protesilaos Stavrou <a id="org09ef582"></a>
 
-2.  Workgroups (should be executed at the end of init.el) <a id="org493c216"></a>
+2.  Workgroups (should be executed at the end of init.el) <a id="orgb84a34d"></a>
 
 
-## Dependencies of the presented Emacs configuration: <a id="orgc40cdad"></a>
+## Dependencies of the presented Emacs configuration: <a id="org1f85a12"></a>
 
 The list of external applications that this script is dependent on:
 
 -   git
 -   LaTeX distribution (for org to latex exporters)
 
--   xclip ([1.4.7](#orgace34b8))
--   xdotool ([1.4.7](#orgace34b8))
--   xprop ([1.4.7](#orgace34b8)) - this is not a package but executable
--   xwininfo ([1.4.7](#orgace34b8)) - this is not a package but executable
+-   xclip ([1.4.8](#orgfb42f44))
+-   xdotool ([1.4.8](#orgfb42f44))
+-   xprop ([1.4.8](#orgfb42f44)) - this is not a package but executable
+-   xwininfo ([1.4.8](#orgfb42f44)) - this is not a package but executable
 
 
 ## Some useful information and links:
