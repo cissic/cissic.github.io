@@ -1560,64 +1560,64 @@ plantuml:
 
 
 
-# **** Fix for Octave/Matlab org-babel - problems with matlab in org-babel
-# <<matlab-in-org-babel>>
-# http://gewhere.github.io/blog/2017/12/19/setup-matlab-in-emacs-and-babel-orgmode/
+**** Fix for Octave/Matlab org-babel - problems with matlab in org-babel
+<<matlab-in-org-babel>>
+http://gewhere.github.io/blog/2017/12/19/setup-matlab-in-emacs-and-babel-orgmode/
 
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
 
-# ;; setup matlab in babel
-# (setq org-babel-default-header-args:matlab
-#   '((:results . "output") (:session . "*MATLAB*")))
+;; setup matlab in babel
+(setq org-babel-default-header-args:matlab
+  '((:results . "output") (:session . "*MATLAB*")))
 
-# #+end_src
-
-
-# In the current version of matlab org-babel there is a problem of
-# including input lines in the output of org-babel block.
-# The way to circumvent it is to use the approach suggested by
-# the user named =karthink= (=karthinks=?). I traced it starting
-# from the pages:
-# - https://www.reddit.com/r/emacs/comments/pufgce/matlab_mode/
-# - https://www.reddit.com/r/emacs/comments/fy98bs/orgbabels_matlab_session_output_is_malformed/
-
-# In the last link user =nakkaya=
-# refers to his/her solution of the problem,
-# however his/her link does not seem to include this solution.
-
-# I searched web for =karthink=, =matlab=, =emacs= appearances and
-# found the fix here:
-# https://github.com/karthink/.emacs.d/blob/master/plugins/ob-octave-fix.el
-
-# In the end I just downloaded the file and the inclusion of this package is
-# done in section [[ob-octave-fix]].
-
-# Remark: There exist at least two versions of the fix (I renamed
-# the one I already had to =ob-octave-fixOLDER.el=). Previous version
-# of the file didn't seem to resolve the problem.
-
-# Remark 2: In case of matlab code-block
-# newer version of =ob-octave-fix.el= depends on
-# =altmany='s ~export_fig~ function! I have been using it for a while
-# so I don't care anyway but in one may obtain errors when using
-# this library without ~export_fig~!
+#+end_src
 
 
-# Now, results show only the first line without semicolon and ...
-# all the lines below it! (even if they end with semicolon!).
+In the current version of matlab org-babel there is a problem of
+including input lines in the output of org-babel block.
+The way to circumvent it is to use the approach suggested by
+the user named =karthink= (=karthinks=?). I traced it starting
+from the pages:
+- https://www.reddit.com/r/emacs/comments/pufgce/matlab_mode/
+- https://www.reddit.com/r/emacs/comments/fy98bs/orgbabels_matlab_session_output_is_malformed/
 
-# #+BEGIN_SRC matlab :session *MATLAB* :exports both 
-#   x = 2 ;
-#   a = x+1 ;
-#   y = x + 1 ;
-#   z = 3 ;
-#   t = 2
+In the last link user =nakkaya=
+refers to his/her solution of the problem,
+however his/her link does not seem to include this solution.
 
-# #+END_SRC
+I searched web for =karthink=, =matlab=, =emacs= appearances and
+found the fix here:
+https://github.com/karthink/.emacs.d/blob/master/plugins/ob-octave-fix.el
 
-# #+RESULTS:
-# : t =
-# :      2
+In the end I just downloaded the file and the inclusion of this package is
+done in section [[ob-octave-fix]].
+
+Remark: There exist at least two versions of the fix (I renamed
+the one I already had to =ob-octave-fixOLDER.el=). Previous version
+of the file didn't seem to resolve the problem.
+
+Remark 2: In case of matlab code-block
+newer version of =ob-octave-fix.el= depends on
+=altmany='s ~export_fig~ function! I have been using it for a while
+so I don't care anyway but in one may obtain errors when using
+this library without ~export_fig~!
+
+
+Now, results show only the first line without semicolon and ...
+all the lines below it! (even if they end with semicolon!).
+
+#+BEGIN_SRC matlab :session *MATLAB* :exports both :eval no
+  x = 2 ;
+  a = x+1 ;
+  y = x + 1 ;
+  z = 3 ;
+  t = 2
+
+#+END_SRC
+
+#+RESULTS:
+: t =
+:      2
 
 
 # ***** Export plots to png
