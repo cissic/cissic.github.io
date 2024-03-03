@@ -1421,6 +1421,7 @@ https://stackoverflow.com/questions/36197545/org-mode-latex-export-making-todos-
    (and priority (format "\\framebox{\\#%c} " priority))
    text
    (and tags
+	(format "\\hfill{}\\textsc{%s}"
 
 #+end_src
 
