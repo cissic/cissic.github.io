@@ -114,7 +114,7 @@ it's better to keep whole .emacs.d directory as a git repository and
 make a commit before executing this script. Then, in case any problems
 you can go back to restore properly working emacs installation.
 Before running this script you should have a git repository initialized in emacs
-directory and git itself installed in the system (see Sec. [1.5](#org90575c3)).
+directory and git itself installed in the system (see Sec. [1.5](#orgc1cb43a)).
 Synchronization of the local repository with the remote one is not
 performed in this script. It should be performed explicitely by the user
 in a convenient time.
@@ -210,7 +210,7 @@ In Emacs 27.1 it [shouldn't be necessary to use](https://emacs.stackexchange.com
 
 ### The main part of the installation script - list of the packages
 
-<a id="orgefe3baa"></a>
+<a id="org327514e"></a>
 
 I used to have `(defvar my-packages ...` instead of `(setq my-packages ...` 
 below but... **Do not** use `defvar` for declaring a list of packages to be installed!
@@ -327,7 +327,7 @@ for now. An interesting discussion about this can be found [here](https://www.re
 
 1.  DEPRECATED Setting an auxiliary variable
 
-    This section is deprecated in favour of [`workgroups2 package`](#org1ddc63f).
+    This section is deprecated in favour of [`workgroups2 package`](#org442f128).
     
         ;; This file is designed to be re-evaled; use the variable first-time
         ;; to avoid any problems with this.
@@ -368,7 +368,7 @@ proactively.
 Here are global Emacs customization. 
 If necessary some useful infomation or link is added to the customization.
 
-1.  Self-descriptive oneliners <a id="org68a84b8"></a>
+1.  Self-descriptive oneliners <a id="org7c43b20"></a>
 
     Remarks:
     At around May 2023 I stopped using `global-linum-mode` because
@@ -473,14 +473,14 @@ If necessary some useful infomation or link is added to the customization.
         ;; (set-frame-font "liberation mono 11" nil t) ; Set default font
     
     Due to  due to the  problems with fonts in `emacsclient/daemonp`
-    instances font is set now in the section [1.4.10](#orgba082a4).
+    instances font is set now in the section [1.4.10](#org0a18e66).
 
 7.  Highlight on an active window/buffer
 
     Although the active window can be recognized
     by the cursor which blinking in it, sometimes it is hard to
     find in on the screen (especially if you use a colourful theme
-    like [1.4.10.1](#org23c6266).
+    like [1.4.10.1](#orgdf9f9aa).
     
     I found a [post](https://stackoverflow.com/questions/33195122/highlight-current-active-window) adressing this issue.
     Although the accepted answer is using 
@@ -722,7 +722,7 @@ If necessary some useful infomation or link is added to the customization.
           )
           ;; <- Fill column indicator
     
-    -   and add this hook per each required mode (this is done in [1.4.7](#orgd131cb4) section
+    -   and add this hook per each required mode (this is done in [1.4.7](#org880eb88) section
         of this document
 
 12. Turning on/off beeping
@@ -736,7 +736,7 @@ If necessary some useful infomation or link is added to the customization.
         (setq-default visible-bell t) 
         (setq ring-bell-function 'ignore)
 
-13. Ibuffer - an advanced replacement for BufferMenu <a id="org90fa5b7"></a>
+13. Ibuffer - an advanced replacement for BufferMenu <a id="org2b5b47f"></a>
 
     Description of the package is [here](https://www.emacswiki.org/emacs/IbufferMode).
     
@@ -795,7 +795,7 @@ If necessary some useful infomation or link is added to the customization.
     
     2.  Ibuffer interactive way
     
-        In [1.4.3.13](#org90fa5b7) there a nice shortcut to do this. You can select all
+        In [1.4.3.13](#org2b5b47f) there a nice shortcut to do this. You can select all
         the files of the given mode with:
         
             * M
@@ -880,7 +880,7 @@ ido/smex vs ivy/counsel/swiper vs helm
         (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command) 
         ;; <- smex
 
-3.  TODO Ivy (for testing) <a id="org80124fe"></a>
+3.  TODO Ivy (for testing) <a id="org93d2607"></a>
 
     Furthermore, according to [some other users](https://ruzkuku.com/emacs.d.html#org804158b)
     "Ivy is simpler (and faster) than Helm but more powerful than Ido".
@@ -1074,11 +1074,11 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
     files to Beamer. In order one needs to create appropriate
     init file with settings for async export and
     set `org-export-async-init-file` variable as path to this file (see 
-    [1.4.7.4.1](#org925d9da)).
+    [1.4.7.4.1](#orgad58c9b)).
     
     1.  Setting `org-export-async-init-file` to avoid failure while exporting to Beamer
     
-        <a id="org925d9da"></a>
+        <a id="orgad58c9b"></a>
         
         Org-beamer **async** exporter may fail because of lacking
         `org-export-async-init-file` 
@@ -1166,7 +1166,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
 
 1.  oc [org-citations]
 
-    1.  Bibliography <a id="org1b4f333"></a>
+    1.  Bibliography <a id="orgc60fcd6"></a>
     
         In Org 9.6 we do not need explicitely load `oc` libraries.
         Everything is covered in my post concerning bibliography and org-mode.
@@ -1236,30 +1236,31 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
            )
            (and priority (format "\\framebox{\\#%c} " priority))
            text
-           (and tags (format "\\hfill{}\\textsc{%s}"
+           (and tags 
+                (format "\\hfill\\textsc{%s}"
                         (mapconcat #'org-latex--protect-text tags ":")))))
         
         (setq org-latex-format-headline-function 'org-latex-format-headline-colored-keywords-function)
 
 
-### Emacs-everywhere <a id="orgba082a4"></a>
+### Emacs-everywhere <a id="org0a18e66"></a>
 
-1.  Modus themes by Protesilaos Stavrou <a id="org23c6266"></a>
+1.  Modus themes by Protesilaos Stavrou <a id="orgdf9f9aa"></a>
 
-2.  Workgroups (should be executed at the end of init.el) <a id="org1ddc63f"></a>
+2.  Workgroups (should be executed at the end of init.el) <a id="org442f128"></a>
 
 
-## Dependencies of the presented Emacs configuration: <a id="org90575c3"></a>
+## Dependencies of the presented Emacs configuration: <a id="orgc1cb43a"></a>
 
 The list of external applications that this script is dependent on:
 
 -   git
 -   LaTeX distribution (for org to latex exporters)
 
--   xclip ([1.4.10](#orgba082a4))
--   xdotool ([1.4.10](#orgba082a4))
--   xprop ([1.4.10](#orgba082a4)) - this is not a package but executable
--   xwininfo ([1.4.10](#orgba082a4)) - this is not a package but executable
+-   xclip ([1.4.10](#org0a18e66))
+-   xdotool ([1.4.10](#org0a18e66))
+-   xprop ([1.4.10](#org0a18e66)) - this is not a package but executable
+-   xwininfo ([1.4.10](#org0a18e66)) - this is not a package but executable
 
 
 ## Some useful information and links:
