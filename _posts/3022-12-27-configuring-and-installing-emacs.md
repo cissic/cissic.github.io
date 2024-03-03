@@ -114,7 +114,7 @@ it's better to keep whole .emacs.d directory as a git repository and
 make a commit before executing this script. Then, in case any problems
 you can go back to restore properly working emacs installation.
 Before running this script you should have a git repository initialized in emacs
-directory and git itself installed in the system (see Sec. [1.5](#org9babc28)).
+directory and git itself installed in the system (see Sec. [1.5](#orga0af47b)).
 Synchronization of the local repository with the remote one is not
 performed in this script. It should be performed explicitely by the user
 in a convenient time.
@@ -210,7 +210,7 @@ In Emacs 27.1 it [shouldn't be necessary to use](https://emacs.stackexchange.com
 
 ### The main part of the installation script - list of the packages
 
-<a id="org0785b55"></a>
+<a id="org49de1a8"></a>
 
 I used to have `(defvar my-packages ...` instead of `(setq my-packages ...` 
 below but... **Do not** use `defvar` for declaring a list of packages to be installed!
@@ -327,7 +327,7 @@ for now. An interesting discussion about this can be found [here](https://www.re
 
 1.  DEPRECATED Setting an auxiliary variable
 
-    This section is deprecated in favour of [`workgroups2 package`](#orgb215559).
+    This section is deprecated in favour of [`workgroups2 package`](#org742c32e).
     
         ;; This file is designed to be re-evaled; use the variable first-time
         ;; to avoid any problems with this.
@@ -368,7 +368,7 @@ proactively.
 Here are global Emacs customization. 
 If necessary some useful infomation or link is added to the customization.
 
-1.  Self-descriptive oneliners <a id="org683978b"></a>
+1.  Self-descriptive oneliners <a id="org963b3f5"></a>
 
     Remarks:
     At around May 2023 I stopped using `global-linum-mode` because
@@ -473,14 +473,14 @@ If necessary some useful infomation or link is added to the customization.
         ;; (set-frame-font "liberation mono 11" nil t) ; Set default font
     
     Due to  due to the  problems with fonts in `emacsclient/daemonp`
-    instances font is set now in the section [1.4.10](#orga13b4a2).
+    instances font is set now in the section [1.4.10](#org3d68a9a).
 
 7.  Highlight on an active window/buffer
 
     Although the active window can be recognized
     by the cursor which blinking in it, sometimes it is hard to
     find in on the screen (especially if you use a colourful theme
-    like [1.4.10.1](#org290301d).
+    like [1.4.10.1](#org9f51718).
     
     I found a [post](https://stackoverflow.com/questions/33195122/highlight-current-active-window) adressing this issue.
     Although the accepted answer is using 
@@ -722,7 +722,7 @@ If necessary some useful infomation or link is added to the customization.
           )
           ;; <- Fill column indicator
     
-    -   and add this hook per each required mode (this is done in [1.4.7](#orgb7e718b) section
+    -   and add this hook per each required mode (this is done in [1.4.7](#org6416b1e) section
         of this document
 
 12. Turning on/off beeping
@@ -736,7 +736,7 @@ If necessary some useful infomation or link is added to the customization.
         (setq-default visible-bell t) 
         (setq ring-bell-function 'ignore)
 
-13. Ibuffer - an advanced replacement for BufferMenu <a id="orgef774e9"></a>
+13. Ibuffer - an advanced replacement for BufferMenu <a id="orgcdaf53d"></a>
 
     Description of the package is [here](https://www.emacswiki.org/emacs/IbufferMode).
     
@@ -795,7 +795,7 @@ If necessary some useful infomation or link is added to the customization.
     
     2.  Ibuffer interactive way
     
-        In [1.4.3.13](#orgef774e9) there a nice shortcut to do this. You can select all
+        In [1.4.3.13](#orgcdaf53d) there a nice shortcut to do this. You can select all
         the files of the given mode with:
         
             * M
@@ -880,7 +880,7 @@ ido/smex vs ivy/counsel/swiper vs helm
         (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command) 
         ;; <- smex
 
-3.  TODO Ivy (for testing) <a id="org56b3b47"></a>
+3.  TODO Ivy (for testing) <a id="orgb08b729"></a>
 
     Furthermore, according to [some other users](https://ruzkuku.com/emacs.d.html#org804158b)
     "Ivy is simpler (and faster) than Helm but more powerful than Ido".
@@ -1074,11 +1074,11 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
     files to Beamer. In order one needs to create appropriate
     init file with settings for async export and
     set `org-export-async-init-file` variable as path to this file (see 
-    [1.4.7.4.1](#org49cc940)).
+    [1.4.7.4.1](#org782b662)).
     
     1.  Setting `org-export-async-init-file` to avoid failure while exporting to Beamer
     
-        <a id="org49cc940"></a>
+        <a id="org782b662"></a>
         
         Org-beamer **async** exporter may fail because of lacking
         `org-export-async-init-file` 
@@ -1166,7 +1166,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
 
 1.  oc [org-citations]
 
-    1.  Bibliography <a id="org28c08cd"></a>
+    1.  Bibliography <a id="org9736416"></a>
     
         In Org 9.6 we do not need explicitely load `oc` libraries.
         Everything is covered in my post concerning bibliography and org-mode.
@@ -1222,46 +1222,41 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
 
     <https://stackoverflow.com/questions/36197545/org-mode-latex-export-making-todos-red>
     
-        ;; customized todo-done keywords in latex documents
+    "Default format function for a headline. See `org-latex-format-headline-function` for details.
+    
         (defun org-latex-format-headline-colored-keywords-function
-            (todo _todo-type priority text tags _info)
-          "Default format function for a headline.
-           See =org-latex-format-headline-function= for details."
-          (concat
-           ;; (and todo (format "{\\bfseries\\sffamily %s} " todo))
-          (cond
-           ((string= todo "TODO")(and todo (format "{\\color{red}\\bfseries\\sffamily %s} " todo)))
-           ((string= todo "????")(and todo (format "{\\color{red}\\bfseries\\sffamily %s} " todo)))
-           ((string= todo "POSTPONED")(and todo (format "{\\color{blue}\\bfseries\\sffamily %s} " todo)))
-           ((string= todo "DONE")(and todo (format "{\\color{green}\\bfseries\\sffamily %s} " todo)))
-           )
-           (and priority (format "\\framebox{\\#%c} " priority))
-           text
-           (and tags
-                (format "\\hfill{}\\textsc{%s}"
-                        (mapconcat #'org-latex--protect-text tags ":")))))
+            (todo todo-type priority text tags info)
+                (concat
+                   (cond ((string= todo "TODO")(and todo (format "{\\color{red}\\bfseries\\sffamily %s} " todo)))
+           ((string= todo "DONE")(and todo (format "{\\color{green}\\bfseries\\sffamily %s} " todo))))
+                    (and priority (format "\\framebox{\\#%c} " priority))
+                    text
+                    (and tags
+                    (format "\\hfill{}\\textsc{%s}"
+            (mapconcat (lambda (tag) (org-latex-plain-text tag info))
+                   tags ":")))))
         
         (setq org-latex-format-headline-function 'org-latex-format-headline-colored-keywords-function)
 
 
-### Emacs-everywhere <a id="orga13b4a2"></a>
+### Emacs-everywhere <a id="org3d68a9a"></a>
 
-1.  Modus themes by Protesilaos Stavrou <a id="org290301d"></a>
+1.  Modus themes by Protesilaos Stavrou <a id="org9f51718"></a>
 
-2.  Workgroups (should be executed at the end of init.el) <a id="orgb215559"></a>
+2.  Workgroups (should be executed at the end of init.el) <a id="org742c32e"></a>
 
 
-## Dependencies of the presented Emacs configuration: <a id="org9babc28"></a>
+## Dependencies of the presented Emacs configuration: <a id="orga0af47b"></a>
 
 The list of external applications that this script is dependent on:
 
 -   git
 -   LaTeX distribution (for org to latex exporters)
 
--   xclip ([1.4.10](#orga13b4a2))
--   xdotool ([1.4.10](#orga13b4a2))
--   xprop ([1.4.10](#orga13b4a2)) - this is not a package but executable
--   xwininfo ([1.4.10](#orga13b4a2)) - this is not a package but executable
+-   xclip ([1.4.10](#org3d68a9a))
+-   xdotool ([1.4.10](#org3d68a9a))
+-   xprop ([1.4.10](#org3d68a9a)) - this is not a package but executable
+-   xwininfo ([1.4.10](#org3d68a9a)) - this is not a package but executable
 
 
 ## Some useful information and links:
