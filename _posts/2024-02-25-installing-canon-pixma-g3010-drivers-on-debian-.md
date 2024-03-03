@@ -1,17 +1,17 @@
 
 # Table of Contents
 
-1.  [installing canon pixma g3010 drivers on debian](#org9a91c80)
-    1.  [Problem description](#org5a8ad96)
+1.  [installing canon pixma g3010 drivers on debian](#org8c3ce08)
+    1.  [Problem description](#orga4b890c)
 
 
 
-<a id="org9a91c80"></a>
+<a id="org8c3ce08"></a>
 
 # TODO installing canon pixma g3010 drivers on debian
 
 
-<a id="org5a8ad96"></a>
+<a id="orga4b890c"></a>
 
 ## Problem description
 
