@@ -1410,7 +1410,7 @@ https://stackoverflow.com/questions/36197545/org-mode-latex-export-making-todos-
 (defun org-latex-format-headline-colored-keywords-function
     (todo _todo-type priority text tags _info)
   "Default format function for a headline.
-See `org-latex-format-headline-function' for details."
+   See `org-latex-format-headline-function' for details."
   (concat
    ;; (and todo (format "{\\bfseries\\sffamily %s} " todo))
   (cond
