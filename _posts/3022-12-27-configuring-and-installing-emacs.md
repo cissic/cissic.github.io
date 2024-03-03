@@ -114,7 +114,7 @@ it's better to keep whole .emacs.d directory as a git repository and
 make a commit before executing this script. Then, in case any problems
 you can go back to restore properly working emacs installation.
 Before running this script you should have a git repository initialized in emacs
-directory and git itself installed in the system (see Sec. [1.5](#org9c9ad8c)).
+directory and git itself installed in the system (see Sec. [1.5](#org7dc8425)).
 Synchronization of the local repository with the remote one is not
 performed in this script. It should be performed explicitely by the user
 in a convenient time.
@@ -210,7 +210,7 @@ In Emacs 27.1 it [shouldn't be necessary to use](https://emacs.stackexchange.com
 
 ### The main part of the installation script - list of the packages
 
-<a id="orgc679c74"></a>
+<a id="org1b12aa5"></a>
 
 I used to have `(defvar my-packages ...` instead of `(setq my-packages ...` 
 below but... **Do not** use `defvar` for declaring a list of packages to be installed!
@@ -327,7 +327,7 @@ for now. An interesting discussion about this can be found [here](https://www.re
 
 1.  DEPRECATED Setting an auxiliary variable
 
-    This section is deprecated in favour of [`workgroups2 package`](#org29902c1).
+    This section is deprecated in favour of [`workgroups2 package`](#orge26414d).
     
         ;; This file is designed to be re-evaled; use the variable first-time
         ;; to avoid any problems with this.
@@ -368,7 +368,7 @@ proactively.
 Here are global Emacs customization. 
 If necessary some useful infomation or link is added to the customization.
 
-1.  Self-descriptive oneliners <a id="org94ee8a6"></a>
+1.  Self-descriptive oneliners <a id="org2375f41"></a>
 
     Remarks:
     At around May 2023 I stopped using `global-linum-mode` because
@@ -473,14 +473,14 @@ If necessary some useful infomation or link is added to the customization.
         ;; (set-frame-font "liberation mono 11" nil t) ; Set default font
     
     Due to  due to the  problems with fonts in `emacsclient/daemonp`
-    instances font is set now in the section [1.4.5](#orge4d0dba).
+    instances font is set now in the section [1.4.6](#orgb089176).
 
 7.  Highlight on an active window/buffer
 
     Although the active window can be recognized
     by the cursor which blinking in it, sometimes it is hard to
     find in on the screen (especially if you use a colourful theme
-    like [1.4.5.1](#orgfdaf2a1).
+    like [1.4.6.1](#org8ff84c0).
     
     I found a [post](https://stackoverflow.com/questions/33195122/highlight-current-active-window) adressing this issue.
     Although the accepted answer is using 
@@ -722,35 +722,99 @@ If necessary some useful infomation or link is added to the customization.
           )
           ;; <- Fill column indicator
     
-    -   and add this hook per each required mode (this is done in [1.4.4](#org41fba2e) section
+    -   and add this hook per each required mode (this is done in [1.4.5](#orgf883d5e) section
         of this document
 
 12. Turning on/off beeping
 
-13. Ibuffer - an advanced replacement for BufferMenu <a id="org7fcf22f"></a>
+    Completely out of the blue my emacs started beeping. I guess it
+    had to be some keybinding I accidentally pressed but have no idea
+    what I did.
+    Anyway, to disable it we must [do the following](https://stackoverflow.com/questions/10545437/how-to-disable-the-beep-in-emacs-on-windows):
+    
+          ;; Setting alarms in Emacs -> 
+        (setq-default visible-bell t) 
+        (setq ring-bell-function 'ignore)
+
+13. Ibuffer - an advanced replacement for BufferMenu <a id="org82f6581"></a>
+
+    Description of the package is [here](https://www.emacswiki.org/emacs/IbufferMode).
+    
+          ;; Advanced buffer mode
+        (global-set-key (kbd "C-x C-b") 'ibuffer)
+
+14. Setting font size for all buffers
+
+    <https://stackoverflow.com/questions/24705984/increase-decrease-font-size-in-an-emacs-frame-not-just-buffer>
+    
+        ;; Resize the whole frame, and not only a window
+        ;; Adapted from https://stackoverflow.com/a/24714383/5103881
+        (defun acg/zoom-frame (&optional amt frame)
+          "Increaze FRAME font size by amount AMT. Defaults to selected
+        frame if FRAME is nil, and to 1 if AMT is nil."
+          (interactive "p")
+          (let* ((frame (or frame (selected-frame)))
+                 (font (face-attribute 'default :font frame))
+                 (size (font-get font :size))
+                 (amt (or amt 1))
+                 (new-size (+ size amt)))
+            (set-frame-font (font-spec :size new-size) t `(,frame))
+            (message "Frame's font new size: %d" new-size)))
+        
+        (defun acg/zoom-frame-out (&optional amt frame)
+          "Call `acg/zoom-frame' with negative argument."
+          (interactive "p")
+          (acg/zoom-frame (- (or amt 1)) frame))
+        
+        (global-set-key (kbd "C-x C-=") 'acg/zoom-frame)
+        (global-set-key (kbd "C-x C--") 'acg/zoom-frame-out)
+        (global-set-key (kbd "<C-down-mouse-4>") 'acg/zoom-frame)
+        (global-set-key (kbd "<C-down-mouse-5>") 'acg/zoom-frame-out)
+
+
+### Useful tools
+
+1.  Dired
+
+    <https://www.emacswiki.org/emacs/DiredBookmarks>
+    
+    The default behaviour of Dired when walking across directory
+    structure is to open each directory in a new buffer. In this
+    way you end up with a lot of (probably unnecessary) buffers.
+    How to circumvent this behaviour. (**Beware!** There are some [reasons](https://www.emacswiki.org/emacs/DiredReuseDirectoryBuffer)
+    you might want to keep it!)
+    
+    1.  Straightforward solution
+    
+        The most straighforward way is to kill them by going to buffer menu
+        
+            C-x C-b
+        
+        and selecting the ones you want to kill with `d` and delete them all
+        at once with `x`.
 
 
 ### Settings for modes
 
 
-### Emacs-everywhere <a id="orge4d0dba"></a>
+### Emacs-everywhere <a id="orgb089176"></a>
 
-1.  Modus themes by Protesilaos Stavrou <a id="orgfdaf2a1"></a>
+1.  Modus themes by Protesilaos Stavrou <a id="org8ff84c0"></a>
 
-2.  Workgroups (should be executed at the end of init.el) <a id="org29902c1"></a>
+2.  Workgroups (should be executed at the end of init.el) <a id="orge26414d"></a>
 
 
-## Dependencies of the presented Emacs configuration: <a id="org9c9ad8c"></a>
+## Dependencies of the presented Emacs configuration: <a id="org7dc8425"></a>
 
 The list of external applications that this script is dependent on:
 
 -   git
 -   LaTeX distribution (for org to latex exporters)
 
--   xclip ([1.4.5](#orge4d0dba))
--   xdotool ([1.4.5](#orge4d0dba))
--   xprop ([1.4.5](#orge4d0dba)) - this is not a package but executable
--   xwininfo ([1.4.5](#orge4d0dba)) - this is not a package but executable
+-   xclip ([1.4.6](#orgb089176))
+-   xdotool ([1.4.6](#orgb089176))
+-   xprop ([1.4.6](#orgb089176)) - this is not a package but executable
+-   xwininfo ([1.4.6](#orgb089176)) - this is not a package but executable
 
 
 ## Some useful information and links:

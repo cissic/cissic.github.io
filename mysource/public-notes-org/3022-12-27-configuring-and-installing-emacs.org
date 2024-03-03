@@ -842,76 +842,76 @@ nice as I expected (perhaps it needs some additional configuration...).
 
 
 **** Turning on/off beeping
-# Completely out of the blue my emacs started beeping. I guess it
-# had to be some keybinding I accidentally pressed but have no idea
-# what I did.
-# Anyway, to disable it we must [[https://stackoverflow.com/questions/10545437/how-to-disable-the-beep-in-emacs-on-windows][do the following]]:
+Completely out of the blue my emacs started beeping. I guess it
+had to be some keybinding I accidentally pressed but have no idea
+what I did.
+Anyway, to disable it we must [[https://stackoverflow.com/questions/10545437/how-to-disable-the-beep-in-emacs-on-windows][do the following]]:
 
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
-#   ;; Setting alarms in Emacs -> 
-# (setq-default visible-bell t) 
-# (setq ring-bell-function 'ignore)
-# #+end_src
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+  ;; Setting alarms in Emacs -> 
+(setq-default visible-bell t) 
+(setq ring-bell-function 'ignore)
+#+end_src
 
 
 **** Ibuffer - an advanced replacement for BufferMenu <<Ibuffer>>
 
-# Description of the package is [[https://www.emacswiki.org/emacs/IbufferMode][here]].
+Description of the package is [[https://www.emacswiki.org/emacs/IbufferMode][here]].
 
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
-#   ;; Advanced buffer mode
-# (global-set-key (kbd "C-x C-b") 'ibuffer)
-# #+end_src
-
-
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+  ;; Advanced buffer mode
+(global-set-key (kbd "C-x C-b") 'ibuffer)
+#+end_src
 
 
-# **** Setting font size for all buffers
 
-# https://stackoverflow.com/questions/24705984/increase-decrease-font-size-in-an-emacs-frame-not-just-buffer
 
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
-# ;; Resize the whole frame, and not only a window
-# ;; Adapted from https://stackoverflow.com/a/24714383/5103881
-# (defun acg/zoom-frame (&optional amt frame)
-#   "Increaze FRAME font size by amount AMT. Defaults to selected
-# frame if FRAME is nil, and to 1 if AMT is nil."
-#   (interactive "p")
-#   (let* ((frame (or frame (selected-frame)))
-#          (font (face-attribute 'default :font frame))
-#          (size (font-get font :size))
-#          (amt (or amt 1))
-#          (new-size (+ size amt)))
-#     (set-frame-font (font-spec :size new-size) t `(,frame))
-#     (message "Frame's font new size: %d" new-size)))
+**** Setting font size for all buffers
 
-# (defun acg/zoom-frame-out (&optional amt frame)
-#   "Call `acg/zoom-frame' with negative argument."
-#   (interactive "p")
-#   (acg/zoom-frame (- (or amt 1)) frame))
+https://stackoverflow.com/questions/24705984/increase-decrease-font-size-in-an-emacs-frame-not-just-buffer
 
-# (global-set-key (kbd "C-x C-=") 'acg/zoom-frame)
-# (global-set-key (kbd "C-x C--") 'acg/zoom-frame-out)
-# (global-set-key (kbd "<C-down-mouse-4>") 'acg/zoom-frame)
-# (global-set-key (kbd "<C-down-mouse-5>") 'acg/zoom-frame-out)
-# #+end_src
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+;; Resize the whole frame, and not only a window
+;; Adapted from https://stackoverflow.com/a/24714383/5103881
+(defun acg/zoom-frame (&optional amt frame)
+  "Increaze FRAME font size by amount AMT. Defaults to selected
+frame if FRAME is nil, and to 1 if AMT is nil."
+  (interactive "p")
+  (let* ((frame (or frame (selected-frame)))
+         (font (face-attribute 'default :font frame))
+         (size (font-get font :size))
+         (amt (or amt 1))
+         (new-size (+ size amt)))
+    (set-frame-font (font-spec :size new-size) t `(,frame))
+    (message "Frame's font new size: %d" new-size)))
 
-# *** Useful tools
+(defun acg/zoom-frame-out (&optional amt frame)
+  "Call `acg/zoom-frame' with negative argument."
+  (interactive "p")
+  (acg/zoom-frame (- (or amt 1)) frame))
 
-# **** Dired
-# https://www.emacswiki.org/emacs/DiredBookmarks
+(global-set-key (kbd "C-x C-=") 'acg/zoom-frame)
+(global-set-key (kbd "C-x C--") 'acg/zoom-frame-out)
+(global-set-key (kbd "<C-down-mouse-4>") 'acg/zoom-frame)
+(global-set-key (kbd "<C-down-mouse-5>") 'acg/zoom-frame-out)
+#+end_src
 
-# The default behaviour of Dired when walking across directory
-# structure is to open each directory in a new buffer. In this
-# way you end up with a lot of (probably unnecessary) buffers.
-# How to circumvent this behaviour. (*Beware!* There are some [[https://www.emacswiki.org/emacs/DiredReuseDirectoryBuffer][reasons]]
-# you might want to keep it!)
+*** Useful tools
 
-# ***** Straightforward solution
-# The most straighforward way is to kill them by going to buffer menu
-# : C-x C-b
-# and selecting the ones you want to kill with ~d~ and delete them all
-# at once with ~x~.
+**** Dired
+https://www.emacswiki.org/emacs/DiredBookmarks
+
+The default behaviour of Dired when walking across directory
+structure is to open each directory in a new buffer. In this
+way you end up with a lot of (probably unnecessary) buffers.
+How to circumvent this behaviour. (*Beware!* There are some [[https://www.emacswiki.org/emacs/DiredReuseDirectoryBuffer][reasons]]
+you might want to keep it!)
+
+***** Straightforward solution
+The most straighforward way is to kill them by going to buffer menu
+: C-x C-b
+and selecting the ones you want to kill with ~d~ and delete them all
+at once with ~x~.
 
 
 # ***** Ibuffer interactive way
