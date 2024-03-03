@@ -1397,8 +1397,8 @@ WARNING! When changing this variables in the middle of the emacs
 session you need to restart org-mode (=M-x org-mode-restart=) to
 to have them enabled ([[https://lists.gnu.org/archive/html/emacs-orgmode/2010-11/msg00130.html][source]])!
 
-# Furthermore, it may be more convenient to have this tags set for
-# individual file (=#+TODO:=) ([[https://orgmode.org/manual/Per_002dfile-keywords.html][link]]).
+Furthermore, it may be more convenient to have this tags set for
+individual file (=#+TODO:=) ([[https://orgmode.org/manual/Per_002dfile-keywords.html][link]]).
 
 
 # **** Customizing font style for TODO-DONE keywords in latex export
