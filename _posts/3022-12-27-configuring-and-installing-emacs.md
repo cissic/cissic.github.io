@@ -114,7 +114,7 @@ it's better to keep whole .emacs.d directory as a git repository and
 make a commit before executing this script. Then, in case any problems
 you can go back to restore properly working emacs installation.
 Before running this script you should have a git repository initialized in emacs
-directory and git itself installed in the system (see Sec. [1.5](#org7dc8425)).
+directory and git itself installed in the system (see Sec. [1.5](#orgc40cdad)).
 Synchronization of the local repository with the remote one is not
 performed in this script. It should be performed explicitely by the user
 in a convenient time.
@@ -210,7 +210,7 @@ In Emacs 27.1 it [shouldn't be necessary to use](https://emacs.stackexchange.com
 
 ### The main part of the installation script - list of the packages
 
-<a id="org1b12aa5"></a>
+<a id="orgb4553f3"></a>
 
 I used to have `(defvar my-packages ...` instead of `(setq my-packages ...` 
 below but... **Do not** use `defvar` for declaring a list of packages to be installed!
@@ -327,7 +327,7 @@ for now. An interesting discussion about this can be found [here](https://www.re
 
 1.  DEPRECATED Setting an auxiliary variable
 
-    This section is deprecated in favour of [`workgroups2 package`](#orge26414d).
+    This section is deprecated in favour of [`workgroups2 package`](#org493c216).
     
         ;; This file is designed to be re-evaled; use the variable first-time
         ;; to avoid any problems with this.
@@ -368,7 +368,7 @@ proactively.
 Here are global Emacs customization. 
 If necessary some useful infomation or link is added to the customization.
 
-1.  Self-descriptive oneliners <a id="org2375f41"></a>
+1.  Self-descriptive oneliners <a id="orgaf6f5bb"></a>
 
     Remarks:
     At around May 2023 I stopped using `global-linum-mode` because
@@ -473,14 +473,14 @@ If necessary some useful infomation or link is added to the customization.
         ;; (set-frame-font "liberation mono 11" nil t) ; Set default font
     
     Due to  due to the  problems with fonts in `emacsclient/daemonp`
-    instances font is set now in the section [1.4.6](#orgb089176).
+    instances font is set now in the section [1.4.7](#orgace34b8).
 
 7.  Highlight on an active window/buffer
 
     Although the active window can be recognized
     by the cursor which blinking in it, sometimes it is hard to
     find in on the screen (especially if you use a colourful theme
-    like [1.4.6.1](#org8ff84c0).
+    like [1.4.7.1](#orgba0677a).
     
     I found a [post](https://stackoverflow.com/questions/33195122/highlight-current-active-window) adressing this issue.
     Although the accepted answer is using 
@@ -722,7 +722,7 @@ If necessary some useful infomation or link is added to the customization.
           )
           ;; <- Fill column indicator
     
-    -   and add this hook per each required mode (this is done in [1.4.5](#orgf883d5e) section
+    -   and add this hook per each required mode (this is done in [1.4.6](#org71c0389) section
         of this document
 
 12. Turning on/off beeping
@@ -736,7 +736,7 @@ If necessary some useful infomation or link is added to the customization.
         (setq-default visible-bell t) 
         (setq ring-bell-function 'ignore)
 
-13. Ibuffer - an advanced replacement for BufferMenu <a id="org82f6581"></a>
+13. Ibuffer - an advanced replacement for BufferMenu <a id="org1537c46"></a>
 
     Description of the package is [here](https://www.emacswiki.org/emacs/IbufferMode).
     
@@ -792,29 +792,116 @@ If necessary some useful infomation or link is added to the customization.
         
         and selecting the ones you want to kill with `d` and delete them all
         at once with `x`.
+    
+    2.  Ibuffer interactive way
+    
+        In [1.4.3.13](#org1537c46) there a nice shortcut to do this. You can select all
+        the files of the given mode with:
+        
+            * M
+        
+        (note the capital `M`! `* m` is for selecting **modified** buffers).
+        and then kill them with (again capital!) `D`.
+        
+        Summary (providing you have Ibuffer, which is built-in in Emacs 27.1):
+        
+        1.  Open ibuffer
+            
+                C-x C-b
+            
+            or
+            
+                M-x ibuffer
+        2.  Select all the buffer of the mode
+            
+                * M
+        3.  Search for all `dired` or `sunrise` mode buffers and kill them:
+            
+                * D
+    
+    3.  Simple dired way
+    
+        You can use `dired-find-alternate-file` function which is bounded
+        to key `a` in `dired-mode` for going down the directory structure. 
+        For going up you need to do some more tweaks and the simplest way is
+        given by Xah Lee ([original source](http://xahlee.info/emacs/emacs/emacs_dired_tips.html), [stackoverflow](https://stackoverflow.com/questions/1839313/how-do-i-stop-emacs-dired-mode-from-opening-so-many-buffers)).
+
+2.  Dired and bookmarks
+
+    When going up and down the directory structure you can mark/add
+    the favourite places into bookmarks which comes down to:
+    
+        C-x r m
+    
+    Then, you can go to your bookmarks menu by:
+    
+        C-x r b
+    
+    Select the directory you want to open and go there in dired/sunrise mode.
+    
+    To delete, rename a bookmark:
+    
+        M-x list-bookmarks
+    
+    -   `d` to mark to delete
+    -   `x` to delete all D marked ones
+    -   `r` to rename
+    -   `s` to save changes
+    
+    You can always achieve the same functionality without bookmarks feature
+    like [here](https://emacs.stackexchange.com/a/75448/30035).
+
+
+### Completing
+
+ido/smex vs ivy/counsel/swiper vs helm 
+
+1.  ido-mode
+
+    They say that `ido` is a [powerful package](https://www.masteringemacs.org/article/introduction-to-ido-mode) and you should have it enabled...
+    I'm not going to argue with that, yet I haven't studied much its capabilities.
+    
+        ;; ido-mode ->
+          (ido-mode 1)          
+          (setq ido-enable-flex-matching t)
+          (setq ido-everywhere t)  ; ido-mode for file searching
+        ;; <- ido-mode
+
+2.  smex
+
+    This package is installed because I was inspired by some post. 
+    Just for tests.
+    <https://github.com/nonsequitur/smex/>
+    
+        ;; smex ->
+        (global-set-key (kbd "M-x") 'smex)
+        (global-set-key (kbd "M-X") 'smex-major-mode-commands)
+        ;; This is your old M-x.
+        (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command) 
+        ;; <- smex
 
 
 ### Settings for modes
 
 
-### Emacs-everywhere <a id="orgb089176"></a>
+### Emacs-everywhere <a id="orgace34b8"></a>
 
-1.  Modus themes by Protesilaos Stavrou <a id="org8ff84c0"></a>
+1.  Modus themes by Protesilaos Stavrou <a id="orgba0677a"></a>
 
-2.  Workgroups (should be executed at the end of init.el) <a id="orge26414d"></a>
+2.  Workgroups (should be executed at the end of init.el) <a id="org493c216"></a>
 
 
-## Dependencies of the presented Emacs configuration: <a id="org7dc8425"></a>
+## Dependencies of the presented Emacs configuration: <a id="orgc40cdad"></a>
 
 The list of external applications that this script is dependent on:
 
 -   git
 -   LaTeX distribution (for org to latex exporters)
 
--   xclip ([1.4.6](#orgb089176))
--   xdotool ([1.4.6](#orgb089176))
--   xprop ([1.4.6](#orgb089176)) - this is not a package but executable
--   xwininfo ([1.4.6](#orgb089176)) - this is not a package but executable
+-   xclip ([1.4.7](#orgace34b8))
+-   xdotool ([1.4.7](#orgace34b8))
+-   xprop ([1.4.7](#orgace34b8)) - this is not a package but executable
+-   xwininfo ([1.4.7](#orgace34b8)) - this is not a package but executable
 
 
 ## Some useful information and links:
