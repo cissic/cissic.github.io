@@ -114,7 +114,7 @@ it's better to keep whole .emacs.d directory as a git repository and
 make a commit before executing this script. Then, in case any problems
 you can go back to restore properly working emacs installation.
 Before running this script you should have a git repository initialized in emacs
-directory and git itself installed in the system (see Sec. [1.5](#org4c05194)).
+directory and git itself installed in the system (see Sec. [1.5](#org727909d)).
 Synchronization of the local repository with the remote one is not
 performed in this script. It should be performed explicitely by the user
 in a convenient time.
@@ -210,7 +210,7 @@ In Emacs 27.1 it [shouldn't be necessary to use](https://emacs.stackexchange.com
 
 ### The main part of the installation script - list of the packages
 
-<a id="orgd4dca7d"></a>
+<a id="org29bff1f"></a>
 
 I used to have `(defvar my-packages ...` instead of `(setq my-packages ...` 
 below but... **Do not** use `defvar` for declaring a list of packages to be installed!
@@ -327,7 +327,7 @@ for now. An interesting discussion about this can be found [here](https://www.re
 
 1.  DEPRECATED Setting an auxiliary variable
 
-    This section is deprecated in favour of [`workgroups2 package`](#orgdd27f99).
+    This section is deprecated in favour of [`workgroups2 package`](#org0820862).
     
         ;; This file is designed to be re-evaled; use the variable first-time
         ;; to avoid any problems with this.
@@ -368,7 +368,7 @@ proactively.
 Here are global Emacs customization. 
 If necessary some useful infomation or link is added to the customization.
 
-1.  Self-descriptive oneliners <a id="org3a8ef7d"></a>
+1.  Self-descriptive oneliners <a id="org2964491"></a>
 
     Remarks:
     At around May 2023 I stopped using `global-linum-mode` because
@@ -473,14 +473,14 @@ If necessary some useful infomation or link is added to the customization.
         ;; (set-frame-font "liberation mono 11" nil t) ; Set default font
     
     Due to  due to the  problems with fonts in `emacsclient/daemonp`
-    instances font is set now in the section [1.4.13](#orge77abd7).
+    instances font is set now in the section [1.4.18](#org3a3878d).
 
 7.  Highlight on an active window/buffer
 
     Although the active window can be recognized
     by the cursor which blinking in it, sometimes it is hard to
     find in on the screen (especially if you use a colourful theme
-    like [1.4.13.1](#orga9c0769).
+    like [1.4.18.1](#org83c4415).
     
     I found a [post](https://stackoverflow.com/questions/33195122/highlight-current-active-window) adressing this issue.
     Although the accepted answer is using 
@@ -722,7 +722,7 @@ If necessary some useful infomation or link is added to the customization.
           )
           ;; <- Fill column indicator
     
-    -   and add this hook per each required mode (this is done in [1.4.7](#org25504aa) section
+    -   and add this hook per each required mode (this is done in [1.4.7](#orgcf236d1) section
         of this document
 
 12. Turning on/off beeping
@@ -736,7 +736,7 @@ If necessary some useful infomation or link is added to the customization.
         (setq-default visible-bell t) 
         (setq ring-bell-function 'ignore)
 
-13. Ibuffer - an advanced replacement for BufferMenu <a id="org6a4262a"></a>
+13. Ibuffer - an advanced replacement for BufferMenu <a id="org3fe6623"></a>
 
     Description of the package is [here](https://www.emacswiki.org/emacs/IbufferMode).
     
@@ -795,7 +795,7 @@ If necessary some useful infomation or link is added to the customization.
     
     2.  Ibuffer interactive way
     
-        In [1.4.3.13](#org6a4262a) there a nice shortcut to do this. You can select all
+        In [1.4.3.13](#org3fe6623) there a nice shortcut to do this. You can select all
         the files of the given mode with:
         
             * M
@@ -880,7 +880,7 @@ ido/smex vs ivy/counsel/swiper vs helm
         (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command) 
         ;; <- smex
 
-3.  TODO Ivy (for testing) <a id="orgd340f2b"></a>
+3.  TODO Ivy (for testing) <a id="org7657b8f"></a>
 
     Furthermore, according to [some other users](https://ruzkuku.com/emacs.d.html#org804158b)
     "Ivy is simpler (and faster) than Helm but more powerful than Ido".
@@ -1074,11 +1074,11 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
     files to Beamer. In order one needs to create appropriate
     init file with settings for async export and
     set `org-export-async-init-file` variable as path to this file (see 
-    [1.4.7.4.1](#org1dfc560)).
+    [1.4.7.4.1](#orge271308)).
     
     1.  Setting `org-export-async-init-file` to avoid failure while exporting to Beamer
     
-        <a id="org1dfc560"></a>
+        <a id="orge271308"></a>
         
         Org-beamer **async** exporter may fail because of lacking
         `org-export-async-init-file` 
@@ -1166,7 +1166,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
 
 1.  oc [org-citations]
 
-    1.  Bibliography <a id="orgdb0795c"></a>
+    1.  Bibliography <a id="orgaefafb4"></a>
     
         In Org 9.6 we do not need explicitely load `oc` libraries.
         Everything is covered in my post concerning bibliography and org-mode.
@@ -1348,7 +1348,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
 
 7.  Fix for Octave/Matlab org-babel - problems with matlab in org-babel
 
-    <a id="orgbf5e73e"></a>
+    <a id="org02a7a86"></a>
     <http://gewhere.github.io/blog/2017/12/19/setup-matlab-in-emacs-and-babel-orgmode/>
     
         
@@ -1374,7 +1374,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
     <https://github.com/karthink/.emacs.d/blob/master/plugins/ob-octave-fix.el>
     
     In the end I just downloaded the file and the inclusion of this package is
-    done in section [1.4.13.2](#orga7e2985).
+    done in section [1.4.18.2](#orgfb19bd2).
     
     the one I already had to `ob-octave-fixOLDER.el`). Previous version
     of the file didn't seem to resolve the problem.
@@ -1551,7 +1551,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
     The special mode `org-cdlatex-mode` is included in `org` package.
     In order to have it working properly we need to install `cdlatex`
     itself. This can be done in
-    [1.3.2](#org1098bd0).
+    [1.3.2](#org413070c).
     
     Link to `org-cdlatex-mode` description:
     <http://doc.endlessparentheses.com/Fun/org-cdlatex-mode.html>.
@@ -1629,28 +1629,324 @@ It is built-in in Emacs. As for now, I'm gonna use `flymake`.
 Bash has usually very good command completion facilities, which aren't accessible by default from Emacs (except by running `M-x term`). This package integrates them into regular commands such as `shell-command` and `shell`.
 
 
-### Emacs-everywhere <a id="orge77abd7"></a>
+### PDF-Tools
 
-1.  Modus themes by Protesilaos Stavrou <a id="orga9c0769"></a>
+Original repo: <https://github.com/politza/pdf-tools>.
+Maintened fork: <https://github.com/vedang/pdf-tools>
+
+<http://alberto.am/2020-04-11-pdf-tools-as-default-pdf-viewer.html>
+
+After installation you need to activate the package by running:
+`M-x pdf-tools-install`.
+
+Something important is that this library doesn't play well with Emacs
+`linum-mode`. The following lines of code will deactivate this mode
+when rendering the .pdf:
+
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;;;; Add this hook in order to run pdf-tools without a warning message.
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    (add-hook 'pdf-view-mode-hook (lambda() (linum-mode -1)))
+
+
+### ChatGPT
+
+In order to get some help from AI I decided to give it a try inside
+Emacs.
+There are tons of pages about it.
+[Here](https://notes.alexkehayias.com/using-chatgpt-with-emacs/) you have a list of Emacs libraries that handle this issue.
+
+1.  org-ai
+
+    At first, I decided on [org-ai](https://github.com/rksm/org-ai). It looks promising, mature, and
+    seems to have a quite a lot of features.
+    To use it, you also need to have `websocket` package.
+    
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        ;;;; AI - ChatGPT, Dall-E, Stable Diffusion and ...
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        ;; (require 'org-ai)
+        (add-hook 'org-mode-hook #'org-ai-mode)
+        (org-ai-global-mode)
+        ;; (setq org-ai-default-chat-model "gpt-4") ; if you are on the gpt-4 beta:
+        ;; (org-ai-install-yasnippets) ; if you are using yasnippet and want `ai` snippets
+    
+    Now, in order to keep my secrets off my `init.el` instead of
+    storing api key directly in my `init.el`, I'll load it here
+    from another file, which is located outside this repository.
+    In order to have this file properly loaded when running emacs daemon
+    we need to explicitely use `user-emacs-directory` variable
+    when refering to the file.
+    The content of the file looks like:
+    
+        (load-file (concat user-emacs-directory "../.mysecrets/openaiapi.el"))
+    
+    where the content of the `openaiapi.el` looks like:
+    
+        (setq org-ai-openai-api-token "<ENTER YOUR API TOKEN HERE>")
+    
+    1.  Useful commands/shortcuts:
+    
+        `org-ai-mark-block-contents` - marks the contents of the current
+        block between `#+begin_ai` and `#+end_ai`. Useful for clearing the
+        buffer after the session is finished and you don't want to store
+        its results.
+        
+        `C-c Backspace` - kills the ai region where the cursor is located (
+        `C-c DEL` does not work in my case, see `org-ai.el` to view other
+        keybindings...)
+
+2.  gptel
+
+    I also tried with `gptel`. Unfortunately I wasn't able to succeed in
+    installing it.
+
+3.  chatgpt-shell
+
+    Also tried with this:
+    <https://github.com/xenodium/chatgpt-shell>
+    (But I've got too old version of curl (7.76 while I have 7.74 on Debian)
+
+4.  Interesting/funny links:
+
+    -   <https://github.com/f/awesome-chatgpt-prompts>
+    -   <https://www.engraved.blog/building-a-virtual-machine-inside/>
+
+
+### TRAMP
+
+<https://emacs.stackexchange.com/questions/57919/preview-images-and-pdfs-inside-a-ssh-terminal-session-or-inside-emacsclient-ses>
+
+->
+
+<https://emacs.stackexchange.com/questions/42252/run-local-command-on-remote-file-with-tramp>
+
+Something is wrong with this part of code and `init.el` is not
+loading properly. 
+
+
+### General global shortcuts not restricted to specific package/mode
+
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;;;; Useful global shortcuts (text operations)
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    (global-set-key (kbd "C-d") 'delete-forward-char)    ; Backspace/Insert remapping
+    (global-set-key (kbd "C-S-d") 'delete-backward-char) 
+    ; (global-set-key (kbd "M-S-d") 'backward-kill-word)
+    (global-set-key (kbd "C-c C-e s") 'mark-end-of-sentence)
+    
+    (global-set-key (kbd "C-C C-e C-w C-w") 'eww-list-bookmarks) ; Open eww bookmarks
+    (defun mynet ()  (interactive) (eww-list-bookmarks))
+
+1.  Defining own prefix key to ease finding free keybindings
+
+    <https://stackoverflow.com/a/1025257/4649238>
+    
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        ;;;; my own prefix keymap
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        (define-prefix-command 'mb-map)
+        (global-set-key (kbd "C-z") 'mb-map)
+        ; (define-key mb-map (kbd "C-k") "\C-a\C- \C-e\M-w\M-;\C-e\C-m\C-y")
+        ; (define-key mb-map (kbd "C-l")  "\M-w\M-;\C-e\C-m\C-y")
+    
+    Now you can create your own shortcut with the command
+    
+        (define-key mb-map (kbd "C-k") "\C-a\C- \C-e\M-w\M-;\C-e\C-m\C-y")
+    
+    which will be triggered by `C-z C-k`.
+
+2.  Useful fast line-copying shortcut
+
+    1.  Solution
+    
+        Based on idea presented [here](https://stackoverflow.com/questions/88399/how-do-i-duplicate-a-whole-line-in-Emacs). Smart but not recommended approach!
+        However it works for me.
+        You only need to remember that it may break down at any momement,
+        if you encounter a mode that rebinds one of the default keybindings used
+        in the sequence.
+        
+            ;; fast copy-line-comment-it-and-paste-below
+            ;(global-set-key "\C-c\C-k"        "\C-a\C- \C-e\M-w\M-;\C-e\C-m\C-y")
+            (define-key mb-map (kbd "C-k") "\C-a\C- \C-e\M-w\M-;\C-e\C-m\C-y")
+        
+        The code below is not fully doing what it is meant to do. I don't have a time now
+        to correct it.
+        
+            ;; copy-selection-comment-it-and-paste-below (works ok provided selection is
+            ;; performed from left to right....
+            ; (global-set-key "\C-c\C-l" "\M-w\M-;\C-e\C-m\C-y")
+             (define-key mb-map (kbd "C-l")  "\M-w\M-;\C-e\C-m\C-y")
+        
+        Aside notes:
+        
+        -   I used to use `C-c C-k` and `C-c C-l` keybindings, respectively, for
+        
+        the above commands. However, they are overwriten when working in 
+        org-mode. That's why I needed to change them 
+        
+        -   Then I used `C-p` shortcut for invoking `mb-map`,
+        
+        but at some point I realized that it overwrittens default 
+        keybinding for `previous-line`.
+    
+    2.  ABANDONED OLD: Solution 1 (NOT FULLY WORKING)
+    
+        <https://www.emacswiki.org/emacs/CopyingWholeLines>
+        
+        This solution only copies active line and moves the pointer to the next line
+        
+            ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+            ;; fast copy-line shortcut
+            (defun copy-line (arg)
+              "Copy lines (as many as prefix argument) in the kill ring.
+                  Ease of use features:
+                  - Move to start of next line.
+                  - Appends the copy on sequential calls.
+                  - Use newline as last char even on the last line of the buffer.
+                  - If region is active, copy its lines."
+              (interactive "p")
+              (let ((beg (line-beginning-position))
+                    (end (line-end-position arg)))
+                (when mark-active
+                  (if (> (point) (mark))
+                      (setq beg (save-excursion (goto-char (mark)) (line-beginning-position)))
+                    (setq end (save-excursion (goto-char (mark)) (line-end-position)))))
+                (if (eq last-command 'copy-line)
+                    (kill-append (buffer-substring beg end) (< end beg))
+                  (kill-ring-save beg end)))
+              (kill-append "\n" nil)
+              (beginning-of-line (or (and arg (1+ arg)) 2))
+              (if (and arg (not (= 1 arg))) (message "%d lines copied" arg)))
+            
+            (global-set-key "\C-c\C-k" 'copy-line)  
+    
+    3.  ABANDONED OLD: Solution 2 (NOT FULLY WORKING)
+    
+        And even better solution because it also comments out the line and yanks
+        (pastes) copied text the line below. [Based on the post](https://stackoverflow.com/a/23588908).
+        
+              ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+              ;; fast copy-line-comment-and-paste-below
+            (defun copy-and-comment-region (beg end &optional arg)
+              "Duplicate the region and comment-out the copied text.
+            See `comment-region' for behavior of a prefix arg."
+              (interactive "r\nP")
+              (copy-region-as-kill beg end)
+              (goto-char end)
+              (yank)
+              (comment-region beg end arg))
+            
+            (global-set-key "\C-c\C-v\C-k" 'copy-and-comment-region)
+    
+    4.  ABANDONED Solution 3 (NOT WORKING)
+    
+        <https://www.emacswiki.org/emacs/CopyWithoutSelection>
+
+3.  Open the directory of the current file/buffer in the external file manager
+
+    Based on this link:
+    <https://www.reddit.com/r/emacs/comments/4zmly1/how_to_open_the_directory_of_a_file/>
+    in KDE with `dolphin` installed we can do like below.
+    
+    So we need to use =call-process". However in order to pass
+    a parameter to it you need 
+    
+    Warning 1:
+    The original solution uses `shell-command` which is not
+    asynchronous operation and it blocks emacs until I close the external 
+    window.
+    <https://emacs.stackexchange.com/questions/65090/how-to-start-a-persistent-asynchronous-process-trough-emacs>
+    
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        ;;;; Useful global shortcuts (system-wide operations)
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        (defun mb/browse-file-directory()
+          (interactive)
+          (shell-command "dolphin ."))
+        
+        (define-key global-map (kbd "<s-f12>") 'mb/browse-file-directory)
+    
+    So, in order to ''spawn'' a new process we need to use `call-process`
+    function. However, in this case, calling the function with parameter
+    is a bit more complicated than for `shell-command`
+    (<https://stackoverflow.com/questions/4858975/in-emacs-lisp-what-is-the-correct-way-to-use-call-process-on-an-ls-command>)
+    
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        ;;;; Useful global shortcuts (system-wide operations)
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        (defun mb/browse-file-directory()
+          (interactive)
+          (call-process "dolphin" nil 0 nil "."))
+        
+        (define-key global-map (kbd "<s-f12>") 'mb/browse-file-directory)
+    
+    Warning: NickD's solution contains: `#'ndk/desktop-open-link-at-point`.
+    I had to delete `#` from it to have properly working keybinding!
+    
+    Similar solution is given [here](https://emacs.stackexchange.com/questions/7742/what-is-the-easiest-way-to-open-the-folder-containing-the-current-file-by-the-de) (actually, I did not test it).
+
+
+### ABANDONED Emailing in Emacs
+
+As a temporary workaround I decided to try [1.4.18](#org3a3878d).
+
+Basing on  [this post](https://www.reddit.com/r/emacs/comments/4rl0a9/email_in_emacs_i_want_to_but_wow_its_overwhelming/) I decided to perform configuration of email service 
+within Emacs in three steps. Each of them takes care of one of the 
+following problems
+
+-   fetching emails
+-   sending emails
+-   viewing emails.
+
+1.  Links that can be useful:
+
+    -   <https://www.reddit.com/r/emacs/comments/4rl0a9/email_in_emacs_i_want_to_but_wow_its_overwhelming/>
+    -   <https://www.emacswiki.org/emacs/GettingMail>
+    -   <https://www.jonatkinson.co.uk/posts/syncing-gmail-with-mbsync/>
+    -   <https://isync.sourceforge.io>
+    -   <https://brian-thompson.medium.com/setting-up-isync-mbsync-on-linux-e9fe10c692c0>
+    -   <https://wiki.archlinux.org/title/isync>
+    -   <https://www.maketecheasier.com/use-email-within-emacs/>
+
+2.  ABANDONED Another approach: External Editor Revived -- a Thunderbird extension
+
+    External Editor Revived is a Thunderbird extension that allows 
+    using external editor (vim/emacs/...) to edit your mails.
+    
+    I had problems with installing necessary binary 
+    (<https://github.com/Frederick888/external-editor-revived/releases/download/v0.6.0/ubuntu-latest-gnu-native-messaging-host-v0.6.0.zip>)
+    due to lacking dependencies:
+    
+        ./external-editor-revived: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.33' not found (required by ./external-editor-revived)
+        ./external-editor-revived: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.32' not found (required by ./external-editor-revived)
+        ./external-editor-revived: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.34' not found (required by ./external-editor-revived)
+    
+    so I abandoned this idea at this stage.
+
+
+### Emacs-everywhere <a id="org3a3878d"></a>
+
+1.  Modus themes by Protesilaos Stavrou <a id="org83c4415"></a>
 
 2.  ob-octave-fix.el
 
-    <a id="orga7e2985"></a>
+    <a id="orgfb19bd2"></a>
 
-3.  Workgroups (should be executed at the end of init.el) <a id="orgdd27f99"></a>
+3.  Workgroups (should be executed at the end of init.el) <a id="org0820862"></a>
 
 
-## Dependencies of the presented Emacs configuration: <a id="org4c05194"></a>
+## Dependencies of the presented Emacs configuration: <a id="org727909d"></a>
 
 The list of external applications that this script is dependent on:
 
 -   git
 -   LaTeX distribution (for org to latex exporters)
 
--   xclip ([1.4.13](#orge77abd7))
--   xdotool ([1.4.13](#orge77abd7))
--   xprop ([1.4.13](#orge77abd7)) - this is not a package but executable
--   xwininfo ([1.4.13](#orge77abd7)) - this is not a package but executable
+-   xclip ([1.4.18](#org3a3878d))
+-   xdotool ([1.4.18](#org3a3878d))
+-   xprop ([1.4.18](#org3a3878d)) - this is not a package but executable
+-   xwininfo ([1.4.18](#org3a3878d)) - this is not a package but executable
 
 
 ## Some useful information and links:

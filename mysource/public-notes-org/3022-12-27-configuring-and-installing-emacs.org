@@ -2012,329 +2012,329 @@ Bash has usually very good command completion facilities, which aren't accessibl
 # #+end_src
 
 
-# *** PDF-Tools
-# Original repo: https://github.com/politza/pdf-tools.
-# Maintened fork: https://github.com/vedang/pdf-tools
+*** PDF-Tools
+Original repo: https://github.com/politza/pdf-tools.
+Maintened fork: https://github.com/vedang/pdf-tools
 
-# http://alberto.am/2020-04-11-pdf-tools-as-default-pdf-viewer.html
+http://alberto.am/2020-04-11-pdf-tools-as-default-pdf-viewer.html
 
-# After installation you need to activate the package by running:
-# ~M-x pdf-tools-install~.
+After installation you need to activate the package by running:
+~M-x pdf-tools-install~.
 
-# Something important is that this library doesn't play well with Emacs
-# =linum-mode=. The following lines of code will deactivate this mode
-# when rendering the .pdf:
+Something important is that this library doesn't play well with Emacs
+=linum-mode=. The following lines of code will deactivate this mode
+when rendering the .pdf:
 
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
-# ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-# ;;;; Add this hook in order to run pdf-tools without a warning message.
-# ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-# (add-hook 'pdf-view-mode-hook (lambda() (linum-mode -1)))
-# #+end_src
-
-
-# *** ChatGPT
-# In order to get some help from AI I decided to give it a try inside
-# Emacs.
-# There are tons of pages about it.
-# [[https://notes.alexkehayias.com/using-chatgpt-with-emacs/][Here]] you have a list of Emacs libraries that handle this issue.
-
-# **** org-ai
-# At first, I decided on [[https://github.com/rksm/org-ai][org-ai]]. It looks promising, mature, and
-# seems to have a quite a lot of features.
-# To use it, you also need to have =websocket= package.
-
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
-#   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-#   ;;;; AI - ChatGPT, Dall-E, Stable Diffusion and ...
-#   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-#   ;; (require 'org-ai)
-#   (add-hook 'org-mode-hook #'org-ai-mode)
-#   (org-ai-global-mode)
-#   ;; (setq org-ai-default-chat-model "gpt-4") ; if you are on the gpt-4 beta:
-#   ;; (org-ai-install-yasnippets) ; if you are using yasnippet and want `ai` snippets
-# #+end_src
-
-# Now, in order to keep my secrets off my =init.el= instead of
-# storing api key directly in my =init.el=, I'll load it here
-# from another file, which is located outside this repository.
-# In order to have this file properly loaded when running emacs daemon
-# we need to explicitely use =user-emacs-directory= variable
-# when refering to the file.
-# The content of the file looks like:
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
-#   (load-file (concat user-emacs-directory "../.mysecrets/openaiapi.el"))
-# #+end_src
-# where the content of the =openaiapi.el= looks like:
-# #+begin_example
-# (setq org-ai-openai-api-token "<ENTER YOUR API TOKEN HERE>")
-# #+end_example
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; Add this hook in order to run pdf-tools without a warning message.
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(add-hook 'pdf-view-mode-hook (lambda() (linum-mode -1)))
+#+end_src
 
 
-# ***** Useful commands/shortcuts:
+*** ChatGPT
+In order to get some help from AI I decided to give it a try inside
+Emacs.
+There are tons of pages about it.
+[[https://notes.alexkehayias.com/using-chatgpt-with-emacs/][Here]] you have a list of Emacs libraries that handle this issue.
 
-# =org-ai-mark-block-contents= - marks the contents of the current
-# block between =#+begin_ai= and =#+end_ai=. Useful for clearing the
-# buffer after the session is finished and you don't want to store
-# its results.
+**** org-ai
+At first, I decided on [[https://github.com/rksm/org-ai][org-ai]]. It looks promising, mature, and
+seems to have a quite a lot of features.
+To use it, you also need to have =websocket= package.
 
-# ~C-c Backspace~ - kills the ai region where the cursor is located (
-# ~C-c DEL~ does not work in my case, see =org-ai.el= to view other
-# keybindings...)
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;;;; AI - ChatGPT, Dall-E, Stable Diffusion and ...
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;; (require 'org-ai)
+  (add-hook 'org-mode-hook #'org-ai-mode)
+  (org-ai-global-mode)
+  ;; (setq org-ai-default-chat-model "gpt-4") ; if you are on the gpt-4 beta:
+  ;; (org-ai-install-yasnippets) ; if you are using yasnippet and want `ai` snippets
+#+end_src
+
+Now, in order to keep my secrets off my =init.el= instead of
+storing api key directly in my =init.el=, I'll load it here
+from another file, which is located outside this repository.
+In order to have this file properly loaded when running emacs daemon
+we need to explicitely use =user-emacs-directory= variable
+when refering to the file.
+The content of the file looks like:
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+  (load-file (concat user-emacs-directory "../.mysecrets/openaiapi.el"))
+#+end_src
+where the content of the =openaiapi.el= looks like:
+#+begin_example
+(setq org-ai-openai-api-token "<ENTER YOUR API TOKEN HERE>")
+#+end_example
+
+
+***** Useful commands/shortcuts:
+
+=org-ai-mark-block-contents= - marks the contents of the current
+block between =#+begin_ai= and =#+end_ai=. Useful for clearing the
+buffer after the session is finished and you don't want to store
+its results.
+
+~C-c Backspace~ - kills the ai region where the cursor is located (
+~C-c DEL~ does not work in my case, see =org-ai.el= to view other
+keybindings...)
 
 
 
-# **** gptel
-# I also tried with =gptel=. Unfortunately I wasn't able to succeed in
-# installing it.
+**** gptel
+I also tried with =gptel=. Unfortunately I wasn't able to succeed in
+installing it.
 
-# **** chatgpt-shell
-# Also tried with this:
-# https://github.com/xenodium/chatgpt-shell
-# (But I've got too old version of curl (7.76 while I have 7.74 on Debian)
+**** chatgpt-shell
+Also tried with this:
+https://github.com/xenodium/chatgpt-shell
+(But I've got too old version of curl (7.76 while I have 7.74 on Debian)
 
 
-# **** Interesting/funny links:
-# - https://github.com/f/awesome-chatgpt-prompts
-# - https://www.engraved.blog/building-a-virtual-machine-inside/
+**** Interesting/funny links:
+- https://github.com/f/awesome-chatgpt-prompts
+- https://www.engraved.blog/building-a-virtual-machine-inside/
   
 
-# *** TRAMP
+*** TRAMP
 
-# https://emacs.stackexchange.com/questions/57919/preview-images-and-pdfs-inside-a-ssh-terminal-session-or-inside-emacsclient-ses
+https://emacs.stackexchange.com/questions/57919/preview-images-and-pdfs-inside-a-ssh-terminal-session-or-inside-emacsclient-ses
 
-# ->
+->
 
-# https://emacs.stackexchange.com/questions/42252/run-local-command-on-remote-file-with-tramp
+https://emacs.stackexchange.com/questions/42252/run-local-command-on-remote-file-with-tramp
 
-# Something is wrong with this part of code and ~init.el~ is not
-# loading properly. 
-
-# # #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
-# # ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-# # ;;;; TRAMP
-# # ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-# # ;; Auxiliary function - useful for TRAMP editing
-# # (defun dired-do-local-command ()
-# #   (interactive)
-# #   (let* ((marked-files (dired-get-marked-files nil current-prefix-arg))
-# #          (local-tmp-files (mapcar #'file-local-copy marked-files))
-# #          (num-files (length local-tmp-files))
-# #          (default-directory temporary-file-directory)
-# #          (command (dired-read-shell-command "! on %s: " num-files marked-files)))
-# #     (dired-do-shell-command command num-files local-tmp-files)))
-
-# # (define-key dired-mode-map (kbd "\"") 'dired-do-local-command)
-# # #+end_src
-
-
-
-# *** General global shortcuts not restricted to specific package/mode
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
-# ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-# ;;;; Useful global shortcuts (text operations)
-# ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-# (global-set-key (kbd "C-d") 'delete-forward-char)    ; Backspace/Insert remapping
-# (global-set-key (kbd "C-S-d") 'delete-backward-char) 
-# ; (global-set-key (kbd "M-S-d") 'backward-kill-word)
-# (global-set-key (kbd "C-c C-e s") 'mark-end-of-sentence)
-
-# (global-set-key (kbd "C-C C-e C-w C-w") 'eww-list-bookmarks) ; Open eww bookmarks
-# (defun mynet ()  (interactive) (eww-list-bookmarks))
-# #+end_src
-
-
-# **** Defining own prefix key to ease finding free keybindings
-# https://stackoverflow.com/a/1025257/4649238
+Something is wrong with this part of code and ~init.el~ is not
+loading properly. 
 
 # #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
-# ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-# ;;;; my own prefix keymap
-# ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-# (define-prefix-command 'mb-map)
-# (global-set-key (kbd "C-z") 'mb-map)
-# ; (define-key mb-map (kbd "C-k") "\C-a\C- \C-e\M-w\M-;\C-e\C-m\C-y")
-# ; (define-key mb-map (kbd "C-l")  "\M-w\M-;\C-e\C-m\C-y")
-# #+end_src
-
-# Now you can create your own shortcut with the command
-# #+begin_src emacs-lisp 
-# (define-key mb-map (kbd "C-k") "\C-a\C- \C-e\M-w\M-;\C-e\C-m\C-y")
-# #+end_src
-# which will be triggered by ~C-z C-k~.
-
-# **** Useful fast line-copying shortcut
-
-# ***** Solution 
-
-# Based on idea presented [[https://stackoverflow.com/questions/88399/how-do-i-duplicate-a-whole-line-in-Emacs][here]]. Smart but not recommended approach!
-# However it works for me.
-# You only need to remember that it may break down at any momement,
-# if you encounter a mode that rebinds one of the default keybindings used
-# in the sequence.
-
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
-# ;; fast copy-line-comment-it-and-paste-below
-# ;(global-set-key "\C-c\C-k"        "\C-a\C- \C-e\M-w\M-;\C-e\C-m\C-y")
-# (define-key mb-map (kbd "C-k") "\C-a\C- \C-e\M-w\M-;\C-e\C-m\C-y")
-# #+end_src
-
-# The code below is not fully doing what it is meant to do. I don't have a time now
-# to correct it.
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
-# ;; copy-selection-comment-it-and-paste-below (works ok provided selection is
-# ;; performed from left to right....
-# ; (global-set-key "\C-c\C-l" "\M-w\M-;\C-e\C-m\C-y")
-#  (define-key mb-map (kbd "C-l")  "\M-w\M-;\C-e\C-m\C-y")
-# #+end_src
-
-# Aside notes:
-# - I used to use ~C-c C-k~ and ~C-c C-l~ keybindings, respectively, for 
-# the above commands. However, they are overwriten when working in 
-# org-mode. That's why I needed to change them 
-
-# - Then I used ~C-p~ shortcut for invoking ~mb-map~,
-# but at some point I realized that it overwrittens default 
-# keybinding for ~previous-line~.
-
-
-# ***** ABANDONED OLD: Solution 1 (NOT FULLY WORKING)
-# https://www.emacswiki.org/emacs/CopyingWholeLines
-
-# This solution only copies active line and moves the pointer to the next line
-
-# # #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
-# #+begin_src emacs-lisp 
-#   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-#   ;; fast copy-line shortcut
-#   (defun copy-line (arg)
-#     "Copy lines (as many as prefix argument) in the kill ring.
-# 	Ease of use features:
-# 	- Move to start of next line.
-# 	- Appends the copy on sequential calls.
-# 	- Use newline as last char even on the last line of the buffer.
-# 	- If region is active, copy its lines."
-#     (interactive "p")
-#     (let ((beg (line-beginning-position))
-# 	  (end (line-end-position arg)))
-#       (when mark-active
-# 	(if (> (point) (mark))
-# 	    (setq beg (save-excursion (goto-char (mark)) (line-beginning-position)))
-# 	  (setq end (save-excursion (goto-char (mark)) (line-end-position)))))
-#       (if (eq last-command 'copy-line)
-# 	  (kill-append (buffer-substring beg end) (< end beg))
-# 	(kill-ring-save beg end)))
-#     (kill-append "\n" nil)
-#     (beginning-of-line (or (and arg (1+ arg)) 2))
-#     (if (and arg (not (= 1 arg))) (message "%d lines copied" arg)))
-
-#   (global-set-key "\C-c\C-k" 'copy-line)  
-# #+end_src
-
-# ***** ABANDONED OLD: Solution 2 (NOT FULLY WORKING)
-# And even better solution because it also comments out the line and yanks
-# (pastes) copied text the line below. [[https://stackoverflow.com/a/23588908][Based on the post]].
-
-# # #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
-# #+begin_src emacs-lisp 
-#   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-#   ;; fast copy-line-comment-and-paste-below
-# (defun copy-and-comment-region (beg end &optional arg)
-#   "Duplicate the region and comment-out the copied text.
-# See `comment-region' for behavior of a prefix arg."
-#   (interactive "r\nP")
-#   (copy-region-as-kill beg end)
-#   (goto-char end)
-#   (yank)
-#   (comment-region beg end arg))
-
-# (global-set-key "\C-c\C-v\C-k" 'copy-and-comment-region)
-# #+end_src
-
-# ***** ABANDONED Solution 3 (NOT WORKING)
-# https://www.emacswiki.org/emacs/CopyWithoutSelection
-
-
-# **** Open the directory of the current file/buffer in the external file manager
-
-# Based on this link:
-# https://www.reddit.com/r/emacs/comments/4zmly1/how_to_open_the_directory_of_a_file/
-# in KDE with =dolphin= installed we can do like below.
-
-# So we need to use =call-process". However in order to pass
-# a parameter to it you need 
-
-# Warning 1:
-# The original solution uses =shell-command= which is not
-# asynchronous operation and it blocks emacs until I close the external 
-# window.
-# https://emacs.stackexchange.com/questions/65090/how-to-start-a-persistent-asynchronous-process-trough-emacs
-
-# #+begin_src emacs-lisp
 # ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-# ;;;; Useful global shortcuts (system-wide operations)
+# ;;;; TRAMP
 # ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-# (defun mb/browse-file-directory()
+# ;; Auxiliary function - useful for TRAMP editing
+# (defun dired-do-local-command ()
 #   (interactive)
-#   (shell-command "dolphin ."))
+#   (let* ((marked-files (dired-get-marked-files nil current-prefix-arg))
+#          (local-tmp-files (mapcar #'file-local-copy marked-files))
+#          (num-files (length local-tmp-files))
+#          (default-directory temporary-file-directory)
+#          (command (dired-read-shell-command "! on %s: " num-files marked-files)))
+#     (dired-do-shell-command command num-files local-tmp-files)))
 
-# (define-key global-map (kbd "<s-f12>") 'mb/browse-file-directory)
+# (define-key dired-mode-map (kbd "\"") 'dired-do-local-command)
 # #+end_src
 
-# So, in order to ''spawn'' a new process we need to use =call-process=
-# function. However, in this case, calling the function with parameter
-# is a bit more complicated than for =shell-command=
-# (https://stackoverflow.com/questions/4858975/in-emacs-lisp-what-is-the-correct-way-to-use-call-process-on-an-ls-command)
-
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
-# ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-# ;;;; Useful global shortcuts (system-wide operations)
-# ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-# (defun mb/browse-file-directory()
-#   (interactive)
-#   (call-process "dolphin" nil 0 nil "."))
-
-# (define-key global-map (kbd "<s-f12>") 'mb/browse-file-directory)
-# #+end_src
-
-# Warning: NickD's solution contains: =#'ndk/desktop-open-link-at-point=.
-# I had to delete =#= from it to have properly working keybinding!
-
-# Similar solution is given [[https://emacs.stackexchange.com/questions/7742/what-is-the-easiest-way-to-open-the-folder-containing-the-current-file-by-the-de][here]] (actually, I did not test it).
-
-# *** ABANDONED Emailing in Emacs 
-# As a temporary workaround I decided to try [[emacs-everywhere]].
-
-# Basing on  [[https://www.reddit.com/r/emacs/comments/4rl0a9/email_in_emacs_i_want_to_but_wow_its_overwhelming/][this post]] I decided to perform configuration of email service 
-# within Emacs in three steps. Each of them takes care of one of the 
-# following problems
-# - fetching emails
-# - sending emails
-# - viewing emails.
-
-# **** Links that can be useful:
-# - https://www.reddit.com/r/emacs/comments/4rl0a9/email_in_emacs_i_want_to_but_wow_its_overwhelming/
-# - https://www.emacswiki.org/emacs/GettingMail
-# - [[https://www.jonatkinson.co.uk/posts/syncing-gmail-with-mbsync/]]
-# - https://isync.sourceforge.io
-# - https://brian-thompson.medium.com/setting-up-isync-mbsync-on-linux-e9fe10c692c0
-# - https://wiki.archlinux.org/title/isync
-# - https://www.maketecheasier.com/use-email-within-emacs/
 
 
-# **** ABANDONED Another approach: External Editor Revived -- a Thunderbird extension 
-# External Editor Revived is a Thunderbird extension that allows 
-# using external editor (vim/emacs/...) to edit your mails.
+*** General global shortcuts not restricted to specific package/mode
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; Useful global shortcuts (text operations)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(global-set-key (kbd "C-d") 'delete-forward-char)    ; Backspace/Insert remapping
+(global-set-key (kbd "C-S-d") 'delete-backward-char) 
+; (global-set-key (kbd "M-S-d") 'backward-kill-word)
+(global-set-key (kbd "C-c C-e s") 'mark-end-of-sentence)
 
-# I had problems with installing necessary binary 
-# (https://github.com/Frederick888/external-editor-revived/releases/download/v0.6.0/ubuntu-latest-gnu-native-messaging-host-v0.6.0.zip)
-# due to lacking dependencies:
-# #+begin_example
-# ./external-editor-revived: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.33' not found (required by ./external-editor-revived)
-# ./external-editor-revived: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.32' not found (required by ./external-editor-revived)
-# ./external-editor-revived: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.34' not found (required by ./external-editor-revived)
-# #+end_example
-# so I abandoned this idea at this stage.
+(global-set-key (kbd "C-C C-e C-w C-w") 'eww-list-bookmarks) ; Open eww bookmarks
+(defun mynet ()  (interactive) (eww-list-bookmarks))
+#+end_src
+
+
+**** Defining own prefix key to ease finding free keybindings
+https://stackoverflow.com/a/1025257/4649238
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; my own prefix keymap
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(define-prefix-command 'mb-map)
+(global-set-key (kbd "C-z") 'mb-map)
+; (define-key mb-map (kbd "C-k") "\C-a\C- \C-e\M-w\M-;\C-e\C-m\C-y")
+; (define-key mb-map (kbd "C-l")  "\M-w\M-;\C-e\C-m\C-y")
+#+end_src
+
+Now you can create your own shortcut with the command
+#+begin_src emacs-lisp 
+(define-key mb-map (kbd "C-k") "\C-a\C- \C-e\M-w\M-;\C-e\C-m\C-y")
+#+end_src
+which will be triggered by ~C-z C-k~.
+
+**** Useful fast line-copying shortcut
+
+***** Solution 
+
+Based on idea presented [[https://stackoverflow.com/questions/88399/how-do-i-duplicate-a-whole-line-in-Emacs][here]]. Smart but not recommended approach!
+However it works for me.
+You only need to remember that it may break down at any momement,
+if you encounter a mode that rebinds one of the default keybindings used
+in the sequence.
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+;; fast copy-line-comment-it-and-paste-below
+;(global-set-key "\C-c\C-k"        "\C-a\C- \C-e\M-w\M-;\C-e\C-m\C-y")
+(define-key mb-map (kbd "C-k") "\C-a\C- \C-e\M-w\M-;\C-e\C-m\C-y")
+#+end_src
+
+The code below is not fully doing what it is meant to do. I don't have a time now
+to correct it.
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+;; copy-selection-comment-it-and-paste-below (works ok provided selection is
+;; performed from left to right....
+; (global-set-key "\C-c\C-l" "\M-w\M-;\C-e\C-m\C-y")
+ (define-key mb-map (kbd "C-l")  "\M-w\M-;\C-e\C-m\C-y")
+#+end_src
+
+Aside notes:
+- I used to use ~C-c C-k~ and ~C-c C-l~ keybindings, respectively, for 
+the above commands. However, they are overwriten when working in 
+org-mode. That's why I needed to change them 
+
+- Then I used ~C-p~ shortcut for invoking ~mb-map~,
+but at some point I realized that it overwrittens default 
+keybinding for ~previous-line~.
+
+
+***** ABANDONED OLD: Solution 1 (NOT FULLY WORKING)
+https://www.emacswiki.org/emacs/CopyingWholeLines
+
+This solution only copies active line and moves the pointer to the next line
+
+# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
+#+begin_src emacs-lisp 
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;; fast copy-line shortcut
+  (defun copy-line (arg)
+    "Copy lines (as many as prefix argument) in the kill ring.
+	Ease of use features:
+	- Move to start of next line.
+	- Appends the copy on sequential calls.
+	- Use newline as last char even on the last line of the buffer.
+	- If region is active, copy its lines."
+    (interactive "p")
+    (let ((beg (line-beginning-position))
+	  (end (line-end-position arg)))
+      (when mark-active
+	(if (> (point) (mark))
+	    (setq beg (save-excursion (goto-char (mark)) (line-beginning-position)))
+	  (setq end (save-excursion (goto-char (mark)) (line-end-position)))))
+      (if (eq last-command 'copy-line)
+	  (kill-append (buffer-substring beg end) (< end beg))
+	(kill-ring-save beg end)))
+    (kill-append "\n" nil)
+    (beginning-of-line (or (and arg (1+ arg)) 2))
+    (if (and arg (not (= 1 arg))) (message "%d lines copied" arg)))
+
+  (global-set-key "\C-c\C-k" 'copy-line)  
+#+end_src
+
+***** ABANDONED OLD: Solution 2 (NOT FULLY WORKING)
+And even better solution because it also comments out the line and yanks
+(pastes) copied text the line below. [[https://stackoverflow.com/a/23588908][Based on the post]].
+
+# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
+#+begin_src emacs-lisp 
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;; fast copy-line-comment-and-paste-below
+(defun copy-and-comment-region (beg end &optional arg)
+  "Duplicate the region and comment-out the copied text.
+See `comment-region' for behavior of a prefix arg."
+  (interactive "r\nP")
+  (copy-region-as-kill beg end)
+  (goto-char end)
+  (yank)
+  (comment-region beg end arg))
+
+(global-set-key "\C-c\C-v\C-k" 'copy-and-comment-region)
+#+end_src
+
+***** ABANDONED Solution 3 (NOT WORKING)
+https://www.emacswiki.org/emacs/CopyWithoutSelection
+
+
+**** Open the directory of the current file/buffer in the external file manager
+
+Based on this link:
+https://www.reddit.com/r/emacs/comments/4zmly1/how_to_open_the_directory_of_a_file/
+in KDE with =dolphin= installed we can do like below.
+
+So we need to use =call-process". However in order to pass
+a parameter to it you need 
+
+Warning 1:
+The original solution uses =shell-command= which is not
+asynchronous operation and it blocks emacs until I close the external 
+window.
+https://emacs.stackexchange.com/questions/65090/how-to-start-a-persistent-asynchronous-process-trough-emacs
+
+#+begin_src emacs-lisp
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; Useful global shortcuts (system-wide operations)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun mb/browse-file-directory()
+  (interactive)
+  (shell-command "dolphin ."))
+
+(define-key global-map (kbd "<s-f12>") 'mb/browse-file-directory)
+#+end_src
+
+So, in order to ''spawn'' a new process we need to use =call-process=
+function. However, in this case, calling the function with parameter
+is a bit more complicated than for =shell-command=
+(https://stackoverflow.com/questions/4858975/in-emacs-lisp-what-is-the-correct-way-to-use-call-process-on-an-ls-command)
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; Useful global shortcuts (system-wide operations)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun mb/browse-file-directory()
+  (interactive)
+  (call-process "dolphin" nil 0 nil "."))
+
+(define-key global-map (kbd "<s-f12>") 'mb/browse-file-directory)
+#+end_src
+
+Warning: NickD's solution contains: =#'ndk/desktop-open-link-at-point=.
+I had to delete =#= from it to have properly working keybinding!
+
+Similar solution is given [[https://emacs.stackexchange.com/questions/7742/what-is-the-easiest-way-to-open-the-folder-containing-the-current-file-by-the-de][here]] (actually, I did not test it).
+
+*** ABANDONED Emailing in Emacs 
+As a temporary workaround I decided to try [[emacs-everywhere]].
+
+Basing on  [[https://www.reddit.com/r/emacs/comments/4rl0a9/email_in_emacs_i_want_to_but_wow_its_overwhelming/][this post]] I decided to perform configuration of email service 
+within Emacs in three steps. Each of them takes care of one of the 
+following problems
+- fetching emails
+- sending emails
+- viewing emails.
+
+**** Links that can be useful:
+- https://www.reddit.com/r/emacs/comments/4rl0a9/email_in_emacs_i_want_to_but_wow_its_overwhelming/
+- https://www.emacswiki.org/emacs/GettingMail
+- [[https://www.jonatkinson.co.uk/posts/syncing-gmail-with-mbsync/]]
+- https://isync.sourceforge.io
+- https://brian-thompson.medium.com/setting-up-isync-mbsync-on-linux-e9fe10c692c0
+- https://wiki.archlinux.org/title/isync
+- https://www.maketecheasier.com/use-email-within-emacs/
+
+
+**** ABANDONED Another approach: External Editor Revived -- a Thunderbird extension 
+External Editor Revived is a Thunderbird extension that allows 
+using external editor (vim/emacs/...) to edit your mails.
+
+I had problems with installing necessary binary 
+(https://github.com/Frederick888/external-editor-revived/releases/download/v0.6.0/ubuntu-latest-gnu-native-messaging-host-v0.6.0.zip)
+due to lacking dependencies:
+#+begin_example
+./external-editor-revived: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.33' not found (required by ./external-editor-revived)
+./external-editor-revived: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.32' not found (required by ./external-editor-revived)
+./external-editor-revived: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.34' not found (required by ./external-editor-revived)
+#+end_example
+so I abandoned this idea at this stage.
 
 *** Emacs-everywhere <<emacs-everywhere>>
 
