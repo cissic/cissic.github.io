@@ -1166,387 +1166,387 @@ Define your own custom shortcuts to run specific script in matlab shell.
 )
 #+end_src
 
-**** Python mode
+# **** Python mode
 
-The below code does not work as expected. Probably it'd be better to
-apply the configuration given [[https://realpython.com/emacs-the-best-python-editor/#integration-with-jupyter-and-ipython][here]].
+# The below code does not work as expected. Probably it'd be better to
+# apply the configuration given [[https://realpython.com/emacs-the-best-python-editor/#integration-with-jupyter-and-ipython][here]].
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
-  ;; Python mode...
+# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
+#   ;; Python mode...
 
-  (defun my-python-mode-hook()
-             (lambda ()
-               (setq python-shell-interpreter "python3") ))
+#   (defun my-python-mode-hook()
+#              (lambda ()
+#                (setq python-shell-interpreter "python3") ))
 
-#+end_src
+# #+end_src
 
-**** Org mode
-# Old approach 
+# **** Org mode
+# # Old approach 
+# # #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
+# #   ;; Org mode...
+
+# #   (defun my-org-mode-hook()
+# # 	     (lambda ()
+# # 		(local-set-key (kbd "<f9>") "\C-x\C-s\C-c\C-e\C-a l p")
+# # 	       ;; (define-key org-mode-map (kbd "<f9>") "\C-x\C-s\C-c\C-e l p")
+# # 	       ))
+# #   ;; (global-set-key (kbd "<f9>") "\C-x\C-s\C-c\C-e l p")
+# # #+end_src
+
+
+# By default emacs waits until all exporting processes finish. It may take quite
+# a while in some situations (for example when exporting long document to LaTeX).
+# In order to make emacs work in asyncronous mode you need to toggle this
+# ([[https://orgmode.org/manual/The-Export-Dispatcher.html][link 1]], [[https://superuser.com/questions/483554/org-export-run-in-background-how-to-troubleshoot][link 2]]).
+
+# One way is to do it each time when exporting: after pressing =C-c C-e= you
+# get =exporting menu= and in the third line you can see  =Async export= option
+# that can be enabled by pressin =C-a=. It is rather cumbersome.
+
+# To have this option toggled after launching emacs put the line below in your
+# init file.
+
 # #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
 #   ;; Org mode...
+#   (setq org-export-in-background t)
+# #+end_src
 
+# This setting has impact only when exporting via =org exporting menu=
+# (triggered by =C-c C-e=). When calling =org-latex-export-to-pdf= this
+# setting is not taken into account. Fortunately, this function has
+# optional parameter that can be set to obtain async behaviour.
+# All in all, the (almost) working solution can be written as a custom hook like this:
+
+# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
 #   (defun my-org-mode-hook()
-# 	     (lambda ()
-# 		(local-set-key (kbd "<f9>") "\C-x\C-s\C-c\C-e\C-a l p")
-# 	       ;; (define-key org-mode-map (kbd "<f9>") "\C-x\C-s\C-c\C-e l p")
-# 	       ))
-#   ;; (global-set-key (kbd "<f9>") "\C-x\C-s\C-c\C-e l p")
-# #+end_src
-
-
-By default emacs waits until all exporting processes finish. It may take quite
-a while in some situations (for example when exporting long document to LaTeX).
-In order to make emacs work in asyncronous mode you need to toggle this
-([[https://orgmode.org/manual/The-Export-Dispatcher.html][link 1]], [[https://superuser.com/questions/483554/org-export-run-in-background-how-to-troubleshoot][link 2]]).
-
-One way is to do it each time when exporting: after pressing =C-c C-e= you
-get =exporting menu= and in the third line you can see  =Async export= option
-that can be enabled by pressin =C-a=. It is rather cumbersome.
-
-To have this option toggled after launching emacs put the line below in your
-init file.
-
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
-  ;; Org mode...
-  (setq org-export-in-background t)
-#+end_src
-
-This setting has impact only when exporting via =org exporting menu=
-(triggered by =C-c C-e=). When calling =org-latex-export-to-pdf= this
-setting is not taken into account. Fortunately, this function has
-optional parameter that can be set to obtain async behaviour.
-All in all, the (almost) working solution can be written as a custom hook like this:
-
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
-  (defun my-org-mode-hook()
-    (define-key org-mode-map (kbd "<f9>")
-      '(lambda () (interactive)
-	(org-latex-export-to-pdf :async t)
-	(org-beamer-export-to-pdf :async t)
-	(org-odt-export-to-odt :async t)
-	(org-odt-export-as-pdf :async t)
-	)
-       )  
-  )
-#+end_src
-
-Why "almost"? Because this solution still won't work when exporting
-files to Beamer. In order one needs to create appropriate
-init file with settings for async export and
-set ~org-export-async-init-file~ variable as path to this file (see 
-[[org:export:async:beamer]]).
-
-***** Setting ~org-export-async-init-file~ to avoid failure while exporting to Beamer
-<<org:export:async:beamer>>
-
-Org-beamer *async* exporter may fail because of lacking
-=org-export-async-init-file= 
-(as it is stated [[https://superuser.com/questions/738492/org-mode-8-async-export-process-fails][here]] and [[https://lists.gnu.org/archive/html/emacs-orgmode/2014-09/msg00463.html][here]]). 
-
-In order to avoid this problem we can create a file with the
-following content (note setting ~org-export-allow-bind-keywords~
-[[https://www.mail-archive.com/emacs-orgmode@gnu.org/msg118389.html][variable]]):
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "myarch/async_init.el")
-(require 'package)
-(setq package-enable-at-startup nil)
-(package-initialize)
-
-(require 'org) 
-(require 'ox)
-(require 'cl)
-(require 'ox-beamer)
-(setq org-export-async-debug nil) ;; no impact here. Do it in main init.el
-(setq org-export-allow-bind-keywords t) ;; Important! In order to have #+BIND command working.
-#+end_src
-
-and set the variable ~org-export-async-init-file~.
-
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
-  (setq org-export-async-init-file (expand-file-name "~/.emacs.d/myarch/async_init.el"))
-  (setq org-export-async-debug nil) ;; when set to 't' it stores all "*Org Export Process*" buffers, when set to 'nil' it leaves only the last one in the buffer list, but already killed
-#+end_src
-
-The important line is =(require 'ox-beamer)= !!! ([[https://lists.gnu.org/archive/html/emacs-orgmode/2018-05/msg00253.html][link]])
-
-
-***** TODO async for odt documents still not working
-
-
-**** Updating all of the hooks to make them aware of your mode settings
-Now we need to update the hooks to 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
-;; Add all of the hooks...
-;(add-hook 'c++-mode-hook 'my-c++-mode-hook)
-;(add-hook 'c-mode-hook 'my-c-mode-hook)
-(add-hook 'emacs-lisp-mode-hook 'my-emacs-lisp-mode-hook)
-(add-hook 'octave-mode-hook 'my-octave-mode-hook)
-(add-hook 'matlab-mode-hook 'my-matlab-mode-hook)
-(add-hook 'python-mode-hook 'my-python-mode-hook)
-(add-hook 'org-mode-hook 'my-org-mode-hook)
-
-; (add-hook 'lisp-mode-hook 'my-lisp-mode-hook)
-;(add-hook 'perl-mode-hook 'my-perl-mode-hook)
-#+end_src
-
-
-**** Adding a hook to more than a one mode at once
-https://emacs.stackexchange.com/questions/501/how-do-i-group-hooks
-https://stackoverflow.com/questions/7398216/how-can-i-apply-a-hook-to-multiple-emacs-modes-at-once
-
-In order to add a hook to more than one modes we need to use a function (taken from
-[[https://stackoverflow.com/a/7400476/4649238][here]].
-
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
-  ;; Add a hook to the list of modes
-  (defun my-add-to-multiple-hooks (function hooks)
-    (mapc (lambda (hook)
-	    (add-hook hook function))
-	  hooks))
-
-  (defun my-turn-on-auto-fill ()
-      my-default-text-buffer-settings-mode-hook  )
-
-  (my-add-to-multiple-hooks
-   'my-default-text-buffer-settings-mode-hook         ;; my-turn-on-auto-fill
-   '(DocOnce-hook
-     emacs-lisp-mode-hook
-     matlab-mode-hook
-     octave-mode-hook
-     org-mode-hook
-     python-mode-hook
-   ))
-#+end_src
-
-
-
-**** Change font color for specific mode (eww)
-Based on [[https://stackoverflow.com/questions/27973721/how-set-colors-for-a-specific-mode][this]].
-
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
-;; Change font color for eww
-(defun my-eww-mode-faces ()
-  (face-remap-add-relative 'default '(:foreground "#BD8700")))
-
-(add-hook 'eww-mode-hook 'my-eww-mode-faces)
-#+end_src
-
-*** Bibliography - citations
-**** oc [org-citations]
-***** Bibliography <<org-citations>>
-# ____________________________________________________________________________78
-
-In Org 9.6 we do not need explicitely load ~oc~ libraries.
-Everything is covered in my post concerning bibliography and org-mode.
-
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
-  # ;; org citations
-  # ;; (require 'oc)    ; probably not needed 
-  # ;; (require 'oc-basic)
-  # ;; (require 'oc-biblatex)
-# #+end_src
-
-Useful links:
-- https://orgmode.org/manual/Citations.html
-- https://kristofferbalintona.me/posts/202206141852/
-- https://github.com/jkitchin/org-ref
-- https://blog.tecosaur.com/tmio/2021-07-31-citations.html#fn.3
-- https://emacs.stackexchange.com/questions/71817/how-to-export-bibliographies-with-org-mode
-- https://www.reddit.com/r/emacs/comments/q4wa40/issues_with_new_orgcite_for_citations/
-- https://nickgeorge.net/science/org-ref-setup/
-
-
-
-
-
-
-
-**** citar (to check?)
-     https://github.com/emacs-citar/citar
-
-*** Org customization: org-mode, org-babel ...
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") :exports none
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; *** Org customization
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-#+end_src
-
-**** Modyfing TODO-DONE sequence in org-mode
-https://emacs.stackexchange.com/questions/31466/all-todos-how-to-set-different-colors-for-different-categories
-
-https://orgmode.org/manual/TODO-Extensions.html
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
-;; customized todo-done sequence
-(setq org-todo-keywords
-  '(
-(sequence "TODO" "????" "POSTPONED" "|" "DONE")
-(sequence "TODO" "ABANDONED"  "|" "DEPRECATED" "DONE")
-(sequence "TODO" "????" "ABANDONED" "POSTPONED" "|" "DEPRECATED" "DONE")
-))
-
-(setq org-todo-keyword-faces
-'(
-("????" . (:foreground "red" :weight bold))
-("POSTPONED" . (:foreground "blue" :weight bold))
-("ABANDONED" . (:foreground "orange" :weight bold))
-("DEPRECATED" . (:foreground "green" :weight bold))
-)
-)
-#+end_src
-
-WARNING! When changing this variables in the middle of the emacs
-session you need to restart org-mode (=M-x org-mode-restart=) to
-to have them enabled ([[https://lists.gnu.org/archive/html/emacs-orgmode/2010-11/msg00130.html][source]])!
-
-Furthermore, it may be more convenient to have this tags set for
-individual file (=#+TODO:=) ([[https://orgmode.org/manual/Per_002dfile-keywords.html][link]]).
-
-
-**** Customizing font style for TODO-DONE keywords in latex export
-https://stackoverflow.com/questions/36197545/org-mode-latex-export-making-todos-red
-
-
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
-;; customized todo-done keywords in latex documents
-(defun org-latex-format-headline-colored-keywords-function
-    (todo _todo-type priority text tags _info)
-  "Default format function for a headline.
-See `org-latex-format-headline-function' for details."
-  (concat
-   ;; (and todo (format "{\\bfseries\\sffamily %s} " todo))
-  (cond
-   ((string= todo "TODO")(and todo (format "{\\color{red}\\bfseries\\sffamily %s} " todo)))
-   ((string= todo "????")(and todo (format "{\\color{red}\\bfseries\\sffamily %s} " todo)))
-   ((string= todo "POSTPONED")(and todo (format "{\\color{blue}\\bfseries\\sffamily %s} " todo)))
-   ((string= todo "DONE")(and todo (format "{\\color{green}\\bfseries\\sffamily %s} " todo)))
-   )
-   (and priority (format "\\framebox{\\#%c} " priority))
-   text
-   (and tags
-	(format "\\hfill{}\\textsc{%s}"
-		(mapconcat #'org-latex--protect-text tags ":")))))
-
-(setq org-latex-format-headline-function 'org-latex-format-headline-colored-keywords-function)
-#+end_src
-
-
-**** Toggle between TODO-DONE keywords for all subnodes of the current node
-Based on:
-https://emacs.stackexchange.com/questions/52492/change-todo-keywords-of-all-nodes-in-an-orgmode-subtree-in-elisp
-
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
-(defun mb/org-toggle-org-keywords-right ()
-    "Toggle between todo-done keywords for all subnodes of the current node."
-    (interactive)
-    (org-map-entries (lambda () (org-shiftright)) nil 'tree)
-  )
-(defun mb/org-toggle-org-keywords-left ()
-    "Toggle between todo-done keywords for all subnodes of the current node."
-    (interactive)
-    (org-map-entries (lambda () (org-shiftleft)) nil 'tree)
-  )
-#+end_src
-
-# **** Adding custom keywords to org-mode headline of the of the node and its subnodes
-# -> Moved to RDITITcode.org
-
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
-# (defun mb/org-add-keyword ()
-#     "Add '{{{opt}}}' string to the headline of the node and all of its subnodes."
-#     (interactive)
-#     (org-map-entries (lambda () (concat "{{{opt}}}" (org-entry-get nil "ITEM")  )) nil 'tree)
+#     (define-key org-mode-map (kbd "<f9>")
+#       '(lambda () (interactive)
+# 	(org-latex-export-to-pdf :async t)
+# 	(org-beamer-export-to-pdf :async t)
+# 	(org-odt-export-to-odt :async t)
+# 	(org-odt-export-as-pdf :async t)
+# 	)
+#        )  
 #   )
-# (defun mb/org-remove-keyword ()
-#     "Remove '{{{opt}}}' string to the headline of the node and all of its subnodes."
+# #+end_src
+
+# Why "almost"? Because this solution still won't work when exporting
+# files to Beamer. In order one needs to create appropriate
+# init file with settings for async export and
+# set ~org-export-async-init-file~ variable as path to this file (see 
+# [[org:export:async:beamer]]).
+
+# ***** Setting ~org-export-async-init-file~ to avoid failure while exporting to Beamer
+# <<org:export:async:beamer>>
+
+# Org-beamer *async* exporter may fail because of lacking
+# =org-export-async-init-file= 
+# (as it is stated [[https://superuser.com/questions/738492/org-mode-8-async-export-process-fails][here]] and [[https://lists.gnu.org/archive/html/emacs-orgmode/2014-09/msg00463.html][here]]). 
+
+# In order to avoid this problem we can create a file with the
+# following content (note setting ~org-export-allow-bind-keywords~
+# [[https://www.mail-archive.com/emacs-orgmode@gnu.org/msg118389.html][variable]]):
+# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "myarch/async_init.el")
+# (require 'package)
+# (setq package-enable-at-startup nil)
+# (package-initialize)
+
+# (require 'org) 
+# (require 'ox)
+# (require 'cl)
+# (require 'ox-beamer)
+# (setq org-export-async-debug nil) ;; no impact here. Do it in main init.el
+# (setq org-export-allow-bind-keywords t) ;; Important! In order to have #+BIND command working.
+# #+end_src
+
+# and set the variable ~org-export-async-init-file~.
+
+# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
+#   (setq org-export-async-init-file (expand-file-name "~/.emacs.d/myarch/async_init.el"))
+#   (setq org-export-async-debug nil) ;; when set to 't' it stores all "*Org Export Process*" buffers, when set to 'nil' it leaves only the last one in the buffer list, but already killed
+# #+end_src
+
+# The important line is =(require 'ox-beamer)= !!! ([[https://lists.gnu.org/archive/html/emacs-orgmode/2018-05/msg00253.html][link]])
+
+
+# ***** TODO async for odt documents still not working
+
+
+# **** Updating all of the hooks to make them aware of your mode settings
+# Now we need to update the hooks to 
+# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
+# ;; Add all of the hooks...
+# ;(add-hook 'c++-mode-hook 'my-c++-mode-hook)
+# ;(add-hook 'c-mode-hook 'my-c-mode-hook)
+# (add-hook 'emacs-lisp-mode-hook 'my-emacs-lisp-mode-hook)
+# (add-hook 'octave-mode-hook 'my-octave-mode-hook)
+# (add-hook 'matlab-mode-hook 'my-matlab-mode-hook)
+# (add-hook 'python-mode-hook 'my-python-mode-hook)
+# (add-hook 'org-mode-hook 'my-org-mode-hook)
+
+# ; (add-hook 'lisp-mode-hook 'my-lisp-mode-hook)
+# ;(add-hook 'perl-mode-hook 'my-perl-mode-hook)
+# #+end_src
+
+
+# **** Adding a hook to more than a one mode at once
+# https://emacs.stackexchange.com/questions/501/how-do-i-group-hooks
+# https://stackoverflow.com/questions/7398216/how-can-i-apply-a-hook-to-multiple-emacs-modes-at-once
+
+# In order to add a hook to more than one modes we need to use a function (taken from
+# [[https://stackoverflow.com/a/7400476/4649238][here]].
+
+# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
+#   ;; Add a hook to the list of modes
+#   (defun my-add-to-multiple-hooks (function hooks)
+#     (mapc (lambda (hook)
+# 	    (add-hook hook function))
+# 	  hooks))
+
+#   (defun my-turn-on-auto-fill ()
+#       my-default-text-buffer-settings-mode-hook  )
+
+#   (my-add-to-multiple-hooks
+#    'my-default-text-buffer-settings-mode-hook         ;; my-turn-on-auto-fill
+#    '(DocOnce-hook
+#      emacs-lisp-mode-hook
+#      matlab-mode-hook
+#      octave-mode-hook
+#      org-mode-hook
+#      python-mode-hook
+#    ))
+# #+end_src
+
+
+
+# **** Change font color for specific mode (eww)
+# Based on [[https://stackoverflow.com/questions/27973721/how-set-colors-for-a-specific-mode][this]].
+
+# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el")
+# ;; Change font color for eww
+# (defun my-eww-mode-faces ()
+#   (face-remap-add-relative 'default '(:foreground "#BD8700")))
+
+# (add-hook 'eww-mode-hook 'my-eww-mode-faces)
+# #+end_src
+
+# *** Bibliography - citations
+# **** oc [org-citations]
+# ***** Bibliography <<org-citations>>
+# # ____________________________________________________________________________78
+
+# In Org 9.6 we do not need explicitely load ~oc~ libraries.
+# Everything is covered in my post concerning bibliography and org-mode.
+
+# # #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+#   # ;; org citations
+#   # ;; (require 'oc)    ; probably not needed 
+#   # ;; (require 'oc-basic)
+#   # ;; (require 'oc-biblatex)
+# # #+end_src
+
+# Useful links:
+# - https://orgmode.org/manual/Citations.html
+# - https://kristofferbalintona.me/posts/202206141852/
+# - https://github.com/jkitchin/org-ref
+# - https://blog.tecosaur.com/tmio/2021-07-31-citations.html#fn.3
+# - https://emacs.stackexchange.com/questions/71817/how-to-export-bibliographies-with-org-mode
+# - https://www.reddit.com/r/emacs/comments/q4wa40/issues_with_new_orgcite_for_citations/
+# - https://nickgeorge.net/science/org-ref-setup/
+
+
+
+
+
+
+
+# **** citar (to check?)
+#      https://github.com/emacs-citar/citar
+
+# *** Org customization: org-mode, org-babel ...
+# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") :exports none
+# ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+# ;; *** Org customization
+# ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+# #+end_src
+
+# **** Modyfing TODO-DONE sequence in org-mode
+# https://emacs.stackexchange.com/questions/31466/all-todos-how-to-set-different-colors-for-different-categories
+
+# https://orgmode.org/manual/TODO-Extensions.html
+# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+# ;; customized todo-done sequence
+# (setq org-todo-keywords
+#   '(
+# (sequence "TODO" "????" "POSTPONED" "|" "DONE")
+# (sequence "TODO" "ABANDONED"  "|" "DEPRECATED" "DONE")
+# (sequence "TODO" "????" "ABANDONED" "POSTPONED" "|" "DEPRECATED" "DONE")
+# ))
+
+# (setq org-todo-keyword-faces
+# '(
+# ("????" . (:foreground "red" :weight bold))
+# ("POSTPONED" . (:foreground "blue" :weight bold))
+# ("ABANDONED" . (:foreground "orange" :weight bold))
+# ("DEPRECATED" . (:foreground "green" :weight bold))
+# )
+# )
+# #+end_src
+
+# WARNING! When changing this variables in the middle of the emacs
+# session you need to restart org-mode (=M-x org-mode-restart=) to
+# to have them enabled ([[https://lists.gnu.org/archive/html/emacs-orgmode/2010-11/msg00130.html][source]])!
+
+# Furthermore, it may be more convenient to have this tags set for
+# individual file (=#+TODO:=) ([[https://orgmode.org/manual/Per_002dfile-keywords.html][link]]).
+
+
+# **** Customizing font style for TODO-DONE keywords in latex export
+# https://stackoverflow.com/questions/36197545/org-mode-latex-export-making-todos-red
+
+
+# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+# ;; customized todo-done keywords in latex documents
+# (defun org-latex-format-headline-colored-keywords-function
+#     (todo _todo-type priority text tags _info)
+#   "Default format function for a headline.
+# See `org-latex-format-headline-function' for details."
+#   (concat
+#    ;; (and todo (format "{\\bfseries\\sffamily %s} " todo))
+#   (cond
+#    ((string= todo "TODO")(and todo (format "{\\color{red}\\bfseries\\sffamily %s} " todo)))
+#    ((string= todo "????")(and todo (format "{\\color{red}\\bfseries\\sffamily %s} " todo)))
+#    ((string= todo "POSTPONED")(and todo (format "{\\color{blue}\\bfseries\\sffamily %s} " todo)))
+#    ((string= todo "DONE")(and todo (format "{\\color{green}\\bfseries\\sffamily %s} " todo)))
+#    )
+#    (and priority (format "\\framebox{\\#%c} " priority))
+#    text
+#    (and tags
+# 	(format "\\hfill{}\\textsc{%s}"
+# 		(mapconcat #'org-latex--protect-text tags ":")))))
+
+# (setq org-latex-format-headline-function 'org-latex-format-headline-colored-keywords-function)
+# #+end_src
+
+
+# **** Toggle between TODO-DONE keywords for all subnodes of the current node
+# Based on:
+# https://emacs.stackexchange.com/questions/52492/change-todo-keywords-of-all-nodes-in-an-orgmode-subtree-in-elisp
+
+# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+# (defun mb/org-toggle-org-keywords-right ()
+#     "Toggle between todo-done keywords for all subnodes of the current node."
+#     (interactive)
+#     (org-map-entries (lambda () (org-shiftright)) nil 'tree)
+#   )
+# (defun mb/org-toggle-org-keywords-left ()
+#     "Toggle between todo-done keywords for all subnodes of the current node."
 #     (interactive)
 #     (org-map-entries (lambda () (org-shiftleft)) nil 'tree)
 #   )
 # #+end_src
 
+# # **** Adding custom keywords to org-mode headline of the of the node and its subnodes
+# # -> Moved to RDITITcode.org
 
-**** Org-agenda activation
- https://orgmode.org/manual/Activation.html#Activation
+# # #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+# # (defun mb/org-add-keyword ()
+# #     "Add '{{{opt}}}' string to the headline of the node and all of its subnodes."
+# #     (interactive)
+# #     (org-map-entries (lambda () (concat "{{{opt}}}" (org-entry-get nil "ITEM")  )) nil 'tree)
+# #   )
+# # (defun mb/org-remove-keyword ()
+# #     "Remove '{{{opt}}}' string to the headline of the node and all of its subnodes."
+# #     (interactive)
+# #     (org-map-entries (lambda () (org-shiftleft)) nil 'tree)
+# #   )
+# # #+end_src
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
-;; org-agenda activation
-(global-set-key (kbd "C-c l") #'org-store-link)
-(global-set-key (kbd "C-c a") #'org-agenda)
-(global-set-key (kbd "C-c c") #'org-capture)
-#+end_src
 
-**** Org-special-block-extras
-[[http://alhassy.com/org-special-block-extras/][Author's page]]
+# **** Org-agenda activation
+#  https://orgmode.org/manual/Activation.html#Activation
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
-;; **** org-special-block-extras -> 
-(add-hook #'org-mode-hook #'org-special-block-extras-mode)
-;; <- **** org-special-block-extras 
-#+end_src
+# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+# ;; org-agenda activation
+# (global-set-key (kbd "C-c l") #'org-store-link)
+# (global-set-key (kbd "C-c a") #'org-agenda)
+# (global-set-key (kbd "C-c c") #'org-capture)
+# #+end_src
 
-**** Org-babel and tangling
-To have org-babel enabled (execution of portions of code):
+# **** Org-special-block-extras
+# [[http://alhassy.com/org-special-block-extras/][Author's page]]
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+# ;; **** org-special-block-extras -> 
+# (add-hook #'org-mode-hook #'org-special-block-extras-mode)
+# ;; <- **** org-special-block-extras 
+# #+end_src
 
-;; enabling org-babel
-(org-babel-do-load-languages
- 'org-babel-load-languages '(
-			     (C . t) ; enable processing C, C++, and D source blocks
-			     (matlab . t)
-			     ;;(perl . t)
-			     (octave . t)
-			     (org . t)
-			     (python . t)
-                             (plantuml . t)
-			     (shell . t)
- 			     ))
+# **** Org-babel and tangling
+# To have org-babel enabled (execution of portions of code):
+
+# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+
+# ;; enabling org-babel
+# (org-babel-do-load-languages
+#  'org-babel-load-languages '(
+# 			     (C . t) ; enable processing C, C++, and D source blocks
+# 			     (matlab . t)
+# 			     ;;(perl . t)
+# 			     (octave . t)
+# 			     (org . t)
+# 			     (python . t)
+#                              (plantuml . t)
+# 			     (shell . t)
+#  			     ))
 			     
-;; no question about confirmation of evaluating babel code block
-(setq org-confirm-babel-evaluate nil)
+# ;; no question about confirmation of evaluating babel code block
+# (setq org-confirm-babel-evaluate nil)
 
-#+end_src
+# #+end_src
 
-***** Tangling the specific/named block of code and other useful functions to work with source blocks
+# ***** Tangling the specific/named block of code and other useful functions to work with source blocks
 
-****** Tangle the specific (pointed) block of code
-#+begin_src elisp :results silent :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
-(defun mb/org-babel-tangle-block()
-  (interactive)
-  (let ((current-prefix-arg '(4)))
-     (call-interactively 'org-babel-tangle)
-))
-#+end_src
+# ****** Tangle the specific (pointed) block of code
+# #+begin_src elisp :results silent :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+# (defun mb/org-babel-tangle-block()
+#   (interactive)
+#   (let ((current-prefix-arg '(4)))
+#      (call-interactively 'org-babel-tangle)
+# ))
+# #+end_src
 
-****** tangle the block of code given by the name
-#+begin_src elisp :results silent :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
-(defun mb/org-babel-tangle-named-block(block-name)
-  (interactive)
-  (save-excursion 
-   (org-babel-goto-named-src-block block-name)
-    (mb/org-babel-tangle-block)) 
-)
-#+end_src
+# ****** tangle the block of code given by the name
+# #+begin_src elisp :results silent :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+# (defun mb/org-babel-tangle-named-block(block-name)
+#   (interactive)
+#   (save-excursion 
+#    (org-babel-goto-named-src-block block-name)
+#     (mb/org-babel-tangle-block)) 
+# )
+# #+end_src
 
 
 
-***** =plantuml=
-- https://orgmode.org/worg/org-contrib/babel/languages/ob-doc-plantuml.html
-- https://medium.com/@shibucite/emacs-and-plantuml-for-uml-diagrams-academic-tools-6c34bc07fd2
-- https://plantuml.com/activity-diagram-beta
+# ***** =plantuml=
+# - https://orgmode.org/worg/org-contrib/babel/languages/ob-doc-plantuml.html
+# - https://medium.com/@shibucite/emacs-and-plantuml-for-uml-diagrams-academic-tools-6c34bc07fd2
+# - https://plantuml.com/activity-diagram-beta
   
-In order to work with =plantuml= you need to install it (there's
-another way which is documented in the link above, but I won't use it).
-On debian machine I'll just execute:
-#+begin_src bash
-  sudo apt install plantuml
-#+end_src
-and add the following line to tell emacs to use system installed
-plantuml:
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
-;; enabling plantuml
+# In order to work with =plantuml= you need to install it (there's
+# another way which is documented in the link above, but I won't use it).
+# On debian machine I'll just execute:
+# #+begin_src bash
+#   sudo apt install plantuml
+# #+end_src
+# and add the following line to tell emacs to use system installed
+# plantuml:
+# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+# ;; enabling plantuml
 
-(setq plantuml-executable-path "plantuml")
-(setq org-plantuml-exec-mode 'plantuml)
-#+end_src
+# (setq plantuml-executable-path "plantuml")
+# (setq org-plantuml-exec-mode 'plantuml)
+# #+end_src
 
 
 
