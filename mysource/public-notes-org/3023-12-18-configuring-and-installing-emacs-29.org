@@ -9,7 +9,7 @@
 
 
 
-* {{{title}}
+* {{{title}}}
 :PROPERTIES:
 :PRJ-DIR: ~/.emacs.d/     
 :TEST-DIR: ./2023-12-18-init-and-setup-Emacs-29/
@@ -1520,6 +1520,18 @@ individual file (=#+TODO:=) ([[https://orgmode.org/manual/Per_002dfile-keywords.
 
 **** Customizing font style for TODO-DONE keywords in latex export
 https://stackoverflow.com/questions/36197545/org-mode-latex-export-making-todos-red
+
+
+ATTENTION!!! WATCH OUT!!!
+The code below contained a piece of text that was not parsed well
+by jekyll/github pages leading to irritating error while deploying on github pages.
+(see https://stackoverflow.com/questions/17720167/how-do-i-include-in-markdown-file-when-using-jekyll
+to see post that is probably related to the problem)
+
+Namely, the critical part are the charactes ={= and =%=.
+If they are written  without a space between then, this brings troubles.
+In the code below there is no problem to rewrite the text as =\\textsc{ %s=
+since in Latex this space would be ommitted anyway (wouldn't it???).
 
 
 #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
