@@ -114,7 +114,7 @@ it's better to keep whole .emacs.d directory as a git repository and
 make a commit before executing this script. Then, in case any problems
 you can go back to restore properly working emacs installation.
 Before running this script you should have a git repository initialized in emacs
-directory and git itself installed in the system (see Sec. [1.5](#org4792efb)).
+directory and git itself installed in the system (see Sec. [1.5](#org695d9d5)).
 Synchronization of the local repository with the remote one is not
 performed in this script. It should be performed explicitely by the user
 in a convenient time.
@@ -210,7 +210,7 @@ In Emacs 27.1 it [shouldn't be necessary to use](https://emacs.stackexchange.com
 
 ### The main part of the installation script - list of the packages
 
-<a id="orgce13847"></a>
+<a id="orgb497a13"></a>
 
 I used to have `(defvar my-packages ...` instead of `(setq my-packages ...` 
 below but... **Do not** use `defvar` for declaring a list of packages to be installed!
@@ -327,7 +327,7 @@ for now. An interesting discussion about this can be found [here](https://www.re
 
 1.  DEPRECATED Setting an auxiliary variable
 
-    This section is deprecated in favour of [`workgroups2 package`](#org70cc867).
+    This section is deprecated in favour of [`workgroups2 package`](#org3a8c931).
     
         ;; This file is designed to be re-evaled; use the variable first-time
         ;; to avoid any problems with this.
@@ -368,7 +368,7 @@ proactively.
 Here are global Emacs customization. 
 If necessary some useful infomation or link is added to the customization.
 
-1.  Self-descriptive oneliners <a id="orgc0f9f84"></a>
+1.  Self-descriptive oneliners <a id="org15c5b41"></a>
 
     Remarks:
     At around May 2023 I stopped using `global-linum-mode` because
@@ -473,14 +473,14 @@ If necessary some useful infomation or link is added to the customization.
         ;; (set-frame-font "liberation mono 11" nil t) ; Set default font
     
     Due to  due to the  problems with fonts in `emacsclient/daemonp`
-    instances font is set now in the section [1.4.8](#org0d831f0).
+    instances font is set now in the section [1.4.10](#orgcfa006b).
 
 7.  Highlight on an active window/buffer
 
     Although the active window can be recognized
     by the cursor which blinking in it, sometimes it is hard to
     find in on the screen (especially if you use a colourful theme
-    like [1.4.8.1](#orgdcd96bf).
+    like [1.4.10.1](#org68b6b4e).
     
     I found a [post](https://stackoverflow.com/questions/33195122/highlight-current-active-window) adressing this issue.
     Although the accepted answer is using 
@@ -722,7 +722,7 @@ If necessary some useful infomation or link is added to the customization.
           )
           ;; <- Fill column indicator
     
-    -   and add this hook per each required mode (this is done in [1.4.7](#orge663366) section
+    -   and add this hook per each required mode (this is done in [1.4.7](#orgf442583) section
         of this document
 
 12. Turning on/off beeping
@@ -736,7 +736,7 @@ If necessary some useful infomation or link is added to the customization.
         (setq-default visible-bell t) 
         (setq ring-bell-function 'ignore)
 
-13. Ibuffer - an advanced replacement for BufferMenu <a id="orge75d1ce"></a>
+13. Ibuffer - an advanced replacement for BufferMenu <a id="org933c3b6"></a>
 
     Description of the package is [here](https://www.emacswiki.org/emacs/IbufferMode).
     
@@ -795,7 +795,7 @@ If necessary some useful infomation or link is added to the customization.
     
     2.  Ibuffer interactive way
     
-        In [1.4.3.13](#orge75d1ce) there a nice shortcut to do this. You can select all
+        In [1.4.3.13](#org933c3b6) there a nice shortcut to do this. You can select all
         the files of the given mode with:
         
             * M
@@ -880,7 +880,7 @@ ido/smex vs ivy/counsel/swiper vs helm
         (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command) 
         ;; <- smex
 
-3.  TODO Ivy (for testing) <a id="org3462bb6"></a>
+3.  TODO Ivy (for testing) <a id="orged353e9"></a>
 
     Furthermore, according to [some other users](https://ruzkuku.com/emacs.d.html#org804158b)
     "Ivy is simpler (and faster) than Helm but more powerful than Ido".
@@ -1025,25 +1025,336 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
              )
         )
 
+3.  Python mode
 
-### Emacs-everywhere <a id="org0d831f0"></a>
+    The below code does not work as expected. Probably it'd be better to
+    apply the configuration given [here](https://realpython.com/emacs-the-best-python-editor/#integration-with-jupyter-and-ipython).
+    
+        ;; Python mode...
+        
+        (defun my-python-mode-hook()
+                   (lambda ()
+                     (setq python-shell-interpreter "python3") ))
 
-1.  Modus themes by Protesilaos Stavrou <a id="orgdcd96bf"></a>
+4.  Org mode
 
-2.  Workgroups (should be executed at the end of init.el) <a id="org70cc867"></a>
+    By default emacs waits until all exporting processes finish. It may take quite
+    a while in some situations (for example when exporting long document to LaTeX).
+    In order to make emacs work in asyncronous mode you need to toggle this
+    ([link 1](https://orgmode.org/manual/The-Export-Dispatcher.html), [link 2](https://superuser.com/questions/483554/org-export-run-in-background-how-to-troubleshoot)).
+    
+    One way is to do it each time when exporting: after pressing `C-c C-e` you
+    get `exporting menu` and in the third line you can see  `Async export` option
+    that can be enabled by pressin `C-a`. It is rather cumbersome.
+    
+    To have this option toggled after launching emacs put the line below in your
+    init file.
+    
+        ;; Org mode...
+        (setq org-export-in-background t)
+    
+    This setting has impact only when exporting via `org exporting menu`
+    (triggered by `C-c C-e`). When calling `org-latex-export-to-pdf` this
+    setting is not taken into account. Fortunately, this function has
+    optional parameter that can be set to obtain async behaviour.
+    All in all, the (almost) working solution can be written as a custom hook like this:
+    
+        (defun my-org-mode-hook()
+          (define-key org-mode-map (kbd "<f9>")
+            '(lambda () (interactive)
+              (org-latex-export-to-pdf :async t)
+              (org-beamer-export-to-pdf :async t)
+              (org-odt-export-to-odt :async t)
+              (org-odt-export-as-pdf :async t)
+              )
+             )  
+        )
+    
+    Why "almost"? Because this solution still won't work when exporting
+    files to Beamer. In order one needs to create appropriate
+    init file with settings for async export and
+    set `org-export-async-init-file` variable as path to this file (see 
+    [1.4.7.4.1](#org224e2ca)).
+    
+    1.  Setting `org-export-async-init-file` to avoid failure while exporting to Beamer
+    
+        <a id="org224e2ca"></a>
+        
+        Org-beamer **async** exporter may fail because of lacking
+        `org-export-async-init-file` 
+        (as it is stated [here](https://superuser.com/questions/738492/org-mode-8-async-export-process-fails) and [here](https://lists.gnu.org/archive/html/emacs-orgmode/2014-09/msg00463.html)). 
+        
+        In order to avoid this problem we can create a file with the
+        following content (note setting `org-export-allow-bind-keywords`
+        [variable](https://www.mail-archive.com/emacs-orgmode@gnu.org/msg118389.html)):
+        
+            (require 'package)
+            (setq package-enable-at-startup nil)
+            (package-initialize)
+            
+            (require 'org) 
+            (require 'ox)
+            (require 'cl)
+            (require 'ox-beamer)
+            (setq org-export-async-debug nil) ;; no impact here. Do it in main init.el
+            (setq org-export-allow-bind-keywords t) ;; Important! In order to have #+BIND command working.
+        
+        and set the variable `org-export-async-init-file`.
+        
+            (setq org-export-async-init-file (expand-file-name "~/.emacs.d/myarch/async_init.el"))
+            (setq org-export-async-debug nil) ;; when set to 't' it stores all "*Org Export Process*" buffers, when set to 'nil' it leaves only the last one in the buffer list, but already killed
+        
+        The important line is `(require 'ox-beamer)` !!! ([link](https://lists.gnu.org/archive/html/emacs-orgmode/2018-05/msg00253.html))
+    
+    2.  TODO async for odt documents still not working
+
+5.  Updating all of the hooks to make them aware of your mode settings
+
+    Now we need to update the hooks to 
+    
+        ;; Add all of the hooks...
+        ;(add-hook 'c++-mode-hook 'my-c++-mode-hook)
+        ;(add-hook 'c-mode-hook 'my-c-mode-hook)
+        (add-hook 'emacs-lisp-mode-hook 'my-emacs-lisp-mode-hook)
+        (add-hook 'octave-mode-hook 'my-octave-mode-hook)
+        (add-hook 'matlab-mode-hook 'my-matlab-mode-hook)
+        (add-hook 'python-mode-hook 'my-python-mode-hook)
+        (add-hook 'org-mode-hook 'my-org-mode-hook)
+        
+        ; (add-hook 'lisp-mode-hook 'my-lisp-mode-hook)
+        ;(add-hook 'perl-mode-hook 'my-perl-mode-hook)
+
+6.  Adding a hook to more than a one mode at once
+
+    <https://emacs.stackexchange.com/questions/501/how-do-i-group-hooks>
+    <https://stackoverflow.com/questions/7398216/how-can-i-apply-a-hook-to-multiple-emacs-modes-at-once>
+    
+    In order to add a hook to more than one modes we need to use a function (taken from
+    [here](https://stackoverflow.com/a/7400476/4649238).
+    
+        ;; Add a hook to the list of modes
+        (defun my-add-to-multiple-hooks (function hooks)
+          (mapc (lambda (hook)
+                  (add-hook hook function))
+                hooks))
+        
+        (defun my-turn-on-auto-fill ()
+            my-default-text-buffer-settings-mode-hook  )
+        
+        (my-add-to-multiple-hooks
+         'my-default-text-buffer-settings-mode-hook         ;; my-turn-on-auto-fill
+         '(DocOnce-hook
+           emacs-lisp-mode-hook
+           matlab-mode-hook
+           octave-mode-hook
+           org-mode-hook
+           python-mode-hook
+         ))
+
+7.  Change font color for specific mode (eww)
+
+    Based on [this](https://stackoverflow.com/questions/27973721/how-set-colors-for-a-specific-mode).
+    
+        ;; Change font color for eww
+        (defun my-eww-mode-faces ()
+          (face-remap-add-relative 'default '(:foreground "#BD8700")))
+        
+        (add-hook 'eww-mode-hook 'my-eww-mode-faces)
 
 
-## Dependencies of the presented Emacs configuration: <a id="org4792efb"></a>
+### Bibliography - citations
+
+1.  oc [org-citations]
+
+    1.  Bibliography <a id="orgbe4dcb3"></a>
+    
+        In Org 9.6 we do not need explicitely load `oc` libraries.
+        Everything is covered in my post concerning bibliography and org-mode.
+        
+        Useful links:
+        
+        -   <https://orgmode.org/manual/Citations.html>
+        -   <https://kristofferbalintona.me/posts/202206141852/>
+        -   <https://github.com/jkitchin/org-ref>
+        -   <https://blog.tecosaur.com/tmio/2021-07-31-citations.html#fn.3>
+        -   <https://emacs.stackexchange.com/questions/71817/how-to-export-bibliographies-with-org-mode>
+        -   <https://www.reddit.com/r/emacs/comments/q4wa40/issues_with_new_orgcite_for_citations/>
+        -   <https://nickgeorge.net/science/org-ref-setup/>
+
+2.  citar (to check?)
+
+    <https://github.com/emacs-citar/citar>
+
+
+### Org customization: org-mode, org-babel ...
+
+1.  Modyfing TODO-DONE sequence in org-mode
+
+    <https://emacs.stackexchange.com/questions/31466/all-todos-how-to-set-different-colors-for-different-categories>
+    
+    <https://orgmode.org/manual/TODO-Extensions.html>
+    
+        ;; customized todo-done sequence
+        (setq org-todo-keywords
+          '(
+        (sequence "TODO" "????" "POSTPONED" "|" "DONE")
+        (sequence "TODO" "ABANDONED"  "|" "DEPRECATED" "DONE")
+        (sequence "TODO" "????" "ABANDONED" "POSTPONED" "|" "DEPRECATED" "DONE")
+        ))
+        
+        (setq org-todo-keyword-faces
+        '(
+        ("????" . (:foreground "red" :weight bold))
+        ("POSTPONED" . (:foreground "blue" :weight bold))
+        ("ABANDONED" . (:foreground "orange" :weight bold))
+        ("DEPRECATED" . (:foreground "green" :weight bold))
+        )
+        )
+    
+    WARNING! When changing this variables in the middle of the emacs
+    session you need to restart org-mode (`M-x org-mode-restart`) to
+    to have them enabled ([source](https://lists.gnu.org/archive/html/emacs-orgmode/2010-11/msg00130.html))!
+    
+    Furthermore, it may be more convenient to have this tags set for
+    individual file (`#+TODO:`) ([link](https://orgmode.org/manual/Per_002dfile-keywords.html)).
+
+2.  Customizing font style for TODO-DONE keywords in latex export
+
+    <https://stackoverflow.com/questions/36197545/org-mode-latex-export-making-todos-red>
+    
+        ;; customized todo-done keywords in latex documents
+        (defun org-latex-format-headline-colored-keywords-function
+            (todo _todo-type priority text tags _info)
+          "Default format function for a headline.
+        See `org-latex-format-headline-function' for details."
+          (concat
+           ;; (and todo (format "{\\bfseries\\sffamily %s} " todo))
+          (cond
+           ((string= todo "TODO")(and todo (format "{\\color{red}\\bfseries\\sffamily %s} " todo)))
+           ((string= todo "????")(and todo (format "{\\color{red}\\bfseries\\sffamily %s} " todo)))
+           ((string= todo "POSTPONED")(and todo (format "{\\color{blue}\\bfseries\\sffamily %s} " todo)))
+           ((string= todo "DONE")(and todo (format "{\\color{green}\\bfseries\\sffamily %s} " todo)))
+           )
+           (and priority (format "\\framebox{\\#%c} " priority))
+           text
+           (and tags
+                (format "\\hfill{}\\textsc{%s}"
+                        (mapconcat #'org-latex--protect-text tags ":")))))
+        
+        (setq org-latex-format-headline-function 'org-latex-format-headline-colored-keywords-function)
+
+3.  Toggle between TODO-DONE keywords for all subnodes of the current node
+
+    Based on:
+    <https://emacs.stackexchange.com/questions/52492/change-todo-keywords-of-all-nodes-in-an-orgmode-subtree-in-elisp>
+    
+        (defun mb/org-toggle-org-keywords-right ()
+            "Toggle between todo-done keywords for all subnodes of the current node."
+            (interactive)
+            (org-map-entries (lambda () (org-shiftright)) nil 'tree)
+          )
+        (defun mb/org-toggle-org-keywords-left ()
+            "Toggle between todo-done keywords for all subnodes of the current node."
+            (interactive)
+            (org-map-entries (lambda () (org-shiftleft)) nil 'tree)
+          )
+
+4.  Org-agenda activation
+
+    <https://orgmode.org/manual/Activation.html#Activation>
+    
+        ;; org-agenda activation
+        (global-set-key (kbd "C-c l") #'org-store-link)
+        (global-set-key (kbd "C-c a") #'org-agenda)
+        (global-set-key (kbd "C-c c") #'org-capture)
+
+5.  Org-special-block-extras
+
+    [Author's page](http://alhassy.com/org-special-block-extras/)
+    
+        ;; **** org-special-block-extras -> 
+        (add-hook #'org-mode-hook #'org-special-block-extras-mode)
+        ;; <- **** org-special-block-extras 
+
+6.  Org-babel and tangling
+
+    To have org-babel enabled (execution of portions of code):
+    
+        
+        ;; enabling org-babel
+        (org-babel-do-load-languages
+         'org-babel-load-languages '(
+                                     (C . t) ; enable processing C, C++, and D source blocks
+                                     (matlab . t)
+                                     ;;(perl . t)
+                                     (octave . t)
+                                     (org . t)
+                                     (python . t)
+                                     (plantuml . t)
+                                     (shell . t)
+                                     ))
+        
+        ;; no question about confirmation of evaluating babel code block
+        (setq org-confirm-babel-evaluate nil)
+    
+    1.  Tangling the specific/named block of code and other useful functions to work with source blocks
+    
+        1.  Tangle the specific (pointed) block of code
+        
+                (defun mb/org-babel-tangle-block()
+                  (interactive)
+                  (let ((current-prefix-arg '(4)))
+                     (call-interactively 'org-babel-tangle)
+                ))
+        
+        2.  tangle the block of code given by the name
+        
+                (defun mb/org-babel-tangle-named-block(block-name)
+                  (interactive)
+                  (save-excursion 
+                   (org-babel-goto-named-src-block block-name)
+                    (mb/org-babel-tangle-block)) 
+                )
+    
+    2.  `plantuml`
+    
+        -   <https://orgmode.org/worg/org-contrib/babel/languages/ob-doc-plantuml.html>
+        -   <https://medium.com/@shibucite/emacs-and-plantuml-for-uml-diagrams-academic-tools-6c34bc07fd2>
+        -   <https://plantuml.com/activity-diagram-beta>
+        
+        In order to work with `plantuml` you need to install it (there's
+        another way which is documented in the link above, but I won't use it).
+        On debian machine I'll just execute:
+        
+            sudo apt install plantuml
+        
+        and add the following line to tell emacs to use system installed
+        plantuml:
+        
+            ;; enabling plantuml
+            
+            (setq plantuml-executable-path "plantuml")
+            (setq org-plantuml-exec-mode 'plantuml)
+
+
+### Emacs-everywhere <a id="orgcfa006b"></a>
+
+1.  Modus themes by Protesilaos Stavrou <a id="org68b6b4e"></a>
+
+2.  Workgroups (should be executed at the end of init.el) <a id="org3a8c931"></a>
+
+
+## Dependencies of the presented Emacs configuration: <a id="org695d9d5"></a>
 
 The list of external applications that this script is dependent on:
 
 -   git
 -   LaTeX distribution (for org to latex exporters)
 
--   xclip ([1.4.8](#org0d831f0))
--   xdotool ([1.4.8](#org0d831f0))
--   xprop ([1.4.8](#org0d831f0)) - this is not a package but executable
--   xwininfo ([1.4.8](#org0d831f0)) - this is not a package but executable
+-   xclip ([1.4.10](#orgcfa006b))
+-   xdotool ([1.4.10](#orgcfa006b))
+-   xprop ([1.4.10](#orgcfa006b)) - this is not a package but executable
+-   xwininfo ([1.4.10](#orgcfa006b)) - this is not a package but executable
 
 
 ## Some useful information and links:
