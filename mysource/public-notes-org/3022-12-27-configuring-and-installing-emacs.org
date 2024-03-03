@@ -1360,73 +1360,73 @@ Useful links:
 
 
 
-**** citar (to check?)
-     https://github.com/emacs-citar/citar
+# **** citar (to check?)
+#      https://github.com/emacs-citar/citar
 
-*** Org customization: org-mode, org-babel ...
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") :exports none
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; *** Org customization
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-#+end_src
+# *** Org customization: org-mode, org-babel ...
+# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") :exports none
+# ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+# ;; *** Org customization
+# ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+# #+end_src
 
-**** Modyfing TODO-DONE sequence in org-mode
-https://emacs.stackexchange.com/questions/31466/all-todos-how-to-set-different-colors-for-different-categories
+# **** Modyfing TODO-DONE sequence in org-mode
+# https://emacs.stackexchange.com/questions/31466/all-todos-how-to-set-different-colors-for-different-categories
 
-https://orgmode.org/manual/TODO-Extensions.html
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
-;; customized todo-done sequence
-(setq org-todo-keywords
-  '(
-(sequence "TODO" "????" "POSTPONED" "|" "DONE")
-(sequence "TODO" "ABANDONED"  "|" "DEPRECATED" "DONE")
-(sequence "TODO" "????" "ABANDONED" "POSTPONED" "|" "DEPRECATED" "DONE")
-))
+# https://orgmode.org/manual/TODO-Extensions.html
+# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+# ;; customized todo-done sequence
+# (setq org-todo-keywords
+#   '(
+# (sequence "TODO" "????" "POSTPONED" "|" "DONE")
+# (sequence "TODO" "ABANDONED"  "|" "DEPRECATED" "DONE")
+# (sequence "TODO" "????" "ABANDONED" "POSTPONED" "|" "DEPRECATED" "DONE")
+# ))
 
-(setq org-todo-keyword-faces
-'(
-("????" . (:foreground "red" :weight bold))
-("POSTPONED" . (:foreground "blue" :weight bold))
-("ABANDONED" . (:foreground "orange" :weight bold))
-("DEPRECATED" . (:foreground "green" :weight bold))
-)
-)
-#+end_src
+# (setq org-todo-keyword-faces
+# '(
+# ("????" . (:foreground "red" :weight bold))
+# ("POSTPONED" . (:foreground "blue" :weight bold))
+# ("ABANDONED" . (:foreground "orange" :weight bold))
+# ("DEPRECATED" . (:foreground "green" :weight bold))
+# )
+# )
+# #+end_src
 
-WARNING! When changing this variables in the middle of the emacs
-session you need to restart org-mode (=M-x org-mode-restart=) to
-to have them enabled ([[https://lists.gnu.org/archive/html/emacs-orgmode/2010-11/msg00130.html][source]])!
+# WARNING! When changing this variables in the middle of the emacs
+# session you need to restart org-mode (=M-x org-mode-restart=) to
+# to have them enabled ([[https://lists.gnu.org/archive/html/emacs-orgmode/2010-11/msg00130.html][source]])!
 
-Furthermore, it may be more convenient to have this tags set for
-individual file (=#+TODO:=) ([[https://orgmode.org/manual/Per_002dfile-keywords.html][link]]).
-
-
-**** Customizing font style for TODO-DONE keywords in latex export
-https://stackoverflow.com/questions/36197545/org-mode-latex-export-making-todos-red
+# Furthermore, it may be more convenient to have this tags set for
+# individual file (=#+TODO:=) ([[https://orgmode.org/manual/Per_002dfile-keywords.html][link]]).
 
 
-#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
-;; customized todo-done keywords in latex documents
-(defun org-latex-format-headline-colored-keywords-function
-    (todo _todo-type priority text tags _info)
-  "Default format function for a headline.
-See `org-latex-format-headline-function' for details."
-  (concat
-   ;; (and todo (format "{\\bfseries\\sffamily %s} " todo))
-  (cond
-   ((string= todo "TODO")(and todo (format "{\\color{red}\\bfseries\\sffamily %s} " todo)))
-   ((string= todo "????")(and todo (format "{\\color{red}\\bfseries\\sffamily %s} " todo)))
-   ((string= todo "POSTPONED")(and todo (format "{\\color{blue}\\bfseries\\sffamily %s} " todo)))
-   ((string= todo "DONE")(and todo (format "{\\color{green}\\bfseries\\sffamily %s} " todo)))
-   )
-   (and priority (format "\\framebox{\\#%c} " priority))
-   text
-   (and tags
-	(format "\\hfill{}\\textsc{%s}"
-		(mapconcat #'org-latex--protect-text tags ":")))))
+# **** Customizing font style for TODO-DONE keywords in latex export
+# https://stackoverflow.com/questions/36197545/org-mode-latex-export-making-todos-red
 
-(setq org-latex-format-headline-function 'org-latex-format-headline-colored-keywords-function)
-#+end_src
+
+# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+# ;; customized todo-done keywords in latex documents
+# (defun org-latex-format-headline-colored-keywords-function
+#     (todo _todo-type priority text tags _info)
+#   "Default format function for a headline.
+# See `org-latex-format-headline-function' for details."
+#   (concat
+#    ;; (and todo (format "{\\bfseries\\sffamily %s} " todo))
+#   (cond
+#    ((string= todo "TODO")(and todo (format "{\\color{red}\\bfseries\\sffamily %s} " todo)))
+#    ((string= todo "????")(and todo (format "{\\color{red}\\bfseries\\sffamily %s} " todo)))
+#    ((string= todo "POSTPONED")(and todo (format "{\\color{blue}\\bfseries\\sffamily %s} " todo)))
+#    ((string= todo "DONE")(and todo (format "{\\color{green}\\bfseries\\sffamily %s} " todo)))
+#    )
+#    (and priority (format "\\framebox{\\#%c} " priority))
+#    text
+#    (and tags
+# 	(format "\\hfill{}\\textsc{%s}"
+# 		(mapconcat #'org-latex--protect-text tags ":")))))
+
+# (setq org-latex-format-headline-function 'org-latex-format-headline-colored-keywords-function)
+# #+end_src
 
 
 # **** Toggle between TODO-DONE keywords for all subnodes of the current node
