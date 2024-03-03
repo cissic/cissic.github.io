@@ -114,7 +114,7 @@ it's better to keep whole .emacs.d directory as a git repository and
 make a commit before executing this script. Then, in case any problems
 you can go back to restore properly working emacs installation.
 Before running this script you should have a git repository initialized in emacs
-directory and git itself installed in the system (see Sec. [1.5](#org727909d)).
+directory and git itself installed in the system (see Sec. [1.5](#orgdd6eb60)).
 Synchronization of the local repository with the remote one is not
 performed in this script. It should be performed explicitely by the user
 in a convenient time.
@@ -210,7 +210,7 @@ In Emacs 27.1 it [shouldn't be necessary to use](https://emacs.stackexchange.com
 
 ### The main part of the installation script - list of the packages
 
-<a id="org29bff1f"></a>
+<a id="org7ee9073"></a>
 
 I used to have `(defvar my-packages ...` instead of `(setq my-packages ...` 
 below but... **Do not** use `defvar` for declaring a list of packages to be installed!
@@ -327,7 +327,7 @@ for now. An interesting discussion about this can be found [here](https://www.re
 
 1.  DEPRECATED Setting an auxiliary variable
 
-    This section is deprecated in favour of [`workgroups2 package`](#org0820862).
+    This section is deprecated in favour of [`workgroups2 package`](#orgcbd7201).
     
         ;; This file is designed to be re-evaled; use the variable first-time
         ;; to avoid any problems with this.
@@ -368,7 +368,7 @@ proactively.
 Here are global Emacs customization. 
 If necessary some useful infomation or link is added to the customization.
 
-1.  Self-descriptive oneliners <a id="org2964491"></a>
+1.  Self-descriptive oneliners <a id="org6658c12"></a>
 
     Remarks:
     At around May 2023 I stopped using `global-linum-mode` because
@@ -473,14 +473,14 @@ If necessary some useful infomation or link is added to the customization.
         ;; (set-frame-font "liberation mono 11" nil t) ; Set default font
     
     Due to  due to the  problems with fonts in `emacsclient/daemonp`
-    instances font is set now in the section [1.4.18](#org3a3878d).
+    instances font is set now in the section [1.4.18](#org19c1573).
 
 7.  Highlight on an active window/buffer
 
     Although the active window can be recognized
     by the cursor which blinking in it, sometimes it is hard to
     find in on the screen (especially if you use a colourful theme
-    like [1.4.18.1](#org83c4415).
+    like [1.4.20.1](#org3e00c66).
     
     I found a [post](https://stackoverflow.com/questions/33195122/highlight-current-active-window) adressing this issue.
     Although the accepted answer is using 
@@ -722,7 +722,7 @@ If necessary some useful infomation or link is added to the customization.
           )
           ;; <- Fill column indicator
     
-    -   and add this hook per each required mode (this is done in [1.4.7](#orgcf236d1) section
+    -   and add this hook per each required mode (this is done in [1.4.7](#org9935b79) section
         of this document
 
 12. Turning on/off beeping
@@ -736,7 +736,7 @@ If necessary some useful infomation or link is added to the customization.
         (setq-default visible-bell t) 
         (setq ring-bell-function 'ignore)
 
-13. Ibuffer - an advanced replacement for BufferMenu <a id="org3fe6623"></a>
+13. Ibuffer - an advanced replacement for BufferMenu <a id="orge2cb043"></a>
 
     Description of the package is [here](https://www.emacswiki.org/emacs/IbufferMode).
     
@@ -795,7 +795,7 @@ If necessary some useful infomation or link is added to the customization.
     
     2.  Ibuffer interactive way
     
-        In [1.4.3.13](#org3fe6623) there a nice shortcut to do this. You can select all
+        In [1.4.3.13](#orge2cb043) there a nice shortcut to do this. You can select all
         the files of the given mode with:
         
             * M
@@ -880,7 +880,7 @@ ido/smex vs ivy/counsel/swiper vs helm
         (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command) 
         ;; <- smex
 
-3.  TODO Ivy (for testing) <a id="org7657b8f"></a>
+3.  TODO Ivy (for testing) <a id="org30f3fb0"></a>
 
     Furthermore, according to [some other users](https://ruzkuku.com/emacs.d.html#org804158b)
     "Ivy is simpler (and faster) than Helm but more powerful than Ido".
@@ -1074,11 +1074,11 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
     files to Beamer. In order one needs to create appropriate
     init file with settings for async export and
     set `org-export-async-init-file` variable as path to this file (see 
-    [1.4.7.4.1](#orge271308)).
+    [1.4.7.4.1](#org5efeb4f)).
     
     1.  Setting `org-export-async-init-file` to avoid failure while exporting to Beamer
     
-        <a id="orge271308"></a>
+        <a id="org5efeb4f"></a>
         
         Org-beamer **async** exporter may fail because of lacking
         `org-export-async-init-file` 
@@ -1166,7 +1166,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
 
 1.  oc [org-citations]
 
-    1.  Bibliography <a id="orgaefafb4"></a>
+    1.  Bibliography <a id="org115f156"></a>
     
         In Org 9.6 we do not need explicitely load `oc` libraries.
         Everything is covered in my post concerning bibliography and org-mode.
@@ -1348,7 +1348,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
 
 7.  Fix for Octave/Matlab org-babel - problems with matlab in org-babel
 
-    <a id="org02a7a86"></a>
+    <a id="org804f845"></a>
     <http://gewhere.github.io/blog/2017/12/19/setup-matlab-in-emacs-and-babel-orgmode/>
     
         
@@ -1374,7 +1374,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
     <https://github.com/karthink/.emacs.d/blob/master/plugins/ob-octave-fix.el>
     
     In the end I just downloaded the file and the inclusion of this package is
-    done in section [1.4.18.2](#orgfb19bd2).
+    done in section [1.4.21.3](#org933ac1a).
     
     the one I already had to `ob-octave-fixOLDER.el`). Previous version
     of the file didn't seem to resolve the problem.
@@ -1551,7 +1551,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
     The special mode `org-cdlatex-mode` is included in `org` package.
     In order to have it working properly we need to install `cdlatex`
     itself. This can be done in
-    [1.3.2](#org413070c).
+    [1.3.2](#org641135c).
     
     Link to `org-cdlatex-mode` description:
     <http://doc.endlessparentheses.com/Fun/org-cdlatex-mode.html>.
@@ -1889,7 +1889,7 @@ loading properly.
 
 ### ABANDONED Emailing in Emacs
 
-As a temporary workaround I decided to try [1.4.18](#org3a3878d).
+As a temporary workaround I decided to try [1.4.18](#org19c1573).
 
 Basing on  [this post](https://www.reddit.com/r/emacs/comments/4rl0a9/email_in_emacs_i_want_to_but_wow_its_overwhelming/) I decided to perform configuration of email service 
 within Emacs in three steps. Each of them takes care of one of the 
@@ -1925,28 +1925,281 @@ following problems
     so I abandoned this idea at this stage.
 
 
-### Emacs-everywhere <a id="org3a3878d"></a>
+### Emacs-everywhere <a id="org19c1573"></a>
 
-1.  Modus themes by Protesilaos Stavrou <a id="org83c4415"></a>
+Repository of the package and some basic information can be found
+[here](https://github.com/tecosaur/emacs-everywhere/).
 
-2.  ob-octave-fix.el
+1.  Install package `emacs-everywhere` from melpa ([1.3.2](#org7ee9073))
+2.  Add system-wide shortcut for the command 
+    
+        #!/bin/bash
+        # https://github.com/tecosaur/emacs-everywhere/
+        
+        emacsclient --eval "(emacs-everywhere)"
+    
+    (I added `Ctrl+Alt+E` in custom shortcuts of KDE)
+3.  Run emacs daemon in the system (for example after hitting `Alt+F2`)  with:
+    
+        emacs --daemon 
+    
+    Warning!: In order not to restore files from previous session 
+    (and avoid being asked for confirmation of loading some commands
+    when files are restored) additional if statement is added to
+    embrace `(desktop-save-mode 1)` at the beginning of the `init.el`.
 
-    <a id="orgfb19bd2"></a>
+4.  Now you can invoke Emacs anywhere in the system with `Ctrl+Alt+E`.
+    (If a piece of code is highlighted, it will be copied into Emacs
+    buffer). After editing Emacs buffer press `C-c C-c` or `C-x 5 0` 
+    to go back to the original programme. If you do not wish to paste 
+    the buffer content into the original window, `C-c C-k` still
+    copies the content to the clipboard, but never pastes.
 
-3.  Workgroups (should be executed at the end of init.el) <a id="org0820862"></a>
+5.  The buffer opened within Emacs deamon instance has small fonts 
+    despite the fact that font is set somewhere at the beginning of the 
+    `init.el`. It is well-known problem:
+    
+    1.  <https://www.google.com/search?q=emacs+default+font+emacs+daemon>
+    2.  <https://emacs.stackexchange.com/questions/52063/emacsclient-gui-has-small-fonts>
+    3.  <https://github.com/doomemacs/doomemacs/issues/1223>
+    4.  <https://www.reddit.com/r/emacs/comments/pc189c/fonts_in_emacs_daemon_mode/>
+    5.  <https://www.reddit.com/r/emacs/comments/dwy299/how_to_set_fonts_in_daemon_mode_windows/>
+    
+    I used the solution based on the one presented in the last link above,
+    however the one presented in the second link seems to be simpler... 
+    
+        ;; setting up configuration for emacs-everywhere:
+        ;; 1. font size
+        ;(if (daemonp)
+        ;(
+        (defun my-after-frame (frame)
+          (if (display-graphic-p frame)
+              (progn
+                 (set-frame-font "liberation mono 11" nil t) )))
+        
+        (mapc 'my-after-frame (frame-list))
+        (add-hook 'after-make-frame-functions 'my-after-frame)
+        ;)
+        ;)
 
 
-## Dependencies of the presented Emacs configuration: <a id="org727909d"></a>
+### Diary
+
+[information in emacs manual](https://www.gnu.org/software/emacs/manual/html_node/emacs/Diary.html)
+
+By default, emacs expects diary file to be located in ~/.emacs.d/diary
+
+Tutorial by [Protesilaos Stavrou](https://www.youtube.com/watch?v=NkhgIB64zgc).
+
+1.  Changing date format to iso and some other configurations
+
+    Some variables need to be set in order to have calendar/diary
+    looking working fancy. You can see those settings in Stavrou's
+    init.el in the movie linked above.
+    
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        ;;;; Diary
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        
+        ; 'american’ - month/day/year
+        ; ‘european’ - day/month/year
+        ; ‘iso’      - year/month/day
+        
+        (setq calendar-date-style "iso")
+        (setq diary-date-forms diary-iso-date-forms)
+        (setq diary-comment-start ";;")
+        (setq diary-comment-end "")
+        (setq diary-nonmarking-symbol "!")
+        ; (setq diary-show-holidays-flag t)
+    
+    In order to include diary entries in calendar you need to set:
+    
+        (setq calendar-mark-diary-entries-flag t)
+    
+    Stavrou mentions that he does not use org-agenda's features (and
+    org-mode syntax) with calendar/diary, as he does not need to
+    makes things so complex.
+    And that's the way how I'm gonna use it for a moment.
+    
+    A nice thing to have in the future is
+
+2.  TODO Sending emails with calendar events
+
+    To be done in some free time.
+
+3.  Links that I found useful setting up this package:
+
+    -   <https://wikemacs.org/wiki/Command-line_startup_options>
+    -   <https://ftp.gnu.org/old-gnu/Manuals/emacs-20.7/html_chapter/emacs_37.html>
+    
+    <https://emacs.stackexchange.com/questions/3035/how-to-know-if-emacs-is-running-as-a-daemon>
+    
+    -   <https://stackoverflow.com/questions/45332003/how-can-i-detect-if-emacs-was-started-with-q>
+    -   <http://xahlee.info/emacs/emacs/elisp_command_line_argv.html>
+
+
+### Load Emacs theme of your preference
+
+1.  Modus themes by Protesilaos Stavrou <a id="org3e00c66"></a>
+
+    -   [Author's page](https://protesilaos.com/codelog/2021-01-11-modus-themes-review-select-faint-colours/)
+    -   [Youtube's tutorial](https://www.youtube.com/watch?v=JJPokfFxyFo)
+    
+    `noconfirm` flag needs to be added for two reasons.
+    First, without it we cannot run Emacs in batch mode from command line
+    (`emacs -batch -load ~/.emacs.d/init.el ...`). Second,... (I forgot the 
+    second reason).
+    
+        ;; (setq modus-themes-headings ; this is an alist: read the manual or its doc string
+        ;;       '((1 . (overline background variable-pitch 1.3))
+        ;;         (2 . (rainbow overline 1.1))
+        ;;         (t . (semibold))) )
+    
+        
+        ;; Add all your customizations prior to loading the themes
+        (setq modus-themes-italic-constructs t
+              modus-themes-bold-constructs nil
+              modus-themes-region '(bg-only no-extend))
+        
+        ;; Load the theme of your choice:
+        ; (load-theme 'modus-operandi) ;; bright 
+        ; (load-theme 'modus-vivendi) ;; dark
+        
+        
+        
+        (setq modus-themes-headings ; this is an alist: read the manual or its doc string
+              '((1 . (rainbow overline background 1.4))
+                (2 . (rainbow background 1.3))
+                (3 . (rainbow bold 1.2))
+                (t . (semilight 1.1))))
+        
+        (setq modus-themes-scale-headings t)
+        (setq modus-themes-org-blocks 'tinted-background)
+    
+    There are two types of modus themes: `modus-operandi` which is bright
+    and `modus-vivendi` which is dark one.
+    In order to ease switching between them it is convenient to define
+    custom keybinding [(details](https://emacs.stackexchange.com/a/48627)).
+    
+        ;; Auxiliary function to toggle betwen bright and dark theme
+        (defun toggle-theme ()
+          (interactive)
+          (if (eq (car custom-enabled-themes) 'modus-vivendi)
+              (disable-theme 'modus-vivendi)
+            (load-theme 'modus-vivendi :noconfirm)))
+        (global-set-key [f6] 'toggle-theme)
+    
+    Load theme **after** defining all necessary definitions
+    (otherwise different font sizes
+    won't work after running `init.el` at the startup and
+    you'll need to eval it once again
+    or manually invoke the following command):
+    
+        ;; load theme after defining 
+        (load-theme 'modus-vivendi :noconfirm) 
+
+
+### Manually downloaded packages
+
+    
+    ;; Set location for external packages.
+    (add-to-list 'load-path "~/.emacs.d/manual-download/")
+    
+    ;; doconce (M-x DocOnce) may be needed to activate it -> 
+    (load-file "~/.emacs.d/manual-download/.doconce-mode.el")
+    
+    
+    ;; activating org-mode for doconce pub files:
+    ;; https://github.com/doconce/publish/blob/master/doc/manual/publish-user-manual.pdf
+    (setq auto-mode-alist
+          (append '(("\\.org$" . org-mode))
+                  '(("\\.pub$" . org-mode))
+                  auto-mode-alist))
+    ;; <- doconce
+
+Adding custom useful keybindings for doconce. As for now, this is added as
+a global shortcut...
+
+    (global-set-key "\C-c\C-j" "\C-k =====")
+
+1.  Sunrise - Norton Commander-like file browser
+
+    There are few packages to emulate Norton Commander experience in Emacs.
+    I tested `mc.el`, `nc.el` and `sunrise.el`. From these three only 
+    the last one turned out to be useful (or to run without errors).
+    
+    <https://www.emacswiki.org/emacs/Sunrise_Commander_Tips#h5o-1>
+    
+    <https://pragmaticemacs.wordpress.com/2015/10/29/double-dired-with-sunrise-commander/>
+    
+    <https://enzuru.medium.com/sunrise-commander-an-orthodox-file-manager-for-emacs-2f92fd08ac9e>
+    
+    -   buttons extension for sunrise
+        
+        <https://www.emacswiki.org/emacs/sunrise-x-buttons.el>
+    
+    <https://pragmaticemacs.wordpress.com/2015/10/29/double-dired-with-sunrise-commander/>
+    
+        ;; sunrise
+        (add-to-list 'load-path "~/.emacs.d/manual-download/sunrise")
+        (require 'sunrise)
+        (require 'sunrise-buttons)
+        (require 'sunrise-modeline)
+        (add-to-list 'auto-mode-alist '("\\.srvm\\'" . sr-virtual-mode))
+    
+    The thing that may be annoying in sunrise/dired mode is that is redefines
+    `C-x k` keybinding which does not kill buffer anymore, but it is
+    bounded to `sunrise-kill-pane-buffer` command which, at least to me,
+    works only for `commander-like` frame layout, which is triggered
+    after invoking `M-x sunrise`.
+    
+    In order to have `C-x k` working as usual we can apply the following
+    rebinding:
+    
+        (add-hook 'sunrise-mode-hook
+           '(lambda ()
+             (local-set-key (kbd "C-x k") 'kill-buffer)
+             (local-set-key (kbd "C-x j") 'sunrise-kill-pane-buffer)))
+
+2.  Buffer-move - swapping buffers easily
+
+    <https://www.emacswiki.org/emacs/buffer-move.el>
+    
+        ;; buffer-move - swap buffers easily
+        (require 'buffer-move)
+    
+    Now you can use commands:
+    `buf-move-up`
+    `buf-move-down`
+    `buf-move-left`
+    `buf-move-right`
+    
+    or you can define keybindings as package documentation recommends 
+    (I guess it'll be used too seldom to waste keybinding for that):
+    
+        ;; (global-set-key (kbd "<C-S-up>")     'buf-move-up)
+        ;; (global-set-key (kbd "<C-S-down>")   'buf-move-down)
+        ;; (global-set-key (kbd "<C-S-left>")   'buf-move-left)
+        ;; (global-set-key (kbd "<C-S-right>")  'buf-move-right)
+
+3.  ob-octave-fix.el
+
+    <a id="org933ac1a"></a>
+
+4.  Workgroups (should be executed at the end of init.el) <a id="orgcbd7201"></a>
+
+
+## Dependencies of the presented Emacs configuration: <a id="orgdd6eb60"></a>
 
 The list of external applications that this script is dependent on:
 
 -   git
 -   LaTeX distribution (for org to latex exporters)
 
--   xclip ([1.4.18](#org3a3878d))
--   xdotool ([1.4.18](#org3a3878d))
--   xprop ([1.4.18](#org3a3878d)) - this is not a package but executable
--   xwininfo ([1.4.18](#org3a3878d)) - this is not a package but executable
+-   xclip ([1.4.18](#org19c1573))
+-   xdotool ([1.4.18](#org19c1573))
+-   xprop ([1.4.18](#org19c1573)) - this is not a package but executable
+-   xwininfo ([1.4.18](#org19c1573)) - this is not a package but executable
 
 
 ## Some useful information and links:
