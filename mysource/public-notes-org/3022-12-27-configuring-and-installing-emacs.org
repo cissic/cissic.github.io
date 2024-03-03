@@ -1401,32 +1401,32 @@ Furthermore, it may be more convenient to have this tags set for
 individual file (=#+TODO:=) ([[https://orgmode.org/manual/Per_002dfile-keywords.html][link]]).
 
 
-# **** Customizing font style for TODO-DONE keywords in latex export
-# https://stackoverflow.com/questions/36197545/org-mode-latex-export-making-todos-red
+**** Customizing font style for TODO-DONE keywords in latex export
+https://stackoverflow.com/questions/36197545/org-mode-latex-export-making-todos-red
 
 
-# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
-# ;; customized todo-done keywords in latex documents
-# (defun org-latex-format-headline-colored-keywords-function
-#     (todo _todo-type priority text tags _info)
-#   "Default format function for a headline.
-# See `org-latex-format-headline-function' for details."
-#   (concat
-#    ;; (and todo (format "{\\bfseries\\sffamily %s} " todo))
-#   (cond
-#    ((string= todo "TODO")(and todo (format "{\\color{red}\\bfseries\\sffamily %s} " todo)))
-#    ((string= todo "????")(and todo (format "{\\color{red}\\bfseries\\sffamily %s} " todo)))
-#    ((string= todo "POSTPONED")(and todo (format "{\\color{blue}\\bfseries\\sffamily %s} " todo)))
-#    ((string= todo "DONE")(and todo (format "{\\color{green}\\bfseries\\sffamily %s} " todo)))
-#    )
-#    (and priority (format "\\framebox{\\#%c} " priority))
-#    text
-#    (and tags
-# 	(format "\\hfill{}\\textsc{%s}"
-# 		(mapconcat #'org-latex--protect-text tags ":")))))
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init2023-12.el") 
+;; customized todo-done keywords in latex documents
+(defun org-latex-format-headline-colored-keywords-function
+    (todo _todo-type priority text tags _info)
+  "Default format function for a headline.
+See `org-latex-format-headline-function' for details."
+  (concat
+   ;; (and todo (format "{\\bfseries\\sffamily %s} " todo))
+  (cond
+   ((string= todo "TODO")(and todo (format "{\\color{red}\\bfseries\\sffamily %s} " todo)))
+   ((string= todo "????")(and todo (format "{\\color{red}\\bfseries\\sffamily %s} " todo)))
+   ((string= todo "POSTPONED")(and todo (format "{\\color{blue}\\bfseries\\sffamily %s} " todo)))
+   ((string= todo "DONE")(and todo (format "{\\color{green}\\bfseries\\sffamily %s} " todo)))
+   )
+   (and priority (format "\\framebox{\\#%c} " priority))
+   text
+   (and tags
+	(format "\\hfill{}\\textsc{%s}"
+		(mapconcat #'org-latex--protect-text tags ":")))))
 
-# (setq org-latex-format-headline-function 'org-latex-format-headline-colored-keywords-function)
-# #+end_src
+(setq org-latex-format-headline-function 'org-latex-format-headline-colored-keywords-function)
+#+end_src
 
 
 # **** Toggle between TODO-DONE keywords for all subnodes of the current node
