@@ -9,6 +9,15 @@ title: 'Initialization files setup in Emacs'
 # Initialization files setup in Emacs
 
 
+## Links, blog pages **really** worth reading:
+
+-   `init.el` configuration:
+
+<https://alhassy.com/emacs.d/>
+
+<https://alhassy.com/AlBasmala>
+
+
 ## TL;DR
 
 An org source of this post can be found
@@ -127,12 +136,12 @@ lack of perl for Windows when exporting via `latexmk`.
     1.  DEPRECATED Solution
     
         You need to amend paths to python executable in two places:
-        [1.5.9.8](#orgf573f70)
-        [1.5.7.3](#org782ee4f)
+        [1.6.9.8](#org070c709)
+        [1.6.7.3](#org6a582bd)
 
 3.  Liberation mono font
 
-    That part of code is in `init.el` only for [1.5.18](#orgab0a325), so
+    That part of code is in `init.el` only for [1.6.18](#org30368a0), so
     if one does not use it, they won't miss it.
 
 
@@ -178,7 +187,7 @@ it's better to keep whole .emacs.d directory as a git repository and
 make a commit before executing this script. Then, in case any problems
 you can go back to restore properly working emacs installation.
 Before running this script you should have a git repository initialized in emacs
-directory and git itself installed in the system (see Sec. [1.6](#org68174f9)).
+directory and git itself installed in the system (see Sec. [1.7](#org34e3323)).
 Synchronization of the local repository with the remote one is not
 performed in this script. It should be performed explicitely by the user
 in a convenient time.
@@ -274,7 +283,7 @@ In Emacs 27.1 it [shouldn't be necessary to use](https://emacs.stackexchange.com
 
 ### The main part of the installation script - list of the packages
 
-<a id="orgadd0263"></a>
+<a id="orgbdb2874"></a>
 
 I used to have `(defvar my-packages ...` instead of `(setq my-packages ...` 
 below but... **Do not** use `defvar` for declaring a list of packages to be installed!
@@ -391,7 +400,7 @@ for now. An interesting discussion about this can be found [here](https://www.re
 
 1.  DEPRECATED Setting an auxiliary variable
 
-    This section is deprecated in favour of [`workgroups2 package`](#org0e55d7c).
+    This section is deprecated in favour of [`workgroups2 package`](#org9204c2f).
     
         ;; This file is designed to be re-evaled; use the variable first-time
         ;; to avoid any problems with this.
@@ -432,7 +441,7 @@ proactively.
 Here are global Emacs customization. 
 If necessary some useful infomation or link is added to the customization.
 
-1.  Self-descriptive oneliners <a id="org7e2ed94"></a>
+1.  Self-descriptive oneliners <a id="org7deef71"></a>
 
     Remarks:
     At around May 2023 I stopped using `global-linum-mode` because
@@ -539,14 +548,14 @@ If necessary some useful infomation or link is added to the customization.
         ;; (set-frame-font "liberation mono 11" nil t) ; Set default font
     
     Due to  due to the  problems with fonts in `emacsclient/daemonp`
-    instances font is set now in the section [1.5.18](#orgab0a325).
+    instances font is set now in the section [1.6.18](#org30368a0).
 
 7.  Highlight on an active window/buffer
 
     Although the active window can be recognized
     by the cursor which blinking in it, sometimes it is hard to
     find in on the screen (especially if you use a colourful theme
-    like [1.5.20.1](#org0e9e27e).
+    like [1.6.21.1](#orgb3231e6).
     
     I found a [post](https://stackoverflow.com/questions/33195122/highlight-current-active-window) adressing this issue.
     Although the accepted answer is using 
@@ -788,7 +797,7 @@ If necessary some useful infomation or link is added to the customization.
           )
           ;; <- Fill column indicator
     
-    -   and add this hook per each required mode (this is done in [1.5.7](#orga611c68) section
+    -   and add this hook per each required mode (this is done in [1.6.7](#orgf835f2a) section
         of this document
 
 12. Turning on/off beeping
@@ -804,7 +813,7 @@ If necessary some useful infomation or link is added to the customization.
 
 13. Ibuffer - an advanced replacement for BufferMenu
 
-    <a id="org36c1350"></a>
+    <a id="org6c5bcaa"></a>
     
     Description of the package is [here](https://www.emacswiki.org/emacs/IbufferMode).
     
@@ -863,7 +872,7 @@ If necessary some useful infomation or link is added to the customization.
     
     2.  Ibuffer interactive way
     
-        In [1.5.3.13](#org36c1350) there a nice shortcut to do this. You can select all
+        In [1.6.3.13](#org6c5bcaa) there a nice shortcut to do this. You can select all
         the files of the given mode with:
         
             * M
@@ -962,7 +971,7 @@ ido/smex vs ivy/counsel/swiper vs helm
         (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command) 
         ;; <- smex
 
-3.  TODO Ivy (for testing) <a id="org6477eb8"></a>
+3.  TODO Ivy (for testing) <a id="org4c2694d"></a>
 
     Furthermore, according to [some other users](https://ruzkuku.com/emacs.d.html#org804158b)
     "Ivy is simpler (and faster) than Helm but more powerful than Ido".
@@ -1109,7 +1118,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
 
 3.  Python mode
 
-    <a id="org782ee4f"></a>
+    <a id="org6a582bd"></a>
     
     The below code does not work as expected. Probably it'd be better to
     apply the configuration given [here](https://realpython.com/emacs-the-best-python-editor/#integration-with-jupyter-and-ipython).
@@ -1168,11 +1177,11 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
     files to Beamer. In order one needs to create appropriate
     init file with settings for async export and
     set `org-export-async-init-file` variable as path to this file (see 
-    [1.5.7.4.1](#org91d4b02)).
+    [1.6.7.4.1](#org4508426)).
     
     1.  Setting `org-export-async-init-file` to avoid failure while exporting to Beamer
     
-        <a id="org91d4b02"></a>
+        <a id="org4508426"></a>
         
         Org-beamer **async** exporter may fail because of lacking
         `org-export-async-init-file` 
@@ -1258,7 +1267,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
 
 ### Bibliography - citations
 
-<a id="org01205e5"></a>
+<a id="orgec59f48"></a>
 
 1.  Useful links for Emacs 29
 
@@ -1534,7 +1543,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
                           (with-current-buffer buffer
                             (org-with-wide-buffer
                              (mapcar #'expand-file-name
-                                     (my-tangle target-file))))
+                                     (mb/tangle-file target-file))))
                         (unless visited (kill-buffer buffer)))))
         
         4.  Export given org-file to pdf (latex)
@@ -1579,7 +1588,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
 
 7.  Fix for Octave/Matlab org-babel - problems with matlab in org-babel
 
-    <a id="orge8c1913"></a>
+    <a id="org3f6ceab"></a>
     <http://gewhere.github.io/blog/2017/12/19/setup-matlab-in-emacs-and-babel-orgmode/>
     
         
@@ -1605,7 +1614,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
     <https://github.com/karthink/.emacs.d/blob/master/plugins/ob-octave-fix.el>
     
     In the end I just downloaded the file and the inclusion of this package is
-    done in section [1.5.21.3](#org745fd82).
+    done in section [1.6.22.3](#orgd2253f4).
     
     Remark: There exist at least two versions of the fix (I renamed
     the one I already had to `ob-octave-fixOLDER.el`). Previous version
@@ -1651,7 +1660,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
 
 8.  Set path to Python executable to work in org-babel code block
 
-    <a id="orgf573f70"></a>
+    <a id="org070c709"></a>
     
     Pythonic org-babel code blocks like the one below:
     
@@ -1766,7 +1775,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
     
     Another hints can be found [here](https://lucidmanager.org/productivity/ricing-org-mode/).
 
-13. Engraved - the better (?) way of having nice source code formatting <a id="orga6a4dca"></a>
+13. Engraved - the better (?) way of having nice source code formatting <a id="orgb6fc868"></a>
 
     Following some internet posts about `Engraved` package I decided to give it a try. We'll if it works better than minted (which has obvious flaws, such as dependency on external code or slowing down
     overall compilation process)
@@ -1825,7 +1834,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
           [LISTINGS-SETUP]"
         )
     
-    In order to flawlessly export ChatGPT sessions [1.5.14.1.2](#org5f7065b)
+    In order to flawlessly export ChatGPT sessions [1.6.14.1.2](#org12ee28f)
     placed inside `#+begin_ai #+end_ai`
     we need to define `ai` environement in latex.
     Concatenation of variable `org-latex-engraved-preamble`
@@ -2005,7 +2014,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
     The special mode `org-cdlatex-mode` is included in `org` package.
     In order to have it working properly we need to install `cdlatex`
     itself. This can be done in
-    [1.4.2](#orgb84ebe7).
+    [1.5.2](#orgfced274).
     
     Link to `org-cdlatex-mode` description:
     <http://doc.endlessparentheses.com/Fun/org-cdlatex-mode.html>.
@@ -2120,7 +2129,7 @@ when rendering the .pdf:
     (add-hook 'pdf-view-mode-hook (lambda() (linum-mode -1)))
 
 
-### ChatGPT <a id="org1ac14c6"></a>
+### ChatGPT <a id="org42e832a"></a>
 
 In order to get some help from AI I decided to give it a try inside
 Emacs.
@@ -2172,20 +2181,20 @@ There are tons of pages about it.
     
     2.  ChatGPT session blocks export with `engraved`
     
-        <a id="org5f7065b"></a>
+        <a id="org12ee28f"></a>
         
         In order to flawlessly export ChatGPT sessions
         placed inside `#+begin_ai #+end_ai`
         we need to define `ai` environement in latex for
         engraved exports
-        (see [1.5.9.13](#orga6a4dca))
+        (see [1.6.9.13](#orgb6fc868))
         That is why we need to update
         `org-latex-engraved-preamble`
-        introduction in section [1.5.9.13](#orga6a4dca).
+        introduction in section [1.6.9.13](#orgb6fc868).
         
         In fact, updating this variable (as in the code commented out above)
         has no effect on the variable, so I decided to move this piece
-        of code to [1.5.9.13](#orga6a4dca), where I repeated default
+        of code to [1.6.9.13](#orgb6fc868), where I repeated default
         setting of `org-latex-engraved-preamble` with necessary lines
         added at the end of the string.
 
@@ -2399,7 +2408,7 @@ Snippet for sending email from inside emacs:
 
 1.  DEPRECATED OLD Approaches
 
-    As a temporary workaround I decided to try [1.5.18](#orgab0a325).
+    As a temporary workaround I decided to try [1.6.18](#org30368a0).
     
     Basing on  [this post](https://www.reddit.com/r/emacs/comments/4rl0a9/email_in_emacs_i_want_to_but_wow_its_overwhelming/) I decided to perform configuration of email service 
     within Emacs in three steps. Each of them takes care of one of the 
@@ -2441,12 +2450,12 @@ Snippet for sending email from inside emacs:
 
 ### Emacs-everywhere
 
-<a id="orgab0a325"></a>
+<a id="org30368a0"></a>
 
 Repository of the package and some basic information can be found
 [here](https://github.com/tecosaur/emacs-everywhere/).
 
-1.  Install package `emacs-everywhere` from melpa ([1.4.2](#orgadd0263))
+1.  Install package `emacs-everywhere` from melpa ([1.5.2](#orgbdb2874))
 2.  Add system-wide shortcut for the command 
     
         #!/bin/bash
@@ -2497,6 +2506,29 @@ Repository of the package and some basic information can be found
         (add-hook 'after-make-frame-functions 'my-after-frame)
         ;)
         ;)
+
+
+### Restart emacs from within emacs
+
+Found here:
+<https://emacs.stackexchange.com/questions/5428/restart-emacs-from-within-emacs>
+According to the above source there may be some problems with
+running it in TTY.
+
+    (defun launch-separate-emacs-in-terminal ()
+      (suspend-emacs "fg ; emacs -nw"))
+    
+    (defun launch-separate-emacs-under-x ()
+      (call-process "sh" nil nil nil "-c" "emacs &"))
+    
+    (defun restart-emacs ()
+      (interactive)
+      ;; We need the new emacs to be spawned after all kill-emacs-hooks
+      ;; have been processed and there is nothing interesting left
+      (let ((kill-emacs-hook (append kill-emacs-hook (list (if (display-graphic-p)
+                                                               #'launch-separate-emacs-under-x
+                                                             #'launch-separate-emacs-in-terminal)))))
+        (save-buffers-kill-emacs)))
 
 
 ### Diary
@@ -2556,7 +2588,7 @@ Tutorial by [Protesilaos Stavrou](https://www.youtube.com/watch?v=NkhgIB64zgc).
 
 ### Load Emacs theme of your preference
 
-1.  Modus themes by Protesilaos Stavrou <a id="org0e9e27e"></a>
+1.  Modus themes by Protesilaos Stavrou <a id="orgb3231e6"></a>
 
     -   [Author's page](https://protesilaos.com/codelog/2021-01-11-modus-themes-review-select-faint-colours/)
     -   [Youtube's tutorial](https://www.youtube.com/watch?v=JJPokfFxyFo)
@@ -2700,10 +2732,10 @@ a global shortcut...
 
 3.  ob-octave-fix.el
 
-    <a id="org745fd82"></a>
+    <a id="orgd2253f4"></a>
     
     The discussion on this is thread can be found in section
-    [1.5.9.7](#orge8c1913) so I here I just include the solution, namely
+    [1.6.9.7](#org3f6ceab) so I here I just include the solution, namely
     I load fixed library.
     
         ;; octave/matlab-fix
@@ -2823,10 +2855,27 @@ a global shortcut...
            (goto-char (point-max))
            ))
 
+3.  Blogging with easy-hugo
+
+    1.  Install hugo
+    
+        First, install `hugo`
+        
+            sudo apt install hugo -y
+        
+        Then, you need to configure it a bit:
+        
+            (setq easy-hugo-basedir "~/projects/easy-hugo-blog/quickstart/")
+            (setq easy-hugo-url "http://marbor.strony.prz.edu.pl/hugo")
+            (setq easy-hugo-sshdomain "blogdomain")
+            (setq easy-hugo-root "/usr/bin/")
+            (setq easy-hugo-previewtime "300")
+            ;; (define-key global-map (kbd "C-c C-e") 'easy-hugo)
+
 
 ### TODO The end
 
-1.  Workgroups (should be executed at the end of init.el) <a id="org0e55d7c"></a>
+1.  Workgroups (should be executed at the end of init.el) <a id="org9204c2f"></a>
 
     <https://tuhdo.github.io/emacs-tutor3.html>
     
@@ -2923,11 +2972,11 @@ a global shortcut...
 
 3.  DEPRECATED Restoring previous session
 
-    This section is deprecated in favour of [`workgroups2 package`](#org0e55d7c).
+    This section is deprecated in favour of [`workgroups2 package`](#org9204c2f).
     
     This way of restoring session throws some warnings and needs additional
     confirmations so I give it up. Simple `(desktop-save-mode 1)` which is 
-    included [in the beginning of `init.el`](#org7e2ed94) works ok.
+    included [in the beginning of `init.el`](#org7deef71) works ok.
     
         ;; Restore the "desktop" - do this as late as possible
         (if first-time
@@ -2961,17 +3010,17 @@ a global shortcut...
         (message "All done in init.el.")
 
 
-## Dependencies of the presented Emacs configuration <a id="org68174f9"></a>:
+## Dependencies of the presented Emacs configuration <a id="org34e3323"></a>:
 
 The list of external applications that this script is dependent on:
 
 -   git
 -   LaTeX distribution (for org to latex exporters)
 
--   xclip ([1.5.18](#orgab0a325))
--   xdotool ([1.5.18](#orgab0a325))
--   xprop ([1.5.18](#orgab0a325)) - this is not a package but executable
--   xwininfo ([1.5.18](#orgab0a325)) - this is not a package but executable
+-   xclip ([1.6.18](#org30368a0))
+-   xdotool ([1.6.18](#org30368a0))
+-   xprop ([1.6.18](#org30368a0)) - this is not a package but executable
+-   xwininfo ([1.6.18](#org30368a0)) - this is not a package but executable
 
 
 ## Some useful information and links:
