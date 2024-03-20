@@ -15,6 +15,12 @@
 :TEST-DIR: ./2023-12-18-init-and-setup-Emacs-29/
 :END:
 
+** Links, blog pages *really* worth reading:
+
+- =init.el= configuration:
+https://alhassy.com/emacs.d/
+
+https://alhassy.com/AlBasmala
 
 
 
@@ -1762,7 +1768,7 @@ Auxiliary function:
 	    (with-current-buffer buffer
 	      (org-with-wide-buffer
 	       (mapcar #'expand-file-name
-		       (my-tangle target-file))))
+		       (mb/tangle-file target-file))))
 	  (unless visited (kill-buffer buffer)))))
 #+end_src
 
@@ -3008,6 +3014,32 @@ Repository of the package and some basic information can be found
    
  
 
+*** Restart emacs from within emacs
+Found here:
+https://emacs.stackexchange.com/questions/5428/restart-emacs-from-within-emacs
+According to the above source there may be some problems with
+running it in TTY.
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+(defun launch-separate-emacs-in-terminal ()
+  (suspend-emacs "fg ; emacs -nw"))
+
+(defun launch-separate-emacs-under-x ()
+  (call-process "sh" nil nil nil "-c" "emacs &"))
+
+(defun restart-emacs ()
+  (interactive)
+  ;; We need the new emacs to be spawned after all kill-emacs-hooks
+  ;; have been processed and there is nothing interesting left
+  (let ((kill-emacs-hook (append kill-emacs-hook (list (if (display-graphic-p)
+                                                           #'launch-separate-emacs-under-x
+                                                         #'launch-separate-emacs-in-terminal)))))
+    (save-buffers-kill-emacs)))
+#+end_src
+
+#+RESULTS:
+: restart-emacs
+
 *** Diary
 [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Diary.html][information in emacs manual]]
 
@@ -3414,6 +3446,33 @@ Auxiliary function that generates predefined stencil for blog posts
 
 #+RESULTS:
 : mb/orgpriv-entry-stencil
+
+
+
+
+
+**** Blogging with easy-hugo
+***** Install hugo
+
+First, install =hugo=
+#+begin_src sh :dir /sudo::
+  sudo apt install hugo -y
+#+end_src
+Then, you need to configure it a bit:
+
+
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+  (setq easy-hugo-basedir "~/projects/easy-hugo-blog/quickstart/")
+  (setq easy-hugo-url "http://marbor.strony.prz.edu.pl/hugo")
+  (setq easy-hugo-sshdomain "blogdomain")
+  (setq easy-hugo-root "/usr/bin/")
+  (setq easy-hugo-previewtime "300")
+  ;; (define-key global-map (kbd "C-c C-e") 'easy-hugo)
+#+end_src
+
+#+RESULTS:
+: 300
 
 
 

@@ -12,8 +12,12 @@
 
 ** Problem description
 
+*** With the use of LibreOffice:
+https://askubuntu.com/questions/1259632/convert-pdf-to-word-using-libreoffice-in-terminal
+https://stackoverflow.com/questions/63593345/how-to-convert-pdf-to-docx-in-libreoffice-6-4
 
-*** Text
+
+*** With the use of =poppler=
 #+begin_src sh 
   sudo apt install poppler-utils
 #+end_src
