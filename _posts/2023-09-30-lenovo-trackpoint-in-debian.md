@@ -6,7 +6,7 @@ title: 'How to make Lenovo's trackpoint work for scrolling'
 ---
 
 
-# {{{title}}
+# How to make Lenovo's trackpoint work for scrolling
 
 
 ## Description
