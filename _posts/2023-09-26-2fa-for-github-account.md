@@ -1,10 +1,10 @@
 
 # Table of Contents
 
-1.  [2fa for github accout](#org5dd76e3)
-    1.  [How to set two factor authentication for github accout with the use of KeePassXC](#orge67853b)
-        1.  [Getting Github account's secret](#org7eaffe0)
-        2.  [Configuring KeepassXC entry linked to Github's account](#orgc02f4fc)
+1.  [2fa for github accout](#org4124621)
+    1.  [How to set two factor authentication for github accout with the use of KeePassXC](#orgec7d6fc)
+        1.  [Getting Github account's secret](#org7c184fe)
+        2.  [Configuring KeepassXC entry linked to Github's account](#orgcdd864c)
 
 ---
 author: cissic
@@ -14,12 +14,12 @@ title: '2fa for github accout'
 ---
 
 
-<a id="org5dd76e3"></a>
+<a id="org4124621"></a>
 
 # TODO 2fa for github accout
 
 
-<a id="orge67853b"></a>
+<a id="orgec7d6fc"></a>
 
 ## How to set two factor authentication for github accout with the use of KeePassXC
 
@@ -27,7 +27,7 @@ title: '2fa for github accout'
 -   <https://keepassxc.org/docs/KeePassXC_UserGuide#_adding_totp_to_an_entry>
 
 
-<a id="org7eaffe0"></a>
+<a id="org7c184fe"></a>
 
 ### Getting Github account's secret
 
@@ -42,7 +42,7 @@ title: '2fa for github accout'
 5.  Under "Setup authenticator app" click **setup key** (link below QR code) to see a code, the TOTP secret, that you can manually enter in your TOTP app instead.
 
 
-<a id="orgc02f4fc"></a>
+<a id="orgcdd864c"></a>
 
 ### Configuring KeepassXC entry linked to Github's account
 

@@ -1,26 +1,26 @@
 
 # Table of Contents
 
-1.  [Properties in org-mode](#org4f16311)
-    1.  [Properties in org-mode](#org5549f06)
-        1.  [Problem - the beggining](#org777f029)
-        2.  [Problem extension](#org76109e7)
-    2.  [Solution](#orge6cf673)
-    3.  [Useful links:](#org53d3ea9)
+1.  [Properties in org-mode](#org73d19c7)
+    1.  [Properties in org-mode](#org1f004bc)
+        1.  [Problem - the beggining](#orgc0363df)
+        2.  [Problem extension](#orga28e0c7)
+    2.  [Solution](#org3da50e8)
+    3.  [Useful links:](#org91c0a72)
 
 
 
-<a id="org4f16311"></a>
+<a id="org73d19c7"></a>
 
 # TODO Properties in org-mode
 
 
-<a id="org5549f06"></a>
+<a id="org1f004bc"></a>
 
 ## Properties in org-mode
 
 
-<a id="org777f029"></a>
+<a id="orgc0363df"></a>
 
 ### Problem - the beggining
 
@@ -55,7 +55,7 @@ the usage of `'selective` flag - without it the example wouldn't work!):
     -   See here: <https://emacs.stackexchange.com/questions/62423/forcing-inheritance-of-specific-properties-in-orgmode>
 
 
-<a id="org76109e7"></a>
+<a id="orga28e0c7"></a>
 
 ### Problem extension
 
@@ -74,7 +74,7 @@ treat it as some kind of database
 
 1.  Approach 1
 
-    <a id="org20ee726"></a>
+    <a id="org63f4454"></a>
     This won't work:
     
         # -*- mode: Org; org-use-property-inheritance: t -*- 
@@ -95,11 +95,11 @@ treat it as some kind of database
         #+INCLUDE: ./properties.txt
 
 
-<a id="orge6cf673"></a>
+<a id="org3da50e8"></a>
 
 ## Solution
 
-It seems that [1.1.2.1](#org7fd7b9b) does not work because Subheadline has no content.
+It seems that [1.1.2.1](#org9999e5e) does not work because Subheadline has no content.
 If we add any latex white space or subsubheadline inside subheadline
 everything works ok.
 
@@ -119,7 +119,7 @@ everything works ok.
         #** SubHeadline  
 
 
-<a id="org53d3ea9"></a>
+<a id="org91c0a72"></a>
 
 ## Useful links:
 

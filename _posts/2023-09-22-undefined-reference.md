@@ -1,9 +1,9 @@
 
 # Table of Contents
 
-1.  [undefined reference warning](#org04b48f4)
-    1.  [An example](#orgff13a73)
-    2.  [Solution - explanation:](#orgb8c54ae)
+1.  [undefined reference warning](#orgcfd0a12)
+    1.  [An example](#org741e327)
+    2.  [Solution - explanation:](#org8d8c550)
 
 ---
 author: cissic
@@ -13,12 +13,12 @@ title: 'undefined reference warning'
 ---
 
 
-<a id="org04b48f4"></a>
+<a id="orgcfd0a12"></a>
 
 # TODO undefined reference warning
 
 
-<a id="orgff13a73"></a>
+<a id="org741e327"></a>
 
 ## An example
 
@@ -32,7 +32,7 @@ This is formula (\ref{Eq:refA}).
 message is displayed, although everything is fine in the output.
 
 
-<a id="orgb8c54ae"></a>
+<a id="org8d8c550"></a>
 
 ## Solution - explanation:
 

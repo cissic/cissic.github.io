@@ -1,8 +1,8 @@
 
 # Table of Contents
 
-1.  [Custom (per slide) list environments in beamer](#org9245f7d)
-    1.  [Example of an org-mode/beamer document where list fonts should be customized per slide or per list](#org23af65e)
+1.  [Custom (per slide) list environments in beamer](#orgdaeadbf)
+    1.  [Example of an org-mode/beamer document where list fonts should be customized per slide or per list](#org05cae00)
 
 ---
 author: cissic
@@ -12,12 +12,12 @@ title: 'Custom (per slide) list environments in beamer'
 ---
 
 
-<a id="org9245f7d"></a>
+<a id="orgdaeadbf"></a>
 
 # TODO Custom (per slide) list environments in beamer
 
 
-<a id="org23af65e"></a>
+<a id="org05cae00"></a>
 
 ## Example of an org-mode/beamer document where list fonts should be customized per slide or per list
 

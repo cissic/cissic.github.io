@@ -1,24 +1,24 @@
 
 # Table of Contents
 
-1.  [Properties in org-mode](#orgb64c267)
-    1.  [Properties in org-mode](#orgf074390)
-        1.  [Problem - the beggining](#orgf6fcb52)
-    2.  [Useful links:](#orgdf72926)
+1.  [Properties in org-mode](#org562af2e)
+    1.  [Properties in org-mode](#orgdeebbbf)
+        1.  [Problem - the beggining](#orgd6ec3a1)
+    2.  [Useful links:](#org15e6e06)
 
 
 
-<a id="orgb64c267"></a>
+<a id="org562af2e"></a>
 
 # TODO Properties in org-mode
 
 
-<a id="orgf074390"></a>
+<a id="orgdeebbbf"></a>
 
 ## Properties in org-mode
 
 
-<a id="orgf6fcb52"></a>
+<a id="orgd6ec3a1"></a>
 
 ### Problem - the beggining
 
@@ -62,7 +62,7 @@ Let's say we've got the following org file
     (("{{{title}}}") ("COMMENT Solution") ("Useful links:"))
 
 
-<a id="orgdf72926"></a>
+<a id="org15e6e06"></a>
 
 ## Useful links:
 

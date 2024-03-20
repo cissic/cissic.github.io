@@ -1,17 +1,17 @@
 
 # Table of Contents
 
-1.  [Transparent background in KDE bash konsole](#org67835e7)
-    1.  [Useful links:](#org8afb8e0)
+1.  [Transparent background in KDE bash konsole](#orgaf6886d)
+    1.  [Useful links:](#org59996ca)
 
 
 
-<a id="org67835e7"></a>
+<a id="orgaf6886d"></a>
 
 # TODO Transparent background in KDE bash konsole
 
 
-<a id="org8afb8e0"></a>
+<a id="org59996ca"></a>
 
 ## Useful links:
 

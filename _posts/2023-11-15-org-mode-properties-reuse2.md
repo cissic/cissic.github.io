@@ -1,27 +1,27 @@
 
 # Table of Contents
 
-1.  [Properties in org-mode](#org8e26af9)
-    1.  [Approach 1](#org720aa11)
-    2.  [Approach 2:](#org2c60efc)
-    3.  [Approach 3:](#orgbe15d60)
-    4.  [Approach 4:](#org23076c4)
-    5.  [Approach 5:](#orgf688f57)
-    6.  [Approach 6](#org2f58e90)
-    7.  [Idea 7](#org69e3276)
-    8.  [Idea 8](#org1b28681)
-    9.  [Idea 9](#org0e7484f)
-    10. [Idea 10](#orgf4044fd)
-    11. [Useful links:](#org817505d)
+1.  [Properties in org-mode](#org88b26f2)
+    1.  [Approach 1](#org06bfd90)
+    2.  [Approach 2:](#orga37aecb)
+    3.  [Approach 3:](#orgd4323db)
+    4.  [Approach 4:](#org934ed8b)
+    5.  [Approach 5:](#org64309f3)
+    6.  [Approach 6](#orgf15e1c8)
+    7.  [Idea 7](#orgf3e9066)
+    8.  [Idea 8](#orgf5e6021)
+    9.  [Idea 9](#org5ce70a1)
+    10. [Idea 10](#org1a1b275)
+    11. [Useful links:](#org58054ac)
 
 
 
-<a id="org8e26af9"></a>
+<a id="org88b26f2"></a>
 
 # TODO Properties in org-mode
 
 
-<a id="org720aa11"></a>
+<a id="org06bfd90"></a>
 
 ## Approach 1
 
@@ -70,7 +70,7 @@ Now the results are:
     "Section about "
 
 
-<a id="org2c60efc"></a>
+<a id="orga37aecb"></a>
 
 ## Approach 2:
 
@@ -105,7 +105,7 @@ Now the results are:
     #+end_src
 
 
-<a id="orgbe15d60"></a>
+<a id="orgd4323db"></a>
 
 ## Approach 3:
 
@@ -152,7 +152,7 @@ Now the results are:
     #+end_src
 
 
-<a id="org23076c4"></a>
+<a id="org934ed8b"></a>
 
 ## Approach 4:
 
@@ -196,7 +196,7 @@ Now the results are:
     #+end_src
 
 
-<a id="orgf688f57"></a>
+<a id="org64309f3"></a>
 
 ## Approach 5:
 
@@ -259,7 +259,7 @@ Now the results are:
     #+end_src
 
 
-<a id="org2f58e90"></a>
+<a id="orgf15e1c8"></a>
 
 ## Approach 6
 
@@ -372,7 +372,7 @@ Now the results are:
     #+end_src
 
 
-<a id="org69e3276"></a>
+<a id="orgf3e9066"></a>
 
 ## Idea 7
 
@@ -390,7 +390,7 @@ Now the results are:
     #+end_src
 
 
-<a id="org1b28681"></a>
+<a id="orgf5e6021"></a>
 
 ## Idea 8
 
@@ -413,7 +413,7 @@ org-mode exporting macros
       #+end_src
 
 
-<a id="org0e7484f"></a>
+<a id="org5ce70a1"></a>
 
 ## Idea 9
 
@@ -467,7 +467,7 @@ Działa!!!!
     #+end_src
 
 
-<a id="orgf4044fd"></a>
+<a id="org1a1b275"></a>
 
 ## Idea 10
 
@@ -551,7 +551,7 @@ Globalne wlasnosci
     src_elisp[:noweb yes]{(print "<<get_property("AnotherComposer")>>")} 
 
 
-<a id="org817505d"></a>
+<a id="org58054ac"></a>
 
 ## Useful links:
 

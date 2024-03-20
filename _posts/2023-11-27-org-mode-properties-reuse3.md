@@ -1,18 +1,18 @@
 
 # Table of Contents
 
-1.  [Properties in org-mode](#org7e46535)
-    1.  [Approach 1](#org0698e3e)
-    2.  [Useful links:](#orgac30a0c)
+1.  [Properties in org-mode](#orgc1ea324)
+    1.  [Approach 1](#org2c15608)
+    2.  [Useful links:](#org820578c)
 
 
 
-<a id="org7e46535"></a>
+<a id="orgc1ea324"></a>
 
 # TODO Properties in org-mode
 
 
-<a id="org0698e3e"></a>
+<a id="org2c15608"></a>
 
 ## Approach 1
 
@@ -61,7 +61,7 @@ Now the results are:
     "Section about "
 
 
-<a id="orgac30a0c"></a>
+<a id="org820578c"></a>
 
 ## Useful links:
 
