@@ -7,7 +7,7 @@
 #+OPTIONS: toc:nil
 #+OPTIONS: -:nil
 
-* TODO {{{title}}
+* TODO {{{title}}}
 :PROPERTIES:
 :PRJ-DIR: ./2023-09-07-sync-async-org-mode-exporter/
 :preambleFileName: Preamble2023_07.org

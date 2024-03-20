@@ -2,11 +2,11 @@
 author: cissic
 date: 2023-09-30 Sat
 tags: 'debian lenovo trackpoint scroll'
-title: 'How to make Lenovo's trackpoint work for scrolling'
+title: 'How to make Lenovo trackpoint work for scrolling'
 ---
 
 
-# How to make Lenovo's trackpoint work for scrolling
+# How to make Lenovo trackpoint work for scrolling
 
 
 ## Description

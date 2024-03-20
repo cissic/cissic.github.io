@@ -6,7 +6,7 @@ title: 'Examples of C/C++ code blocks in noweb'
 ---
 
 
-# {{{title}}
+# Examples of C/C++ code blocks in noweb
 
 :PROPERTIES:
 :PRJ-DIR: ./2023-10-05-noweb-C/:

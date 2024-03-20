@@ -6,7 +6,7 @@ title: 'How to install maxima-kernel in jupyter notebook'
 ---
 
 
-# {{{title}}
+# How to install maxima-kernel in jupyter notebook
 
 
 ## Links that can be useful:

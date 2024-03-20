@@ -9,7 +9,7 @@
 
 
 
-* {{{title}}
+* {{{title}}}
 :PROPERTIES:
 :PRJ-DIR: ./2023-10-10-local-vars/:
 

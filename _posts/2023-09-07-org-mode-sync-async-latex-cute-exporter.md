@@ -1,6 +1,6 @@
 
 
-# TODO {{{title}}
+# TODO Dealing with asynchronous exporting to latex documents
 
 
 ## Problem description

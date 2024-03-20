@@ -1,4 +1,4 @@
-#+TITLE: How to make Lenovo's trackpoint work for scrolling 
+#+TITLE: How to make Lenovo trackpoint work for scrolling 
 #+DESCRIPTION: 
 #+AUTHOR: cissic
 #+DATE: <2023-09-30 Sat>

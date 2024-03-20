@@ -6,7 +6,7 @@ title: 'Kind of function local variables in elisp'
 ---
 
 
-# {{{title}}
+# Kind of function local variables in elisp
 
 :PROPERTIES:
 :PRJ-DIR: ./2023-10-10-local-vars/:
