@@ -1,0 +1,394 @@
+
+# Table of Contents
+
+1.  [Obtaining latex output from Matlab blocks - the easiest way (at least for me)](#orgf79783d)
+    1.  [Source code blocks](#org72460f6)
+    2.  [Inline source blocks](#orga553dc1)
+    3.  [Making matlab code blocks be easily converted to octave code blocks](#org01ffe0a)
+        1.  [Matlab](#orgf5640a0)
+        2.  [Octave](#org0390b72)
+    4.  [Summary](#orgba26c9c)
+
+
+
+<a id="orgf79783d"></a>
+
+# Obtaining latex output from Matlab blocks - the easiest way (at least for me)
+
+Here are my loose thoughts on the topic started
+[here](https://sourceforge.net/p/matlab-emacs/mailman/matlab-emacs-discuss/thread/871q6wp5j0.fsf_-_%40mat.ucm.es/#msg58763751).
+
+
+<a id="org72460f6"></a>
+
+## Source code blocks
+
+If you have Symbolic Matlab Toolbox and some newer version of Matlab
+you can always use its `latex` function to deal with the problem.
+For example 
+
+    #+begin_src matlab :session *MatOct* :exports none :eval no-export
+      A = [1 2; 2.5 pi] ;
+      C = {1 2; "string", { 3.987987933 \pi}} ;
+      a = 1 ;
+      v = [1 2 3] ;
+    #+end_src
+    
+    #+begin_src matlab :session *MatOct* :results output latex :exports results :wrap latex :eval no-export
+      disp(['$' latex(sym(A)) '$'])
+      disp(['$' latex(sym(C)) '$'])
+    #+end_src
+
+Returns the following results:
+
+<div class="latex" id="org37facfe">
+<p>
+\(\left(\begin{array}{cc} 1 & 2\\ \frac{5}{2} & \pi  \end{array}\right)\)
+\(\left(\begin{array}{cc} 1 & 2\\ \mathrm{string} & \frac{886943224362615}{1125899906842624} \end{array}\right)\)
+</p>
+
+</div>
+
+
+<a id="orga553dc1"></a>
+
+## Inline source blocks
+
+For inline blocks you need to however use `raw` modifier like below: 
+
+`src_matlab[:session *MatOct* :results raw]{disp(['$' latex(sym(A)) '$'])}`
+
+which results in:
+
+$\left(\begin{array}{cc} 1 & 2\\ \frac{5}{2} & \pi  \end{array}\right)$.
+
+One of the pros of  `latex(sym(....` approach is that we can easily
+deal not only with matrices but also with cell arrays.
+The con is that it converts floats to decimal fractions, which
+is not always desirable.
+However... 
+
+
+<a id="org01ffe0a"></a>
+
+## Making matlab code blocks be easily converted to octave code blocks
+
+... from my point of view, it would be very convenient to have
+the ability to convert matlab source blocks easily into octave source
+blocks and vice versa (when you don't use sophisticated functions
+from Matlab toolboxes it's better to evoke octave).
+For such use-cases it'd be good to have consistent way of
+working with source blocks. Unfortunately I cannot not find it.
+
+First, we cannot use `latex` function from Matlab's Symbolic
+Toolbox anymore.
+
+OK. We can deal with that by tailoring useful
+`matrix2latex` function from Mathworks FileExchange.
+The original version can be found here: [matrix2latex](https://www.mathworks.com/matlabcentral/fileexchange/4894-matrix2latex).
+It's drawback is that it stores results in a file which name is
+given as a function second parameter.
+
+I have edited it a bit to make it return latex code as a string.
+I have no patience to do it properly, so I only commented out
+the parts of the original file that refer to saving to the file
+on the disk.
+
+Here's my version:
+
+%% %%%%%%%%%%%%%%%%
+
+    function [S] = matrix2latexS(matrix, filename_NOTUSED, varargin)
+    
+    % function: matrix2latex(...)
+    % Author:   M. Koehler
+    % Contact:  koehler@in.tum.de
+    % Version:  1.1
+    % Date:     May 09, 2004
+    
+    % This software is published under the GNU GPL, by the free software
+    % foundation. For further reading see: http://www.gnu.org/licenses/licenses.html#GPL
+    
+    % Usage:
+    % matrix2late(matrix, filename, varargs)
+    % where
+    %   - matrix is a 2 dimensional numerical or cell array
+    %   - filename is a valid filename, in which the resulting latex code will
+    %   be stored
+    %   - varargs is one ore more of the following (denominator, value) combinations
+    %      + 'rowLabels', array -> Can be used to label the rows of the
+    %      resulting latex table
+    %      + 'columnLabels', array -> Can be used to label the columns of the
+    %      resulting latex table
+    %      + 'alignment', 'value' -> Can be used to specify the alginment of
+    %      the table within the latex document. Valid arguments are: 'l', 'c',
+    %      and 'r' for left, center, and right, respectively
+    %      + 'format', 'value' -> Can be used to format the input data. 'value'
+    %      has to be a valid format string, similar to the ones used in
+    %      fprintf('format', value);
+    %      + 'size', 'value' -> One of latex' recognized font-sizes, e.g. tiny,
+    %      HUGE, Large, large, LARGE, etc.
+    %
+    % Example input:
+    %   matrix = [1.5 1.764; 3.523 0.2];
+    %   rowLabels = {'row 1', 'row 2'};
+    %   columnLabels = {'col 1', 'col 2'};
+    %   matrix2latex(matrix, 'out.tex', 'rowLabels', rowLabels, 'columnLabels', columnLabels, 'alignment', 'c', 'format', '%-6.2f', 'size', 'tiny');
+    %
+    % The resulting latex file can be included into any latex document by:
+    % /input{out.tex}
+    %
+    % Enjoy life!!!
+    
+        rowLabels = [];
+        colLabels = [];
+        alignment = 'l';
+        format = [];
+        textsize = [];
+        if (rem(nargin,2) == 1 || nargin < 2)
+            error('matrix2latexS: ', 'Incorrect number of arguments to %s.', mfilename);
+        end
+    
+        okargs = {'rowlabels','columnlabels', 'alignment', 'format', 'size'};
+        for j=1:2:(nargin-2)
+            pname = varargin{j};
+            pval = varargin{j+1};
+            k = strmatch(lower(pname), okargs);
+            if isempty(k)
+                error('matrix2latexS: ', 'Unknown parameter name: %s.', pname);
+            elseif length(k)>1
+                error('matrix2latexS: ', 'Ambiguous parameter name: %s.', pname);
+            else
+                switch(k)
+                    case 1  % rowlabels
+                        rowLabels = pval;
+                        if isnumeric(rowLabels)
+                            rowLabels = cellstr(num2str(rowLabels(:)));
+                        end
+                    case 2  % column labels
+                        colLabels = pval;
+                        if isnumeric(colLabels)
+                            colLabels = cellstr(num2str(colLabels(:)));
+                        end
+                    case 3  % alignment
+                        alignment = lower(pval);
+                        if alignment == 'right'
+                            alignment = 'r';
+                        end
+                        if alignment == 'left'
+                            alignment = 'l';
+                        end
+                        if alignment == 'center'
+                            alignment = 'c';
+                        end
+                        if alignment ~= 'l' && alignment ~= 'c' && alignment ~= 'r'
+                            alignment = 'l';
+                            warning('matrix2latexS: ', 'Unkown alignment. (Set it to \''left\''.)');
+                        end
+                    case 4  % format
+                        format = lower(pval);
+                    case 5  % format
+                        textsize = pval;
+                end
+            end
+        end
+    
+        S = [''] ; %fid = fopen(filename, 'w');
+    
+        width = size(matrix, 2);
+        height = size(matrix, 1);
+    
+        if isnumeric(matrix)
+            matrix = num2cell(matrix);
+            for h=1:height
+                for w=1:width
+                    if(~isempty(format))
+                        matrix{h, w} = num2str(matrix{h, w}, format);
+                    else
+                        matrix{h, w} = num2str(matrix{h, w});
+                    end
+                end
+            end
+        end
+    
+        if(~isempty(textsize))
+            S = [S sprintf('\\begin{%s}', textsize) ] ; % fprintf(fid, '\\begin{%s}', textsize);
+        end
+    
+        S = [S sprintf('\\begin{tabular}{|') ] ;  %fprintf(fid, '\\begin{tabular}{|');
+    
+        if(~isempty(rowLabels))
+            S = [S sprintf('l|')] ; % fprintf(fid, 'l|');
+        end
+        for i=1:width
+            S = [S sprintf('%c|', alignment)]; % fprintf(fid, '%c|', alignment);
+        end
+        S = [S sprintf('}')]; % fprintf(fid, '}\r\n');
+    
+        S = [S sprintf('\\hline')]; % fprintf(fid, '\\hline\r\n');
+    
+        if(~isempty(colLabels))
+            if(~isempty(rowLabels))
+                S = [S sprintf(' & ')]; % fprintf(fid, '&');
+            end
+            for w=1:width-1
+                S = [S sprintf('\\textbf{%s} & ', colLabels{w})]; % fprintf(fid, '\\textbf{%s}&', colLabels{w});
+            end
+            S = [S sprintf('\\textbf{%s}\\\\ \\hline', colLabels{width})]; % fprintf(fid, '\\textbf{%s}\\\\\\hline\r\n', colLabels{width});
+        end
+    
+        for h=1:height
+            if(~isempty(rowLabels))
+                S = [S sprintf('\\textbf{%s} & ', rowLabels{h})]; % fprintf(fid, '\\textbf{%s}&', rowLabels{h});
+            end
+            for w=1:width-1
+                S = [S sprintf('%s & ', matrix{h, w})]; % fprintf(fid, '%s&', matrix{h, w});
+            end
+            S = [S sprintf('%s\\\\ \\hline', matrix{h, width})]; % fprintf(fid, '%s\\\\\\hline\r\n', matrix{h, width});
+        end
+    
+        S = [S sprintf('\\end{tabular}')]; % fprintf(fid, '\\end{tabular}\r\n');
+    
+        if(~isempty(textsize))
+            S = [S sprintf('\\end{%s}', textsize)]; % fprintf(fid, '\\end{%s}', textsize);
+        end
+    
+        % fclose(fid);
+
+%% %%%%%%%%%%%%%%%%
+
+Now, with the use of this function we can generate latex
+matrix code for the given matlab/octave matrix.
+However, as the examples below indicate, there are still
+inconsistencies between matlab and octave source block modifiers.
+The same modifier value that work well with matlab, return
+unwanted output in octave and vice versa....
+
+
+<a id="orgf5640a0"></a>
+
+### Matlab
+
+1.  Source blocks
+
+    For:
+    
+        #+begin_src matlab :session *MatOct* :exports none
+          A = [1 2; 2.5 pi] ;
+          C = {1 2; "string", { 3.987987933 \pi}} ;
+          a = 1 ;
+          v = [1 2 3] ;
+        #+end_src
+        
+        #+begin_src matlab :session *MatOct* :results output :exports results :eval never-export :wrap latex
+          str = matrix2latexS(A, 'THIS_STRING_IS_NOT_USED', 'alignment', 'c', 'format', '%-4.4f', 'size', 'tiny') ;
+          disp(str)
+        #+end_src
+    
+    We obtain:
+    
+    <div class="latex" id="orge61ed36">
+    \begin{tiny}\begin{tabular}{|c|c|}\hline1.0000 & 2.0000\\ \hline2.5000 & 3.1416\\ \hline\end{tabular}\end{tiny}
+    
+    </div>
+
+2.  Inline blocks
+
+    `src_matlab[:session *MatOct* :results raw]{disp(['$' str '$'])}`
+    
+    returns:
+    
+    $\begin{tiny}\begin{tabular}{|c|c|}\hline1.0000 & 2.0000\\ \hline2.5000 & 3.1416\\ \hline\end{tabular}\end{tiny}$
+    
+    Of course the form of latex matrices can be tailored to your
+    needs by adjusting `matrix2latexS` function.
+
+
+<a id="org0390b72"></a>
+
+### Octave
+
+... and this is where I fall...
+As I said, it is important to me to have easily convertible
+matlab code blocks to octave code blocks.
+However I am not able to find any common, consistent way of accessing
+results of code blocks of these two languages. Have a look at
+the examples below:
+
+1.  Source blocks
+
+        #+begin_src octave :session *OctMat* 
+          A = [1 2; 2.5 pi] ;
+          C = {1 2; "string", { 3.987987933 \pi}} ;
+          a = 1 ;
+          v = [1 2 3] ;
+        #+end_src
+        
+        #+begin_src octave :session *OctMat* :results output :exports results :eval never-export :wrap latex
+          str = matrix2latexS(A, 'THIS_STRING_IS_NOT_USED', 'alignment', 'c', 'format', '%-4.4f', 'size', 'tiny') ;
+          ans = str
+        #+end_src
+    
+        A = [1 2; 2.5 pi] ;
+        C = {1 2; "string", { 3.987987933 \pi}} ;
+        a = 1 ;
+        v = [1 2 3] ;
+    
+    Results in:
+    
+        #+RESULTS:
+        #+begin_latex
+        | octave> octave> ans = \begin{tiny}\begin{tabular}{ | c | c | }\hline1.0000 & 2.0000\\ \hline2.5000 & 3.1416\\ \hline\end{tabular}\end{tiny} |
+        #+end_latex
+    
+    which renders as:
+    
+    <div class="latex" id="org7345f81">
+    <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+    
+    
+    <colgroup>
+    <col  class="org-left" />
+    
+    <col  class="org-left" />
+    
+    <col  class="org-left" />
+    
+    <col  class="org-left" />
+    </colgroup>
+    <tbody>
+    <tr>
+    <td class="org-left">octave&gt; octave&gt; ans = \begin{tiny}\begin{tabular}{</td>
+    <td class="org-left">c</td>
+    <td class="org-left">c</td>
+    <td class="org-left">}\hline1.0000 &amp; 2.0000\\ \hline2.5000 &amp; 3.1416\\ \hline\end{tabular}\end{tiny}</td>
+    </tr>
+    </tbody>
+    </table>
+    
+    </div>
+
+2.  Inline blocks:
+
+    On the other hand this piece of code:
+    
+    `src_octave[:session *OctMat* :results raw]{disp(['$' 'string' '$'])}`
+    
+    results in:
+    
+    org<sub>babel</sub><sub>eoe</sub>
+
+
+<a id="orgba26c9c"></a>
+
+## Summary
+
+Org-babel with octave/matlab is a tricky machinery to me.
+
+I'm not sure if it is possible to get both
+matlab and octave code blocks (and inline blocks)
+working in the same manner.
+
+If it was, I could adjust `matrix2latex` function to have
+common way of working with both languages.
+
