@@ -203,7 +203,7 @@ performed in this script. It should be performed explicitely by the user
 in a convenient time.
 
 In order to make a git commit from within elisp script I followed [[https://emacs.stackexchange.com/questions/48954/the-elisp-function-to-run-the-shell-command-in-specific-file-path][this post]].
-
+x
 #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "install-packages.el") :mkdirp yes
 ;; Make a git commit of your repository.
 ;; 
@@ -351,7 +351,7 @@ The main point of the file. Set the list of packages to be installed
     ; jedi
     magit
     markdown-mode
-    matlab-mode 
+    matlab-mode ; 
     modus-themes ; theme by Protesilaos Stavrou
     ;moe-theme ; https://github.com/kuanyui/moe-theme.el
     ;mh
@@ -375,7 +375,7 @@ The main point of the file. Set the list of packages to be installed
     ;Pylint  ; zeby dzialal interpreter python'a po:  C-c C-c 
     ;rebox2
     ;recentf
-    ;session-async
+    session-async
     ;shell-pop
     smex
     ssh
@@ -1245,6 +1245,60 @@ Define your own custom shortcuts to run specific script in matlab shell.
 )
 #+end_src
 
+
+***** Change all matlab source blocks to octave (or vice versa) in the current buffer
+If you want to have consistent way of working with matlab/octave
+source blocks you need to tend to use named sessions.
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
+  (defun replace-string-in-buffer (string1 string2)
+    (save-excursion
+      (goto-char (point-min))
+      (while (search-forward string1 nil t)
+	(replace-match string2))))
+
+  ;; (replace-string-in-buffer "string2" "string2") 
+
+  (defun mb/matlab-octave-org-babel-source-conversion()
+    (interactive) 
+    (replace-string-in-buffer "#+begin_src octave" "#+begin_src oct2mat")
+    (replace-string-in-buffer "#+begin_src matlab" "#+begin_src mat2oct")
+    (replace-string-in-buffer "src_octave" "src_oct2mat")        
+    (replace-string-in-buffer "src_matlab" "src_mat2oct")
+    (replace-string-in-buffer "#+begin_src oct2mat" "#+begin_src matlab" )
+    (replace-string-in-buffer "#+begin_src mat2oct" "#+begin_src octave")
+    (replace-string-in-buffer "src_oct2mat" "src_matlab")
+    (replace-string-in-buffer "src_mat2oct" "src_octave")
+    (kill-buffer "*MatOct*")
+    )
+
+  (defun mb/matoct-conversion()
+    ;; auxiliary shortcut for an original function
+    (interactive) 
+    (mb/matlab-octave-org-babel-source-conversion)
+    )
+#+end_src
+
+Remember not to give the same name to the
+matlab and octave session
+and place it
+simultaneously in the same org file!
+It won't work (which is obvious if you give it a think for
+a second).
+
+Provided you have opened session named =*MatOct*= that is managed
+by =octave= (or =matlab=) and
+you want to run the code in the other language be sure to:
+- kill currently running =*MatOct*= session,
+- change all the appearances of:
+  - =#+begin_src octave= to =#+begin_src matlab=, and
+  - for inline code blocks:  =src_octave= to =src_matlab= 
+  (or vice versa)
+- and only then run the code (or export the file) to the format
+  of your choice.
+
+
+
 **** Python mode
 <<sec:python-mode>>
 
@@ -1616,6 +1670,31 @@ https://emacs.stackexchange.com/questions/52492/change-todo-keywords-of-all-node
 (add-hook #'org-mode-hook #'org-special-block-extras-mode)
 ;; <- **** org-special-block-extras 
 #+end_src
+
+
+**** Org-babel asynchronous source block execution
+
+***** =session-async=
+
+***** DEPRECATED =emacs-async=
+https://github.com/jwiegley/emacs-async#async-usage
+It's built into the newest emacs versions...
+
+
+***** DEPRECATED =ob-async=
+[[https://github.com/astahlman/ob-async][ob-async]] package enables asynchronous execution of org-babel src blocks.
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+
+;; enabling asynchronous org-babel source block execution
+(require 'ob-async)
+
+#+end_src
+
+There might be some problems with some languages (see the link above
+for =ipython= and jupyter-like environments...
+
+
+
 
 **** Org-babel and tangling
 To have org-babel enabled (execution of portions of code):
@@ -2659,6 +2738,26 @@ of code to [[sec:engraved]], where I repeated default
 setting of =org-latex-engraved-preamble= with necessary lines
 added at the end of the string.
 
+***** Updating =org-structure-template-alist= to include org-ai environment ... and to add newlines in appropriate items
+Based on https://emacs.stackexchange.com/questions/52441/how-to-modify-org-structure-template-alist-after-org-mode-9-2
+
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
+  (setq org-structure-template-alist
+  '(("a" . "export ascii\n")
+    ("A" . "ai\n")
+    ("c" . "center\n")
+    ("C" . "comment\n")
+    ("e" . "example\n")
+    ("E" . "export")
+    ("h" . "export html\n")
+    ("l" . "export latex\n")
+    ("q" . "quote\n")
+    ("s" . "src")
+    ("v" . "verse\n")))
+#+end_src
+
+
+
 **** gptel
 I also tried with =gptel=. Unfortunately I wasn't able to succeed in
 installing it.
@@ -3334,6 +3433,30 @@ I have downloaded it and here it is loaded.
 (require 'ox-extra)
 (ox-extras-activate '(ignore-headlines))
 #+end_src
+
+
+**** DEPRECATED Matlab-mode (2024.04.18) =symbols value as variable is void: font-lock-reference-face=
+In the newest version of the package in melpa repository there is
+a patch that fixes this error.
+
+# Currently in =matlab-mode= there exist
+# =symbols value as variable is void: font-lock-reference-face=
+# (for example when using =for= loop in org-babel source block
+# the syntax stops being highlighted and there appears error when
+# exporting the code).
+
+# Since a fix for this font-lock-reference-face error is not yet available
+# in elpa (2024.04.18), but already in project repo:
+# https://sourceforge.net/p/matlab-emacs/src/ci/f1a709eca260562fea1871fffd3b75b5a2d404ce/
+# so I downloaded it manually..
+
+# According to =~/.emacs.d/manual-download/matlab-emacs-src/INSTALL=
+# we need to add the following lines to =init.el=.
+# #+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+#   ;; matlab-mode
+#   (add-to-list 'load-path "~/.emacs.d/manual-download/matlab-emacs-src")
+#   (require 'matlab-load)
+# #+end_src
 
 
 **** Other packages
