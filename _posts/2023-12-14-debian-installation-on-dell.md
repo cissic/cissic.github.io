@@ -1,37 +1,37 @@
 
 # Table of Contents
 
-1.  [Debian on Dell](#org13cd6d9)
-    1.  [Preparation](#org96a927c)
-        1.  [Debian live default login/password](#org9eff7df)
-        2.  [Warnings](#orgd5f02d9)
-        3.  [Disk partitioning](#org5564c44)
-    2.  [Installation](#org55c3128)
-        1.  [General notes](#org3dd4a9f)
-        2.  [System configuration](#orgc9de001)
-    3.  [Configuration](#orge0e663a)
-        1.  [Battery drainage/Moderm Standby/Power management - sleep modes/hibernation](#org14b88ec)
-        2.  [Okular and buttons](#orgd746edf)
-        3.  [Dell Thunderbolt Dock WD22TB4](#org6a50772)
-        4.  [Lenovo keyboard](#org2705ced)
-        5.  [Controlling Intel Turbo Boost in Linux](#org4bd2d31)
-        6.  [ZRAM - tool for optimizing RAM usage](#orgf22dcdd)
-        7.  [Do I need SWAP?](#org976200a)
-        8.  [Useful links:](#org99098dd)
+1.  [Debian on Dell](#org3e260da)
+    1.  [Preparation](#orgd2539b4)
+        1.  [Debian live default login/password](#orgf2492b8)
+        2.  [Warnings](#orgf7aefe2)
+        3.  [Disk partitioning](#orgbc3aad1)
+    2.  [Installation](#org26c521f)
+        1.  [General notes](#org9672b01)
+        2.  [System configuration](#org4ff0bbc)
+    3.  [Configuration](#orgfa2b969)
+        1.  [Battery drainage/Moderm Standby/Power management - sleep modes/hibernation](#org1e7c6e9)
+        2.  [Okular and buttons](#org15a0d58)
+        3.  [Dell Thunderbolt Dock WD22TB4](#org6e367ae)
+        4.  [Lenovo keyboard](#org7bee6a9)
+        5.  [Controlling Intel Turbo Boost in Linux](#org339c103)
+        6.  [ZRAM - tool for optimizing RAM usage](#org238b3da)
+        7.  [Do I need SWAP?](#org50ac00c)
+        8.  [Useful links:](#org59b5a39)
 
 
 
-<a id="org13cd6d9"></a>
+<a id="org3e260da"></a>
 
 # Debian on Dell
 
 
-<a id="org96a927c"></a>
+<a id="orgd2539b4"></a>
 
 ## Preparation
 
 
-<a id="org9eff7df"></a>
+<a id="orgf2492b8"></a>
 
 ### Debian live default login/password
 
@@ -39,14 +39,14 @@ user: user
 pass: live
 
 
-<a id="orgd5f02d9"></a>
+<a id="orgf7aefe2"></a>
 
 ### TODO Warnings
 
 1.  ,,Keymap changes do not work in Plasma on Wayland. Please use systemsettings5 instead.'' ?
 
 
-<a id="org5564c44"></a>
+<a id="orgbc3aad1"></a>
 
 ### Disk partitioning
 
@@ -237,7 +237,7 @@ pass: live
             mkpart primary ext4 81922MB 524290MB
 
 
-<a id="org55c3128"></a>
+<a id="org26c521f"></a>
 
 ## Installation
 
@@ -281,7 +281,7 @@ I have created the following partitions:
 -   rest: 15,46 GB ntfs (NTFSTrash)
 
 
-<a id="org3dd4a9f"></a>
+<a id="org9672b01"></a>
 
 ### General notes
 
@@ -315,7 +315,7 @@ process are:
 Keeping this order of steps I had no problems with `kwallet` and `vivaldi`.
 
 
-<a id="orgc9de001"></a>
+<a id="org4ff0bbc"></a>
 
 ### System configuration
 
@@ -708,12 +708,12 @@ Keeping this order of steps I had no problems with `kwallet` and `vivaldi`.
             initexmf --set-config-value [MPM]AutoInstall=1
 
 
-<a id="orge0e663a"></a>
+<a id="orgfa2b969"></a>
 
 ## Configuration
 
 
-<a id="org14b88ec"></a>
+<a id="org1e7c6e9"></a>
 
 ### TODO Battery drainage/Moderm Standby/Power management - sleep modes/hibernation
 
@@ -1126,14 +1126,14 @@ S3 mode was a deep sleep.
         <https://download.nvidia.com/XFree86/Linux-x86_64/460.32.03/README/powermanagement.html>
 
 
-<a id="orgd746edf"></a>
+<a id="org15a0d58"></a>
 
 ### Okular and buttons
 
 -   Invert colours, turn to black and white
 
 
-<a id="org6a50772"></a>
+<a id="org6e367ae"></a>
 
 ### Dell Thunderbolt Dock WD22TB4
 
@@ -1154,7 +1154,7 @@ Software (ubuntu) for firmware update
     write down you laptop MAC and you are good to go! :)
 
 
-<a id="org2705ced"></a>
+<a id="org7bee6a9"></a>
 
 ### Lenovo keyboard
 
@@ -1169,7 +1169,7 @@ can be found here:
 <https://forums.opensuse.org/t/is-it-possible-in-kde-to-switch-the-fn-and-left-ctrl-keys/120000>
 
 
-<a id="org4bd2d31"></a>
+<a id="org339c103"></a>
 
 ### TODO Controlling Intel Turbo Boost in Linux
 
@@ -1177,7 +1177,7 @@ can be found here:
 <https://github.com/AdnanHodzic/auto-cpufreq>
 
 
-<a id="orgf22dcdd"></a>
+<a id="org238b3da"></a>
 
 ### ZRAM - tool for optimizing RAM usage
 
@@ -1185,7 +1185,7 @@ can be found here:
 <https://youtube.com/watch?v=RGVt16xiERc>
 
 
-<a id="org976200a"></a>
+<a id="org50ac00c"></a>
 
 ### Do I need SWAP?
 
@@ -1198,7 +1198,7 @@ can be found here:
     -   rest: 15,46 GB ntfs
 
 
-<a id="org99098dd"></a>
+<a id="org59b5a39"></a>
 
 ### Useful links:
 
