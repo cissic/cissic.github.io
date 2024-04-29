@@ -1,82 +1,61 @@
 
 # Table of Contents
 
-1.  [Debian on Dell](#orgb21d9fc)
-    1.  [Preparation](#org3da0d3f)
-        1.  [Debian live default login/password](#org1b011d6)
-        2.  [Debian live](#orgd105595)
-        3.  [Warnings](#org19c6f33)
-        4.  [Disk partitioning](#orgd656940)
-    2.  [Installation](#org341efac)
-        1.  [General notes](#orgbeccc92)
-        2.  [System configuration](#orgcb18266)
-    3.  [Configuration](#orgfe715dc)
-        1.  [Battery drainage/Moderm Standby/Power management - sleep modes/hibernation](#orga28be1e)
-        2.  [Okular and buttons](#org11e4fb9)
-        3.  [Dell Thunderbolt Dock WD22TB4](#orgdc29294)
-        4.  [Lenovo keyboard](#org106f764)
-        5.  [Controlling Intel Turbo Boost in Linux](#orgc4a2a58)
-        6.  [ZRAM - tool for optimizing RAM usage](#org2882d9f)
-        7.  [Do I need SWAP?](#org2767324)
-        8.  [Useful links:](#orgf9327a8)
-
-<<<<<<< HEAD
-
-`=====`
-
->>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
+1.  [Debian on Dell](#org13cd6d9)
+    1.  [Preparation](#org96a927c)
+        1.  [Debian live default login/password](#org9eff7df)
+        2.  [Warnings](#orgd5f02d9)
+        3.  [Disk partitioning](#org5564c44)
+    2.  [Installation](#org55c3128)
+        1.  [General notes](#org3dd4a9f)
+        2.  [System configuration](#orgc9de001)
+    3.  [Configuration](#orge0e663a)
+        1.  [Battery drainage/Moderm Standby/Power management - sleep modes/hibernation](#org14b88ec)
+        2.  [Okular and buttons](#orgd746edf)
+        3.  [Dell Thunderbolt Dock WD22TB4](#org6a50772)
+        4.  [Lenovo keyboard](#org2705ced)
+        5.  [Controlling Intel Turbo Boost in Linux](#org4bd2d31)
+        6.  [ZRAM - tool for optimizing RAM usage](#orgf22dcdd)
+        7.  [Do I need SWAP?](#org976200a)
+        8.  [Useful links:](#org99098dd)
 
 
-<a id="orgb21d9fc"></a>
+
+<a id="org13cd6d9"></a>
 
 # Debian on Dell
 
 
-<a id="org3da0d3f"></a>
+<a id="org96a927c"></a>
 
 ## Preparation
 
-<<<<<<< HEAD
 
-
-<a id="org1b011d6"></a>
+<a id="org9eff7df"></a>
 
 ### Debian live default login/password
 
-`=====`
-
-
-<a id="orgd105595"></a>
-
-### Debian live
-
->>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
 user: user
 pass: live
 
 
-<a id="org19c6f33"></a>
+<a id="orgd5f02d9"></a>
 
 ### TODO Warnings
 
 1.  ,,Keymap changes do not work in Plasma on Wayland. Please use systemsettings5 instead.'' ?
 
 
-<a id="orgd656940"></a>
+<a id="org5564c44"></a>
 
 ### Disk partitioning
 
-<<<<<<< HEAD
 <https://morfikov.github.io/post/jak-przygotowac-dysk-pod-instalacje-debian-linux-z-efi-uefi/>
 
 1.  Binary multiples of kilo
 
-    `=====`
-
 2.  Partitioning
 
-    >>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
-    
     <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
     
     
@@ -213,17 +192,9 @@ pass: live
     to check what was the type of partition table. The answer was: gpt.
     For GPT partition table there can exist as many as
     [128 primary partitions on the disk](https://www.google.com/search?q=how+many+primary+partitions+on+gpt&sca_esv=591149029&ei=Wxd8ZZrAJpSrxc8PxLCwYA&ved=0ahUKEwja2afbi5GDAxWUVfEDHUQYDAwQ4dUDCBA&uact=5&oq=how+many+primary+partitions+on+gpt&gs_lp=Egxnd3Mtd2l6LXNlcnAiImhvdyBtYW55IHByaW1hcnkgcGFydGl0aW9ucyBvbiBncHQyBhAAGBYYHjILEAAYgAQYigUYhgNIhEhQAFjmRnAEeAGQAQCYAZcBoAGmHaoBBTE2LjIwuAEDyAEA-AEBwgILEAAYgAQYigUYkQLCAgsQLhiABBjHARjRA8ICBRAAGIAEwgIOEC4YgAQYxwEY0QMY1ALCAgUQLhiABMICCBAuGIAEGNQCwgIKEAAYgAQYigUYQ8ICCxAuGIAEGIoFGJECwgImEC4YgAQYigUYkQIYlwUY3AQY3gQY4AQY9AMY8QMY9QMY9gPYAQHCAggQABgWGB4YCsICCBAAGBYYHhgPwgIFECEYoAHCAggQIRgWGB4YHcICBBAhGBXiAwQYACBBiAYBugYGCAEQARgU&sclient=gws-wiz-serp).
-    
-    <<<<<<< HEAD
 
-4.  Partitioning via parted and fdisk
+4.  POSTPONED Partitioning via parted and fdisk
 
-    `=====`
-
-5.  POSTPONED Partitioning via parted and fdisk
-
-    >>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
-    
     :FNAME: disk<sub>partitioning.el</sub>
     
     I abandoned this section because of the fact that partitions in
@@ -266,7 +237,7 @@ pass: live
             mkpart primary ext4 81922MB 524290MB
 
 
-<a id="org341efac"></a>
+<a id="org55c3128"></a>
 
 ## Installation
 
@@ -299,11 +270,7 @@ Following this clue and basing on the following threads (550 MB per efi partitio
 -   <https://askubuntu.com/questions/1313154/how-to-know-the-proper-amount-of-needed-disk-space-for-efi-partition>
 -   <https://askubuntu.com/questions/1011821/what-is-the-correct-and-reliable-way-to-freshly-install-ubuntu-gnome-in-an-nvme?newreg=52d1fba44a84418fbb0e15cc74e25b30>
 
-<<<<<<< HEAD
 I have created the following partitions:
-`=====`
-I have created the following partition:
->>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
 
 -   2MB unallocated     (this is probably needed by all this new uefi stuff)
 -   550 MB fat32 flagged as boot, esp   (this is for /boot/efi)
@@ -311,12 +278,10 @@ I have created the following partition:
 -   432 GB ext4 (home)
 -   1,30 TB ext4 (arch)
 
-<<<<<<< HEAD
-
 -   rest: 15,46 GB ntfs (NTFSTrash)
 
 
-<a id="orgbeccc92"></a>
+<a id="org3dd4a9f"></a>
 
 ### General notes
 
@@ -350,7 +315,7 @@ process are:
 Keeping this order of steps I had no problems with `kwallet` and `vivaldi`.
 
 
-<a id="orgcb18266"></a>
+<a id="orgc9de001"></a>
 
 ### System configuration
 
@@ -743,12 +708,12 @@ Keeping this order of steps I had no problems with `kwallet` and `vivaldi`.
             initexmf --set-config-value [MPM]AutoInstall=1
 
 
-<a id="orgfe715dc"></a>
+<a id="orge0e663a"></a>
 
 ## Configuration
 
 
-<a id="orga28be1e"></a>
+<a id="org14b88ec"></a>
 
 ### TODO Battery drainage/Moderm Standby/Power management - sleep modes/hibernation
 
@@ -1161,14 +1126,14 @@ S3 mode was a deep sleep.
         <https://download.nvidia.com/XFree86/Linux-x86_64/460.32.03/README/powermanagement.html>
 
 
-<a id="org11e4fb9"></a>
+<a id="orgd746edf"></a>
 
 ### Okular and buttons
 
 -   Invert colours, turn to black and white
 
 
-<a id="orgdc29294"></a>
+<a id="org6a50772"></a>
 
 ### Dell Thunderbolt Dock WD22TB4
 
@@ -1189,7 +1154,7 @@ Software (ubuntu) for firmware update
     write down you laptop MAC and you are good to go! :)
 
 
-<a id="org106f764"></a>
+<a id="org2705ced"></a>
 
 ### Lenovo keyboard
 
@@ -1204,7 +1169,7 @@ can be found here:
 <https://forums.opensuse.org/t/is-it-possible-in-kde-to-switch-the-fn-and-left-ctrl-keys/120000>
 
 
-<a id="orgc4a2a58"></a>
+<a id="org4bd2d31"></a>
 
 ### TODO Controlling Intel Turbo Boost in Linux
 
@@ -1212,7 +1177,7 @@ can be found here:
 <https://github.com/AdnanHodzic/auto-cpufreq>
 
 
-<a id="org2882d9f"></a>
+<a id="orgf22dcdd"></a>
 
 ### ZRAM - tool for optimizing RAM usage
 
@@ -1220,7 +1185,7 @@ can be found here:
 <https://youtube.com/watch?v=RGVt16xiERc>
 
 
-<a id="org2767324"></a>
+<a id="org976200a"></a>
 
 ### Do I need SWAP?
 
@@ -1230,14 +1195,10 @@ can be found here:
 
     -   register MAC adresses of laptop and docking station
     
-    `=====`
-    
     -   rest: 15,46 GB ntfs
-    
-    >>>>>>> 515ffa2caf73a47afcb4c46b239bfea6e4090e3a
 
 
-<a id="orgf9327a8"></a>
+<a id="org99098dd"></a>
 
 ### Useful links:
 

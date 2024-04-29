@@ -1,0 +1,34 @@
+#+TITLE: Empty directory after browsing samba share for a while
+#+DESCRIPTION: 
+#+AUTHOR: cissic 
+#+DATE: <2024-04-29 Mon>
+#+TAGS: 
+#+OPTIONS: -:nil
+
+* TODO Empty directory after browsing samba share for a while
+:PROPERTIES:
+:PRJ-DIR: ./2024-04-29-Empty-directory-after-browsing-samba-share-for-a-while/
+:END:
+
+** Problem description
+#+begin_src org :tangle (concat (org-entry-get nil "PRJ-DIR" t) "script.org") :mkdirp yes :exports none :results none
+
+#+end_src
+
+
+Android VLC
+
+samba share on Merlin
+
+"This directory is empty" after making a browsing directories
+
+
+
+** Did not helped
+Force as Master Browser -> Set to Yes
+Set as WINS server -> Set to Yes
+
+*** Links
+No idea if relevant:
+https://forums.linuxmint.com/viewtopic.php?t=302727
+https://forum.manjaro.org/t/folder-empty-on-samba-accessed-nas-after-a-file-operation/121853

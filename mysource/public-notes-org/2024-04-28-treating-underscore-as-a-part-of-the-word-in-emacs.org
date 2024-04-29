@@ -1,0 +1,24 @@
+#+TITLE: Treating underscore as a part of the word in Emacs
+#+DESCRIPTION: 
+#+AUTHOR: cissic 
+#+DATE: <2024-04-28 Sun>
+#+TAGS: 
+#+OPTIONS: -:nil
+
+* TODO Treating underscore as a part of the word in Emacs
+:PROPERTIES:
+:PRJ-DIR: ./2024-04-28-Treating-underscore-as-a-part-of-the-word-in-Emacs/
+:END:
+
+** Problem description
+
+https://emacs.stackexchange.com/questions/9583/how-to-treat-underscore-as-part-of-the-word
+
+#+begin_src org :tangle (concat (org-entry-get nil "PRJ-DIR" t) "script.org") :mkdirp yes :exports none :results none
+
+#+end_src
+
+** Solution
+Use =superword-mode=:
+
+: M-x superword-mode
