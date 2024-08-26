@@ -205,6 +205,20 @@ Keeping this order of steps I had no problems with =kwallet= and =vivaldi=.
 
 *** System configuration
 
+**** Add user to sudoers
+#+begin_src sh
+su
+sudo usermod -a -G sudo mb
+#+end_src
+
+Now you need to restart system. 
+
+**** Install emacs
+#+begin_src  sh :dir /sudo:: :results output
+su
+sudo apt install emacs
+#+end_src
+
 **** Moving to =testing= branch
 After =bookworm= installation the content of =/etc/apt/sources.list= was:
 #+begin_src sh
@@ -276,6 +290,38 @@ deb-src http://ftp.pl.debian.org/debian/ testing-updates main non-free-firmware 
 
 
 
+All above can be done by executing the commands:
+
+- Make a =sources.list= backup
+#+begin_src sh :dir /sudo:: :results output
+  sudo cp /etc/apt/sources.list /etc/apt/sources.list.BKP
+#+end_src
+
+- create new =/etc/apt/sources.list/=
+#+begin_src sh :dir /sudo:: :results output
+    echo "#deb cdrom:[Debian GNU/Linux 12.4.0 _Bookworm_ - Official amd64 NETINST with firmware 20231210-17:56]/ bookworm main non-free-firmware
+
+  deb http://ftp.pl.debian.org/debian/ testing main non-free-firmware contrib non-free
+  deb-src http://ftp.pl.debian.org/debian/ testing main non-free-firmware contrib non-free
+
+  deb http://security.debian.org/debian-security testing-security main non-free-firmware contrib non-free
+  deb-src http://security.debian.org/debian-security testing-security main non-free-firmware contrib non-free
+
+  # bookworm-updates, to get updates before a point release is made;
+  # see https://www.debian.org/doc/manuals/debian-reference/ch02.en.html#_updates_and_backports
+  deb http://ftp.pl.debian.org/debian/ testing-updates main non-free-firmware contrib non-free
+  deb-src http://ftp.pl.debian.org/debian/ testing-updates main non-free-firmware contrib non-free
+
+  # This system was installed using small removable media
+  # (e.g. netinst, live or single CD). The matching "deb cdrom"
+  # entries were disabled at the end of the installation process.
+  # For information about how to configure apt package sources,
+  # see the sources.list(5) manual.
+  " > /etc/apt/sources.list
+#+end_src
+
+
+
 
 Now again update and upgrade system:
 #+begin_src sh :dir /sudo:: :results output
@@ -338,7 +384,7 @@ W: Possible missing firmware /lib/firmware/nvidia/ga103/sec2/desc.bin for module
 
 ****** Problems
 
-******* Generating locale
+******* TODO Generating locale
 My =~/.bashrc= is set to British English and during installation
 I set my locale to my native language which was the only available
 on my system.
@@ -412,7 +458,6 @@ to =non-free-firmware=.
 #+begin_src sh :dir /sudo:: :results output
   sudo apt install nvidia-detect
 #+end_src
-
 
 Detect the drivers
 #+begin_src sh :dir /sudo:: :results output
@@ -508,6 +553,12 @@ This was the output:
 ****** Useful links
 https://www.linuxcapable.com/install-nvidia-drivers-on-debian/
 
+
+***** Disabling system notification sounds
+How to disable system sounds:
+https://bbs.archlinux.org/viewtopic.php?id=271389
+
+
 ***** Emacs
 #+begin_src sh :dir /sudo:: :results output
   sudo apt install bash-completion auto-complete-el -y
@@ -586,18 +637,18 @@ sudo apt install vivaldi-stable -y
 
   sudo apt install ffmpeg filezilla gparted imagemagick kdiff3 keepassxc ktorrent -y
 
-  sudo apt install torbrowser-launcher vlc xournal ncdu -y
+  sudo apt install timeshift torbrowser-launcher vlc xournal ncdu -y
 
   # 
   sudo apt install goldendict clementine -y
 
-  sudo apt install net-tools curl wget -y   # ifconfig
+  sudo apt install net-tools curl wget lftp -y   # ifconfig
   
   # packages needed by useful  ~/binmb scripts
   sudo apt install xdotool xcalib -y
 
   # gcal used in my conky 
-  sudo apt install gcal conky -y # TODO? automatic launch after booting....
+  sudo apt install gcal conky-all -y # TODO? automatic launch after booting....
 
   # configuring Python for Emacs
   sudo apt install python3-pip
@@ -614,13 +665,32 @@ sudo apt install vivaldi-stable -y
 
 ***** Cups (already installed)
 
-#+begin_src sh :dir /sudo:: :results output
+In =bookworm= there should be no need to install cups as it is
+already installed:
+#+begin_src sh
   # cups
   sudo apt install cups cups-browsed
   sudo systemctl start cups-browsed
 #+end_src
 
+but you may want to copy old configurations from the previous
+installation to have it working straight away
 
+****** Copy configuration
+
+#+begin_src sh :dir /sudo:: :results output
+  # cups
+  sudo mv /etc/cups /etc/cupsBKP
+  sudo mkdir /etc/cups
+  sudo cp -r /media/mb/systemrootWD/etc/cups/* /etc/cups
+#+end_src
+
+****** Restart server
+#+begin_src sh 
+  /etc/init.d/cups restart
+#+end_src
+
+and evertyhing should be working fine...
 
 
 ***** SOLVED Problem with conky disappearing
@@ -633,6 +703,32 @@ installator of the package.
 #+begin_src sh :dir /sudo:: :results output
   sudo apt install matlab-support
 #+end_src
+
+****** PROBLEM 1
+=MCR 0 interpret= service starts when launching Matlab and
+it takes about 5% of the CPU and matlab interpreter does not respond.
+
+
+
+****** PROBLEM 2
+In =bookworm/testing= there exist a problem with =opengl=.
+
+[[/home/mb/org/2024.03.01-dell-precision-3581---graphic-drivers.org::Sec:Matlab-and-graphics]]
+
+******* Solution
+#+begin_src sh :results output
+  # :dir /sudo:: 
+  echo "-Djogl.disable.openglarbcontext=1" > ~/bin/MATLAB/R2024a/bin/glnxa64/java.opts
+#+end_src
+
+#+RESULTS:
+
+
+******* Related?:
+https://www.mathworks.com/matlabcentral/answers/216942-plotting-and-opengl-error-on-linux-how-to-resolve?s_tid=sug_su
+
+
+
 
 ***** Miktex 
 According to
@@ -670,6 +766,20 @@ and set automatic package installation
 initexmf --set-config-value [MPM]AutoInstall=1
 #+end_src
 
+
+- Add your own packages 
+There is a directory =~/texmf= which contains tex directory tree
+structure. In order to have it usable withing =miktex= distribution
+you need to
+- run =miktex-console=,
+- choose =Settings= -> =Directories=
+- add the path to the directory to =TEXMF root directories=.
+- Then it may be necessary to run
+  =Tasks -> Refresh file name database=
+
+and voila!
+Now your style files and other packages should be accesible by
+=miktex=.
 
 
 ** Configuration
@@ -1155,6 +1265,8 @@ https://www.dell.com/support/home/pl-pl/product-support/product/wd22tb4-dock/dri
 
 
 **** Configuring LAN through docking station.
+
+***** For the first time
 All you need to do is to
 use MAC address of your laptop for MAC address of the connection
 destined for DockingStation connection. Taken from here:
@@ -1166,6 +1278,16 @@ System Settings -> Connections -> Cable -> Cloned MAC address
 
 write down you laptop MAC and you are good to go! :)
 
+****** TODO How to check your mac?
+#+begin_src bash
+  ip link show
+  # or: ifconfig -a
+#+end_src
+
+***** For the next time
+#+begin_src bash  
+  sudo cp /media/mb/systemrootWD/etc/NetworkManager/system-connections/* /etc/NetworkManager/system-connections/
+#+end_src
 
 
 *** Lenovo keyboard
@@ -1194,6 +1316,14 @@ https://www.reddit.com/r/openSUSE/comments/qco74z/64_gb_ram_any_need_for_swap/
 
 
 
+
+*** Updating/upgrading with cron 
+Automatic updates are not recommended for testing. From [[https://www.debian.org/doc/manuals/debian-faq/uptodate.en.html][here]]:
+
+''9.5. Can I automatically update the system?
+Yes. You can use cron-apt; this tool updates the system at regular intervals using a cron job. By default it just updates the package list and downloads new packages, but without installing them.
+
+Note: Automatic upgrade of packages is NOT recommended in testing or unstable systems as this might bring unexpected behaviour and remove packages without notice.''
 
 **** TODO 2D
 - register MAC adresses of laptop and docking station

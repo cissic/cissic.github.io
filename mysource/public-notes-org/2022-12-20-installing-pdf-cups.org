@@ -8,12 +8,14 @@
 #+OPTIONS: toc:nil
 #+OPTIONS: -:nil
 
-* {{{title}}}
+* (UPDATE: 2024-08-21) {{{title}}}
 :PROPERTIES:
 :PRJ-DIR: ./2022-12-20-pdf-printer-in-cups/
 :END:
 
 ** Problem and solution
+
+*** Debian Bullseye
 How to install pdf printer in cups in Debian Bullseye.
 
 Based on: https://gist.github.com/aweijnitz/c9ac7a18880225f12bf0
@@ -31,3 +33,11 @@ Based on: https://gist.github.com/aweijnitz/c9ac7a18880225f12bf0
 # eval: (add-hook 'org-export-before-processing-hook 
 # 'my/org-export-markdown-hook-function nil t)
 # End:
+
+*** Debian Trixie/Testing
+https://unix.stackexchange.com/questions/303860/cups-usr-lib-cups-backend-usb-no-such-file-or-directory-missing-deleted
+#+begin_src sh
+  sudo apt remove cups
+  sudo apt install cups  
+  sudo apt install printer-driver-gutenprint
+#+end_src

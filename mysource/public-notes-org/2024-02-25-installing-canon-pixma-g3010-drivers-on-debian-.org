@@ -28,9 +28,52 @@ or here
 I keep them in [[~/SEarch/Linux/Debian Drivers/Canon G3010 Pixma/]].
 
 
-Still I couldn't find a way to install drivers for
-network printer.
+# Still I couldn't find a way to install drivers for
+# network printer.
 
-#+begin_src org :tangle (concat (org-entry-get nil "PRJ-DIR" t) "script.org") :mkdirp yes :exports none :results none
+*** Wireless connection configuration
+According to this page
+https://www.cups.org/doc/network.html
+I used the following command to obtain printer's URI with  so-called
+=Bonjour= protocol.
 
+#+begin_src sh :dir /sudo::
+sudo lpinfo --include-schemes dnssd -v
 #+end_src
+
+#+RESULTS:
+: network dnssd://Canon%20G3010%20series._ipp._tcp.local/?uuid=00000000-0000-1000-8000-00183b1605c2
+
+I copied string 
+~dnssd://Canon%20G3010%20series._ipp._tcp.local/?uuid=00000000-0000-1000-8000-00183b1605c2~
+and pasted it as printers address choosing as a driver =Canon G3010 series, driverless, cups-filters 1.28.17=.
+
+Wireless printer started responding...
+
+
+*** Installing USB Printer
+
+To configure printer to work as usb printer I needed to:
+
+- install canon proprietary drivers 
+#+begin_src sh :dir /sudo::
+sudo apt install cups-backend-bjnp 
+#+end_src
+
+- Make: then I was able to find Canon in manufacturers list in cups
+  "Add printer" menu (it was impossible earlier)
+
+- Model: I chose =Canon PIZMA G3010 - CUPS+Gutenprint v.5.3.4 (en)=  
+
+
+** Accessing Canon pixma G3010 via Android:
+
+https://www.youtube.com/watch?v=eYj6Z1cLP8A
+
+*** Canon Print App or (just) ...
+
+*** ... Canon Print Service
+
+Settings -> Connections/Connected devices
+-> Connection preferences -> Printing
+-> Add Service -> Canon Print Service (Download from the store...)

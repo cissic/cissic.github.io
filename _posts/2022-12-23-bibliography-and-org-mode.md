@@ -94,6 +94,8 @@ we can attach it to org-mode document like this:
 
 Inserting items is done via `org-cite-insert` command, binded by default to
 `C-c C-x @`.
+Then you need to confirm selected list by `C-M-j` keystroke
+(solution found [here](https://www.reddit.com/r/orgmode/comments/q58f4f/how_to_actually_insert_a_citation_with_orgcite/)).
 
 
 ### Other exporters

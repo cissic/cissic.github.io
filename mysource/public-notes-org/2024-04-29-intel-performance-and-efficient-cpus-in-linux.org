@@ -1,0 +1,59 @@
+#+TITLE: Intel performance and efficient cpus in linux
+#+DESCRIPTION: 
+#+AUTHOR: cissic 
+#+DATE: <2024-04-29 Mon>
+#+TAGS: 
+#+OPTIONS: -:nil
+
+* TODO Intel performance and efficient cpus in linux
+:PROPERTIES:
+:PRJ-DIR: ./2024-04-29-Intel-performance-and-efficient-cpus-in-linux/
+:END:
+
+** Problem description
+#+begin_src org :tangle (concat (org-entry-get nil "PRJ-DIR" t) "script.org") :mkdirp yes :exports none :results none
+
+#+end_src
+
+** Theory
+https://www.quora.com/My-CPU-has-14-cores-6-efficient-8-performance-cores-and-20-threads-What-does-it-mean-Why-are-there-not-28-threads
+
+** Analysis of cpus in linux
+https://stackoverflow.com/questions/71122837/how-to-detect-e-cores-and-p-cores-in-linux-alder-lake-system
+
+#+begin_src sh sh :dir /sudo:: :results output
+  lscpu --all --extended
+#+end_src
+
+#+RESULTS:
+#+begin_example
+CPU NODE SOCKET CORE L1d:L1i:L2:L3 ONLINE    MAXMHZ   MINMHZ       MHZ
+  0    0      0    0 0:0:0:0          yes 2901.0000 400.0000  949.3450
+  1    0      0    0 0:0:0:0          yes 2901.0000 400.0000  738.0340
+  2    0      0    1 4:4:1:0          yes 2901.0000 400.0000  572.6930
+  3    0      0    1 4:4:1:0          yes 2901.0000 400.0000  400.0000
+  4    0      0    2 8:8:2:0          yes 2901.0000 400.0000 1126.8770
+  5    0      0    2 8:8:2:0          yes 2901.0000 400.0000  697.3070
+  6    0      0    3 12:12:3:0        yes 2901.0000 400.0000  400.0000
+  7    0      0    3 12:12:3:0        yes 2901.0000 400.0000  415.8780
+  8    0      0    4 16:16:4:0        yes 2901.0000 400.0000  400.0000
+  9    0      0    4 16:16:4:0        yes 2901.0000 400.0000 1357.6250
+ 10    0      0    5 20:20:5:0        yes 2901.0000 400.0000 4797.4819
+ 11    0      0    5 20:20:5:0        yes 2901.0000 400.0000  400.0000
+ 12    0      0    6 24:24:6:0        yes 2901.0000 400.0000 1648.6949
+ 13    0      0    7 25:25:6:0        yes 2901.0000 400.0000 1691.8870
+ 14    0      0    8 26:26:6:0        yes 2901.0000 400.0000 1628.4100
+ 15    0      0    9 27:27:6:0        yes 2901.0000 400.0000 1620.2830
+ 16    0      0   10 28:28:7:0        yes 2901.0000 400.0000 3670.3740
+ 17    0      0   11 29:29:7:0        yes 2901.0000 400.0000 3576.1870
+ 18    0      0   12 30:30:7:0        yes 2901.0000 400.0000 3580.2729
+ 19    0      0   13 31:31:7:0        yes 2901.0000 400.0000 3511.8181
+#+end_example
+
+
+First 12 lines refer to Performance cores  (two cpus per core).
+The last 8 cpus (12-19) are efficiency cores.
+
+** Why is my matlab using only efficiency cores when running simulations?
+
+

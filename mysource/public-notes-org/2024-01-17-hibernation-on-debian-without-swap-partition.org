@@ -95,7 +95,7 @@ GRUB_CMDLINE_LINUX_DEFAULT="resume=UUID=b3dd82eb-4174-4ba5-a557-8972bafc04ba res
 #+end_example
 
 
-**** put UUID in =/etc/iniramfs-tools/conf.d/resume=
+**** put UUID in =/etc/initramfs-tools/conf.d/resume=
 Append line
 #+begin_example
 RESUME=UUID=b3dd82eb-4174-4ba5-a557-8972bafc04ba
@@ -133,12 +133,73 @@ with the following content (I did extended the suspend-time from 5 minutes (300)
 3600 = 1h
 7200 = 2h
 
+#+begin_src sh :tangle /tmp/suspend-sedation.service-FIRST-VERSION
+  # ## MB note: 
+  # ## file created in order to enable suspend-then-hibernate
+  # ## according to https://wiki.debian.org/SystemdSuspendSedation
+
+  # /etc/systemd/system/suspend-sedation.service
+  [Unit]
+  Description=Hibernate after suspend
+  Documentation=https://bbs.archlinux.org/viewtopic.php?pid=1420279#p1420279
+  Documentation=https://bbs.archlinux.org/viewtopic.php?pid=1574125#p1574125
+  Documentation=https://wiki.archlinux.org/index.php/Power_management
+  Documentation=http://forums.debian.net/viewtopic.php?f=5&t=129088
+  Documentation=https://wiki.debian.org/SystemdSuspendSedation
+  Conflicts=hibernate.target hybrid-sleep.target
+  Before=sleep.target
+  StopWhenUnneeded=true
+
+  [Service]
+  Type=oneshot
+  RemainAfterExit=yes
+  # 1800"
+  Environment="ALARM_SEC=1800" 
+  Environment="WAKEALARM=/sys/class/rtc/rtc0/wakealarm"
+
+  ExecStart=/usr/sbin/rtcwake --seconds $ALARM_SEC --auto --mode no
+  ExecStop=/bin/sh -c '\
+  ALARM=$(cat $WAKEALARM); \
+  NOW=$(date +%%s); \
+  if [ -z "$ALARM" ] || [ "$NOW" -ge "$ALARM" ]; then \
+
+    if [ $(cat /sys/class/power_supply/AC/online) == '0' ]; then
+      echo 'On battery'
+    
+      if [ $(cat /sys/class/power_supply/BAT0/capacity) -lt 50 ]; then      
+	echo 'Battery less than 50%'
+	# perform hibernation
+	echo "suspend-sedation: Woke up - no alarm set. Hibernating..."; \
+	systemctl hibernate; \
+      else
+	# put it to sleep once again
+	systemctl suspend; \      
+      fi
+    
+    else
+      echo 'On AC power'
+      systemctl suspend; \
+    fi   
+  
+  else \
+    echo "suspend-sedation: Woke up before alarm - normal wakeup."; \
+    /usr/sbin/rtcwake --auto --mode disable; \
+  fi \
+  '
+
+  [Install]
+  WantedBy=sleep.target
+#+end_src
+
+
+
+
 **** New version that performs hibernation from suspension only if laptop is *not* on battery and has less than 50% of battery
 
 Basing on this:
 https://askubuntu.com/questions/75886/how-do-i-set-the-computer-to-suspend-when-battery-is-critically-low
 
-#+begin_src sh
+#+begin_src sh :tangle /tmp/suspend-sedation.service
 # ## MB note: 
 # ## file created in order to enable suspend-then-hibernate
 # ## according to https://wiki.debian.org/SystemdSuspendSedation
@@ -181,7 +242,7 @@ if [ -z "$ALARM" ] || [ "$NOW" -ge "$ALARM" ]; then \
       systemctl suspend; \
     fi
     
-  #else
+  else
     # echo 'On AC power'
     systemctl suspend; \
   fi   
@@ -197,6 +258,13 @@ WantedBy=sleep.target
 
   
 #+end_src
+
+Move the script to the proper directory:
+#+begin_src sh :dir /sudo:: :results output
+  mv /tmp/suspend-sedation.service /etc/systemd/system/suspend-sedation.service
+#+end_src
+
+
 
 **** DEPRECATED Original version 
 #+begin_src sh
@@ -241,12 +309,11 @@ WantedBy=sleep.target
 
 *** Enable it with
 
-#+begin_src sh
+#+begin_src sh :dir /sudo:: :results output
   sudo systemctl enable suspend-sedation
 #+end_src
 
 #+RESULTS:
-: Created symlink /etc/systemd/system/sleep.target.wants/suspend-sedation.service → /etc/systemd/system/suspend-sedation.service.
 
 
 

@@ -1,0 +1,35 @@
+#+TITLE: Colored ansi blocks in org-babel results
+#+DESCRIPTION: 
+#+AUTHOR: cissic 
+#+DATE: <2024-05-29 Wed>
+#+TAGS: 
+#+OPTIONS: -:nil
+
+* TODO Colored ansi blocks in org-babel results
+:PROPERTIES:
+:PRJ-DIR: ./2024-05-29-Colored-ansi-blocks-in-org-babel-results/
+:END:
+
+** Problem description
+
+Sometimes linux bash returns colored output, which is not
+interpreted properly without additional intervention. This leads
+to error while exporting to pdf.
+
+** Solution
+According to this thread:
+https://emacs.stackexchange.com/questions/44664/apply-ansi-color-escape-sequences-for-org-babel-results
+everything works fine with the use of the code below: 
+#+begin_src emacs-lisp
+  (defun ek/babel-ansi ()
+    (when-let ((beg (org-babel-where-is-src-block-result nil nil)))
+      (save-excursion
+	(goto-char beg)
+	(when (looking-at org-babel-result-regexp)
+	  (let ((end (org-babel-result-end))
+		(ansi-color-context-region nil))
+	    (ansi-color-apply-on-region beg end))))))
+  (add-hook 'org-babel-after-execute-hook 'ek/babel-ansi)
+  (buffer-file-name)
+#+end_src
+

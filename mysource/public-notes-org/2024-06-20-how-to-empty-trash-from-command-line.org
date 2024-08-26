@@ -1,0 +1,24 @@
+#+TITLE: How to empty trash from command line
+#+DESCRIPTION: 
+#+AUTHOR: cissic 
+#+DATE: <2024-06-20 Thu>
+#+TAGS: 
+#+OPTIONS: -:nil
+
+* TODO How to empty trash from command line
+:PROPERTIES:
+:PRJ-DIR: ./2024-06-20-How-to-empty-trash-from-command-line/
+:END:
+
+
+
+** Problem description
+Sometimes windows manager doesn't let me delete all of the files
+from the trash bin saying that some file/directory is already
+deleted.
+
+** Solution
+https://askubuntu.com/questions/468721/how-can-i-empty-the-trash-using-terminal
+#+begin_src sh
+  rm -rf ~/.local/share/Trash/*
+#+end_src
