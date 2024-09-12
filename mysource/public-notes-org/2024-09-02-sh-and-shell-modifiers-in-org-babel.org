@@ -1,0 +1,34 @@
+#+TITLE: sh and shell modifiers in org babel
+#+DESCRIPTION: 
+#+AUTHOR: cissic 
+#+DATE: <2024-09-02 Mon>
+#+TAGS: 
+#+OPTIONS: -:nil
+
+* TODO sh and shell modifiers in org babel
+:PROPERTIES:
+:PRJ-DIR: ./2024-09-02-sh-and-shell-modifiers-in-org-babel/
+:END:
+
+** Link
+https://emacs.stackexchange.com/questions/35321/what-is-the-difference-between-sh-and-shell-for-org-babel
+
+** Problem description
+The difference is which shell gets called to evaluate your block. shell calls whatever your default shell is while sh calls /bin/sh specifically. Your default shell is probably bash, which is an extension of sh. echo $0 will tell you what executable your shell is running:
+
+#+BEGIN_SRC shell
+echo $0
+#+END_SRC
+
+#+RESULTS:
+: /bin/bash
+
+
+#+BEGIN_SRC sh
+echo $0
+#+END_SRC
+
+#+RESULTS:
+: sh
+
+Any of the shells in org-babel-shell-names that is installed on your system will work.

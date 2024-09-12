@@ -1,0 +1,57 @@
+#+TITLE: Adding privileges to directory for non-root user
+#+DESCRIPTION: 
+#+AUTHOR: cissic 
+#+DATE: <2024-08-30 Fri>
+#+TAGS: 
+#+OPTIONS: -:nil
+
+* Adding privileges to directory for non-root user
+:PROPERTIES:
+:PRJ-DIR: ./2024-08-30-Adding-privileges-to-directory-for-non-root-user/
+:END:
+
+** Problem description
+Let's imagine we want to give non-root user access to root directory.
+Let it be =/var/lib/docker/volumes/=.
+
+The easiest approach is as follows:
+
+*** Install =acl= package
+#+begin_src bash
+  sudo apt install acl
+#+end_src
+
+With the commands from this package we may easily view and edit
+privileges to files/directories
+
+*** Add privileges to =/var/lib/docker/=
+By adding privileges only to =/var/lib/docker/volumes= we wouldn't
+have access to it anyway because we would be blocked at
+=/var/lib/docker/= level, so we need to give access to this directory.
+Note that we do not use ~-R~ modifier because:
+1) we don't want user has access to all that is inside =docker/=
+2) with ~-R~ evaluating this command may take very looooong
+
+#+begin_src bash
+  cd /var/lib/
+  sudo setfacl -m u:USERNAME:rwx docker/
+#+end_src
+
+*** Add _recursively_ privileges to =/var/lib/docker/volumes=
+
+Now we do use  ~-R~ modifier:
+#+begin_src bash
+  sudo setfacl -R -m u:USERNAME:rwx volumes/
+#+end_src
+
+Now we can...
+
+*** Inspect directory access control list
+#+begin_src bash
+  getfacl /var/lib/docker/volumes/
+#+end_src
+
+
+** Links
+
+https://delinea.com/blog/linux-privilege-escalation

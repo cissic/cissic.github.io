@@ -1,0 +1,31 @@
+#+TITLE: bash and bash history settings
+#+DESCRIPTION: 
+#+AUTHOR: cissic 
+#+DATE: <2024-09-09 Mon>
+#+TAGS: 
+#+OPTIONS: -:nil
+
+* TODO bash and bash history settings
+:PROPERTIES:
+:PRJ-DIR: ./2024-09-09-bash-and-bash-history-settings/
+:END:
+
+** Useful link
+https://www.cherryservers.com/blog/a-complete-guide-to-linux-bash-history
+
+** Immediatly Persist commands to your ~/.bash_history file
+
+Add this to ~/.bashrc:
+#+begin_src shell
+PROMPT_COMMAND='history -a'
+#+end_src
+
+** Modify Bash history buffer and file size
+If the default values of 1,000 command entries in the history buffer and 2,000 entries in the history file isn't what you want, you can change the $HISTSIZE (buffer) and $HISTFILESIZE (file) environment variables.
+
+For example, to set both to 11,000 entries, modify the default values to read:
+
+#+begin_src shell
+HISTSIZE=11000
+HISTFILESIZE=11000
+#+end_src

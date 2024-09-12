@@ -662,6 +662,37 @@ however I didn't find them pretty and finally this command is useful:
 #+end_src
 
 
+
+
+**** Preserving indentation
+While working with python code in org-babel the default
+may be cumbersome since emacs converts 8 spaces gap into
+tab sign during the code tangling which in turn results
+in errors when python interprets the code.
+
+https://emacs.stackexchange.com/questions/24283/org-mode-converting-spaces-to-tabs-when-evaluating-source
+https://emacs.stackexchange.com/questions/37299/org-mode-setting-to-preserve-spacing-in-src-code-with-verbatim-latex-output-to
+https://emacs.stackexchange.com/questions/54526/python-src-block-sets-tabs
+
+https://www.reddit.com/r/orgmode/comments/mj6rg2/python_indentation_in_source_block/
+
+In order to fix it we need to set the following:
+#+begin_src  emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
+
+; fix for python indentation problems after tangling of org-babel blocks
+(setq org-src-preserve-indentation     t 
+      org-edit-src-content-indentation 0)
+#+end_src
+
+=org-edit-src-content-indentation= is by default set to 2, which
+preserves nice-looking two-space gap in org-babel blocks of code.
+So by setting it to 0 we lose the feature of nice-looking
+indentation, and each source block in python should be left aligned
+(in other languages however you may add some extra whitespaces
+if you don't mind this gap in source files...)
+
+
+
 **** Prevent from deselecting text after M-w copying 
 [[https://www.reddit.com/r/emacs/comments/1vdumz/emacs_to_keep_selection_after_copy/][Link]]
 
@@ -2001,6 +2032,7 @@ To have org-babel enabled (execution of portions of code):
 			       (C . t) ; enable processing C, C++, and D source blocks
 			       (julia . t)
 			       (matlab . t)
+			       (js . t)
 			       ;;(perl . t)
 			       (octave . t)
 			       (org . t)
@@ -3167,6 +3199,19 @@ loading properly.
 #+end_src
 
 
+**** ''Compile and run'' the current temporary project
+#+begin_src emacs-lisp
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; Useful global shortcuts (system-wide operations)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun mb/F5-run-project()
+  (interactive)
+  (shell-command "cd ~/projects/dolfinx-tutorials && docker run     --rm     --name temp    --net=host     -e DISPLAY     -v ${HOME}/.Xauthority:/home/user/.Xauthority -v \"$(pwd)/src/dolfx/unda1/:/tmp\"     dolfinx-mb-bash  -c \"python3 main.py\""))
+
+; (define-key global-map (kbd "f5") 'mb/F5-run-project)
+(global-set-key [f5] 'mb/F5-run-project)
+#+end_src
+
 **** Defining own prefix key to ease finding free keybindings
 <<Sec:custom-keymap>>
 https://stackoverflow.com/a/1025257/4649238
@@ -4041,7 +4086,43 @@ Download the package from git to the proper directory
 #+end_src
 
 
+*** Auxiliary functions for emacs packages management
+This pieces of code are inserted in =install-packages.el=
+however it does happen every now and then that we want
+to refresh our package list. So now we've got packed as
+an elisp function:
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") :exports none
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; *** Auxiliary functions for emacs packages management 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun mb/package-list-refresh-and-show  ()
+  (interactive)
+  ;;first, declare repositories
+  (setq package-archives
+      '(("gnu" . "http://elpa.gnu.org/packages/")  ;; default value of package-archives in Emacs 27.1
+	("melpa" . "http://melpa.org/packages/")
+	("melpa-stable" . "http://stable.melpa.org/packages/")
+	("nongnu"       . "https://elpa.nongnu.org/nongnu/")
+	))
+
+  ;; Refresh the repositories to have the newest versions of the packages
+  (package-refresh-contents)
+  (package-list-packages)
+)
+
+#+end_src
+
+#+RESULTS:
+: mb/package-list-refresh-and-show
+
+
 *** Blogging
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") :exports none
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; *** Blogging
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+#+end_src
+
 **** Blog stencil
 Auxiliary function that generates predefined stencil for blog posts
 
@@ -4074,7 +4155,10 @@ Auxiliary function that generates predefined stencil for blog posts
 			  ))) 
     (with-temp-file file-path
       (insert stencil))
-    (find-file file-path)))
+    (find-file file-path)
+     (goto-char (point-max))
+     ))
+    
 #+end_src
 
 #+RESULTS:
@@ -4138,7 +4222,33 @@ Auxiliary function that generates predefined stencil for blog posts
 #+RESULTS:
 : mb/orgpriv-entry-stencil
 
+#+begin_src emacs-lisp :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el") 
+  (defun mb/rditit-entry-stencil  (title )
+   "Create and open a file with the given stencil."
+   (interactive "sEnter the title: ")
+   (let* ((date (format-time-string "%Y.%m.%d"))
+	  (dateDay (format-time-string "%Y-%m-%d %a"))
+	  (titleUnspaced (replace-regexp-in-string " " "-" title))
+	  (file-name (concat date "-" (downcase titleUnspaced) ".org"))
+	  (file-path (concat "~/org/RDITiT/pisma,maile-org/" file-name))
 
+	  (stencil (concat "#+TITLE: " title "\n"
+			   "#+DESCRIPTION: \n"
+			   "#+AUTHOR: \n"
+			   "#+DATE: <" dateDay ">\n"
+			   "#+TAGS: \n"
+			   "#+OPTIONS: -:nil\n"
+			   "\n"
+			   ))) 
+     (with-temp-file file-path
+       (insert stencil))
+     (find-file file-path)
+     (goto-char (point-max))
+     ))
+#+end_src
+
+#+RESULTS:
+: mb/rditit-entry-stencil
 
 
 
@@ -4338,6 +4448,120 @@ The list of external applications that this script is dependent on:
 - xwininfo ([[emacs-everywhere]]) - this is not a package but executable
 
 
+
+** Tests
+
+*** Emacs and Zotero integration - =zotxt-emacs=
+https://github.com/egh/zotxt-emacs
+
+
+**** Install zotxt
+https://github.com/egh/zotxt
+
+1. Visit https://github.com/egh/zotxt/releases
+2. Download the latest .xpi file. If you are using Firefox, you will need to right-click and "Save as"
+3. Start Zotero standalone.
+4. In Zotero, select Tools -> Add-ons -> Gear (upper right) -> Install Add-On from file, and install the downloaded xpi file.
+5. *RESTART* Zotero!!!
+
+**** Install zotxt-emacs package
+
+**** Org mode integration
+
+To insert a link to a reference into a org-mode document, first enable the org-zotxt minor mode:
+
+~M-x org-zotxt-mode~
+Then you can use: ~C-c " i~ (~org-zotxt-insert-reference-link~)
+to insert an item.
+
+To update the current link text at point to reflect changed
+metadata from Zotero, use
+~C-c " u~ (~org-zotxt-update-reference-link-at-point~).
+
+To open an attachment of the link at point, use
+~C-c " a~ (~org-zotxt-open-attachment~)
+
+**** Tests
+
+
+# [[http://zotero://open-pdf/library/items/][A pdf]
+
+[[zotero://select/items/1_NIHD37M5][Curtain, Ruth F., and Hans Zwart. An Introduction to Infinite-Dimensional Linear Systems Theory. Vol. 21. Texts in Applied Mathematics. New York, NY: Springer, 1995. https://doi.org/10.1007/978-1-4612-4224-6.]]
+
+
+# zotero://open-pdf/library/items/1_NIHD37M5
+
+# http://zotero://open-pdf/library/items/1_NIHD37M5
+
+
+**** More tests - redefinition of ~org-zotxt-open-attachment~
+
+The function =org-zotxt-open-attachment= opens the link
+provided by zotero inside emacs pdf viewer.
+It would be lovely to be able to open it inside zotero pdf viewer,
+unfortunately I couldn't find a way of doing that.
+
+As a last resort I decided to implement opening in my default
+pdf viewer.
+Basing on =org-zotxt-open-attachment= from =zotxt-emacs=
+I created similiar function that enables opening zotero link in
+=okular=.
+(Interesting observation: variable =paths= used in function is not
+a list. It is a [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Vector-Type.html][*vector*]]! That is why to get its element we need
+to use =aref= function.)
+
+#+begin_src elisp 
+(defun mb/org-zotxt-open-attachment (&optional arg)
+  "Open attachment of Zotero items linked at point.
+
+Opens with `org-open-file', see for more information about ARG."
+  (interactive "P")
+  (let ((item-id (org-zotxt-extract-link-id-at-point))
+        (arg arg))
+    (deferred:$
+      (zotxt--request-deferred
+       (format "%s/items" zotxt-url-base)
+       :params `(("key" . ,item-id) ("format" . "paths"))
+       :parser 'json-read)
+      (deferred:nextc it
+        (lambda (response)
+          (let ((paths (cdr (assq 'paths (elt (request-response-data response) 0)))))
+            ;;; (org-open-file (org-zotxt-choose-path paths) arg)
+	    ; (print (type-of paths))
+	    ; (print (aref paths 0))
+	    ; (print (concat "okular " (aref paths 0) ) )
+	    ; (print (concat "okular " "'" (aref paths 0) "'" ) )
+	    (shell-command (concat "okular " "\"" (aref paths 0) "\"" ) )
+	  )))
+      (deferred:error it #'zotxt--deferred-handle-error)
+      (if zotxt--debug-sync (deferred:sync! it)))))
+    
+#+end_src
+
+Basing on [[https://www.reddit.com/r/orgmode/comments/oqcbse/open_a_pdf_in_zotero_using_a_link_within_an_org/][this thread]] we can come up with a code that triggers
+=mb/org-zotxt-open-attachment= when clicking on it inside emacs.
+
+#+begin_src elisp
+(defun org-zotero-open (path)
+  (browse-url (format "zotero:%s" path)))
+
+(with-eval-after-load 'org
+  (org-link-set-parameters "zotero" :follow #'mb/org-zotxt-open-attachment))
+#+end_src
+
+
+There are two drawbacks of this solution:
+1. Link does not work when exported to other formats (e.g. pdf).
+2. When clicking on the link it is opened in dolphin however
+   the error message appears in minibuffer:
+   =Qt: Session management error: None of the authentication protocols specified are supported=.
+   
+   
+
+**** TODO TODO
+1. Add zotxt-emacs to =install-packages.el= script.
+2. Move this section to proper section in this documents after tests.
+   
 ** Some useful information and links:
 
 *** What to do when Emacs is slow and laggy:

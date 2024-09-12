@@ -1,0 +1,17 @@
+#+TITLE: HTTrack - a tool for downloading webpages
+#+DESCRIPTION: 
+#+AUTHOR: cissic 
+#+DATE: <2024-09-06 Fri>
+#+TAGS: 
+#+OPTIONS: -:nil
+
+* TODO HTTrack - a tool for downloading webpages
+:PROPERTIES:
+:PRJ-DIR: ./2024-09-06-httrack---a-tool-for-downloading-webpages/
+:END:
+
+** The way of the simplest usage
+#+begin_src shell
+  httrack http://site-url -O path/to/local/directory/to/download/to
+#+end_src
+
