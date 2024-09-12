@@ -1,18 +1,18 @@
 
 # Table of Contents
 
-1.  [Copy button in html documents after org export](#org2818f0b)
-    1.  [Dependencies](#orgdfb2738)
-    2.  [Solution](#orge9e3887)
-        1.  [Define javascript source block](#org11349f5)
-        2.  [Insert the javascript code in html document](#org6920af8)
-        3.  [Define an elisp function supporting custom html export.](#org6e9a93b)
-    3.  [The example of usage](#org600de2d)
-2.  [Issues:](#org31ce978)
+1.  [Copy button in html documents after org export](#org726d36b)
+    1.  [Dependencies](#org423579a)
+    2.  [Solution](#org1d9d826)
+        1.  [Define javascript source block](#org99b958e)
+        2.  [Insert the javascript code in html document](#org376c77c)
+        3.  [Define an elisp function supporting custom html export.](#org84c6744)
+    3.  [The example of usage](#org58809f6)
+2.  [Issues:](#orgd079278)
 
 
 
-<a id="org2818f0b"></a>
+<a id="org726d36b"></a>
 
 # Copy button in html documents after org export
 
@@ -34,7 +34,7 @@ The solution is contained to one file. In case of mutliple
 html document it requires optimization in order to reuse javascript code.
 
 
-<a id="orgdfb2738"></a>
+<a id="org423579a"></a>
 
 ## Dependencies
 
@@ -45,12 +45,12 @@ You need to have the following packages in your emacs:
 -   `uuidgen`.
 
 
-<a id="orge9e3887"></a>
+<a id="org1d9d826"></a>
 
 ## Solution
 
 
-<a id="org11349f5"></a>
+<a id="org99b958e"></a>
 
 ### Define javascript source block
 
@@ -124,7 +124,7 @@ document.
     }
 
 
-<a id="org6920af8"></a>
+<a id="org376c77c"></a>
 
 ### Insert the javascript code in html document
 
@@ -205,7 +205,7 @@ function copyTextToClipboard(text) {
 </script>
 
 
-<a id="org6e9a93b"></a>
+<a id="org84c6744"></a>
 
 ### Define an elisp function supporting custom html export.
 
@@ -241,7 +241,7 @@ we can implement our own way of exporting org-document to html.
     (org-export-to-file 'mvr-html file))
 
 
-<a id="org600de2d"></a>
+<a id="org58809f6"></a>
 
 ## The example of usage
 
@@ -259,11 +259,15 @@ Now after `M-x org-export-to-html-with-button`
 you need to give a name of the html document to export
 document with copy-button feature.
 
+If this org document is processed with
+`M-x org-export-to-html-with-button`
+you'll obtain copy-button below the following block:
+
     import numpy as np
     import matplotlib as mtl
 
 
-<a id="org31ce978"></a>
+<a id="orgd079278"></a>
 
 # TODO Issues:
 

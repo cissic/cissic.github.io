@@ -195,6 +195,10 @@ Now after =M-x org-export-to-html-with-button=
 you need to give a name of the html document to export
 document with copy-button feature.
 
+If this org document is processed with
+=M-x org-export-to-html-with-button=
+you'll obtain copy-button below the following block:
+
 #+ATTR_HTML: :copy-button t :width 40
 #+begin_src python
    import numpy as np
