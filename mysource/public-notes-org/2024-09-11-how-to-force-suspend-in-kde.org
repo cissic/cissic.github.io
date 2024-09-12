@@ -1,0 +1,37 @@
+#+TITLE: How to force suspend in KDE
+#+DESCRIPTION: 
+#+AUTHOR: cissic 
+#+DATE: <2024-09-11 Wed>
+#+TAGS: sudo password suspend KDE
+#+OPTIONS: -:nil
+
+* How to force suspend in KDE
+:PROPERTIES:
+:PRJ-DIR: ./2024-09-11-How-to-force-suspend-in-KDE/
+:END:
+
+** Problem description
+Sometimes, after some crash in KDE enviroment there may appear
+a problem with suspending the system.
+In this case, with the help of =myaskpass.sh= script from
+
+# #+begin_src org :exports none
+# [[file:2024-09-11-sudo-password-input-in-kde-for-the-script-run-in-bash.org]]
+
+# [[./2024-09-11-sudo-password-input-in-kde-for-the-script-run-in-bash.org]]
+# #+end_src
+
+# #+begin_src org :exports results :results raw
+[[https://cissic.github.io/posts/sudo-password-input-in-kde-for-the-script-run-in-bash/][this post]]
+# #+end_src
+
+you can create the following script and bind it to some keyboard shorcut.
+
+
+#+begin_src shell :tangle  "~/binmb/suspendWhenYouCantSuspend.sh"
+#!/bin/bash
+
+# do use full/path/to/directory, ~/bin/myaskpass.sh may not work!
+export SUDO_ASKPASS="/home/mb/binmb/myaskpass.sh"
+sudo -A systemctl suspend
+#+end_src
