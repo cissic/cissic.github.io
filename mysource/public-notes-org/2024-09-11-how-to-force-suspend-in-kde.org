@@ -25,7 +25,7 @@ In this case, with the help of =myaskpass.sh= script from
 [[https://cissic.github.io/posts/sudo-password-input-in-kde-for-the-script-run-in-bash/][this post]]
 #+end_src
 
-post
+post 
 you can create the following script and bind it to some keyboard shorcut.
 
 
