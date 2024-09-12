@@ -1,18 +1,18 @@
 
 # Table of Contents
 
-1.  [Copy button in html documents after org export](#org726d36b)
-    1.  [Dependencies](#org423579a)
-    2.  [Solution](#org1d9d826)
-        1.  [Define javascript source block](#org99b958e)
-        2.  [Insert the javascript code in html document](#org376c77c)
-        3.  [Define an elisp function supporting custom html export.](#org84c6744)
-    3.  [The example of usage](#org58809f6)
-2.  [Issues:](#orgd079278)
+1.  [Copy button in html documents after org export](#orgf5d8e97)
+    1.  [Dependencies](#orgfbd41eb)
+    2.  [Solution](#org85a2cfe)
+        1.  [Define javascript source block](#org7c1e1c2)
+        2.  [Insert the javascript code in html document](#orgcf8b7d5)
+        3.  [Define an elisp function supporting custom html export.](#org109aa59)
+    3.  [The example of usage](#org6dd47bb)
+2.  [Issues:](#orgf0d4a44)
 
 
 
-<a id="org726d36b"></a>
+<a id="orgf5d8e97"></a>
 
 # Copy button in html documents after org export
 
@@ -31,10 +31,11 @@ in a code reused from link [3](https://stackoverflow.com/questions/400212/how-do
 That is why I decided to rewrite the whole solution here.
 
 The solution is contained to one file. In case of mutliple
-html document it requires optimization in order to reuse javascript code.
+html documents
+it requires optimization in order to reuse javascript code.
 
 
-<a id="org423579a"></a>
+<a id="orgfbd41eb"></a>
 
 ## Dependencies
 
@@ -45,12 +46,12 @@ You need to have the following packages in your emacs:
 -   `uuidgen`.
 
 
-<a id="org1d9d826"></a>
+<a id="org85a2cfe"></a>
 
 ## Solution
 
 
-<a id="org99b958e"></a>
+<a id="org7c1e1c2"></a>
 
 ### Define javascript source block
 
@@ -124,7 +125,7 @@ document.
     }
 
 
-<a id="org376c77c"></a>
+<a id="orgcf8b7d5"></a>
 
 ### Insert the javascript code in html document
 
@@ -205,7 +206,7 @@ function copyTextToClipboard(text) {
 </script>
 
 
-<a id="org84c6744"></a>
+<a id="org109aa59"></a>
 
 ### Define an elisp function supporting custom html export.
 
@@ -241,7 +242,7 @@ we can implement our own way of exporting org-document to html.
     (org-export-to-file 'mvr-html file))
 
 
-<a id="org58809f6"></a>
+<a id="org6dd47bb"></a>
 
 ## The example of usage
 
@@ -267,11 +268,11 @@ you'll obtain copy-button below the following block:
     import matplotlib as mtl
 
 
-<a id="orgd079278"></a>
+<a id="orgf0d4a44"></a>
 
 # TODO Issues:
 
 -   [ ] automatic solution requires reloading default html exporter
 -   [ ] markdown exporter needs seperate treatment
--   [ ] Need to find magic/versatile solution
+-   [ ] Does it exist some magic/versatile solution for other exporters?
 

@@ -25,7 +25,8 @@ in a code reused from link [[https://stackoverflow.com/questions/400212/how-do-i
 That is why I decided to rewrite the whole solution here.
 
 The solution is contained to one file. In case of mutliple
-html document it requires optimization in order to reuse javascript code.
+html documents
+it requires optimization in order to reuse javascript code.
 
 ** Dependencies
 You need to have the following packages in your emacs:
@@ -208,4 +209,4 @@ you'll obtain copy-button below the following block:
 * TODO Issues:
 - [ ] automatic solution requires reloading default html exporter
 - [ ] markdown exporter needs seperate treatment 
-- [ ] Need to find magic/versatile solution 
+- [ ] Does it exist some magic/versatile solution for other exporters?
