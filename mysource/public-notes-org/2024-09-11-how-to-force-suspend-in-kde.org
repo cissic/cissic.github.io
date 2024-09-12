@@ -21,7 +21,7 @@ In this case, with the help of =myaskpass.sh= script from
 [[./2024-09-11-sudo-password-input-in-kde-for-the-script-run-in-bash.org]]
 #+end_src
 
-#+begin_src org :exports results 
+#+begin_src org :exports results :results raw
 [[https://cissic.github.io/posts/sudo-password-input-in-kde-for-the-script-run-in-bash/][this post]]
 #+end_src
 

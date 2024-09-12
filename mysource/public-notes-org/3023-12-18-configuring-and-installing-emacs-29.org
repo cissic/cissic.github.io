@@ -4482,12 +4482,15 @@ To open an attachment of the link at point, use
 ~C-c " a~ (~org-zotxt-open-attachment~)
 
 **** Tests
+Below I include the link inserted with
+~org-zotxt-insert-reference-link~ command.
+Since it breaks export to markdown I comment it out.
+In order to check if it works you need to uncomment
+and mouse click it.
 
+# [[zotero://select/items/1_NIHD37M5][Curtain, Ruth F., and Hans Zwart. An Introduction to Infinite-Dimensional Linear Systems Theory. Vol. 21. Texts in Applied Mathematics. New York, NY: Springer, 1995. https://doi.org/10.1007/978-1-4612-4224-6.]]
 
 # [[http://zotero://open-pdf/library/items/][A pdf]
-
-[[zotero://select/items/1_NIHD37M5][Curtain, Ruth F., and Hans Zwart. An Introduction to Infinite-Dimensional Linear Systems Theory. Vol. 21. Texts in Applied Mathematics. New York, NY: Springer, 1995. https://doi.org/10.1007/978-1-4612-4224-6.]]
-
 
 # zotero://open-pdf/library/items/1_NIHD37M5
 

@@ -150,12 +150,12 @@ lack of perl for Windows when exporting via `latexmk`.
     1.  DEPRECATED Solution
     
         You need to amend paths to python executable in two places:
-        [1.7.9.8](#orgfb19ec6)
-        [1.7.7.3](#orgf423db1)
+        [1.7.9.8](#org5a7237b)
+        [1.7.7.3](#org8f8b40d)
 
 3.  Liberation mono font
 
-    That part of code is in `init.el` only for [1.7.20](#org4a7e86e), so
+    That part of code is in `init.el` only for [1.7.20](#orgb335157), so
     if one does not use it, they won't miss it.
 
 
@@ -201,7 +201,7 @@ it's better to keep whole .emacs.d directory as a git repository and
 make a commit before executing this script. Then, in case any problems
 you can go back to restore properly working emacs installation.
 Before running this script you should have a git repository initialized in emacs
-directory and git itself installed in the system (see Sec. [1.8](#org889459e)).
+directory and git itself installed in the system (see Sec. [1.8](#org412fcde)).
 Synchronization of the local repository with the remote one is not
 performed in this script. It should be performed explicitely by the user
 in a convenient time.
@@ -233,10 +233,10 @@ addresses here, something like:
     (setq package-archives
           '(("gnu" . "http://elpa.gnu.org/packages/")  ;; default value of package-archives in Emacs 27.1
             ; ("marmalade" . "http://marmalade-repo.org/packages/")
-            ("melpa-stable" . "http://stable.melpa.org/packages/")
+    	("melpa-stable" . "http://stable.melpa.org/packages/")
             ("melpa" . "https://melpa.org/packages/")
-            ; ("org" . "https://orgmode.org/elpa/")    ;;; removed as a way of dealing with https://emacs.stackexchange.com/questions/70081/how-to-deal-with-this-message-important-please-install-org-from-gnu-elpa-as-o
-            ))
+    	; ("org" . "https://orgmode.org/elpa/")    ;;; removed as a way of dealing with https://emacs.stackexchange.com/questions/70081/how-to-deal-with-this-message-important-please-install-org-from-gnu-elpa-as-o
+    	))
 
 but, at the time of writing this (Jan, 2023), the biggest, the freshest etc. 
 repository is `melpa` and it is advised to work with it. `Marmalade` is 
@@ -276,10 +276,10 @@ Now my list of repositories looks as follows:
     ;;first, declare repositories
     (setq package-archives
           '(("gnu" . "http://elpa.gnu.org/packages/")  ;; default value of package-archives in Emacs 27.1
-            ("melpa" . "http://melpa.org/packages/")
-            ("melpa-stable" . "http://stable.melpa.org/packages/")
-            ("nongnu"       . "https://elpa.nongnu.org/nongnu/")
-            ))
+    	("melpa" . "http://melpa.org/packages/")
+    	("melpa-stable" . "http://stable.melpa.org/packages/")
+    	("nongnu"       . "https://elpa.nongnu.org/nongnu/")
+    	))
 
 Now, synchronize your data: download descriptions of ELPA packages 
 and update the cache with current versions of
@@ -298,7 +298,7 @@ In Emacs 27.1 it [shouldn't be necessary to use](https://emacs.stackexchange.com
 
 ### The main part of the installation script - list of the packages
 
-<a id="orgb02d327"></a>
+<a id="org6bd7ec3"></a>
 
 I used to have `(defvar my-packages ...` instead of `(setq my-packages ...` 
 below but... **Do not** use `defvar` for declaring a list of packages to be installed!
@@ -421,7 +421,7 @@ for now. An interesting discussion about this can be found [here](https://www.re
 
 1.  DEPRECATED Setting an auxiliary variable
 
-    This section is deprecated in favour of [`workgroups2 package`](#orgcc704dd).
+    This section is deprecated in favour of [`workgroups2 package`](#orgba689b2).
     
         ;; This file is designed to be re-evaled; use the variable first-time
         ;; to avoid any problems with this.
@@ -440,7 +440,7 @@ for now. An interesting discussion about this can be found [here](https://www.re
         (require 'package)
         (package-initialize)
 
-3.  Quelpa and `quelpa-use-package` <a id="org7e4ba5d"></a>
+3.  Quelpa and `quelpa-use-package` <a id="org2215b27"></a>
 
     <https://github.com/quelpa/quelpa>
     Quelpa lets you
@@ -495,7 +495,7 @@ proactively.
 Here are global Emacs customization. 
 If necessary some useful infomation or link is added to the customization.
 
-1.  Self-descriptive oneliners <a id="org08fcf8a"></a>
+1.  Self-descriptive oneliners <a id="org6bd8efc"></a>
 
     Remarks:
     At around May 2023 I stopped using `global-linum-mode` because
@@ -535,11 +535,11 @@ If necessary some useful infomation or link is added to the customization.
            (desktop-save-mode 1)      ; Save buffers on closing and restore them at startup
         )
         (setq desktop-load-locked-desktop t) ; and don't ask for confirmation when 
-                                   ; opening locked desktop
+        			   ; opening locked desktop
         (setq desktop-save t)
         
         (save-place-mode t)        ; When re-entering a file, return to the place, 
-                                   ; where I was when I left it the last time.
+        			   ; where I was when I left it the last time.
         
         (setq list-command-history-max 500) ; no of available commands in  =command-history=
 
@@ -597,7 +597,34 @@ If necessary some useful infomation or link is added to the customization.
     
         (global-visual-line-mode t) ; Truncate lines 
 
-6.  Prevent from deselecting text after M-w copying
+6.  Preserving indentation
+
+    While working with python code in org-babel the default
+    may be cumbersome since emacs converts 8 spaces gap into
+    tab sign during the code tangling which in turn results
+    in errors when python interprets the code.
+    
+    <https://emacs.stackexchange.com/questions/24283/org-mode-converting-spaces-to-tabs-when-evaluating-source>
+    <https://emacs.stackexchange.com/questions/37299/org-mode-setting-to-preserve-spacing-in-src-code-with-verbatim-latex-output-to>
+    <https://emacs.stackexchange.com/questions/54526/python-src-block-sets-tabs>
+    
+    <https://www.reddit.com/r/orgmode/comments/mj6rg2/python_indentation_in_source_block/>
+    
+    In order to fix it we need to set the following:
+    
+        
+        ; fix for python indentation problems after tangling of org-babel blocks
+        (setq org-src-preserve-indentation     t 
+              org-edit-src-content-indentation 0)
+    
+    `org-edit-src-content-indentation` is by default set to 2, which
+    preserves nice-looking two-space gap in org-babel blocks of code.
+    So by setting it to 0 we lose the feature of nice-looking
+    indentation, and each source block in python should be left aligned
+    (in other languages however you may add some extra whitespaces
+    if you don't mind this gap in source files...)
+
+7.  Prevent from deselecting text after M-w copying
 
     [Link](https://www.reddit.com/r/emacs/comments/1vdumz/emacs_to_keep_selection_after_copy/)
     
@@ -608,7 +635,7 @@ If necessary some useful infomation or link is added to the customization.
          (ad-activate 'kill-ring-save)
         ;; <- Do not deselect after M-w copying
 
-7.  Setting default font
+8.  Setting default font
 
     To get the list of available fonts:
     Type the following in the **scratch** buffer, and press `C-j` at the end of it:
@@ -624,14 +651,14 @@ If necessary some useful infomation or link is added to the customization.
         ;; (set-frame-font "liberation mono 11" nil t) ; Set default font
     
     Due to  due to the  problems with fonts in `emacsclient/daemonp`
-    instances font is set now in the section [1.7.20](#org4a7e86e).
+    instances font is set now in the section [1.7.20](#orgb335157).
 
-8.  Highlight on an active window/buffer
+9.  Highlight on an active window/buffer
 
     Although the active window can be recognized
     by the cursor which blinking in it, sometimes it is hard to
     find in on the screen (especially if you use a colourful theme
-    like [1.7.23.1](#org19da381).
+    like [1.7.23.1](#orga150b4c).
     
     I found a [post](https://stackoverflow.com/questions/33195122/highlight-current-active-window) adressing this issue.
     Although the accepted answer is using 
@@ -639,19 +666,19 @@ If necessary some useful infomation or link is added to the customization.
     I prefer [this solution](https://stackoverflow.com/a/33196798) which does not rely on external package
     
         ;;Highlight an active window/buffer or dim all other windows
-        
+          
           (defun highlight-selected-window ()
             "Highlight selected window with a different background color."
             (walk-windows (lambda (w)
               (unless (eq w (selected-window)) 
-                (with-current-buffer (window-buffer w)
-                  (buffer-face-set '(:background "#111"))))))
+        	(with-current-buffer (window-buffer w)
+        	  (buffer-face-set '(:background "#111"))))))
             (buffer-face-set 'default))
-        
+          
             (add-hook 'buffer-list-update-hook 'highlight-selected-window)
         ;;
 
-9.  Time and calendar
+10. Time and calendar
 
     1.  DONE Locale for names of days of the week in org-mode
     
@@ -760,7 +787,7 @@ If necessary some useful infomation or link is added to the customization.
         </tbody>
         </table>
 
-10. Easy moving between windows
+11. Easy moving between windows
 
     It is managed by [WindMove package](https://www.emacswiki.org/emacs/WindMove) that is built-in in Emacs.
     The default keybindings of this package is `Shift arrow`, which sometimes
@@ -771,7 +798,7 @@ If necessary some useful infomation or link is added to the customization.
     
         ;; windmove ->
         ;; Easy moving between windows
-        
+          
           ;; setting windmove-default-keybindings to super-<arrow> in order
           ;; to avoid org-mode conflicts
           (global-set-key (kbd "s-<left>")  'windmove-left)
@@ -802,10 +829,10 @@ If necessary some useful infomation or link is added to the customization.
             ;; Easy moving between windows
               (when (fboundp 'windmove-default-keybindings)
                 (windmove-default-keybindings))
-            
+              
               (eval-when-compile (require 'cl))
               (setq lexical-binding t)
-            
+              
               (defun ignore-error-wrapper (fn)
                 "Funtion return new function that ignore errors.
                  The function wraps a function with `ignore-errors' macro."
@@ -814,7 +841,7 @@ If necessary some useful infomation or link is added to the customization.
                     (interactive)
                     (ignore-errors
                       (funcall fn)))))
-            
+              
               ;; setting windmove-default-keybindings to super-<arrow> in order
               ;; to avoid org-mode conflicts
               (global-set-key (kbd "M-s-<left>") (ignore-error-wrapper 'windmove-left))
@@ -823,7 +850,7 @@ If necessary some useful infomation or link is added to the customization.
               (global-set-key (kbd "M-s-<down>") (ignore-error-wrapper 'windmove-down))
             ;; <- windmove
 
-11. Easy windows resize
+12. Easy windows resize
 
         ;; Easy windows resize ->
           (define-key global-map (kbd "C-s-<left>") 'shrink-window-horizontally)
@@ -832,7 +859,7 @@ If necessary some useful infomation or link is added to the customization.
           (global-set-key        (kbd "C-s-<up>") 'enlarge-window)
         ;; <- Easy windows resize 
 
-12. Column marker
+13. Column marker
 
     In Emacs 27.1 in only needs to add the following lines in
     your `init.el` to have properly working fill-column indicator in all buffers.
@@ -875,10 +902,10 @@ If necessary some useful infomation or link is added to the customization.
           )
           ;; <- Fill column indicator
     
-    -   and add this hook per each required mode (this is done in [1.7.7](#org1451510) section
+    -   and add this hook per each required mode (this is done in [1.7.7](#orgc25bff6) section
         of this document
 
-13. Turning on/off beeping
+14. Turning on/off beeping
 
     Completely out of the blue my emacs started beeping. I guess it
     had to be some keybinding I accidentally pressed but have no idea
@@ -889,16 +916,16 @@ If necessary some useful infomation or link is added to the customization.
         (setq-default visible-bell t) 
         (setq ring-bell-function 'ignore)
 
-14. Ibuffer - an advanced replacement for BufferMenu
+15. Ibuffer - an advanced replacement for BufferMenu
 
-    <a id="org4c3b719"></a>
+    <a id="orgd162927"></a>
     
     Description of the package is [here](https://www.emacswiki.org/emacs/IbufferMode).
     
           ;; Advanced buffer mode
         (global-set-key (kbd "C-x C-b") 'ibuffer)
 
-15. Sessions for buffers, tabs etc.
+16. Sessions for buffers, tabs etc.
 
     Interesting discussion on the topic:
     <https://www.reddit.com/r/emacs/comments/j5bm4x/best_way_to_have_multiple_work_environments_in/>
@@ -1039,14 +1066,14 @@ If necessary some useful infomation or link is added to the customization.
         The problem with tabspace is that I couldn't find a way to
         save buffers belonging to a certain tab (workspace) to file.
 
-16. Other solution
+17. Other solution
 
     There are also solutions based on frame approach:
     
     -   <https://github.com/alphapapa/frame-purpose.el>
     -   <https://github.com/akirak/frame-workflow>
 
-17. Setting font size for all buffers
+18. Setting font size for all buffers
 
     <https://stackoverflow.com/questions/24705984/increase-decrease-font-size-in-an-emacs-frame-not-just-buffer>
     
@@ -1098,7 +1125,7 @@ If necessary some useful infomation or link is added to the customization.
     
     2.  Ibuffer interactive way
     
-        In [1.7.3.14](#org4c3b719) there a nice shortcut to do this. You can select all
+        In [1.7.3.15](#orgd162927) there a nice shortcut to do this. You can select all
         the files of the given mode with:
         
             * M
@@ -1197,7 +1224,7 @@ ido/smex vs ivy/counsel/swiper vs helm
         (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command) 
         ;; <- smex
 
-3.  TODO Ivy (for testing) <a id="org2d30c93"></a>
+3.  TODO Ivy (for testing) <a id="org07dd4e1"></a>
 
     Furthermore, according to [some other users](https://ruzkuku.com/emacs.d.html#org804158b)
     "Ivy is simpler (and faster) than Helm but more powerful than Ido".
@@ -1397,7 +1424,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
 
 3.  Python mode
 
-    <a id="orgf423db1"></a>
+    <a id="org8f8b40d"></a>
     
     The below code does not work as expected. Probably it'd be better to
     apply the configuration given [here](https://realpython.com/emacs-the-best-python-editor/#integration-with-jupyter-and-ipython).
@@ -1456,11 +1483,11 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
     files to Beamer. In order one needs to create appropriate
     init file with settings for async export and
     set `org-export-async-init-file` variable as path to this file (see 
-    [1.7.7.4.1](#org7574156)).
+    [1.7.7.4.1](#org361f2f5)).
     
     1.  Setting `org-export-async-init-file` to avoid failure while exporting to Beamer
     
-        <a id="org7574156"></a>
+        <a id="org361f2f5"></a>
         
         Org-beamer **async** exporter may fail because of lacking
         `org-export-async-init-file` 
@@ -1517,8 +1544,8 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
         ;; Add a hook to the list of modes
         (defun my-add-to-multiple-hooks (function hooks)
           (mapc (lambda (hook)
-                  (add-hook hook function))
-                hooks))
+        	  (add-hook hook function))
+        	hooks))
         
         (defun my-turn-on-auto-fill ()
             my-default-text-buffer-settings-mode-hook  )
@@ -1546,7 +1573,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
 
 ### Bibliography - citations
 
-<a id="org2e5d431"></a>
+<a id="orgaea38fa"></a>
 
 1.  Useful links for Emacs 29
 
@@ -1641,8 +1668,8 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
            (and priority (format "\\framebox{\\#%c} " priority))
            text
            (and tags
-                (format "\\hfill{}\\textsc{ %s}"
-                        (mapconcat #'org-latex--protect-text tags ":")))))
+        	(format "\\hfill{}\\textsc{ %s}"
+        		(mapconcat #'org-latex--protect-text tags ":")))))
         
         (setq org-latex-format-headline-function 'org-latex-format-headline-colored-keywords-function)
 
@@ -1698,16 +1725,17 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
         ;; enabling org-babel
         (org-babel-do-load-languages
          'org-babel-load-languages '(
-                                     (C . t) ; enable processing C, C++, and D source blocks
-                                     (julia . t)
-                                     (matlab . t)
-                                     ;;(perl . t)
-                                     (octave . t)
-                                     (org . t)
-                                     (python . t)
-                                     (plantuml . t)
-                                     (shell . t)
-                                     ))
+        			     (C . t) ; enable processing C, C++, and D source blocks
+        			     (julia . t)
+        			     (matlab . t)
+        			     (js . t)
+        			     ;;(perl . t)
+        			     (octave . t)
+        			     (org . t)
+        			     (python . t)
+        			     (plantuml . t)
+        			     (shell . t)
+        			     ))
         
         ;; no question about confirmation of evaluating babel code block
         (setq org-confirm-babel-evaluate nil)
@@ -1830,24 +1858,24 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
                 (defun mb/org-babel-tangle-to-target-file-from-the-file (file target-file)
                   (interactive "fFile to tangle: \nP")
                     (let* ((visited (find-buffer-visiting file))
-                           (buffer (or visited (find-file-noselect file))))
+                	   (buffer (or visited (find-file-noselect file))))
                       (prog1
-                          (with-current-buffer buffer
-                            (org-with-wide-buffer
-                             (mapcar #'expand-file-name
-                                     (mb/tangle-file target-file))))
-                        (unless visited (kill-buffer buffer)))))
+                	  (with-current-buffer buffer
+                	    (org-with-wide-buffer
+                	     (mapcar #'expand-file-name
+                		     (mb/tangle-file target-file))))
+                	(unless visited (kill-buffer buffer)))))
         
         4.  Export given org-file to pdf (latex)
         
                 (defun mb/org-babel-export-org-file-to-latex (filename)
                   (interactive "fFile to export: \nP")
                     (let* ((visited (find-buffer-visiting filename))
-                           (buffer (or visited (find-file-noselect filename))))
+                	   (buffer (or visited (find-file-noselect filename))))
                       (prog1
-                          (with-current-buffer buffer
-                             (org-latex-export-to-pdf nil) )
-                        (unless visited (kill-buffer buffer)))))
+                	  (with-current-buffer buffer
+                	     (org-latex-export-to-pdf nil) )
+                	(unless visited (kill-buffer buffer)))))
         
         5.  Tangle AND export org-file to pdf
         
@@ -1880,7 +1908,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
 
 7.  Fix for Octave/Matlab org-babel - problems with matlab in org-babel
 
-    <a id="orgdeb9c8f"></a>
+    <a id="org20d7cde"></a>
     <http://gewhere.github.io/blog/2017/12/19/setup-matlab-in-emacs-and-babel-orgmode/>
     
         
@@ -1906,7 +1934,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
     <https://github.com/karthink/.emacs.d/blob/master/plugins/ob-octave-fix.el>
     
     In the end I just downloaded the file and the inclusion of this package is
-    done in section [1.7.25.3](#org44ae97c).
+    done in section [1.7.25.3](#orgfbafc2c).
     
     Remark: There exist at least two versions of the fix (I renamed
     the one I already had to `ob-octave-fixOLDER.el`). Previous version
@@ -1952,7 +1980,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
 
 8.  Set path to Python executable to work in org-babel code block
 
-    <a id="orgfb19ec6"></a>
+    <a id="org5a7237b"></a>
     
     Pythonic org-babel code blocks like the one below:
     
@@ -2008,26 +2036,26 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
         
         (defun org-export-md-format-front-matter ()
           (let* ((kv-alist (org-element-map (org-element-parse-buffer 'greater-element)
-                               'keyword
-                             (lambda (keyword)
-                               (cons (intern (downcase (org-element-property :key keyword)))
-                                     (org-element-property :value keyword)))))
-                 (lines (mapcar (lambda (kw)
-                                  (let ((val (alist-get kw kv-alist)))
-                                    (format (pcase kw
-                                              ('author "%s: %s")
-                                              ((or 'tags 'title) "%s: '%s'")
-                                              (_ "%s: %s"))
-                                            (downcase (symbol-name kw))
-                                            (pcase kw
-                                              ('date (substring val 1 -1))
-                                              (_ val)))))
-                                '(author date tags title))))
+        		       'keyword
+        		     (lambda (keyword)
+        		       (cons (intern (downcase (org-element-property :key keyword)))
+        			     (org-element-property :value keyword)))))
+        	 (lines (mapcar (lambda (kw)
+        			  (let ((val (alist-get kw kv-alist)))
+        			    (format (pcase kw
+        				      ('author "%s: %s")
+        				      ((or 'tags 'title) "%s: '%s'")
+        				      (_ "%s: %s"))
+        				    (downcase (symbol-name kw))
+        				    (pcase kw
+        				      ('date (substring val 1 -1))
+        				      (_ val)))))
+        			'(author date tags title))))
             (concat "---\n" (concat (mapconcat #'identity lines "\n")) "\n---")))
         
         (defun my/org-export-markdown-hook-function (backend)
             (if (eq backend 'md)
-                (insert (org-export-md-format-front-matter) "\n")))
+        	(insert (org-export-md-format-front-matter) "\n")))
     
     In the beginning the line below where hook is added was uncommented because
     of my unawareness of how Emacs works.
@@ -2067,7 +2095,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
     
     Another hints can be found [here](https://lucidmanager.org/productivity/ricing-org-mode/).
 
-13. Engraved - the better (?) way of having nice source code formatting <a id="org801e1f9"></a>
+13. Engraved - the better (?) way of having nice source code formatting <a id="org01caa7a"></a>
 
     Following some internet posts about `Engraved` package I decided to give it a try. We'll if it works better than minted (which has obvious flaws, such as dependency on external code or slowing down
     overall compilation process)
@@ -2126,7 +2154,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
           [LISTINGS-SETUP]"
         )
     
-    In order to flawlessly export ChatGPT sessions [1.7.14.2.2](#org351415e)
+    In order to flawlessly export ChatGPT sessions [1.7.14.2.2](#org58b92e8)
     placed inside `#+begin_ai #+end_ai`
     we need to define `ai` environement in latex.
     Concatenation of variable `org-latex-engraved-preamble`
@@ -2183,12 +2211,12 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
     
         ; :tangle (concat (org-entry-get nil "PRJ-DIR" t) "init.el")
             (setq org-latex-engraved-options
-                  '(
-                    ("commandchars" . "\\\\\\{\\}")
-                    ("highlightcolor" . "white!95!black!80!blue")
-                    ("breaklines" . "true")
-                    ("breaksymbol" . "\\color{white!60!black}\\tiny\\ensuremath{\\hookrightarrow}")
-                   ))
+        	  '(
+        	    ("commandchars" . "\\\\\\{\\}")
+        	    ("highlightcolor" . "white!95!black!80!blue")
+        	    ("breaklines" . "true")
+        	    ("breaksymbol" . "\\color{white!60!black}\\tiny\\ensuremath{\\hookrightarrow}")
+        	   ))
     
     Other example of usage taken from help of `org-latex-engraved-options` variable.
     
@@ -2314,7 +2342,7 @@ you need to rebind it ([1](https://stackoverflow.com/questions/1024374/how-can-i
     The special mode `org-cdlatex-mode` is included in `org` package.
     In order to have it working properly we need to install `cdlatex`
     itself. This can be done in
-    [1.6.2](#org07abf30).
+    [1.6.2](#org7ebf1e8).
     
     Link to `org-cdlatex-mode` description:
     <http://doc.endlessparentheses.com/Fun/org-cdlatex-mode.html>.
@@ -2429,7 +2457,7 @@ when rendering the .pdf:
     (add-hook 'pdf-view-mode-hook (lambda() (linum-mode -1)))
 
 
-### ChatGPT <a id="org4d3b05c"></a>
+### ChatGPT <a id="org7276d9f"></a>
 
 In order to get some help from AI I decided to give it a try inside
 Emacs.
@@ -2489,20 +2517,20 @@ using it again...
     
     2.  ChatGPT session blocks export with `engraved`
     
-        <a id="org351415e"></a>
+        <a id="org58b92e8"></a>
         
         In order to flawlessly export ChatGPT sessions
         placed inside `#+begin_ai #+end_ai`
         we need to define `ai` environement in latex for
         engraved exports
-        (see [1.7.9.13](#org801e1f9))
+        (see [1.7.9.13](#org01caa7a))
         That is why we need to update
         `org-latex-engraved-preamble`
-        introduction in section [1.7.9.13](#org801e1f9).
+        introduction in section [1.7.9.13](#org01caa7a).
         
         In fact, updating this variable (as in the code commented out above)
         has no effect on the variable, so I decided to move this piece
-        of code to [1.7.9.13](#org801e1f9), where I repeated default
+        of code to [1.7.9.13](#org01caa7a), where I repeated default
         setting of `org-latex-engraved-preamble` with necessary lines
         added at the end of the string.
     
@@ -2594,9 +2622,21 @@ loading properly.
     (global-set-key (kbd "C-C C-e C-w C-w") 'eww-list-bookmarks) ; Open eww bookmarks
     (defun mynet ()  (interactive) (eww-list-bookmarks))
 
-1.  Defining own prefix key to ease finding free keybindings
+1.  ''Compile and run'' the current temporary project
 
-    <a id="orgc6f1e04"></a>
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        ;;;; Useful global shortcuts (system-wide operations)
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        (defun mb/F5-run-project()
+          (interactive)
+          (shell-command "cd ~/projects/dolfinx-tutorials && docker run     --rm     --name temp    --net=host     -e DISPLAY     -v ${HOME}/.Xauthority:/home/user/.Xauthority -v \"$(pwd)/src/dolfx/unda1/:/tmp\"     dolfinx-mb-bash  -c \"python3 main.py\""))
+        
+        ; (define-key global-map (kbd "f5") 'mb/F5-run-project)
+        (global-set-key [f5] 'mb/F5-run-project)
+
+2.  Defining own prefix key to ease finding free keybindings
+
+    <a id="orga573cb3"></a>
     <https://stackoverflow.com/a/1025257/4649238>
     
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2613,7 +2653,7 @@ loading properly.
     
     which will be triggered by `C-z C-k`.
 
-2.  Useful fast line-copying shortcut
+3.  Useful fast line-copying shortcut
 
     Another ideas can be found here:
     <https://emacs.stackexchange.com/questions/15134/how-to-get-contents-of-current-line>
@@ -2667,13 +2707,13 @@ loading properly.
                   - If region is active, copy its lines."
               (interactive "p")
               (let ((beg (line-beginning-position))
-                    (end (line-end-position arg)))
+            	(end (line-end-position arg)))
                 (when mark-active
                   (if (> (point) (mark))
-                      (setq beg (save-excursion (goto-char (mark)) (line-beginning-position)))
-                    (setq end (save-excursion (goto-char (mark)) (line-end-position)))))
+            	  (setq beg (save-excursion (goto-char (mark)) (line-beginning-position)))
+            	(setq end (save-excursion (goto-char (mark)) (line-end-position)))))
                 (if (eq last-command 'copy-line)
-                    (kill-append (buffer-substring beg end) (< end beg))
+            	(kill-append (buffer-substring beg end) (< end beg))
                   (kill-ring-save beg end)))
               (kill-append "\n" nil)
               (beginning-of-line (or (and arg (1+ arg)) 2))
@@ -2703,7 +2743,7 @@ loading properly.
     
         <https://www.emacswiki.org/emacs/CopyWithoutSelection>
 
-3.  Open the directory of the current file/buffer in the external file manager
+4.  Open the directory of the current file/buffer in the external file manager
 
     Based on this link:
     <https://www.reddit.com/r/emacs/comments/4zmly1/how_to_open_the_directory_of_a_file/>
@@ -2746,7 +2786,7 @@ loading properly.
     
     Similar solution is given [here](https://emacs.stackexchange.com/questions/7742/what-is-the-easiest-way-to-open-the-folder-containing-the-current-file-by-the-de) (actually, I did not test it).
 
-4.  Smart selecting blocks of text
+5.  Smart selecting blocks of text
 
         (require 'expand-region)
         (global-set-key (kbd "C-=") 'er/expand-region)
@@ -2754,7 +2794,7 @@ loading properly.
 
 ### Custom, useful text operations
 
-Keybindings are defined with the use of [1.7.17.1](#orgc6f1e04).
+Keybindings are defined with the use of [1.7.17.2](#orga573cb3).
 
 1.  Select current line
 
@@ -2810,7 +2850,7 @@ Snippet for sending email from inside emacs:
 
 1.  DEPRECATED OLD Approaches
 
-    As a temporary workaround I decided to try [1.7.20](#org4a7e86e).
+    As a temporary workaround I decided to try [1.7.20](#orgb335157).
     
     Basing on  [this post](https://www.reddit.com/r/emacs/comments/4rl0a9/email_in_emacs_i_want_to_but_wow_its_overwhelming/) I decided to perform configuration of email service 
     within Emacs in three steps. Each of them takes care of one of the 
@@ -2852,12 +2892,12 @@ Snippet for sending email from inside emacs:
 
 ### Emacs-everywhere
 
-<a id="org4a7e86e"></a>
+<a id="orgb335157"></a>
 
 Repository of the package and some basic information can be found
 [here](https://github.com/tecosaur/emacs-everywhere/).
 
-1.  Install package `emacs-everywhere` from melpa ([1.6.2](#orgb02d327))
+1.  Install package `emacs-everywhere` from melpa ([1.6.2](#org6bd7ec3))
 2.  Add system-wide shortcut for the command 
     
         #!/bin/bash
@@ -2994,7 +3034,7 @@ Tutorial by [Protesilaos Stavrou](https://www.youtube.com/watch?v=NkhgIB64zgc).
 
 ### Load Emacs theme of your preference
 
-1.  Modus themes by Protesilaos Stavrou <a id="org19da381"></a>
+1.  Modus themes by Protesilaos Stavrou <a id="orga150b4c"></a>
 
     -   [Author's page](https://protesilaos.com/codelog/2021-01-11-modus-themes-review-select-faint-colours/)
     -   [Youtube's tutorial](https://www.youtube.com/watch?v=JJPokfFxyFo)
@@ -3024,7 +3064,7 @@ Tutorial by [Protesilaos Stavrou](https://www.youtube.com/watch?v=NkhgIB64zgc).
         (setq modus-themes-headings ; this is an alist: read the manual or its doc string
               '((1 . (rainbow overline background 1.4))
                 (2 . (rainbow background 1.3))
-                (3 . (rainbow bold 1.2))
+        	(3 . (rainbow bold 1.2))
                 (t . (semilight 1.1))))
         
         (setq modus-themes-scale-headings t)
@@ -3097,18 +3137,18 @@ so I decided to put this section after loading the theme.
          ;; Define the custom capture templates
          (setq org-capture-templates
                '(("t" "todo" entry (file org-default-notes-file)
-                  "* TODO %?\n%u\n%a\n" :clock-in t :clock-resume t)
-                 ("m" "Meeting" entry (file org-default-notes-file)
-                  "* MEETING with %? :MEETING:\n%t" :clock-in t :clock-resume t)
-                 ("d" "Diary" entry (file+datetree "~/org/diary.org")
-                  "* %?\n%U\n" :clock-in t :clock-resume t)
-                 ("i" "Idea" entry (file org-default-notes-file)
-                  "* %? :IDEA: \n%t" :clock-in t :clock-resume t)
-                 ("n" "Next Task" entry (file+headline org-default-notes-file "Tasks")
-                  "** NEXT %? \nDEADLINE: %t") ))
+        	  "* TODO %?\n%u\n%a\n" :clock-in t :clock-resume t)
+        	 ("m" "Meeting" entry (file org-default-notes-file)
+        	  "* MEETING with %? :MEETING:\n%t" :clock-in t :clock-resume t)
+        	 ("d" "Diary" entry (file+datetree "~/org/diary.org")
+        	  "* %?\n%U\n" :clock-in t :clock-resume t)
+        	 ("i" "Idea" entry (file org-default-notes-file)
+        	  "* %? :IDEA: \n%t" :clock-in t :clock-resume t)
+        	 ("n" "Next Task" entry (file+headline org-default-notes-file "Tasks")
+        	  "** NEXT %? \nDEADLINE: %t") ))
         
          (setq org-refile-targets (quote ((nil :maxlevel . 9)
-                                          (org-agenda-files :maxlevel . 9))))  
+        				  (org-agenda-files :maxlevel . 9))))  
     
     Now running
     `C-c c` will trigger the menu to capture an agenda entry.
@@ -3121,7 +3161,7 @@ so I decided to put this section after loading the theme.
 
 3.  DEPRECATED Integrating calendar, agenda and diary (partially)
 
-    REMARK: -> I moved to [1.7.24.4](#org59df948) package to obtain this feature...
+    REMARK: -> I moved to [1.7.24.4](#orgcf1d457) package to obtain this feature...
     
     <https://emacs.stackexchange.com/questions/29632/org-mode-calendar-integration>
     
@@ -3130,7 +3170,7 @@ so I decided to put this section after loading the theme.
     Now my past and future diary entries can be seen in calendar
     and in agenda.
 
-4.  `calfw package` a way to integrate agenda entries to calendar <a id="org59df948"></a>
+4.  `calfw package` a way to integrate agenda entries to calendar <a id="orgcf1d457"></a>
 
     <https://github.com/kiwanami/emacs-calfw?tab=readme-ov-file>
     
@@ -3252,10 +3292,10 @@ a global shortcut...
 
 3.  ob-octave-fix.el
 
-    <a id="org44ae97c"></a>
+    <a id="orgfbafc2c"></a>
     
     The discussion on this is thread can be found in section
-    [1.7.9.7](#orgdeb9c8f) so I here I just include the solution, namely
+    [1.7.9.7](#org20d7cde) so I here I just include the solution, namely
     I load fixed library.
     
         ;; octave/matlab-fix
@@ -3320,6 +3360,14 @@ a global shortcut...
         ;  :load-path "~/.emacs.d/manual-download/ox-ipynb")
 
 
+### Auxiliary functions for emacs packages management
+
+This pieces of code are inserted in `install-packages.el`
+however it does happen every now and then that we want
+to refresh our package list. So now we've got packed as
+an elisp function:
+
+
 ### Blogging
 
 1.  Blog stencil
@@ -3330,31 +3378,33 @@ a global shortcut...
          "Create and open a file with the given stencil."
          (interactive "sEnter the title: ")
          (let* ((date (format-time-string "%Y-%m-%d"))
-                (dateDay (format-time-string "%Y-%m-%d %a"))
-                (titleUnspaced (replace-regexp-in-string " " "-" title))
-                (file-name (concat date "-" (downcase titleUnspaced) ".org"))
-                (file-path (concat "~/projects/cissic.github.io/mysource/public-notes-org/" file-name))
+        	(dateDay (format-time-string "%Y-%m-%d %a"))
+        	(titleUnspaced (replace-regexp-in-string " " "-" title))
+        	(file-name (concat date "-" (downcase titleUnspaced) ".org"))
+        	(file-path (concat "~/projects/cissic.github.io/mysource/public-notes-org/" file-name))
         
-                (stencil (concat "#+TITLE: " title "\n"
-                                 "#+DESCRIPTION: \n"
-                                 "#+AUTHOR: cissic \n"
-                                 "#+DATE: <" dateDay ">\n"
-                                 "#+TAGS: \n"
-                                 "#+OPTIONS: -:nil\n"
-                                 "\n"
-                                 "* TODO " title "\n"
-                                 ":PROPERTIES:\n"
-                                 ":PRJ-DIR: ./" date "-" (car (split-string titleUnspaced)) "/\n"
-                                 ":END:\n"
-                                 "\n"
-                                 "** Problem description\n"
-                                 "#+begin_src org :tangle (concat (org-entry-get nil \"PRJ-DIR\" t) \"script.org\") :mkdirp yes :exports none :results none\n"
-                                 "\n"
-                                 "#+end_src\n"
-                                 ))) 
+        	(stencil (concat "#+TITLE: " title "\n"
+        			 "#+DESCRIPTION: \n"
+        			 "#+AUTHOR: cissic \n"
+        			 "#+DATE: <" dateDay ">\n"
+        			 "#+TAGS: \n"
+        			 "#+OPTIONS: -:nil\n"
+        			 "\n"
+        			 "* TODO " title "\n"
+        			 ":PROPERTIES:\n"
+        			 ":PRJ-DIR: ./" date "-" (car (split-string titleUnspaced)) "/\n"
+        			 ":END:\n"
+        			 "\n"
+        			 "** Problem description\n"
+        			 "#+begin_src org :tangle (concat (org-entry-get nil \"PRJ-DIR\" t) \"script.org\") :mkdirp yes :exports none :results none\n"
+        			 "\n"
+        			 "#+end_src\n"
+        			 ))) 
            (with-temp-file file-path
              (insert stencil))
-           (find-file file-path)))
+           (find-file file-path)
+            (goto-char (point-max))
+            ))
 
 2.  org entries
 
@@ -3362,19 +3412,19 @@ a global shortcut...
          "Create and open a file with the given stencil."
          (interactive "sEnter the title: ")
          (let* ((date (format-time-string "%Y.%m.%d"))
-                (dateDay (format-time-string "%Y-%m-%d %a"))
-                (titleUnspaced (replace-regexp-in-string " " "-" title))
-                (file-name (concat date "-" (downcase titleUnspaced) ".org"))
-                (file-path (concat "~/org/" file-name))
+        	(dateDay (format-time-string "%Y-%m-%d %a"))
+        	(titleUnspaced (replace-regexp-in-string " " "-" title))
+        	(file-name (concat date "-" (downcase titleUnspaced) ".org"))
+        	(file-path (concat "~/org/" file-name))
         
-                (stencil (concat "#+TITLE: " title "\n"
-                                 "#+DESCRIPTION: \n"
-                                 "#+AUTHOR: \n"
-                                 "#+DATE: <" dateDay ">\n"
-                                 "#+TAGS: \n"
-                                 "#+OPTIONS: -:nil\n"
-                                 "\n"
-                                 ))) 
+        	(stencil (concat "#+TITLE: " title "\n"
+        			 "#+DESCRIPTION: \n"
+        			 "#+AUTHOR: \n"
+        			 "#+DATE: <" dateDay ">\n"
+        			 "#+TAGS: \n"
+        			 "#+OPTIONS: -:nil\n"
+        			 "\n"
+        			 ))) 
            (with-temp-file file-path
              (insert stencil))
            (find-file file-path)
@@ -3385,19 +3435,42 @@ a global shortcut...
          "Create and open a file with the given stencil."
          (interactive "sEnter the title: ")
          (let* ((date (format-time-string "%Y.%m.%d"))
-                (dateDay (format-time-string "%Y-%m-%d %a"))
-                (titleUnspaced (replace-regexp-in-string " " "-" title))
-                (file-name (concat date "-" (downcase titleUnspaced) ".org"))
-                (file-path (concat "~/orgpriv/" file-name))
+        	(dateDay (format-time-string "%Y-%m-%d %a"))
+        	(titleUnspaced (replace-regexp-in-string " " "-" title))
+        	(file-name (concat date "-" (downcase titleUnspaced) ".org"))
+        	(file-path (concat "~/orgpriv/" file-name))
         
-                (stencil (concat "#+TITLE: " title "\n"
-                                 "#+DESCRIPTION: \n"
-                                 "#+AUTHOR: \n"
-                                 "#+DATE: <" dateDay ">\n"
-                                 "#+TAGS: \n"
-                                 "#+OPTIONS: -:nil\n"
-                                 "\n"
-                                 ))) 
+        	(stencil (concat "#+TITLE: " title "\n"
+        			 "#+DESCRIPTION: \n"
+        			 "#+AUTHOR: \n"
+        			 "#+DATE: <" dateDay ">\n"
+        			 "#+TAGS: \n"
+        			 "#+OPTIONS: -:nil\n"
+        			 "\n"
+        			 ))) 
+           (with-temp-file file-path
+             (insert stencil))
+           (find-file file-path)
+           (goto-char (point-max))
+           ))
+    
+        (defun mb/rditit-entry-stencil  (title )
+         "Create and open a file with the given stencil."
+         (interactive "sEnter the title: ")
+         (let* ((date (format-time-string "%Y.%m.%d"))
+        	(dateDay (format-time-string "%Y-%m-%d %a"))
+        	(titleUnspaced (replace-regexp-in-string " " "-" title))
+        	(file-name (concat date "-" (downcase titleUnspaced) ".org"))
+        	(file-path (concat "~/org/RDITiT/pisma,maile-org/" file-name))
+        
+        	(stencil (concat "#+TITLE: " title "\n"
+        			 "#+DESCRIPTION: \n"
+        			 "#+AUTHOR: \n"
+        			 "#+DATE: <" dateDay ">\n"
+        			 "#+TAGS: \n"
+        			 "#+OPTIONS: -:nil\n"
+        			 "\n"
+        			 ))) 
            (with-temp-file file-path
              (insert stencil))
            (find-file file-path)
@@ -3424,7 +3497,7 @@ a global shortcut...
 
 ### TODO The end
 
-1.  Workgroups (should be executed at the end of init.el) <a id="orgcc704dd"></a>
+1.  Workgroups (should be executed at the end of init.el) <a id="orgba689b2"></a>
 
     <https://tuhdo.github.io/emacs-tutor3.html>
     
@@ -3507,10 +3580,10 @@ a global shortcut...
             ( ; if Emacs is started in graphical environment
               progn
               (add-hook 'kill-emacs-hook (
-                             lambda () (wg-create-workgroup "currentsession")))
+        		     lambda () (wg-create-workgroup "currentsession")))
               (setq inhibit-startup-message t)
               (add-hook 'window-setup-hook (
-                               lambda () (wg-open-workgroup "currentsession")))
+        		       lambda () (wg-open-workgroup "currentsession")))
             )
            (
             ; if Emacs is run in batch mode - do not care about workgroups
@@ -3521,11 +3594,11 @@ a global shortcut...
 
 3.  DEPRECATED Restoring previous session
 
-    This section is deprecated in favour of [`workgroups2 package`](#orgcc704dd).
+    This section is deprecated in favour of [`workgroups2 package`](#orgba689b2).
     
     This way of restoring session throws some warnings and needs additional
     confirmations so I give it up. Simple `(desktop-save-mode 1)` which is 
-    included [in the beginning of `init.el`](#org08fcf8a) works ok.
+    included [in the beginning of `init.el`](#org6bd8efc) works ok.
     
         ;; Restore the "desktop" - do this as late as possible
         (if first-time
@@ -3559,17 +3632,122 @@ a global shortcut...
         (message "All done in init.el.")
 
 
-## Dependencies of the presented Emacs configuration <a id="org889459e"></a>:
+## Dependencies of the presented Emacs configuration <a id="org412fcde"></a>:
 
 The list of external applications that this script is dependent on:
 
 -   git
 -   LaTeX distribution (for org to latex exporters)
 
--   xclip ([1.7.20](#org4a7e86e))
--   xdotool ([1.7.20](#org4a7e86e))
--   xprop ([1.7.20](#org4a7e86e)) - this is not a package but executable
--   xwininfo ([1.7.20](#org4a7e86e)) - this is not a package but executable
+-   xclip ([1.7.20](#orgb335157))
+-   xdotool ([1.7.20](#orgb335157))
+-   xprop ([1.7.20](#orgb335157)) - this is not a package but executable
+-   xwininfo ([1.7.20](#orgb335157)) - this is not a package but executable
+
+
+## Tests
+
+
+### Emacs and Zotero integration - `zotxt-emacs`
+
+<https://github.com/egh/zotxt-emacs>
+
+1.  Install zotxt
+
+    <https://github.com/egh/zotxt>
+    
+    1.  Visit <https://github.com/egh/zotxt/releases>
+    2.  Download the latest .xpi file. If you are using Firefox, you will need to right-click and "Save as"
+    3.  Start Zotero standalone.
+    4.  In Zotero, select Tools -> Add-ons -> Gear (upper right) -> Install Add-On from file, and install the downloaded xpi file.
+    5.  **RESTART** Zotero!!!
+
+2.  Install zotxt-emacs package
+
+3.  Org mode integration
+
+    To insert a link to a reference into a org-mode document, first enable the org-zotxt minor mode:
+    
+    `M-x org-zotxt-mode`
+    Then you can use: `C-c " i` (`org-zotxt-insert-reference-link`)
+    to insert an item.
+    
+    To update the current link text at point to reflect changed
+    metadata from Zotero, use
+    `C-c " u` (`org-zotxt-update-reference-link-at-point`).
+    
+    To open an attachment of the link at point, use
+    `C-c " a` (`org-zotxt-open-attachment`)
+
+4.  Tests
+
+    Below I include the link inserted with
+    `org-zotxt-insert-reference-link` command.
+    Since it breaks export to markdown I comment it out.
+    In order to check if it works you need to uncomment
+    and mouse click it.
+
+5.  More tests - redefinition of `org-zotxt-open-attachment`
+
+    The function `org-zotxt-open-attachment` opens the link
+    provided by zotero inside emacs pdf viewer.
+    It would be lovely to be able to open it inside zotero pdf viewer,
+    unfortunately I couldn't find a way of doing that.
+    
+    As a last resort I decided to implement opening in my default
+    pdf viewer.
+    Basing on `org-zotxt-open-attachment` from `zotxt-emacs`
+    I created similiar function that enables opening zotero link in
+    `okular`.
+    (Interesting observation: variable `paths` used in function is not
+    a list. It is a [**vector**](https://www.gnu.org/software/emacs/manual/html_node/elisp/Vector-Type.html)! That is why to get its element we need
+    to use `aref` function.)
+    
+        (defun mb/org-zotxt-open-attachment (&optional arg)
+          "Open attachment of Zotero items linked at point.
+        
+        Opens with `org-open-file', see for more information about ARG."
+          (interactive "P")
+          (let ((item-id (org-zotxt-extract-link-id-at-point))
+                (arg arg))
+            (deferred:$
+              (zotxt--request-deferred
+               (format "%s/items" zotxt-url-base)
+               :params `(("key" . ,item-id) ("format" . "paths"))
+               :parser 'json-read)
+              (deferred:nextc it
+                (lambda (response)
+                  (let ((paths (cdr (assq 'paths (elt (request-response-data response) 0)))))
+                    ;;; (org-open-file (org-zotxt-choose-path paths) arg)
+        	    ; (print (type-of paths))
+        	    ; (print (aref paths 0))
+        	    ; (print (concat "okular " (aref paths 0) ) )
+        	    ; (print (concat "okular " "'" (aref paths 0) "'" ) )
+        	    (shell-command (concat "okular " "\"" (aref paths 0) "\"" ) )
+        	  )))
+              (deferred:error it #'zotxt--deferred-handle-error)
+              (if zotxt--debug-sync (deferred:sync! it)))))
+    
+    Basing on [this thread](https://www.reddit.com/r/orgmode/comments/oqcbse/open_a_pdf_in_zotero_using_a_link_within_an_org/) we can come up with a code that triggers
+    `mb/org-zotxt-open-attachment` when clicking on it inside emacs.
+    
+        (defun org-zotero-open (path)
+          (browse-url (format "zotero:%s" path)))
+        
+        (with-eval-after-load 'org
+          (org-link-set-parameters "zotero" :follow #'mb/org-zotxt-open-attachment))
+    
+    There are two drawbacks of this solution:
+    
+    1.  Link does not work when exported to other formats (e.g. pdf).
+    2.  When clicking on the link it is opened in dolphin however
+        the error message appears in minibuffer:
+        `Qt: Session management error: None of the authentication protocols specified are supported`.
+
+6.  TODO TODO
+
+    1.  Add zotxt-emacs to `install-packages.el` script.
+    2.  Move this section to proper section in this documents after tests.
 
 
 ## Some useful information and links:
