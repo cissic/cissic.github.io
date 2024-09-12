@@ -15,17 +15,17 @@ Sometimes, after some crash in KDE enviroment there may appear
 a problem with suspending the system.
 In this case, with the help of =myaskpass.sh= script from
 
-#+begin_src org :exports none
-[[file:2024-09-11-sudo-password-input-in-kde-for-the-script-run-in-bash.org]]
+# #+begin_src org :exports none
+# [[file:2024-09-11-sudo-password-input-in-kde-for-the-script-run-in-bash.org]]
 
-[[./2024-09-11-sudo-password-input-in-kde-for-the-script-run-in-bash.org]]
-#+end_src
+# [[./2024-09-11-sudo-password-input-in-kde-for-the-script-run-in-bash.org]]
+# #+end_src
 
-#+begin_src org :exports results :results raw
+# #+begin_src org :exports results :results raw
+
 [[https://cissic.github.io/posts/sudo-password-input-in-kde-for-the-script-run-in-bash/][this post]]
-#+end_src
+# #+end_src
 
-post
 you can create the following script and bind it to some keyboard shorcut.
 
 
