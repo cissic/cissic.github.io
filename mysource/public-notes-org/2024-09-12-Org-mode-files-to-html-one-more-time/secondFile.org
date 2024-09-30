@@ -1,6 +1,0 @@
-* Yet another first heading
-Look inside [[file:remember.org][remember]].
-
-[[file:./img/Cool_jump.gif]]
-
-[[file:./img/org-mode-unicorn.svg]]

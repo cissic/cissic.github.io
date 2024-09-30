@@ -1,7 +1,0 @@
-#+TITLE: Presentation of different stylesheets
- 
-[[file:css-worg.org][worg]]
-
-[[file:css-worg-zenburn.org][zenburn]]
-
-[[file:css-worg-classic.org][worg-classic]]
