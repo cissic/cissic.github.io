@@ -1,0 +1,24 @@
+#+TITLE: How to play dvd movie in debian
+#+DESCRIPTION: 
+#+AUTHOR: cissic 
+#+DATE: <2024-09-23 Mon>
+#+TAGS: 
+#+OPTIONS: -:nil
+
+* How to play dvd movie in debian
+:PROPERTIES:
+:PRJ-DIR: ./2024-09-23-How-to-play-dvd-movie-in-debian/
+:END:
+
+According to
+https://askubuntu.com/a/887260
+
+
+
+#+begin_src shell
+sudo apt-get install libdvd-pkg
+
+sudo dpkg-reconfigure libdvd-pkg
+#+end_src
+
+Then just drag-and-drop the IFO (usually VIDEO_TS.IFO) into VLC window.

@@ -1,0 +1,44 @@
+#+TITLE: Octave and org-babel
+#+DESCRIPTION: 
+#+AUTHOR: cissic 
+#+DATE: <2024-09-19 Thu>
+#+TAGS: 
+#+OPTIONS: -:nil
+
+* Octave and org-babel
+:PROPERTIES:
+:PRJ-DIR: ./2024-09-19-Octave-and-org-babel/
+:END:
+
+** How to get the functionality of showing octave figures like in GUI
+Running plot command without starting session, ends up in
+closing figure window before anything is shown - Octave closess
+immediately.
+#+begin_src octave 
+close all
+h = figure,
+plot([0 1], [0 1])
+#+end_src
+
+#+RESULTS:
+
+On the other hand, when the block is run in the context of some
+session like below
+#+begin_src octave :session *MatOct* 
+h = figure,
+plot([0 1], [0 1])
+#+end_src
+it is impossible to close the figure window with 'X' button, 
+
+The circumvent for this bug can be 
+#+begin_src octave :session *MatOct* 
+close all
+h = figure,
+plot([0 1], [0 1])
+#+end_src
+but, this way or another, the last figure will last until
+=close= command is not run from octave command line.
+If the session is killed the figure still remains opened.
+
+
+

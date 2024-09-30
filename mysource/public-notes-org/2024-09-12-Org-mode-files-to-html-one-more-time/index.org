@@ -1,0 +1,30 @@
+#+TITLE: This is my page
+#+AUTHOR: marbor
+
+
+[[file:css-styles-presentation.org][Presentation of different css styles]]
+
+
+[[file:worg/index.org][1]]
+
+[[file:worg/blorgit.org][2]]
+
+[[file:worg/org-web.org][3]]
+
+[[file:worg/orgcard.org][4]]
+
+
+[[file:orgweb/index.org][orgweb-index]]
+
+
+[[file:secondFile.org][secondFile]]  [[file:dir1/dir1file1.org][FilesInsideADir]] \ \ \ \quad
+[[file:remember.org][remember]]
+
+
+#+INCLUDE: secondFile.org
+
+* COMMENT html style specifications
+
+# Local Variables:
+# org-html-head: "<link rel=\"stylesheet\" type=\"text/css\" href=\"css/worg-zenburn.css\" />"
+# End:

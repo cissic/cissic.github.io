@@ -1,0 +1,86 @@
+#+TITLE: Hardlinks and softlinks
+#+DESCRIPTION: 
+#+AUTHOR: cissic 
+#+DATE: <2024-09-30 Mon>
+#+TAGS: 
+#+OPTIONS: -:nil
+
+* TODO Hardlinks and softlinks
+:PROPERTIES:
+:PRJ-DIR: ./2024-09-30-Hardlinks-and-softlinks/
+:END:
+
+
+
+
+
+
+** Hard link
+Hard link:
+#+begin_src shell
+echo "111" > test.txt
+ln test.txt hlinkToTest
+rm -rf test.txt
+cat hlinkToTest
+#+end_src
+
+Hardlink links to the content of the file. You can access content
+until the very last of the hard links exist.
+
+#+begin_example
+Hard link       OriginalFilename (test.txt)
+    \          /
+    _\|      |/_
+        Inode
+       878945
+          |
+	  |
+	 \|/
+    Data on Hard Drive	 
+
+#+end_example
+
+** Soft link
+#+begin_src shell
+echo "111" > test.txt
+ln test.txt slinkToTest
+rm -rf test.txt
+cat slinkToTest
+#+end_src
+Does to work because slinkToTest linked to test.txt name, not to the
+file content itself.
+
+
+Softlink links to other filename, not to content itself.
+Soft link can't access the content of riginalFilename if
+OriginalFilename is deleted.
+
+#+begin_example
+
+Soft link   --> OriginalFilename (test.txt)
+     |                   | 
+     |		         | 
+    \|/		        \|/
+   Inode               Inode
+  948540               948545
+                         |
+                         |
+                        \|/
+                   Data on Hard Drive	       
+#+end_example
+
+The picture above is corrected version of
+https://i.sstatic.net/uNXQS.png
+as it is described in the comments below the post
+https://stackoverflow.com/a/47786856/13215783.
+
+
+** Hyperlinks
+
+https://stackoverflow.com/questions/185899/what-is-the-difference-between-a-symbolic-link-and-a-hard-link
+
+https://stackoverflow.com/questions/185899/what-is-the-difference-between-a-symbolic-link-and-a-hard-link
+
+https://en.wikipedia.org/wiki/Symbolic_link
+
+https://en.wikipedia.org/wiki/Hard_link
